@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.wms;
+package org.geoserver.wms;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.request.GetLegendGraphicRequest;
 import org.geoserver.wms.response.LegendGraphic;
+import org.vfny.geoserver.wms.WmsException;
 
 /**
  * Provides the skeleton for producers of a legend image, as required by the GetLegendGraphic WMS
@@ -27,10 +28,10 @@ import org.geoserver.wms.response.LegendGraphic;
  * order (which is produceLegendGraphic -> getContentType -> writeTo)
  * </p>
  * 
- * @author Gabriel Roldan, Axios Engineering
+ * @author Gabriel Roldan
  * @version $Id$
  */
-public interface GetLegendGraphicProducer {
+public interface GetLegendGraphicOutputFormat {
     /**
      * Asks this legend graphic producer to create a graphic for the GetLegenGraphic request
      * parameters held in <code>request</code>

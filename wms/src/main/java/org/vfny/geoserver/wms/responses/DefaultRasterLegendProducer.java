@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.geoserver.wms.GetLegendGraphicOutputFormat;
 import org.geoserver.wms.request.GetLegendGraphicRequest;
 import org.geoserver.wms.response.LegendGraphic;
 import org.geoserver.wms.response.LegendUtils;
@@ -43,7 +44,6 @@ import org.opengis.feature.IllegalAttributeException;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
-import org.vfny.geoserver.wms.GetLegendGraphicProducer;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.responses.legend.raster.RasterLayerLegendHelper;
 
@@ -81,7 +81,7 @@ import com.vividsolutions.jts.geom.Polygon;
  * @author Simone Giannecchini, GeoSolutions SAS
  * @version $Id$
  */
-public abstract class DefaultRasterLegendProducer implements GetLegendGraphicProducer {
+public abstract class DefaultRasterLegendProducer implements GetLegendGraphicOutputFormat {
    
     /** Factory that will resolve symbolizers into rendered styles */
     private static final SLDStyleFactory styleFactory = new SLDStyleFactory();

@@ -11,10 +11,10 @@ import org.geoserver.ows.Response;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.GetLegendGraphic;
+import org.geoserver.wms.GetLegendGraphicOutputFormat;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.request.GetLegendGraphicRequest;
 import org.springframework.util.Assert;
-import org.vfny.geoserver.wms.GetLegendGraphicProducer;
 
 /**
  * 
@@ -59,7 +59,7 @@ public class GetLegendGraphicResponse extends Response {
 
         final LegendGraphic legend = (LegendGraphic) value;
         final String mimeType = legend.getMimeType();
-        final GetLegendGraphicProducer format = wms.getLegendGraphicOutputFormat(mimeType);
+        final GetLegendGraphicOutputFormat format = wms.getLegendGraphicOutputFormat(mimeType);
         if (format == null) {
             throw new ServiceException("No legend produced for output format " + mimeType
                     + " found.", "InvalidFormat");
