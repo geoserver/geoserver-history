@@ -13,12 +13,14 @@ import javax.xml.namespace.QName;
 import junit.framework.Test;
 
 import org.geoserver.data.test.MockData;
+import org.geoserver.kml.KMZMapOutputFormat.KMZMap;
 import org.geoserver.wms.WMSMapContext;
 import org.geoserver.wms.WMSTestSupport;
 import org.geoserver.wms.request.GetMapRequest;
 
 public class KMZMapProducerTest extends WMSTestSupport {
     KMZMapOutputFormat mapProducer;
+    KMZMap producedMap;
 
     /**
      * This is a READ ONLY TEST so we can use one time setup
@@ -43,8 +45,7 @@ public class KMZMapProducerTest extends WMSTestSupport {
 
         // create hte map producer
         mapProducer = new KMZMapOutputFormat(getWMS());
-        mapProducer.setMapContext(mapContext);
-        mapProducer.produceMap();
+        producedMap = mapProducer.produceMap(mapContext);
     }
 
     public void test() throws Exception {
@@ -58,7 +59,7 @@ public class KMZMapProducerTest extends WMSTestSupport {
         zip.deleteOnExit();
 
         FileOutputStream output = new FileOutputStream(zip);
-        mapProducer.writeTo(output);
+        mapProducer.write(producedMap, output, null);
 
         output.flush();
         output.close();
@@ -76,7 +77,12 @@ public class KMZMapProducerTest extends WMSTestSupport {
     }
 
     public void testContentDisposition() {
-        String contentDisposition = mapProducer.getContentDisposition();
+        String[][] responseHeaders = producedMap.getResponseHeaders();
+        assertNotNull(responseHeaders);
+        assertEquals(1, responseHeaders.length);
+        
+        assertEquals("Content-Disposition", responseHeaders[0][0]);
+        String contentDisposition = responseHeaders[0][1];
         assertTrue(contentDisposition.startsWith("attachment; filename="));
         assertTrue(contentDisposition.endsWith(".kmz"));
     }
