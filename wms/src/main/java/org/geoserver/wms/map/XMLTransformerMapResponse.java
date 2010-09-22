@@ -36,11 +36,15 @@ public class XMLTransformerMapResponse extends AbstractMapResponse {
      * @param output
      *            xml stream destination
      * @param operation
-     *            operation descriptor for which the map was produced
+     *            operation descriptor for which the map was produced; not used at all.
      */
     @Override
     public void write(Object value, OutputStream output, Operation operation) throws IOException,
             ServiceException {
+        write(value, output);
+    }
+
+    public void write(Object value, OutputStream output) throws IOException, ServiceException {
         Assert.isInstanceOf(XMLTransformerMap.class, value);
 
         XMLTransformerMap map = (XMLTransformerMap) value;
@@ -55,10 +59,10 @@ public class XMLTransformerMapResponse extends AbstractMapResponse {
             if (cause instanceof RuntimeException) {
                 throw (RuntimeException) cause;
             }
-            throw new ServiceException(operation.getId() + " operation failed.",
-                    cause != null ? cause : e);
+            throw new ServiceException("getmap operation failed.", cause != null ? cause : e);
         } finally {
             map.dispose();
         }
     }
+
 }
