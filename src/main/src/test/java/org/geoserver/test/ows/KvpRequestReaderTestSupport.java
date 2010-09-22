@@ -41,6 +41,10 @@ public abstract class KvpRequestReaderTestSupport extends GeoServerTestSupport {
         if(errors != null && errors.size() > 0)
             throw (Exception) errors.get(0);
         
+        return caseInsensitiveKvp(input);
+    }
+
+    protected Map caseInsensitiveKvp(HashMap input) {
         // make it case insensitive like the servlet+dispatcher maps
         Map result = new HashMap();
         for (Iterator it = input.keySet().iterator(); it.hasNext();) {

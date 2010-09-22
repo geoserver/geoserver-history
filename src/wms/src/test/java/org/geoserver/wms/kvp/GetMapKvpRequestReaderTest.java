@@ -89,7 +89,7 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
         raw.put("request", "GetMap");
 
         GetMapRequest request = (GetMapRequest) reader.createRequest();
-        request = (GetMapRequest) reader.read(request, parseKvp(raw), raw);
+        request = (GetMapRequest) reader.read(request, parseKvp(raw), caseInsensitiveKvp(raw));
 
         String layer = MockData.BASIC_POLYGONS.getLocalPart();
         assertEquals(1, request.getLayers().size());
@@ -159,7 +159,7 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
         raw.put("width", "800");
 
         GetMapRequest request = (GetMapRequest) reader.createRequest();
-        request = (GetMapRequest) reader.read(request, parseKvp(raw), raw);
+        request = (GetMapRequest) reader.read(request, parseKvp(raw), caseInsensitiveKvp(raw));
         assertEquals(2, request.getStyles().size());
         LayerInfo basicPolygons = getCatalog().getLayerByName(
                 MockData.BASIC_POLYGONS.getLocalPart());
@@ -174,7 +174,7 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
         kvp.put("filter", "<Filter><FeatureId id=\"foo\"/></Filter>");
 
         GetMapRequest request = (GetMapRequest) reader.createRequest();
-        request = (GetMapRequest) reader.read(request, parseKvp(kvp), kvp);
+        request = (GetMapRequest) reader.read(request, parseKvp(kvp), caseInsensitiveKvp(kvp));
 
         assertNotNull(request.getFilter());
         assertEquals(1, request.getFilter().size());
@@ -222,7 +222,7 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
 
         GetMapRequest request = (GetMapRequest) reader.createRequest();
         reader.setLaxStyleMatchAllowed(false);
-        request = (GetMapRequest) reader.read(request, parseKvp(kvp), kvp);
+        request = (GetMapRequest) reader.read(request, parseKvp(kvp), caseInsensitiveKvp(kvp));
 
         assertNotNull(request.getSld());
         assertEquals(url, request.getSld());
@@ -280,7 +280,7 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
         GetMapRequest request = (GetMapRequest) reader.createRequest();
         try {
             reader.setLaxStyleMatchAllowed(false);
-            request = (GetMapRequest) reader.read(request, parseKvp(kvp), kvp);
+            request = (GetMapRequest) reader.read(request, parseKvp(kvp), caseInsensitiveKvp(kvp));
             fail("The style looked up, 'ThisStyleDoesNotExists', should not have been found");
         } catch (WmsException e) {
             // System.out.println(e);
@@ -370,7 +370,7 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
         raw.put("remote_ows_url", RemoteOWSTestSupport.WFS_SERVER_URL);
 
         GetMapRequest request = (GetMapRequest) reader.createRequest();
-        request = (GetMapRequest) reader.read(request, parseKvp(raw), raw);
+        request = (GetMapRequest) reader.read(request, parseKvp(raw), caseInsensitiveKvp(raw));
 
         assertEquals("WFS", request.getRemoteOwsType()); // TODO: handle case?
         assertEquals(new URL(RemoteOWSTestSupport.WFS_SERVER_URL), request.getRemoteOwsURL());
@@ -396,7 +396,7 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
 
         GetMapRequest request = (GetMapRequest) reader.createRequest();
         try {
-            request = (GetMapRequest) reader.read(request, parseKvp(raw), raw);
+            request = (GetMapRequest) reader.read(request, parseKvp(raw), caseInsensitiveKvp(raw));
             fail("This should have thrown an exception because of the missing style");
         } catch (WmsException e) {
             assertEquals("NoDefaultStyle", e.getCode());
@@ -419,7 +419,7 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
 
         GetMapRequest request = (GetMapRequest) reader.createRequest();
         try {
-            request = (GetMapRequest) reader.read(request, parseKvp(raw), raw);
+            request = (GetMapRequest) reader.read(request, parseKvp(raw), caseInsensitiveKvp(raw));
             fail("This should have thrown an exception because of the non existent layer");
         } catch (WmsException e) {
             e.printStackTrace();
@@ -465,7 +465,7 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
         raw.put("viewParams", "where:WHERE PERSONS > 1000000;str:ABCD");
 
         GetMapRequest request = (GetMapRequest) reader.createRequest();
-        request = (GetMapRequest) reader.read(request, parseKvp(raw), raw);
+        request = (GetMapRequest) reader.read(request, parseKvp(raw), caseInsensitiveKvp(raw));
 
         Map viewParams = request.getViewParams();
         assertEquals(2, viewParams.size());
