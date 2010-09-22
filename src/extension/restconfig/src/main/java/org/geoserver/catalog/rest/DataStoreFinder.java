@@ -20,8 +20,8 @@ public class DataStoreFinder extends AbstractCatalogFinder {
 
     @Override
     public Resource findTarget(Request request, Response response) {
-        String ws = (String) request.getAttributes().get( "workspace" );
-        String ds = (String) request.getAttributes().get( "datastore" );
+        String ws = getAttribute(request, "workspace");
+        String ds = getAttribute(request, "datastore");
         
         //ensure referenced resources exist
         if ( ws != null && catalog.getWorkspaceByName(ws) == null) {

@@ -30,8 +30,8 @@ public class AvailableFeatureTypeResource extends AbstractCatalogResource {
 
     @Override
     protected Object handleObjectGet() {
-        String workspace = (String) getRequest().getAttributes().get( "workspace" );
-        String datastore = (String) getRequest().getAttributes().get( "datastore" );
+        String workspace = getAttribute("workspace");
+        String datastore = getAttribute("datastore");
         
         DataStoreInfo info = catalog.getDataStoreByName( workspace, datastore );
         if ( info == null ) {

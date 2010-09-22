@@ -81,7 +81,7 @@ public class NamespaceResource extends AbstractCatalogResource {
     @Override
     protected void handleObjectPut(Object object) throws Exception {
         NamespaceInfo namespace = (NamespaceInfo) object;
-        String ns = (String) getRequest().getAttributes().get( "namespace" );
+        String ns = getAttribute("namespace");
         
         if ( "default".equals( ns ) ) {
             catalog.setDefaultNamespace( namespace );
@@ -106,7 +106,7 @@ public class NamespaceResource extends AbstractCatalogResource {
     
     @Override
     protected void handleObjectDelete() throws Exception {
-        String namespace = (String) getRequest().getAttributes().get( "namespace");
+        String namespace = getAttribute("namespace");
         NamespaceInfo ns = catalog.getNamespaceByPrefix( namespace );
         
         if ( !catalog.getResourcesByNamespace(ns, ResourceInfo.class).isEmpty() ) {

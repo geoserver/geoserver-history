@@ -20,7 +20,7 @@ public class NamespaceFinder extends AbstractCatalogFinder {
     
     @Override
     public Resource findTarget(Request request, Response response) {
-        String namespace = (String) request.getAttributes().get( "namespace" );
+        String namespace = getAttribute(request, "namespace");
         
         if ( namespace == null && request.getMethod() == Method.GET ) {
             return new NamespaceListResource( getContext(), request, response, catalog );

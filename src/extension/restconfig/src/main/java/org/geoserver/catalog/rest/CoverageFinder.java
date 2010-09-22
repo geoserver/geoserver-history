@@ -21,9 +21,9 @@ public class CoverageFinder extends AbstractCatalogFinder {
     
     @Override
     public Resource findTarget(Request request, Response response) {
-        String ws = (String) request.getAttributes().get( "workspace" );
-        String cs = (String) request.getAttributes().get( "coveragestore" );
-        String c = (String) request.getAttributes().get( "coverage");
+        String ws = getAttribute(request, "workspace");
+        String cs = getAttribute(request, "coveragestore");
+        String c = getAttribute(request, "coverage");
         
         //ensure referenced resources exist
         if ( ws != null && catalog.getWorkspaceByName( ws ) == null ) {
@@ -48,7 +48,6 @@ public class CoverageFinder extends AbstractCatalogFinder {
                 if ( ns == null || catalog.getCoverageByName( ns, c ) == null ) {
                     throw new RestletException( "No such coverage: "+ws+","+c, Status.CLIENT_ERROR_NOT_FOUND );
                 }
-            
             }
         }
             

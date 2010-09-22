@@ -247,12 +247,12 @@ public class FeatureTypeResource extends AbstractCatalogResource {
                     HierarchicalStreamWriter writer, MarshallingContext context) {
                 if ( obj instanceof NamespaceInfo ) {
                     NamespaceInfo ns = (NamespaceInfo) obj;
-                    encodeLink( "/namespaces/" + ns.getPrefix(), writer);
+                    encodeLink( "/namespaces/" + encode(ns.getPrefix()), writer);
                 }
                 if ( obj instanceof DataStoreInfo ) {
                     DataStoreInfo ds = (DataStoreInfo) obj;
-                    encodeLink( "/workspaces/" + ds.getWorkspace().getName() + "/datastores/" + 
-                        ds.getName(), writer );
+                    encodeLink( "/workspaces/" + encode(ds.getWorkspace().getName()) + 
+                        "/datastores/" + encode(ds.getName()), writer );
                 }
             }
             

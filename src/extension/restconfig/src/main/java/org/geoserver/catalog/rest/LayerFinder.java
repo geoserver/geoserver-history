@@ -20,7 +20,7 @@ public class LayerFinder extends AbstractCatalogFinder {
     
     @Override
     public Resource findTarget(Request request, Response response) {
-        String layer = (String) request.getAttributes().get( "layer" );
+        String layer = getAttribute(request, "layer");
         
         if ( layer == null && request.getMethod() == Method.GET ) {
             return new LayerListResource(getContext(),request,response,catalog);

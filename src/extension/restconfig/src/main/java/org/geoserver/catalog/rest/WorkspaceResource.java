@@ -115,7 +115,7 @@ public class WorkspaceResource extends AbstractCatalogResource {
     @Override
     protected void handleObjectPut(Object object) throws Exception {
         WorkspaceInfo workspace = (WorkspaceInfo) object;
-        String ws = (String) getRequest().getAttributes().get( "workspace" );
+        String ws = getAttribute("workspace");
         
         if ( "default".equals( ws ) ) {
             catalog.setDefaultWorkspace( workspace );
@@ -141,7 +141,7 @@ public class WorkspaceResource extends AbstractCatalogResource {
     
     @Override
     protected void handleObjectDelete() throws Exception {
-        String workspace = (String) getRequest().getAttributes().get( "workspace");
+        String workspace = getAttribute("workspace");
         WorkspaceInfo ws = catalog.getWorkspaceByName( workspace );
         
         if ( !catalog.getStoresByWorkspace(ws, StoreInfo.class).isEmpty() ) {

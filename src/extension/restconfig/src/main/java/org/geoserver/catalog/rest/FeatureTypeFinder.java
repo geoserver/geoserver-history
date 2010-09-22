@@ -22,9 +22,9 @@ public class FeatureTypeFinder extends AbstractCatalogFinder {
     
     @Override
     public Resource findTarget(Request request, Response response) {
-        String ws = (String) request.getAttributes().get( "workspace" );
-        String ds = (String) request.getAttributes().get( "datastore" );
-        String ft = (String) request.getAttributes().get( "featuretype");
+        String ws = getAttribute(request, "workspace");
+        String ds = getAttribute(request, "datastore");
+        String ft = getAttribute(request, "featuretype");
         
         //ensure referenced resources exist
         if ( ws != null && catalog.getWorkspaceByName( ws ) == null ) {
