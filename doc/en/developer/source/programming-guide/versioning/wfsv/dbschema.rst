@@ -33,7 +33,9 @@ The **VersionedTable** table is a list containing the currently versioned featur
 * name: the versioned table name
 
 .. note: An alternate implementation using just one revision column containing either 0 for the current revision and the revision the row expired for other rows has been tried out in the benchmark belows, but has proved to be at least two orders of magnitude slower when trying to extract a specific revision
+
 Common operations implementations in terms of SQL queries
+----------------------------------------------------------
 
 It's interesting to see how this design allows for relatively simple queries for the most common operations:
 

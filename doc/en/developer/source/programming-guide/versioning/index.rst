@@ -19,10 +19,10 @@ The following documents provide insight on its design, current implementation st
 .. toctree::
    :maxdepth: 2
 
-   requirements/
-   classification/
-   implementations/
-   implementation/
+   wfsv/requirements/
+   wfsv/classification/
+   wfsv/implementations/
+   wfsv/implementation/
 
 GeoServer Synchronization Service
 ----------------------------------
@@ -30,6 +30,11 @@ GeoServer Synchronization Service
 GeoServer Synchronization Service is a distributed version control system managing synchronization between a number of nodes, called unites, and a central orchestrating node called central. 
 The following documents provide insight on its design, current implementation status and usage:
 
-* one
-* two
-* three
+.. toctree::
+   :maxdepth: 2
+
+   gss/introduction/
+   gss/protocol/
+   gss/primarykey/
+   gss/dbschema/
+   gss/limitations/
