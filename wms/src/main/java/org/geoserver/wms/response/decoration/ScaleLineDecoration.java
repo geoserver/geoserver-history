@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.geoserver.wms.responses.decoration;
+package org.geoserver.wms.response.decoration;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.geoserver.wms.responses.MapDecoration;
+import org.geoserver.wms.response.MapDecoration;
 import org.geotools.renderer.lite.RendererUtilities;
 import org.vfny.geoserver.wms.WMSMapContext;
 

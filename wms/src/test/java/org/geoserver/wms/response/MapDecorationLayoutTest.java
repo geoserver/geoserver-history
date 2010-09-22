@@ -1,4 +1,4 @@
-package org.geoserver.wms.responses;
+package org.geoserver.wms.response;
 
 import java.awt.Dimension;
 import java.awt.Graphics2D;

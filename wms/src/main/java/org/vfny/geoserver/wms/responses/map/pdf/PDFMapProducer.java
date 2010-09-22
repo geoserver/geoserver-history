@@ -19,7 +19,7 @@ import java.util.logging.Logger;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.DefaultWebMapService;
 import org.geoserver.wms.WMS;
-import org.geoserver.wms.responses.MapDecorationLayout;
+import org.geoserver.wms.response.MapDecorationLayout;
 import org.geotools.renderer.lite.StreamingRenderer;
 import org.vfny.geoserver.wms.RasterMapProducer;
 import org.vfny.geoserver.wms.WmsException;

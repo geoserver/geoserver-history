@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.geoserver.wms.responses;
+package org.geoserver.wms.response;
 
 import java.awt.Dimension;
 import java.awt.Graphics2D;

@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.geoserver.wms.responses.decoration;
+package org.geoserver.wms.response.decoration;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -22,7 +22,7 @@ import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 
-import org.geoserver.wms.responses.MapDecoration;
+import org.geoserver.wms.response.MapDecoration;
 import org.geotools.util.SoftValueHashMap;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.wms.WMSMapContext;

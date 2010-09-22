@@ -413,23 +413,23 @@
 
     <!-- Default Decoration Plugins -->
     <bean id="image" 
-          class="org.geoserver.wms.responses.decoration.WatermarkDecoration"
+          class="org.geoserver.wms.response.decoration.WatermarkDecoration"
           singleton="false"
     />
 
     <bean id="legend" 
-          class="org.geoserver.wms.responses.decoration.LegendDecoration"
+          class="org.geoserver.wms.response.decoration.LegendDecoration"
           singleton="false"
     >
     </bean>
 
     <bean id="scaleratio" 
-          class="org.geoserver.wms.responses.decoration.ScaleRatioDecoration"
+          class="org.geoserver.wms.response.decoration.ScaleRatioDecoration"
           singleton="false"
     />
     
     <bean id="scaleline" 
-          class="org.geoserver.wms.responses.decoration.ScaleLineDecoration"
+          class="org.geoserver.wms.response.decoration.ScaleLineDecoration"
           singleton="false"
     />
     

@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.geoserver.wms.responses.decoration;
+package org.geoserver.wms.response.decoration;
 
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
@@ -23,7 +23,7 @@ import java.util.logging.Logger;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.wms.WMS;
-import org.geoserver.wms.responses.MapDecoration;
+import org.geoserver.wms.response.MapDecoration;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.geometry.jts.LiteShape2;
