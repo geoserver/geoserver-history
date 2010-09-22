@@ -77,8 +77,10 @@ import com.vividsolutions.jts.geom.Envelope;
  * 
  * @author Gabriel Roldan
  * @version $Id
+ * @see GetCapabilities#run(GetCapabilitiesRequest)
+ * @see GetCapabilitiesResponse#write(Object, java.io.OutputStream, org.geoserver.platform.Operation)
  */
-public class GetCapabilitiesTransformer extends TransformerBase {
+class GetCapabilitiesTransformer extends TransformerBase {
     /** fixed MIME type for the returned capabilities document */
     public static final String WMS_CAPS_MIME = "application/vnd.ogc.wms_xml";
 
