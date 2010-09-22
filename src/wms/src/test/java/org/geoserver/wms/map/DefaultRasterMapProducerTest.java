@@ -9,6 +9,7 @@ import java.awt.image.RenderedImage;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
@@ -36,6 +37,7 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.FeatureSourceMapLayer;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.styling.Style;
+import org.geotools.util.logging.Logging;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
 
@@ -58,6 +60,7 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
     }
 
     public void setUpInternal() throws Exception {
+        Logging.getLogger("org.geotools.rendering").setLevel(Level.OFF);
         super.setUpInternal();
         this.rasterMapProducer = getProducerInstance();
     }
@@ -101,6 +104,7 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
         request.setFormat(getMapFormat());
         BufferedImageMap imageMap = this.rasterMapProducer.produceMap(map);
         BufferedImage image = (BufferedImage) imageMap.getImage();
+        imageMap.dispose();
         assertNotBlank("testSimpleGetMapQuery", image);
     }
 
@@ -150,6 +154,7 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
         request.setFormat(getMapFormat());
         BufferedImageMap imageMap = this.rasterMapProducer.produceMap(map);
         BufferedImage image = (BufferedImage) imageMap.getImage();
+        imageMap.dispose();
         assertNotBlank("testBlueLake", image);
     }
 
@@ -199,6 +204,7 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
         BufferedImageMap imageMap = this.rasterMapProducer.produceMap(map);
 
         RenderedImage image = imageMap.getImage();
+        imageMap.dispose();
         assertNotNull(image);
         String typeName = fSource.getSchema().getName().getLocalPart();
         assertNotBlank("testDefaultStyle " + typeName, (BufferedImage) image);
@@ -284,7 +290,8 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
         request.setFormat(getMapFormat());
         BufferedImageMap imageMap = this.rasterMapProducer.produceMap(map);
         BufferedImage image = (BufferedImage) imageMap.getImage();
-
+        imageMap.dispose();
+        
         return image;
     }
 

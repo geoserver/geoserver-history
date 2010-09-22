@@ -1,7 +1,10 @@
 package org.geoserver.kml;
 
+import java.util.logging.Level;
+
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.data.test.MockData;
+import org.geotools.util.logging.Logging;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -82,6 +85,7 @@ public class GeoSearchKMLTest extends RegionatingTestSupport {
      * TODO: Evaluate whether an error message should be returned instead.
      */
     public void testBogusRegionator() throws Exception {
+        Logging.getLogger("org.geoserver.ows").setLevel(Level.OFF);
         final String path = 
             "wms?request=getmap&service=wms&version=1.1.1" + 
             "&format=" + KMLMapOutputFormat.MIME_TYPE + 

@@ -150,7 +150,7 @@ public class GetMapTest extends TestCase {
         };
         
         getMapOp = new GetMap(wms);
-        getMapOp.run(request);
+        Map map = getMapOp.run(request);
         assertTrue(producer.produceMapCalled);
         // only defaults
         assertNull(ff.function("env", ff.literal("myParam")).evaluate(null));

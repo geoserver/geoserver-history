@@ -2,11 +2,14 @@ package org.geoserver.wms;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 
+import java.util.logging.Level;
+
 import javax.xml.namespace.QName;
 
 import junit.framework.Test;
 
 import org.geoserver.data.test.MockData;
+import org.geotools.util.logging.Logging;
 import org.w3c.dom.Document;
 
 public class GetFeatureInfoTest extends WMSTestSupport {
@@ -26,6 +29,7 @@ public class GetFeatureInfoTest extends WMSTestSupport {
     @Override
     protected void setUpInternal() throws Exception {
         super.setUpInternal();
+        Logging.getLogger("org.geoserver.ows").setLevel(Level.OFF);
         WMSInfo wmsInfo = getGeoServer().getService(WMSInfo.class);
         wmsInfo.setMaxBuffer(50);
         getGeoServer().save(wmsInfo);
@@ -55,7 +59,7 @@ public class GetFeatureInfoTest extends WMSTestSupport {
         String request = "wms?bbox=-0.002,-0.002,0.002,0.002&styles=&format=jpeg&info_format=text/plain&request=GetFeatureInfo&layers="
                 + layer + "&query_layers=" + layer + "&width=20&height=20&x=10&y=10";
         String result = getAsString(request);
-        System.out.println(result);
+        //System.out.println(result);
         assertNotNull(result);
         assertTrue(result.indexOf("Green Forest") > 0);
     }
@@ -214,7 +218,7 @@ public class GetFeatureInfoTest extends WMSTestSupport {
                         "&layers=" + layer + "&styles=&bbox=146.5,-44.5,148,-43&width=600&height=600" + 
                         "&info_format=application/vnd.ogc.gml&query_layers=" + layer + "&x=300&y=300&srs=EPSG:4326";
         Document dom = getAsDOM(request);
-        print(dom);
+        //print(dom);
         
         assertXpathEvaluatesTo("26.0", "//wfs:FeatureCollection/gml:featureMember/wcs:BlueMarble/wcs:RED_BAND", dom);
         assertXpathEvaluatesTo("70.0", "//wfs:FeatureCollection/gml:featureMember/wcs:BlueMarble/wcs:GREEN_BAND", dom);
@@ -276,7 +280,7 @@ public class GetFeatureInfoTest extends WMSTestSupport {
         
         request = "cite/Forests/wms" + q;
         String result = getAsString(request);
-        System.out.println(result);
+        //System.out.println(result);
         assertNotNull(result);
         assertTrue(result.indexOf("Green Forest") > 0);
     }

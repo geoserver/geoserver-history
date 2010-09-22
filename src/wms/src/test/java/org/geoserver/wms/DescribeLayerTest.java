@@ -1,9 +1,12 @@
 package org.geoserver.wms;
 
+import java.util.logging.Level;
+
 import junit.framework.Test;
 
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.data.test.MockData;
+import org.geotools.util.logging.Logging;
 import org.w3c.dom.Document;
 
 public class DescribeLayerTest extends WMSTestSupport {
@@ -18,7 +21,7 @@ public class DescribeLayerTest extends WMSTestSupport {
     @Override
     protected void oneTimeSetUp() throws Exception {
         super.oneTimeSetUp();
-
+        Logging.getLogger("org.geoserver.ows").setLevel(Level.OFF);
         GeoServerInfo global = getGeoServer().getGlobal();
         global.setProxyBaseUrl("src/test/resources/geoserver");
         getGeoServer().save(global);

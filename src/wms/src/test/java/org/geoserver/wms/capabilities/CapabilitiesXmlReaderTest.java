@@ -10,7 +10,6 @@ import java.io.StringReader;
 import junit.framework.TestCase;
 
 import org.geoserver.wms.GetCapabilitiesRequest;
-import org.geoserver.wms.capabilities.CapabilitiesXmlReader;
 
 /**
  * 

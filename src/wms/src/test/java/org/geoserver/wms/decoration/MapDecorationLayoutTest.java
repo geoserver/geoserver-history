@@ -8,12 +8,11 @@ import java.awt.image.BufferedImage;
 import java.util.Map;
 
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 import org.geoserver.wms.WMSMapContext;
 
 public class MapDecorationLayoutTest extends TestCase {
-    public TestSuite suite() { return new TestSuite(MapDecorationLayout.class); }
+   // public static TestSuite suite() { return new TestSuite(MapDecorationLayout.class); }
 
     private class MockMapDecoration implements MapDecoration {
         Dimension request;

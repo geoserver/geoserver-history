@@ -1,10 +1,14 @@
 package org.geoserver.wms;
 
+import java.util.logging.Level;
+
+import org.geotools.util.logging.Logging;
 import org.w3c.dom.Document;
 
 public class WMSDisabledTest extends WMSTestSupport {
     
     public void testDisabledServiceResponse() throws Exception {
+        Logging.getLogger("org.geoserver.ows").setLevel(Level.OFF);
         WMSInfo wms = getGeoServer().getService(WMSInfo.class);
         wms.setEnabled(false);
         getGeoServer().save(wms);

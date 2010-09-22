@@ -42,7 +42,7 @@ public class FeatureDescriptionTemplateTest extends TestCase {
 
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         template.process(f, new OutputStreamWriter(output));
-        template.process(f, new OutputStreamWriter(System.out));
+        //template.process(f, new OutputStreamWriter(System.out));
         
         //This generates the following:
         
