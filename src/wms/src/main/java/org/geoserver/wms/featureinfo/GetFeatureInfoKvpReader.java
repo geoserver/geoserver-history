@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.geoserver.wms.kvp;
+package org.geoserver.wms.featureinfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +14,8 @@ import org.geoserver.wms.GetFeatureInfoRequest;
 import org.geoserver.wms.GetMapRequest;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
+import org.geoserver.wms.kvp.GetMapKvpRequestReader;
+import org.geoserver.wms.kvp.MapLayerInfoKvpParser;
 
 /**
  * Builds a GetFeatureInfo request object given by a set of CGI parameters supplied in the

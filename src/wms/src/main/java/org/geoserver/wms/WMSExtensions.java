@@ -10,7 +10,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.geoserver.platform.GeoServerExtensions;
-import org.geoserver.wms.response.GetFeatureInfoOutputFormat;
+import org.geoserver.wms.featureinfo.GetFeatureInfoOutputFormat;
 import org.springframework.context.ApplicationContext;
 
 /**

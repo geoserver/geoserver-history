@@ -23,7 +23,6 @@ import org.geoserver.platform.ServiceException;
 import org.geoserver.wfs.xml.GML2OutputFormat;
 import org.geoserver.wms.GetFeatureInfoRequest;
 import org.geoserver.wms.WMS;
-import org.geoserver.wms.response.GetFeatureInfoOutputFormat;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.gml2.bindings.GML2EncodingUtils;
 
