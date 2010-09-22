@@ -15,10 +15,12 @@ import junit.framework.Test;
 
 import org.custommonkey.xmlunit.XMLUnit;
 import org.custommonkey.xmlunit.XpathEngine;
+import org.geoserver.data.test.MockData;
 import org.geoserver.data.test.TestData;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.test.GeoServerAbstractTestSupport;
 import org.geoserver.wms.MapLayerInfo;
+import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSMapContext;
 import org.geoserver.wms.WMSMockData;
 import org.geoserver.wms.WMSTestSupport;
@@ -63,14 +65,10 @@ public class KMLNetworkLinkTransformerTest extends WMSTestSupport {
         MapLayerInfo layer = mockData.addFeatureTypeLayer("TestPoints", Point.class);
         WMSMapContext mapContext = new WMSMapContext();
         request = mockData.createRequest();
-        request.setLayers(new MapLayerInfo[] { layer });
+        request.setLayers(Collections.singletonList(layer));
 
         request.setFormatOptions(Collections.singletonMap("relLinks", "true"));
-        MockHttpServletRequest httpreq = (MockHttpServletRequest) request.getHttpServletRequest();
-        httpreq.setScheme("http");
-        httpreq.setServerName("geoserver.org");
-        httpreq.setServerPort(8181);
-        httpreq.setContextPath("/geoserver");
+        request.setBaseUrl("http://geoserver.org:8181/geoserver");
         mapContext.setRequest(request);
     }
 
@@ -90,7 +88,8 @@ public class KMLNetworkLinkTransformerTest extends WMSTestSupport {
     public void testEncodeAsRegion() throws Exception {
         XpathEngine xpath = XMLUnit.newXpathEngine();
 
-        KMLNetworkLinkTransformer transformer = new KMLNetworkLinkTransformer();
+        WMS wms = getWMS();
+        KMLNetworkLinkTransformer transformer = new KMLNetworkLinkTransformer(wms);
         transformer.setEncodeAsRegion(true);
         transformer.setIndentation(2);
 
@@ -141,7 +140,8 @@ public class KMLNetworkLinkTransformerTest extends WMSTestSupport {
      */
     public void testEncodeAsOverlay() throws Exception {
         XpathEngine xpath = XMLUnit.newXpathEngine();
-        KMLNetworkLinkTransformer transformer = new KMLNetworkLinkTransformer();
+        WMS wms = getWMS();
+        KMLNetworkLinkTransformer transformer = new KMLNetworkLinkTransformer(wms);
         transformer.setEncodeAsRegion(false);
         transformer.setIndentation(2);
 

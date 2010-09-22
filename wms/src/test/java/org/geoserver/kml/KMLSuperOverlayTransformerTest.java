@@ -62,7 +62,7 @@ public class KMLSuperOverlayTransformerTest extends WMSTestSupport {
      * Verify that two overlay tiles are produced for a request that encompasses the world.
      */
     public void testWorldBoundsSuperOverlay() throws Exception {
-        KMLSuperOverlayTransformer transformer = new KMLSuperOverlayTransformer(mapContext);
+        KMLSuperOverlayTransformer transformer = new KMLSuperOverlayTransformer(getWMS(), mapContext);
         transformer.setIndentation(2);
 
         mapContext.setAreaOfInterest(new ReferencedEnvelope(-180, 180, -90, 90, DefaultGeographicCRS.WGS84));
@@ -83,7 +83,7 @@ public class KMLSuperOverlayTransformerTest extends WMSTestSupport {
      * Verify that when a tile smaller than one hemisphere is requested, four subtiles are included in the result.
      */
     public void testSubtileSuperOverlay() throws Exception {
-        KMLSuperOverlayTransformer transformer = new KMLSuperOverlayTransformer(mapContext);
+        KMLSuperOverlayTransformer transformer = new KMLSuperOverlayTransformer(getWMS(), mapContext);
         transformer.setIndentation(2);
 
         mapContext.setAreaOfInterest(new ReferencedEnvelope(0, 180, -90, 90, DefaultGeographicCRS.WGS84));
