@@ -5,7 +5,6 @@
 package org.geoserver.wms;
 
 import org.geoserver.platform.ServiceException;
-import org.geoserver.wms.response.LegendGraphic;
 
 /**
  * WMS GetLegendGraphic operation default implementation.

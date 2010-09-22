@@ -20,7 +20,6 @@ import org.geoserver.sld.GetStyles;
 import org.geoserver.sld.GetStylesRequest;
 import org.geoserver.wms.response.DescribeLayerTransformer;
 import org.geoserver.wms.response.GetCapabilitiesTransformer;
-import org.geoserver.wms.response.LegendGraphic;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
