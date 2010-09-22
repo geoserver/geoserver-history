@@ -38,9 +38,9 @@ public interface WebMapService {
     /**
      * GetMap operation.
      */
-    Map getMap(GetMapRequest request);
+    WebMap getMap(GetMapRequest request);
 
-    Map map(GetMapRequest request);
+    WebMap map(GetMapRequest request);
 
     /**
      * DescribeLayer operation.
@@ -60,9 +60,9 @@ public interface WebMapService {
     /**
      * GetMap reflector
      */
-    Map reflect(GetMapRequest request);
+    WebMap reflect(GetMapRequest request);
 
-    Map getMapReflect(GetMapRequest request);
+    WebMap getMapReflect(GetMapRequest request);
 
     StyledLayerDescriptor getStyles(GetStylesRequest request);
 }

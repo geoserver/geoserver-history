@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.logging.Logger;
 
-import org.geoserver.wms.Map;
+import org.geoserver.wms.WebMap;
 import org.geoserver.wms.WMSMapContext;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.Query;
@@ -33,7 +33,7 @@ import com.vividsolutions.jts.geom.Point;
  * @author Gabriel Roldan
  * @version $Id$
  */
-public class EncodeSVG extends Map {
+public class EncodeSVG extends WebMap {
 
     private static final Logger LOGGER = org.geotools.util.logging.Logging
             .getLogger("org.vfny.geoserver.responses.wms.map");

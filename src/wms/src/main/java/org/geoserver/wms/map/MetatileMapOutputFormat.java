@@ -26,7 +26,7 @@ import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.GetMapOutputFormat;
 import org.geoserver.wms.GetMapRequest;
-import org.geoserver.wms.Map;
+import org.geoserver.wms.WebMap;
 import org.geoserver.wms.WMSMapContext;
 import org.geoserver.wms.map.QuickTileCache.MetaTileKey;
 import org.geotools.coverage.grid.GridCoverage2D;
@@ -76,7 +76,7 @@ public final class MetatileMapOutputFormat implements GetMapOutputFormat {
      * 
      * @see org.geoserver.wms.GetMapOutputFormat#produceMap(org.geoserver.wms.WMSMapContext)
      */
-    public Map produceMap(WMSMapContext mapContext) throws ServiceException, IOException {
+    public WebMap produceMap(WMSMapContext mapContext) throws ServiceException, IOException {
         // get the key that identifies the meta tile. The cache will make sure
         // two threads asking
         // for the same tile will get the same key, and thus will synchronize

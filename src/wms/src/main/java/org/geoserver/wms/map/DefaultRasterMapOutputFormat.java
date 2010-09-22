@@ -181,7 +181,7 @@ public abstract class DefaultRasterMapOutputFormat extends AbstractMapOutputForm
      * 
      * @param value
      *            must be a {@link RenderedImageMap}
-     * @see GetMapOutputFormat#write(org.geoserver.wms.Map, OutputStream)
+     * @see GetMapOutputFormat#write(org.geoserver.wms.WebMap, OutputStream)
      * @see #formatImageOutputStream(RenderedImage, OutputStream, WMSMapContext)
      */
     @Override

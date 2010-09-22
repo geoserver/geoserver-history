@@ -76,7 +76,7 @@ public class KMLReflector {
 //        doWms(request, response, wms, wmsConfiguration);
 //    }
 
-    public static org.geoserver.wms.Map doWms(GetMapRequest request,
+    public static org.geoserver.wms.WebMap doWms(GetMapRequest request,
             WebMapService wms, WMS wmsConfiguration) throws Exception {
         // set the content disposition
         StringBuffer filename = new StringBuffer();
@@ -188,7 +188,7 @@ public class KMLReflector {
 
         //response.setContentType(request.getFormat());
 
-        org.geoserver.wms.Map wmsResponse;
+        org.geoserver.wms.WebMap wmsResponse;
         if ("download".equals(mode)) {
             wmsResponse = wms.getMap(request);
         } else {

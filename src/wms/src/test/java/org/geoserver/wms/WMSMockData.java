@@ -171,7 +171,7 @@ public class WMSMockData {
         public boolean writeToCalled;
 
         public DummyRasterMapProducer() {
-            super(Map.class);
+            super(WebMap.class);
 
         }
 
@@ -200,9 +200,9 @@ public class WMSMockData {
         /**
          * @see org.geoserver.wms.map.RasterMapOutputFormat#produceMap(org.geoserver.wms.WMSMapContext)
          */
-        public Map produceMap(WMSMapContext mapContext) throws ServiceException, IOException {
+        public WebMap produceMap(WMSMapContext mapContext) throws ServiceException, IOException {
             produceMapCalled = true;
-            return new Map(mapContext) {
+            return new WebMap(mapContext) {
             };
         }
 

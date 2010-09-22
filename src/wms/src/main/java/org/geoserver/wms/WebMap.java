@@ -9,7 +9,7 @@ import java.util.HashMap;
 import org.geoserver.ows.Response;
 import org.geotools.map.MapLayer;
 
-public abstract class Map {
+public abstract class WebMap {
 
     private String mimeType;
 
@@ -21,7 +21,7 @@ public abstract class Map {
      * @param context
      *            the map context, can be {@code null} is there's _really_ no context around
      */
-    public Map(final WMSMapContext context) {
+    public WebMap(final WMSMapContext context) {
         this.mapContext = context;
     }
 
