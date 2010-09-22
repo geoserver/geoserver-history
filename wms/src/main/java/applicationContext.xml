@@ -317,67 +317,67 @@
     </bean>
   
 	<bean id="PNGMapProducer"
-		singleton="false"
+		singleton="true"
 		class="org.geoserver.wms.map.PNGMapOutputFormat">
 		<constructor-arg index="0" ref="wms"/>
 	</bean>
 
 	<bean id="GeoTiffMapProducer" 
-		singleton="false"
+		singleton="true"
 		class="org.geoserver.wms.map.GeoTIFFMapOutputFormat">
 		<constructor-arg index="0" ref="wms"/>
 	</bean>
 
    	<bean id="TiffMapProducer" 
-		singleton="false"
+		singleton="true"
 		class="org.geoserver.wms.map.TIFFMapOutputFormat">
 		<constructor-arg index="0" ref="wms"/>
  	</bean>
 
 	<bean id="GIFMapProducer" 
-		singleton="false"
+		singleton="true"
 		class="org.geoserver.wms.map.GIFMapOutputFormat">
 		<constructor-arg index="0" ref="wms"/>
 	</bean>
 
 	<bean id="JPEGMapProducer"
-		singleton="false"
+		singleton="true"
 		class="org.geoserver.wms.map.JPEGMapOutputFormat">
 		<constructor-arg index="0" ref="wms"/>
 	</bean>
 
 	<bean id="PDFMapProducer"
-		singleton="false"
+		singleton="true"
 		class="org.geoserver.wms.map.PDFMapOutputFormat">
 		<constructor-arg index="0" ref="wms"/>
 	</bean>
 
 	<bean id="KMLMapProducer" 
-		singleton="false"
+		singleton="true"
 		class="org.geoserver.kml.KMLMapOutputFormat">
       <constructor-arg index="0" ref="wms"/>
 	</bean>
 	
 	<bean id="KMZMapProducer"
-		singleton="false"
+		singleton="true"
 		class="org.geoserver.kml.KMZMapOutputFormat">
 		<constructor-arg index="0" ref="wms"/>
 	</bean>
 
 	<bean id="OpenLayersMapProducer"
-		singleton="false"
+		singleton="true"
 		class="org.geoserver.wms.map.OpenLayersMapOutputFormat">
 		<constructor-arg index="0" ref="wms"/>
 	</bean>
 
 	<bean id="AtomGeoRSSMapProducer"
-		singleton="false"
+		singleton="true"
 		class="org.geoserver.wms.georss.AtomGeoRSSMapOutputFormat">
         <constructor-arg index="0" ref="wms"/>
 	</bean>
 
 	<bean id="RSSGeoRSSMapProducer"
-		singleton="false"
+		singleton="true"
 		class="org.geoserver.wms.georss.RSSGeoRSSMapOutputFormat">
         <constructor-arg index="0" ref="wms"/>
 	</bean>
