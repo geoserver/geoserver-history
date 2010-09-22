@@ -98,7 +98,7 @@
         </constructor-arg>
  	</bean>
  	<!-- service exception handler -->
-	<bean id="wmsExceptionHandler" class="org.geoserver.wms.response.WmsExceptionHandler">
+	<bean id="wmsExceptionHandler" class="org.geoserver.wms.WMSServiceExceptionHandler">
 		<constructor-arg ref="wmsServiceDescriptor"/>
         <constructor-arg ref="geoServer"/>
 		<property name="version" value="1.1.1"/>

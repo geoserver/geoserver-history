@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.geoserver.wms.response;
+package org.geoserver.wms;
 
 import static org.geoserver.ows.util.ResponseUtils.baseURL;
 import static org.geoserver.ows.util.ResponseUtils.buildSchemaURL;
@@ -37,7 +37,6 @@ import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.Service;
 import org.geoserver.platform.ServiceException;
-import org.geoserver.wms.WMSInfo;
 
 /**
  * An implementation of {@link ServiceExceptionHandler} which outputs as service exception in a
@@ -65,7 +64,7 @@ import org.geoserver.wms.WMSInfo;
  * @author Gabriel Roldan
  * 
  */
-public class WmsExceptionHandler extends ServiceExceptionHandler {
+public class WMSServiceExceptionHandler extends ServiceExceptionHandler {
 
     static final Set<String> FORMATS = new HashSet<String>(Arrays.asList("image/png", "image/png8",
             "image/gif", "image/jpeg"));
@@ -114,7 +113,7 @@ public class WmsExceptionHandler extends ServiceExceptionHandler {
      *            needed to know whether to write detailed exception reports or not (as per
      *            {@code GeoServer.getGlobal().isVerbose()})
      */
-    public WmsExceptionHandler(Service service, GeoServer geoServer) {
+    public WMSServiceExceptionHandler(Service service, GeoServer geoServer) {
         super(service);
         this.geoServer = geoServer;
     }
