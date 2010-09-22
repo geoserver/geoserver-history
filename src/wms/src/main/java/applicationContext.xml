@@ -237,7 +237,7 @@
     	<constructor-arg ref="wms"/>
     </bean>
    	<bean id="sldXmlReader"
-   		class="org.geoserver.wms.xml.SLDXmlRequestReader">
+   		class="org.geoserver.sld.SLDXmlRequestReader">
       <constructor-arg ref="wms"/>
     </bean>
    		
