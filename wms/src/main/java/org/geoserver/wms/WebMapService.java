@@ -6,6 +6,7 @@ package org.geoserver.wms;
 
 import net.opengis.wfs.FeatureCollectionType;
 
+import org.geoserver.ows.Response;
 import org.geoserver.sld.GetStylesRequest;
 import org.geoserver.wms.capabilities.GetCapabilitiesTransformer;
 import org.geoserver.wms.describelayer.DescribeLayerTransformer;
@@ -54,8 +55,11 @@ public interface WebMapService {
 
     /**
      * GetLegendGraphic operation.
+     * 
+     * @return the representation of the legend graphic to be encoded by a {@link Response} object
+     *         that can handle it
      */
-    LegendGraphic getLegendGraphic(GetLegendGraphicRequest request);
+    Object getLegendGraphic(GetLegendGraphicRequest request);
 
     /**
      * GetMap reflector

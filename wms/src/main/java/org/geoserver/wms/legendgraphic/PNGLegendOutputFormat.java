@@ -38,7 +38,7 @@ public class PNGLegendOutputFormat implements GetLegendGraphicOutputFormat {
             throws ServiceException {
         BufferedImageLegendGraphicBuilder builder = new BufferedImageLegendGraphicBuilder();
         BufferedImage legendGraphic = builder.buildLegendGraphic(request);
-        BufferedImageLegendGraphic legend = new BufferedImageLegendGraphic(MIME_TYPE, legendGraphic);
+        BufferedImageLegendGraphic legend = new BufferedImageLegendGraphic(legendGraphic);
         return legend;
     }
 

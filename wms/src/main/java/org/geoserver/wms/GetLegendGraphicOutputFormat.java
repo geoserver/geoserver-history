@@ -31,11 +31,12 @@ public interface GetLegendGraphicOutputFormat {
      *            the "parsed" request, where "parsed" means that it's properties are already
      *            validated so this method must not take care of verifying the requested layer
      *            exists and the like.
+     * @return a representation of the produced legend graphic
      * 
      * @throws ServiceException
      *             something goes wrong
      */
-    LegendGraphic produceLegendGraphic(GetLegendGraphicRequest request) throws ServiceException;
+    Object produceLegendGraphic(GetLegendGraphicRequest request) throws ServiceException;
 
     /**
      * Returns the MIME type of the content supported by this format
