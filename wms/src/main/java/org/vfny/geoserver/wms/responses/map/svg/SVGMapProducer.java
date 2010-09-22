@@ -9,7 +9,7 @@ import java.io.OutputStream;
 import java.util.logging.Logger;
 
 import org.geoserver.platform.ServiceException;
-import org.vfny.geoserver.wms.GetMapProducer;
+import org.geoserver.wms.GetMapOutputFormat;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.responses.AbstractGetMapProducer;
 
@@ -19,61 +19,60 @@ import org.vfny.geoserver.wms.responses.AbstractGetMapProducer;
  * @author Gabriel Roldan
  * @version $Id$
  */
-class SVGMapProducer extends AbstractGetMapProducer implements
-		GetMapProducer {
-	/** DOCUMENT ME! */
-	private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.responses.wms.map");
+class SVGMapProducer extends AbstractGetMapProducer implements GetMapOutputFormat {
+    /** DOCUMENT ME! */
+    private static final Logger LOGGER = org.geotools.util.logging.Logging
+            .getLogger("org.vfny.geoserver.responses.wms.map");
 
-	/** DOCUMENT ME! */
-	private EncodeSVG svgEncoder;
+    /** DOCUMENT ME! */
+    private EncodeSVG svgEncoder;
 
-	public SVGMapProducer(String mimeType, String[] outputFormats){
-	    super(mimeType, outputFormats);
-	}
-	
+    public SVGMapProducer(String mimeType, String[] outputFormats) {
+        super(mimeType, outputFormats);
+    }
 
-	/**
-	 * aborts the encoding.
-	 */
-	@Override
+    /**
+     * aborts the encoding.
+     */
+    @Override
     public void abort() {
-		LOGGER.fine("aborting SVG map response");
+        LOGGER.fine("aborting SVG map response");
 
-		if (this.svgEncoder != null) {
-			LOGGER.info("aborting SVG encoder");
-			this.svgEncoder.abort();
-		}
-	}
+        if (this.svgEncoder != null) {
+            LOGGER.info("aborting SVG encoder");
+            this.svgEncoder.abort();
+        }
+    }
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param map
-	 *            DOCUMENT ME!
-	 * 
-	 * @throws WmsException
-	 *             DOCUMENT ME!
-	 */
-	public void produceMap() throws WmsException {
-		if (mapContext == null) {
-			throw new WmsException("The map context is not set");
-		}
+    /**
+     * DOCUMENT ME!
+     * 
+     * @param map
+     *            DOCUMENT ME!
+     * 
+     * @throws WmsException
+     *             DOCUMENT ME!
+     */
+    public void produceMap() throws WmsException {
+        if (mapContext == null) {
+            throw new WmsException("The map context is not set");
+        }
 
-		this.svgEncoder = new EncodeSVG(mapContext);
-	}
+        this.svgEncoder = new EncodeSVG(mapContext);
+    }
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param out
-	 *            DOCUMENT ME!
-	 * 
-	 * @throws ServiceException
-	 *             DOCUMENT ME!
-	 * @throws IOException
-	 *             DOCUMENT ME!
-	 */
-	public void writeTo(OutputStream out) throws ServiceException, IOException {
-		this.svgEncoder.encode(out);
-	}
+    /**
+     * DOCUMENT ME!
+     * 
+     * @param out
+     *            DOCUMENT ME!
+     * 
+     * @throws ServiceException
+     *             DOCUMENT ME!
+     * @throws IOException
+     *             DOCUMENT ME!
+     */
+    public void writeTo(OutputStream out) throws ServiceException, IOException {
+        this.svgEncoder.encode(out);
+    }
 }

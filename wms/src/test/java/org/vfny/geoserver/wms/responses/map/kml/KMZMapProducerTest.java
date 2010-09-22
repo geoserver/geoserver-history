@@ -13,9 +13,9 @@ import javax.xml.namespace.QName;
 import junit.framework.Test;
 
 import org.geoserver.data.test.MockData;
+import org.geoserver.wms.WMSMapContext;
 import org.geoserver.wms.WMSTestSupport;
-import org.vfny.geoserver.wms.WMSMapContext;
-import org.vfny.geoserver.wms.requests.GetMapRequest;
+import org.geoserver.wms.request.GetMapRequest;
 
 public class KMZMapProducerTest extends WMSTestSupport {
 	KMZMapProducer mapProducer;

@@ -41,7 +41,7 @@ public final class MapLayerInfo {
     public static int TYPE_RASTER = LayerInfo.Type.RASTER.getCode();
 
     public static int TYPE_REMOTE_VECTOR = LayerInfo.Type.REMOTE.getCode();
-    
+
     public static int TYPE_WMS = LayerInfo.Type.WMS.getCode();
 
     /**
@@ -76,7 +76,7 @@ public final class MapLayerInfo {
     private final LayerInfo layerInfo;
 
     private Style style;
-    
+
     /**
      * The extra constraints that can be set when an external SLD is used
      */
@@ -176,7 +176,7 @@ public final class MapLayerInfo {
     public FeatureTypeInfo getFeature() {
         return (FeatureTypeInfo) layerInfo.getResource();
     }
-    
+
     public ResourceInfo getResource() {
         return layerInfo.getResource();
     }
@@ -200,7 +200,7 @@ public final class MapLayerInfo {
     public void setName(String name) {
         this.name = name;
     }
-    
+
     /**
      * 
      * @uml.property name="type"
@@ -266,7 +266,7 @@ public final class MapLayerInfo {
             return false;
         }
         ResourceInfo resource = layerInfo.getResource();
-        Boolean cachingEnabled = resource.getMetadata().get("cachingEnabled",Boolean.class);
+        Boolean cachingEnabled = resource.getMetadata().get("cachingEnabled", Boolean.class);
         return cachingEnabled == null ? false : cachingEnabled.booleanValue();
     }
 
@@ -275,15 +275,15 @@ public final class MapLayerInfo {
      * and designating the time for which they are to remain valid. The specific header added is
      * "Cache-Control: max-age="
      * 
-     * @return the number of seconds to be added to the "Cache-Control: max-age=" header, or {@code
-     *         0} if not set
+     * @return the number of seconds to be added to the "Cache-Control: max-age=" header, or
+     *         {@code 0} if not set
      */
     public int getCacheMaxAge() {
         if (layerInfo == null) {
             return 0;
         }
         ResourceInfo resource = layerInfo.getResource();
-        Integer val = resource.getMetadata().get("cacheAgeMax",Integer.class);
+        Integer val = resource.getMetadata().get("cacheAgeMax", Integer.class);
         return val == null ? 0 : val;
     }
 
@@ -338,9 +338,9 @@ public final class MapLayerInfo {
     }
 
     public static String getRegionateAttribute(FeatureTypeInfo layerInfo) {
-        return layerInfo.getMetadata().get("kml.regionateAttribute",String.class);
+        return layerInfo.getMetadata().get("kml.regionateAttribute", String.class);
     }
-    
+
     public void setLayerFeatureConstraints(FeatureTypeConstraint[] layerFeatureConstraints) {
         this.layerFeatureConstraints = layerFeatureConstraints;
     }
@@ -348,11 +348,11 @@ public final class MapLayerInfo {
     public FeatureTypeConstraint[] getLayerFeatureConstraints() {
         return layerFeatureConstraints;
     }
-    
+
     public LayerInfo getLayerInfo() {
         return layerInfo;
     }
-    
+
     @Override
     public int hashCode() {
         final int prime = 31;

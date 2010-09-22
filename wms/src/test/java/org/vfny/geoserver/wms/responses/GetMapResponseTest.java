@@ -14,16 +14,17 @@ import junit.framework.TestCase;
 
 import org.geoserver.ows.adapters.ResponseAdapter;
 import org.geoserver.platform.ServiceException;
+import org.geoserver.wms.GetMapOutputFormat;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSMockData;
 import org.geoserver.wms.WMSMockData.DummyRasterMapProducer;
+import org.geoserver.wms.request.GetMapRequest;
+import org.geoserver.wms.response.GetMapResponse;
 import org.geotools.factory.CommonFactoryFinder;
 import org.opengis.filter.FilterFactory;
 import org.vfny.geoserver.Response;
-import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.WmsException;
-import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.vfny.geoserver.wms.responses.map.metatile.MetatileMapProducer;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -80,7 +81,7 @@ public class GetMapResponseTest extends TestCase {
             assertTrue(true);
         }
         try {
-            Collection<GetMapProducer> producers = Collections.emptyList();
+            Collection<GetMapOutputFormat> producers = Collections.emptyList();
             new GetMapResponse(producers);
             fail("should fail on empty list of available producers");
         } catch (IllegalArgumentException e) {
@@ -92,13 +93,13 @@ public class GetMapResponseTest extends TestCase {
      * Test method for {@link GetMapResponse#execute(org.vfny.geoserver.Request)}.
      */
     public void testDelegateLookup() {
-        GetMapProducer producer = new WMSMockData.DummyRasterMapProducer();
+        GetMapOutputFormat producer = new WMSMockData.DummyRasterMapProducer();
         response = new GetMapResponse(Collections.singleton(producer));
         request.setFormat(WMSMockData.DummyRasterMapProducer.MIME_TYPE);
 
         response.execute(request);
 
-        GetMapProducer delegate = response.getDelegate();
+        GetMapOutputFormat delegate = response.getDelegate();
         assertSame(producer, delegate);
     }
 
@@ -130,13 +131,13 @@ public class GetMapResponseTest extends TestCase {
             // let execute crash, we're only interested in the delegate
             assertTrue(true);
         }
-        GetMapProducer delegate = response.getDelegate();
+        GetMapOutputFormat delegate = response.getDelegate();
         assertTrue(delegate instanceof MetatileMapProducer);
     }
 
     public void testSingleVectorLayer() throws IOException {
         DummyRasterMapProducer producer = new DummyRasterMapProducer();
-        response = new GetMapResponse(Collections.singleton((GetMapProducer) producer));
+        response = new GetMapResponse(Collections.singleton((GetMapOutputFormat) producer));
         request.setFormat(DummyRasterMapProducer.MIME_TYPE);
 
         MapLayerInfo layer = mockData.addFeatureTypeLayer("testSingleVectorLayer", Point.class);
@@ -201,7 +202,7 @@ public class GetMapResponseTest extends TestCase {
                 assertEquals(10, ff.function("env", ff.literal("otherParam"), ff.literal(10)).evaluate(null));
             }
         };
-        response = new GetMapResponse(Collections.singleton((GetMapProducer) producer));
+        response = new GetMapResponse(Collections.singleton((GetMapOutputFormat) producer));
         response.execute(request);
         
         // only defaults

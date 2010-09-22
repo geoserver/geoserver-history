@@ -19,10 +19,10 @@ import org.geoserver.data.test.TestData;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.test.GeoServerAbstractTestSupport;
 import org.geoserver.wms.MapLayerInfo;
+import org.geoserver.wms.WMSMapContext;
 import org.geoserver.wms.WMSMockData;
 import org.geoserver.wms.WMSTestSupport;
-import org.vfny.geoserver.wms.WMSMapContext;
-import org.vfny.geoserver.wms.requests.GetMapRequest;
+import org.geoserver.wms.request.GetMapRequest;
 import org.w3c.dom.Document;
 
 import com.mockrunner.mock.web.MockHttpServletRequest;

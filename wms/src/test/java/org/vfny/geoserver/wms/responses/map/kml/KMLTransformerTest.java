@@ -26,7 +26,9 @@ import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.data.test.MockData;
 import org.geoserver.data.util.IOUtils;
+import org.geoserver.wms.WMSMapContext;
 import org.geoserver.wms.WMSTestSupport;
+import org.geoserver.wms.request.GetMapRequest;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.simple.SimpleFeatureSource;
@@ -35,8 +37,6 @@ import org.geotools.map.MapLayer;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.vfny.geoserver.wms.WMSMapContext;
-import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 

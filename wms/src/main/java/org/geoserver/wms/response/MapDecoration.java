@@ -9,7 +9,7 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.util.Map;
 
-import org.vfny.geoserver.wms.WMSMapContext;
+import org.geoserver.wms.WMSMapContext;
 
 /**
  * The MapDecoration class encapsulates the rendering code for an overlay to be used to enhance a 

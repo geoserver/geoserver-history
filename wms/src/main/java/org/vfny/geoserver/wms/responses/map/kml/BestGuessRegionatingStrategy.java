@@ -6,11 +6,11 @@ package org.vfny.geoserver.wms.responses.map.kml;
 
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.config.GeoServer;
+import org.geoserver.wms.WMSMapContext;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.map.MapLayer;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
-import org.vfny.geoserver.wms.WMSMapContext;
 
 import com.vividsolutions.jts.geom.Point;
 

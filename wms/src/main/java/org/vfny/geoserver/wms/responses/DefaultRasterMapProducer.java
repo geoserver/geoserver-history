@@ -49,6 +49,7 @@ import org.geoserver.wms.DefaultWebMapService;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSInfo;
 import org.geoserver.wms.WMSInfo.WMSInterpolation;
+import org.geoserver.wms.WMSMapContext;
 import org.geoserver.wms.WatermarkInfo;
 import org.geoserver.wms.request.GetMapRequest;
 import org.geoserver.wms.response.MapDecoration;
@@ -80,7 +81,6 @@ import org.opengis.parameter.GeneralParameterValue;
 import org.springframework.beans.factory.DisposableBean;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.wms.RasterMapProducer;
-import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.responses.map.metatile.MetatileMapProducer;
 

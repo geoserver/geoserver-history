@@ -23,6 +23,7 @@ import java.util.logging.Logger;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.wms.WMS;
+import org.geoserver.wms.WMSMapContext;
 import org.geoserver.wms.legendgraphic.LegendUtils;
 import org.geoserver.wms.response.MapDecoration;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
@@ -48,7 +49,6 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.PropertyDescriptor;
 import org.opengis.feature.type.PropertyType;
-import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
 
 import com.vividsolutions.jts.geom.Coordinate;

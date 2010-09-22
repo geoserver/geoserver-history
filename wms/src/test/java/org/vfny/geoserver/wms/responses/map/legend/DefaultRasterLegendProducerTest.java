@@ -16,17 +16,17 @@ import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.data.test.MockData;
 import org.geoserver.platform.ServiceException;
+import org.geoserver.wms.GetLegendGraphic;
 import org.geoserver.wms.WMSTestSupport;
 import org.geoserver.wms.legendgraphic.AbstractLegendGraphicOutputFormat;
+import org.geoserver.wms.legendgraphic.LegendUtils;
+import org.geoserver.wms.request.GetLegendGraphicRequest;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.resources.coverage.FeatureUtilities;
 import org.geotools.styling.Rule;
 import org.geotools.styling.Style;
 import org.opengis.coverage.grid.GridCoverage;
-import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
-import org.vfny.geoserver.wms.responses.LegendUtils;
-import org.vfny.geoserver.wms.servlets.GetLegendGraphic;
 
 
 /**

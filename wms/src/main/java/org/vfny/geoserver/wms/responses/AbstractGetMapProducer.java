@@ -10,19 +10,17 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.geoserver.wms.request.GetMapRequest;
-import org.geoserver.wms.response.Map;
+import org.geoserver.wms.GetMapOutputFormat;
+import org.geoserver.wms.WMSMapContext;
 import org.geotools.map.MapLayer;
 import org.geotools.renderer.GTRenderer;
-import org.vfny.geoserver.wms.GetMapProducer;
-import org.vfny.geoserver.wms.WMSMapContext;
 
 /**
  * 
  * @author Simone Giannecchini, GeoSolutions
  * 
  */
-public abstract class AbstractGetMapProducer implements GetMapProducer {
+public abstract class AbstractGetMapProducer implements GetMapOutputFormat {
     /**
      * Holds the map context passed to produceMap, so subclasses can use it if they need it from
      * inside {@linkPlain #formatImageOutputStream(String, BufferedImage, OutputStream)}
@@ -79,14 +77,14 @@ public abstract class AbstractGetMapProducer implements GetMapProducer {
     }
 
     /**
-     * @see GetMapProducer#setMapContext(WMSMapContext)
+     * @see GetMapOutputFormat#setMapContext(WMSMapContext)
      */
     public void setMapContext(WMSMapContext mapContext) {
         this.mapContext = mapContext;
     }
 
     /**
-     * @see GetMapProducer#getMapContext()
+     * @see GetMapOutputFormat#getMapContext()
      */
     public WMSMapContext getMapContext() {
         return this.mapContext;
@@ -114,21 +112,21 @@ public abstract class AbstractGetMapProducer implements GetMapProducer {
     }
 
     /**
-     * @see GetMapProducer#getContentType()
+     * @see GetMapOutputFormat#getContentType()
      */
     public String getContentType() {
         return mime;
     }
 
     /**
-     * @see GetMapProducer#getOutputFormat()
+     * @see GetMapOutputFormat#getOutputFormat()
      */
     public String getOutputFormat() {
         return requestedOutputFormat == null ? getContentType() : requestedOutputFormat;
     }
 
     /**
-     * @see GetMapProducer#setOutputFormat(String)
+     * @see GetMapOutputFormat#setOutputFormat(String)
      */
     public void setOutputFormat(final String outputFormat) {
         // this lookup is made in a case insensitive manner, see
@@ -142,13 +140,12 @@ public abstract class AbstractGetMapProducer implements GetMapProducer {
     }
 
     /**
-     * @see GetMapProducer#getContentDisposition()
+     * @see GetMapOutputFormat#getContentDisposition()
      * @return {@code null}, subclasses should override as needed
      */
     public String getContentDisposition() {
         return null;
     }
-
 
     /**
      * Utility method to build a standard content disposition header. It will concatenate the titles
@@ -176,7 +173,7 @@ public abstract class AbstractGetMapProducer implements GetMapProducer {
     }
 
     /**
-     * @see GetMapProducer#getOutputFormatNames()
+     * @see GetMapOutputFormat#getOutputFormatNames()
      */
     public Set<String> getOutputFormatNames() {
         return outputFormatNames;

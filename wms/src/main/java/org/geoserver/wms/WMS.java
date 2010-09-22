@@ -35,7 +35,6 @@ import org.opengis.feature.type.Name;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.vfny.geoserver.wms.GetMapProducer;
 
 /**
  * A facade providing access to the WMS configuration details
@@ -391,19 +390,19 @@ public class WMS implements ApplicationContextAware {
 
     /**
      * Grabs the list of available MIME-Types for the GetMap operation from the set of
-     * {@link GetMapProducer}s registered in the application context.
+     * {@link GetMapOutputFormat}s registered in the application context.
      * 
      * @param applicationContext
-     *            The application context where to grab the GetMapProducers from.
-     * @see GetMapProducer#getContentType()
+     *            The application context where to grab the GetMapOutputFormats from.
+     * @see GetMapOutputFormat#getContentType()
      */
     public Set<String> getAvailableMapFormats() {
 
-        final Collection<GetMapProducer> producers;
+        final Collection<GetMapOutputFormat> producers;
         producers = WMSExtensions.findMapProducers(applicationContext);
         final Set<String> formats = new HashSet<String>();
 
-        for (GetMapProducer producer : producers) {
+        for (GetMapOutputFormat producer : producers) {
             formats.addAll(producer.getOutputFormatNames());
         }
 
@@ -464,8 +463,8 @@ public class WMS implements ApplicationContextAware {
      * @return the GetMapOutputFormat that can handle {@code mimeType}, or {@code null} if none is
      *         found
      */
-    public GetMapProducer getMapOutputFormat(final String mimeType) {
-        GetMapProducer outputFormat;
+    public GetMapOutputFormat getMapOutputFormat(final String mimeType) {
+        GetMapOutputFormat outputFormat;
         outputFormat = WMSExtensions.findMapProducer(mimeType, applicationContext);
         return outputFormat;
     }

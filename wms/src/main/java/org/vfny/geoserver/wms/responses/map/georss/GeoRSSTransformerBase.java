@@ -11,6 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.geoserver.feature.ReprojectingFeatureCollection;
+import org.geoserver.wms.WMSMapContext;
 import org.geotools.data.Query;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureSource;
@@ -25,7 +26,6 @@ import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.vfny.geoserver.wms.WMSMapContext;
 import org.xml.sax.ContentHandler;
 
 import com.vividsolutions.jts.geom.Coordinate;

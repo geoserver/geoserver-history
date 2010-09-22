@@ -16,8 +16,8 @@ import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WebMapService;
 import org.geoserver.wms.request.GetMapRequest;
+import org.geoserver.wms.response.GetMapResponse;
 import org.vfny.geoserver.wms.WmsException;
-import org.vfny.geoserver.wms.responses.GetMapResponse;
 
 
 /**

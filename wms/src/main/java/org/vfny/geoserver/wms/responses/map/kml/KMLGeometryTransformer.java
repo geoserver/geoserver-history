@@ -5,9 +5,9 @@
 package org.vfny.geoserver.wms.responses.map.kml;
 
 
+import org.geoserver.wms.WMSMapContext;
 import org.geotools.gml.producer.GeometryTransformer;
 import org.geotools.xml.transform.Translator;
-import org.vfny.geoserver.wms.WMSMapContext;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 

@@ -46,35 +46,34 @@ import com.vividsolutions.jts.geom.Envelope;
  * @author Simone Giannecchini - GeoSolutions
  * @version $Id$
  */
-class PDFMapProducer extends AbstractRasterMapProducer implements
-		RasterMapProducer {
-	/** A logger for this class. */
-	private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.responses.wms.map.pdf");
-	
-	/**
-	 * A kilobyte
-	 */
-	static final int KB = 1024;
+class PDFMapProducer extends AbstractRasterMapProducer implements RasterMapProducer {
+    /** A logger for this class. */
+    private static final Logger LOGGER = org.geotools.util.logging.Logging
+            .getLogger("org.vfny.geoserver.responses.wms.map.pdf");
+
+    /**
+     * A kilobyte
+     */
+    static final int KB = 1024;
 
     /** the only MIME type this map producer supports */
     static final String MIME_TYPE = "application/pdf";
-    
+
     WMS wms;
 
-	public PDFMapProducer(WMS wms) {
-	    super(MIME_TYPE);
-	    this.wms = wms;
-	}
+    public PDFMapProducer(WMS wms) {
+        super(MIME_TYPE);
+        this.wms = wms;
+    }
 
-	/**
-	 * Writes the image to the client.
-	 * 
-	 * @param out
-	 *            The output stream to write to.
-	 */
-	public void writeTo(OutputStream out)
-			throws ServiceException, java.io.IOException {
-	    final int width = mapContext.getMapWidth();
+    /**
+     * Writes the image to the client.
+     * 
+     * @param out
+     *            The output stream to write to.
+     */
+    public void writeTo(OutputStream out) throws ServiceException, java.io.IOException {
+        final int width = mapContext.getMapWidth();
         final int height = mapContext.getMapHeight();
 
         if (LOGGER.isLoggable(Level.FINE)) {
@@ -85,8 +84,7 @@ class PDFMapProducer extends AbstractRasterMapProducer implements
             // step 1: creation of a document-object
             // width of document-object is width*72 inches
             // height of document-object is height*72 inches
-            com.lowagie.text.Rectangle pageSize = new com.lowagie.text.Rectangle(
-                    width, height);
+            com.lowagie.text.Rectangle pageSize = new com.lowagie.text.Rectangle(width, height);
 
             Document document = new Document(pageSize);
             document.setMargins(0, 0, 0, 0);
@@ -122,9 +120,8 @@ class PDFMapProducer extends AbstractRasterMapProducer implements
                 int type = AlphaComposite.SRC;
                 graphic.setComposite(AlphaComposite.getInstance(type));
 
-                Color c = new Color(mapContext.getBgColor().getRed(),
-                        mapContext.getBgColor().getGreen(), mapContext
-                                .getBgColor().getBlue(), 0);
+                Color c = new Color(mapContext.getBgColor().getRed(), mapContext.getBgColor()
+                        .getGreen(), mapContext.getBgColor().getBlue(), 0);
                 graphic.setBackground(mapContext.getBgColor());
                 graphic.setColor(c);
                 graphic.fillRect(0, 0, width, height);
@@ -140,23 +137,20 @@ class PDFMapProducer extends AbstractRasterMapProducer implements
             // TODO: expose the generalization distance as a param
             // ((StreamingRenderer) renderer).setGeneralizationDistance(0);
 
-            RenderingHints hints = new RenderingHints(
-                    RenderingHints.KEY_ANTIALIASING,
+            RenderingHints hints = new RenderingHints(RenderingHints.KEY_ANTIALIASING,
                     RenderingHints.VALUE_ANTIALIAS_ON);
             renderer.setJava2DHints(hints);
 
             // we already do everything that the optimized data loading does...
             // if we set it to true then it does it all twice...
             Map rendererParams = new HashMap();
-            rendererParams
-                    .put("optimizedDataLoadingEnabled", new Boolean(true));
-            rendererParams.put("renderingBuffer", new Integer(mapContext
-                    .getBuffer()));
+            rendererParams.put("optimizedDataLoadingEnabled", new Boolean(true));
+            rendererParams.put("renderingBuffer", new Integer(mapContext.getBuffer()));
             // we need the renderer to draw everything on the batik provided graphics object
             rendererParams.put(StreamingRenderer.OPTIMIZE_FTS_RENDERING_KEY, Boolean.FALSE);
             // render everything in vector form if possible
             rendererParams.put(StreamingRenderer.VECTOR_RENDERING_KEY, Boolean.TRUE);
-            if(DefaultWebMapService.isLineWidthOptimizationEnabled()) {
+            if (DefaultWebMapService.isLineWidthOptimizationEnabled()) {
                 rendererParams.put(StreamingRenderer.LINE_WIDTH_OPTIMIZATION_KEY, true);
             }
             renderer.setRendererHints(rendererParams);
@@ -170,50 +164,54 @@ class PDFMapProducer extends AbstractRasterMapProducer implements
 
                 return;
             }
-            
+
             // enforce no more than x rendering errors
             int maxErrors = wms.getMaxRenderingErrors();
             MaxErrorEnforcer errorChecker = new MaxErrorEnforcer(renderer, maxErrors);
 
-            // Add a render listener that ignores well known rendering exceptions and reports back non
+            // Add a render listener that ignores well known rendering exceptions and reports back
+            // non
             // ignorable ones
             final RenderExceptionStrategy nonIgnorableExceptionListener;
             nonIgnorableExceptionListener = new RenderExceptionStrategy(renderer);
             renderer.addRenderListener(nonIgnorableExceptionListener);
-            
+
             // enforce max memory usage
             int maxMemory = wms.getMaxRequestMemory() * KB;
             PDFMaxSizeEnforcer memoryChecker = new PDFMaxSizeEnforcer(renderer, graphic, maxMemory);
-            
+
             // render the map
-            renderer.paint(graphic, paintArea, mapContext.getRenderingArea(), mapContext.getRenderingTransform());
-            
+            renderer.paint(graphic, paintArea, mapContext.getRenderingArea(),
+                    mapContext.getRenderingTransform());
+
             // render the watermark
-            MapDecorationLayout.Block watermark = 
-                DefaultRasterMapProducer.getWatermark(wms.getServiceInfo());
+            MapDecorationLayout.Block watermark = DefaultRasterMapProducer.getWatermark(wms
+                    .getServiceInfo());
 
             if (watermark != null) {
                 MapDecorationLayout layout = new MapDecorationLayout();
                 layout.paint(graphic, paintArea, this.mapContext);
             }
-            
-            //check if a non ignorable error occurred
-            if(nonIgnorableExceptionListener.exceptionOccurred()){
+
+            // check if a non ignorable error occurred
+            if (nonIgnorableExceptionListener.exceptionOccurred()) {
                 Exception renderError = nonIgnorableExceptionListener.getException();
                 throw new WmsException("Rendering process failed", "internalError", renderError);
             }
 
             // check if too many errors occurred
-            if(errorChecker.exceedsMaxErrors()) {
-                throw new WmsException("More than " + maxErrors + " rendering errors occurred, bailing out", 
-                        "internalError", errorChecker.getLastException());
+            if (errorChecker.exceedsMaxErrors()) {
+                throw new WmsException("More than " + maxErrors
+                        + " rendering errors occurred, bailing out", "internalError",
+                        errorChecker.getLastException());
             }
-            
+
             // check we did not use too much memory
-            if(memoryChecker.exceedsMaxSize()) {
+            if (memoryChecker.exceedsMaxSize()) {
                 long kbMax = maxMemory / KB;
-                throw new WmsException("Rendering request used more memory than the maximum allowed:" 
-                        + kbMax + "KB");
+                throw new WmsException(
+                        "Rendering request used more memory than the maximum allowed:" + kbMax
+                                + "KB");
             }
 
             graphic.dispose();
@@ -226,7 +224,7 @@ class PDFMapProducer extends AbstractRasterMapProducer implements
         } catch (DocumentException t) {
             throw new WmsException("Error setting up the PDF", "internalError", t);
         }
-	}
+    }
 
     public void produceMap() throws WmsException {
         // do nothing here, we want to stream out directly
@@ -252,7 +250,7 @@ class PDFMapProducer extends AbstractRasterMapProducer implements
         return "attachment; filename=geoserver.pdf";
     }
 
-    public String getContentDisposition(GetMapRequest request, org.geoserver.wms.response.Map result){
+    public String getContentDisposition(GetMapRequest request, org.geoserver.wms.response.Map result) {
         if (request.getLayers().size() > 0) {
             try {
                 String title = request.getLayers().get(0).getName();

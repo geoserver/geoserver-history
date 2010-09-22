@@ -4,7 +4,7 @@ package org.geoserver.wms;
  * Configuration object for WMS water marking.
  * 
  * @author Justin Deoliveira, The Open Planning Project
- *
+ * 
  */
 public interface WatermarkInfo {
 
@@ -13,86 +13,87 @@ public interface WatermarkInfo {
      */
     public static enum Position {
         TOP_LEFT {
-            
+
             public int getCode() {
                 return 0;
             }
         },
         TOP_CENTER {
-            
+
             public int getCode() {
                 return 1;
             }
         },
         TOP_RIGHT {
-            
+
             public int getCode() {
                 return 2;
             }
         },
         MID_LEFT {
-            
+
             public int getCode() {
                 return 3;
             }
         },
         MID_CENTER {
-            
+
             public int getCode() {
                 return 4;
             }
         },
         MID_RIGHT {
-            
+
             public int getCode() {
                 return 5;
             }
         },
         BOT_LEFT {
-            
+
             public int getCode() {
                 return 6;
             }
         },
         BOT_CENTER {
-            
+
             public int getCode() {
                 return 7;
             }
         },
         BOT_RIGHT {
-            
+
             public int getCode() {
                 return 8;
             }
         };
-        
+
         public abstract int getCode();
-        
-        public static Position get( int code ) {
-            for ( Position p : values() ) {
-                if ( code == p.getCode() ) {
+
+        public static Position get(int code) {
+            for (Position p : values()) {
+                if (code == p.getCode()) {
                     return p;
                 }
             }
-            
+
             return null;
         }
     };
-    
+
     /**
      * Flag indicating if water marking is enabled.
      */
     boolean isEnabled();
-    
+
     /**
      * Sets flag indicating if water marking is enabled.
      */
-    void setEnabled( boolean enabled );
-    
+    void setEnabled(boolean enabled);
+
     /**
      * The position of the watermark on resulting wms images.
      * <p>
+     * 
      * <pre>
      * O -- O -- O      0 -- 1 -- 2
      * |    |    |      |    |    |
@@ -102,12 +103,12 @@ public interface WatermarkInfo {
      * </pre>
      */
     Position getPosition();
-    
+
     /**
      * Sets the watermark position.
      */
-    void setPosition( Position position );
-    
+    void setPosition(Position position);
+
     /**
      * The url of the watermark.
      * <p>
@@ -119,15 +120,15 @@ public interface WatermarkInfo {
     /**
      * Sets the url of the watermark.
      */
-    void setURL( String url );
-    
+    void setURL(String url);
+
     /**
      * The transparency of the watermark logo, ranging from 0 to 255.
      */
     int getTransparency();
-    
+
     /**
      * Sets the transparanecy of the watermark logo.
      */
-    void setTransparency( int transparency );
+    void setTransparency(int transparency);
 }

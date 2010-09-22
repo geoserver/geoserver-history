@@ -5,11 +5,12 @@ import java.util.Set;
 
 import junit.framework.Test;
 
+import org.geoserver.wms.GetMapOutputFormat;
 import org.geoserver.wms.WMSExtensions;
 import org.geoserver.wms.WMSTestSupport;
 
 /**
- * An integration test for the GetMapProducer implementations
+ * An integration test for the GetMapOutputFormat implementations
  * 
  * @author Gabriel Roldan (TOPP)
  * @version $Id$
@@ -24,8 +25,8 @@ public class GetMapProducerTest extends WMSTestSupport {
     }
 
     public void testGetOutputFormatNames() {
-        List<GetMapProducer> producers = WMSExtensions.findMapProducers(applicationContext);
-        for (GetMapProducer producer : producers) {
+        List<GetMapOutputFormat> producers = WMSExtensions.findMapProducers(applicationContext);
+        for (GetMapOutputFormat producer : producers) {
             Set<String> outputFormats = producer.getOutputFormatNames();
             assertNotNull(outputFormats);
             assertTrue(outputFormats.size() > 0);
@@ -36,15 +37,15 @@ public class GetMapProducerTest extends WMSTestSupport {
     }
 
     public void testGetOutputFormat() {
-        List<GetMapProducer> producers = WMSExtensions.findMapProducers(applicationContext);
-        for (GetMapProducer producer : producers) {
+        List<GetMapOutputFormat> producers = WMSExtensions.findMapProducers(applicationContext);
+        for (GetMapOutputFormat producer : producers) {
             assertNotNull(producer.getOutputFormat());
         }
     }
 
     public void testSetOutputFormat() {
-        List<GetMapProducer> producers = WMSExtensions.findMapProducers(applicationContext);
-        for (GetMapProducer producer : producers) {
+        List<GetMapOutputFormat> producers = WMSExtensions.findMapProducers(applicationContext);
+        for (GetMapOutputFormat producer : producers) {
             Set<String> outputFormats = producer.getOutputFormatNames();
             for (String outputFormat : outputFormats) {
                 producer.setOutputFormat(outputFormat);
@@ -64,8 +65,8 @@ public class GetMapProducerTest extends WMSTestSupport {
     }
 
     public void testSetOutputFormatIsCaseInsensitive() {
-        List<GetMapProducer> producers = WMSExtensions.findMapProducers(applicationContext);
-        for (GetMapProducer producer : producers) {
+        List<GetMapOutputFormat> producers = WMSExtensions.findMapProducers(applicationContext);
+        for (GetMapOutputFormat producer : producers) {
             Set<String> outputFormats = producer.getOutputFormatNames();
             for (String outputFormat : outputFormats) {
 
