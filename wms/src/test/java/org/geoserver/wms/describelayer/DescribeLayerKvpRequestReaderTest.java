@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.geoserver.wms.kvp;
+package org.geoserver.wms.describelayer;
 
 import java.util.Arrays;
 import java.util.HashMap;

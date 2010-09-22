@@ -198,7 +198,7 @@
 	</bean>
 
 	<bean id="describeLayerKvpReader"
-		class="org.geoserver.wms.kvp.DescribeLayerKvpRequestReader">
+		class="org.geoserver.wms.describelayer.DescribeLayerKvpRequestReader">
       	<constructor-arg ref="wms" />
 	</bean>
 	
@@ -246,7 +246,7 @@
 		class="org.geoserver.wms.capabilities.GetCapabilitiesResponse">
 	</bean>
 	<bean id="describeLayerResponse"
-		class="org.geoserver.wms.response.DescribeLayerResponse">
+		class="org.geoserver.wms.describelayer.DescribeLayerResponse">
 	</bean>
 	<!--bean id="getMapResponse"
 		class="org.geoserver.wms.response.GetMapResponse">

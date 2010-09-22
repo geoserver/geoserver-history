@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.geoserver.wms.response;
+package org.geoserver.wms.describelayer;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathExists;

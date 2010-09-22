@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.geoserver.wms.kvp;
+package org.geoserver.wms.describelayer;
 
 import java.util.List;
 import java.util.Map;
@@ -12,6 +12,7 @@ import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.DescribeLayerRequest;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
+import org.geoserver.wms.kvp.MapLayerInfoKvpParser;
 
 /**
  * Parses a DescribeLayer request, wich consists only of a list of layer names, given by the

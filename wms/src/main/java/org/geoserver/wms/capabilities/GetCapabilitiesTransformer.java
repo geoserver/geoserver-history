@@ -52,7 +52,7 @@ import org.geoserver.wms.GetCapabilitiesRequest;
 import org.geoserver.wms.GetLegendGraphicRequest;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSInfo;
-import org.geoserver.wms.response.DescribeLayerResponse;
+import org.geoserver.wms.describelayer.DescribeLayerResponse;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.data.ows.Layer;
 import org.geotools.data.ows.WMSCapabilities;
