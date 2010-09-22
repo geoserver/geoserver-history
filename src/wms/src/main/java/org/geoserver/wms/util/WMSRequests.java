@@ -18,17 +18,17 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.geoserver.config.GeoServer;
+import org.geoserver.ows.Request;
 import org.geoserver.ows.util.KvpUtils;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
-import org.geoserver.wms.request.WMSRequest;
+import org.geoserver.wms.request.GetMapRequest;
 import org.geotools.map.MapLayer;
 import org.geotools.styling.Style;
 import org.vfny.geoserver.util.Requests;
 import org.vfny.geoserver.wms.WMSMapContext;
-import org.vfny.geoserver.wms.requests.GetMapRequest;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -63,7 +63,7 @@ public class WMSRequests {
      * 
      * @return The base for wms requests.
      */
-    public static String getBaseUrl( WMSRequest request ) {
+    public static String getBaseUrl( Request request ) {
         return getBaseUrl( request.getHttpRequest(), null );  
     }
     
@@ -101,12 +101,12 @@ public class WMSRequests {
      * @param layerIndex The index of the layer in the request
      * @param bbox The bounding box of the request, may be <code>null</code>.
      * @param kvp Additional or overidding kvp parameters, may be <code>null</code>
+     * @param geoserver 
      *
      * @return The full url for a getMap request.
      */
-    public static String getTiledGetMapUrl(GetMapRequest req, MapLayer layer, int layerIndex, Envelope bbox, String[] kvp) {
-        String baseUrl = getTileCacheBaseUrl(req.getHttpRequest(),
-                    req.getWMS().getGeoServer());
+    public static String getTiledGetMapUrl(GeoServer geoserver, GetMapRequest req, MapLayer layer, int layerIndex, Envelope bbox, String[] kvp) {
+        String baseUrl = getTileCacheBaseUrl(req.getHttpRequest(), geoserver);
         
         if ( baseUrl == null ) {
             return getGetMapUrl( req, layer, layerIndex, bbox, kvp );
@@ -228,7 +228,7 @@ public class WMSRequests {
      *
      * @return The full url for a getMap request.
      */
-    public static String getGetLegendGraphicUrl( WMSRequest req, MapLayer layer, String[] kvp ) {
+    public static String getGetLegendGraphicUrl( Request req, MapLayer layer, String[] kvp ) {
         //parameters
         HashMap params = new HashMap();
 
@@ -269,8 +269,8 @@ public class WMSRequests {
         
         boolean useLayerIndex = true;
         int count=0;
-        for ( int i = 0; i < req.getLayers().length; i++ ) {
-            if (layer != null && layer.equals( req.getLayers()[i].getName() ) ) {
+        for ( int i = 0; i < req.getLayers().size(); i++ ) {
+            if (layer != null && layer.equals( req.getLayers().get(i).getName() ) ) {
                ++count;
             }
         }
@@ -287,11 +287,11 @@ public class WMSRequests {
              else {
                  //use default for layer
                  if (useLayerIndex) {
-                     styles.append( req.getLayers()[layerIndex].getDefaultStyle().getName() );                   
+                     styles.append( req.getLayers().get(layerIndex).getDefaultStyle().getName() );                   
                  } else {
-                     for ( int i = 0; i < req.getLayers().length; i++ ) {
-                         if ( layer.equals( req.getLayers()[i].getName() ) ) {
-                             styles.append( req.getLayers()[i].getDefaultStyle().getName() );
+                     for ( int i = 0; i < req.getLayers().size(); i++ ) {
+                         if ( layer.equals( req.getLayers().get(i).getName() ) ) {
+                             styles.append( req.getLayers().get(i).getDefaultStyle().getName() );
                          }
                      }                   
                  }
@@ -299,8 +299,8 @@ public class WMSRequests {
         }
         else {
             //no layer specified, use layers+styles specified by request
-            for ( int i = 0; i < req.getLayers().length; i++ ) {
-                MapLayerInfo mapLayer = req.getLayers()[ i ];
+            for ( int i = 0; i < req.getLayers().size(); i++ ) {
+                MapLayerInfo mapLayer = req.getLayers().get(i);
                 Style s = (Style) req.getStyles().get( 0 );
                 
                 layers.append( mapLayer.getName() ).append( "," );
@@ -324,8 +324,8 @@ public class WMSRequests {
             if (useLayerIndex) {
                index = layerIndex;
             }else{
-                for ( ; index < req.getLayers().length; index++) {
-                    if ( req.getLayers()[index].getName().equals( layer ) ) {
+                for ( ; index < req.getLayers().size(); index++) {
+                    if ( req.getLayers().get(index).getName().equals( layer ) ) {
                         break;
                     }
                 }

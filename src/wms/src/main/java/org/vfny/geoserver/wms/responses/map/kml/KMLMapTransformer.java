@@ -31,6 +31,11 @@ import org.geoserver.config.GeoServerDataDirectory;
 import org.geoserver.ows.URLMangler.URLType;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.GeoServerExtensions;
+import org.geoserver.wms.WMS;
+import org.geoserver.wms.request.GetMapRequest;
+import org.geoserver.wms.response.featureinfo.FeatureHeightTemplate;
+import org.geoserver.wms.response.featureinfo.FeatureTemplate;
+import org.geoserver.wms.response.featureinfo.FeatureTimeTemplate;
 import org.geotools.data.DataUtilities;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.type.DateUtil;
@@ -58,10 +63,6 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.filter.FilterFactory;
 import org.opengis.filter.expression.Expression;
 import org.vfny.geoserver.wms.WMSMapContext;
-import org.vfny.geoserver.wms.requests.GetMapRequest;
-import org.vfny.geoserver.wms.responses.featureInfo.FeatureHeightTemplate;
-import org.vfny.geoserver.wms.responses.featureInfo.FeatureTemplate;
-import org.vfny.geoserver.wms.responses.featureInfo.FeatureTimeTemplate;
 import org.xml.sax.ContentHandler;
 
 import com.vividsolutions.jts.geom.Coordinate;
@@ -131,6 +132,8 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
      */
     protected final boolean vectorNameDescription;
 
+    private WMS wms;
+
     /**
      * list of formats which correspond to the default formats in which
      * freemarker outputs dates when a user calls the
@@ -185,7 +188,8 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
 
     }
 
-    public KMLMapTransformer(WMSMapContext mapContext, MapLayer mapLayer) {
+    public KMLMapTransformer(WMS wms, WMSMapContext mapContext, MapLayer mapLayer) {
+        this.wms = wms;
         this.mapContext = mapContext;
         this.mapLayer = mapLayer;
         
@@ -985,7 +989,7 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
         }
 
         protected String getFeatureTypeURL() throws IOException {
-            GeoServer gs = mapContext.getRequest().getWMS().getGeoServer();
+            GeoServer gs = wms.getGeoServer();
             Catalog catalog = gs.getCatalog();
             String nsUri = mapLayer.getFeatureSource().getSchema().getName().getNamespaceURI();
             NamespaceInfo ns = catalog.getNamespaceByURI(nsUri);

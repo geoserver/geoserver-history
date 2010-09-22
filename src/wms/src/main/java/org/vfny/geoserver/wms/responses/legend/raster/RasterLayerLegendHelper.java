@@ -17,6 +17,7 @@ import java.util.HashMap;
 
 import javax.imageio.ImageIO;
 
+import org.geoserver.wms.request.GetLegendGraphicRequest;
 import org.geotools.styling.ChannelSelection;
 import org.geotools.styling.ColorMap;
 import org.geotools.styling.ColorMapEntry;
@@ -26,7 +27,6 @@ import org.geotools.styling.Rule;
 import org.geotools.styling.Style;
 import org.geotools.styling.Symbolizer;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
-import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
 import org.vfny.geoserver.wms.responses.ImageUtils;
 import org.vfny.geoserver.wms.responses.LegendUtils;
 import org.vfny.geoserver.wms.responses.legend.raster.ColorMapLegendCreator.Builder;

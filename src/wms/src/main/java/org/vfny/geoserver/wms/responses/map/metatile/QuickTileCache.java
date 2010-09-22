@@ -24,8 +24,8 @@ import org.geoserver.config.ServiceInfo;
 import org.geoserver.wfs.TransactionEvent;
 import org.geoserver.wfs.TransactionListener;
 import org.geoserver.wfs.WFSException;
+import org.geoserver.wms.request.GetMapRequest;
 import org.geotools.util.CanonicalSet;
-import org.vfny.geoserver.wms.requests.GetMapRequest;
 
 import com.vividsolutions.jts.geom.Envelope;
 

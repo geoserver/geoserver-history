@@ -35,8 +35,8 @@ import org.opengis.feature.type.Name;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.vfny.geoserver.wms.GetLegendGraphicProducer;
 import org.vfny.geoserver.wms.GetMapProducer;
-import org.vfny.geoserver.wms.responses.GetLegendGraphicResponse;
 
 /**
  * A facade providing access to the WMS configuration details
@@ -412,10 +412,16 @@ public class WMS implements ApplicationContextAware {
 
     }
 
-    @SuppressWarnings("unchecked")
     public Set<String> getAvailableLegendGraphicsFormats() {
-        // TODO: move logic here
-        return GetLegendGraphicResponse.getFormats();
+
+        List<GetLegendGraphicProducer> formats;
+        formats = WMSExtensions.findLegendGraphicFormats(applicationContext);
+
+        Set<String> mimeTypes = new HashSet<String>();
+        for (GetLegendGraphicProducer format : formats) {
+            mimeTypes.add(format.getContentType());
+        }
+        return mimeTypes;
     }
 
     /**
@@ -451,5 +457,30 @@ public class WMS implements ApplicationContextAware {
             mimeTypes.add(format.getContentType());
         }
         return mimeTypes;
+    }
+
+    /**
+     * @param mimeType
+     *            the mime type to look a GetMapOutputFormat for
+     * @return the GetMapOutputFormat that can handle {@code mimeType}, or {@code null} if none is
+     *         found
+     */
+    public GetMapProducer getMapOutputFormat(final String mimeType) {
+        GetMapProducer outputFormat;
+        outputFormat = WMSExtensions.findMapProducer(mimeType, applicationContext);
+        return outputFormat;
+    }
+
+    /**
+     * 
+     * @param outputFormat
+     *            desired output format mime type
+     * @return the GetLegendGraphicOutputFormat that can handle {@code mimeType}, or {@code null} if
+     *         none is found
+     */
+    public GetLegendGraphicProducer getLegendGraphicOutputFormat(final String outputFormat) {
+        GetLegendGraphicProducer format;
+        format = WMSExtensions.findLegendGraphicFormat(outputFormat, applicationContext);
+        return format;
     }
 }

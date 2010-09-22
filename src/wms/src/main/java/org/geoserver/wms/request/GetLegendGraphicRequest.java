@@ -151,7 +151,7 @@ public class GetLegendGraphicRequest extends WMSRequest {
      * 
      * @return DOCUMENT ME!
      */
-    public String getExceptionsFormat() {
+    public String getExceptions() {
         return exceptionsFormat;
     }
 
@@ -161,7 +161,7 @@ public class GetLegendGraphicRequest extends WMSRequest {
      * @param exceptionsFormat
      *            DOCUMENT ME!
      */
-    public void setExceptionsFormat(String exceptionsFormat) {
+    public void setExceptions(String exceptionsFormat) {
         this.exceptionsFormat = exceptionsFormat;
     }
 

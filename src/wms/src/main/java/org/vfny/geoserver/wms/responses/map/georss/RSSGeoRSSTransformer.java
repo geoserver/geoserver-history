@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.geoserver.wms.WMS;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.xml.transform.Translator;
@@ -27,13 +28,23 @@ import com.vividsolutions.jts.geom.GeometryCollection;
  *
  */
 public class RSSGeoRSSTransformer extends GeoRSSTransformerBase {
+    
+    private WMS wms;
+
+    public RSSGeoRSSTransformer(WMS wms){
+        this.wms = wms;
+    }
+    
     public Translator createTranslator(ContentHandler handler) {
-        return new RSSGeoRSSTranslator(handler);
+        return new RSSGeoRSSTranslator(wms, handler);
     }
 
     class RSSGeoRSSTranslator extends GeoRSSTranslatorSupport {
-        public RSSGeoRSSTranslator(ContentHandler contentHandler) {
+        private WMS wms;
+
+        public RSSGeoRSSTranslator(WMS wms, ContentHandler contentHandler) {
             super(contentHandler, null, null);
+            this.wms = wms;
             nsSupport.declarePrefix("georss", "http://www.georss.org/georss");
             nsSupport.declarePrefix("atom", "http://www.w3.org/2005/Atom");
         }
@@ -109,7 +120,7 @@ public class RSSGeoRSSTransformer extends GeoRSSTransformerBase {
 
             try {
                 title = AtomUtils.getFeatureTitle(feature);
-                link = AtomUtils.getEntryURL(feature, map);
+                link = AtomUtils.getEntryURL(wms, feature, map);
                 description = AtomUtils.getFeatureDescription(feature);
             } catch( Exception e ) {
                 String msg = "Error occured executing title template for: " + feature.getID();

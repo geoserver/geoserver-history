@@ -23,6 +23,7 @@ import java.util.logging.Logger;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.wms.WMS;
+import org.geoserver.wms.response.LegendUtils;
 import org.geoserver.wms.response.MapDecoration;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
@@ -49,7 +50,6 @@ import org.opengis.feature.type.PropertyDescriptor;
 import org.opengis.feature.type.PropertyType;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
-import org.vfny.geoserver.wms.responses.LegendUtils;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
@@ -91,6 +91,10 @@ public class LegendDecoration implements MapDecoration {
 
     private static final StyledShapePainter shapePainter = new StyledShapePainter();
 
+    public LegendDecoration(WMS wms){
+        this.wms = wms;
+    }
+    
     public void loadOptions(Map<String, String> options){
         Color tmp = parseColor(options.get("bgcolor"));
         if (tmp != null) this.bgcolor = tmp;
@@ -100,7 +104,7 @@ public class LegendDecoration implements MapDecoration {
     }
 
     Catalog findCatalog(WMSMapContext mapContext){
-        return mapContext.getRequest().getWMS().getGeoServer().getCatalog();
+        return wms.getGeoServer().getCatalog();
     }
     
     public Dimension findOptimalSize(Graphics2D g2d, WMSMapContext mapContext){
@@ -140,7 +144,7 @@ public class LegendDecoration implements MapDecoration {
 
     public void paint(Graphics2D g2d, Rectangle paintArea, WMSMapContext mapContext) 
     throws Exception {
-    	Catalog catalog = mapContext.getRequest().getWMS().getGeoServer().getCatalog();
+    	Catalog catalog = wms.getGeoServer().getCatalog();
         Dimension d = findOptimalSize(g2d, mapContext);
         Rectangle bgRect = new Rectangle(0, 0, d.width, d.height);
         double scaleDenominator = RendererUtilities.calculateOGCScale(
@@ -155,7 +159,6 @@ public class LegendDecoration implements MapDecoration {
         Font oldFont = g2d.getFont();
         Stroke oldStroke = g2d.getStroke();
         g2d.translate(paintArea.getX(), paintArea.getY());
-        final WMS wms = mapContext.getRequest().getWMS();
 
         AffineTransform tx = new AffineTransform(); 
 

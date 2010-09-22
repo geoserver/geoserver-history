@@ -1,4 +1,4 @@
-package org.vfny.geoserver.wms.responses;
+package org.geoserver.wms.response;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -17,6 +17,7 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.geoserver.wms.request.GetLegendGraphicRequest;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.renderer.i18n.ErrorKeys;
@@ -34,7 +35,8 @@ import org.opengis.feature.type.PropertyDescriptor;
 import org.opengis.feature.type.PropertyType;
 import org.opengis.filter.expression.Expression;
 import org.opengis.style.ChannelSelection;
-import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
+import org.vfny.geoserver.wms.responses.DefaultRasterLegendProducer;
+import org.vfny.geoserver.wms.responses.ImageUtils;
 
 /**
  * Utility class for building legends, it exposes many methods that could be reused anywhere.

@@ -50,13 +50,15 @@
 	</bean>
 		
 	<bean id="wmsGetLegendGraphic"
-		class="org.vfny.geoserver.wms.servlets.GetLegendGraphic">
+		class="org.geoserver.wms.GetLegendGraphic">
       <constructor-arg ref="wms"/>
 	</bean>	
 		
-	<bean id="wmsGetMap"
-		class="org.vfny.geoserver.wms.servlets.GetMap">
-	      <constructor-arg ref="wms"/>
+	<bean id="wmsGetMap" class="org.geoserver.wms.GetMap">
+	    <constructor-arg ref="wms"/>
+        <property name="filterFactory" ref="filterFactory">
+          <description>Use the same filter factory declared in the WFS module</description>
+        </property>
     </bean>
   
     <!-- GetFeatureInfo output formats -->
@@ -239,11 +241,13 @@
     	<constructor-arg ref="wms"/>
     </bean>
    	<bean id="sldXmlReader"
-   		class="org.geoserver.wms.xml.SLDXmlRequestReader"/>
+   		class="org.geoserver.wms.xml.SLDXmlRequestReader">
+      <constructor-arg ref="wms"/>
+    </bean>
    		
 	<!--  responses -->
 	<bean id="wmsGetCapabilitiesResponse"
-		class="org.geoserver.wms.GetCapabilitiesResponse">
+		class="org.geoserver.wms.response.GetCapabilitiesResponse">
 	</bean>
 	<bean id="describeLayerResponse"
 		class="org.geoserver.wms.response.DescribeLayerResponse">
@@ -262,7 +266,7 @@
 		<constructor-arg value="org.vfny.geoserver.wms.responses.GetLegendGraphicResponse"/>
 		<constructor-arg ref="geoServer"/>
 	</bean>
-	<bean id="stylesResponse" class="org.vfny.geoserver.wms.responses.StylesResponse"/>
+	<bean id="stylesResponse" class="org.geoserver.wms.response.GetStylesResponse"/>
 	
 	<!-- Wrapping the PutStyles servlet in a controller while we wait to rewrite it for good -->
     <!-- GR: commenting out, putStyles is not being used nor maintained? -->
@@ -343,6 +347,7 @@
 	<bean id="KMLMapProducer" 
 		singleton="false"
 		class="org.vfny.geoserver.wms.responses.map.kml.KMLMapProducer">
+      <constructor-arg index="0" ref="wms"/>
 	</bean>
 	
 	<bean id="KMZMapProducer"
@@ -360,11 +365,13 @@
 	<bean id="AtomGeoRSSMapProducer"
 		singleton="false"
 		class="org.vfny.geoserver.wms.responses.map.georss.AtomGeoRSSMapProducer">
+        <constructor-arg index="0" ref="wms"/>
 	</bean>
 
 	<bean id="RSSGeoRSSMapProducer"
 		singleton="false"
 		class="org.vfny.geoserver.wms.responses.map.georss.RSSGeoRSSMapProducer">
+        <constructor-arg index="0" ref="wms"/>
 	</bean>
 
 	<bean id="SVGMapProducer" 
@@ -444,12 +451,12 @@
     <bean id="image" 
           class="org.geoserver.wms.response.decoration.WatermarkDecoration"
           singleton="false"
-    />
+     />
 
     <bean id="legend" 
           class="org.geoserver.wms.response.decoration.LegendDecoration"
-          singleton="false"
-    >
+          singleton="false">
+       <constructor-arg ref="wms"/>
     </bean>
 
     <bean id="scaleratio" 

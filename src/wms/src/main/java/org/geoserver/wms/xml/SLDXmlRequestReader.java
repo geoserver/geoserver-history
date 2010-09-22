@@ -4,12 +4,13 @@ import java.io.Reader;
 import java.util.Map;
 
 import org.geoserver.ows.XmlRequestReader;
+import org.geoserver.wms.WMS;
 import org.geoserver.wms.kvp.GetMapKvpRequestReader;
+import org.geoserver.wms.request.GetMapRequest;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.styling.SLDParser;
 import org.geotools.styling.StyleFactory;
 import org.geotools.styling.StyledLayerDescriptor;
-import org.vfny.geoserver.wms.requests.GetMapRequest;
 
 /**
  * Reads 
@@ -20,8 +21,11 @@ public class SLDXmlRequestReader extends XmlRequestReader {
 
     StyleFactory styleFactory = CommonFactoryFinder.getStyleFactory(null);
     
-    public SLDXmlRequestReader() {
+    private WMS wms;
+    
+    public SLDXmlRequestReader(WMS wms) {
         super("http://www.opengis.net/sld", "StyledLayerDescriptor" );
+        this.wms = wms;
     }
 
     public void setStyleFactory(StyleFactory styleFactory) {
@@ -39,7 +43,7 @@ public class SLDXmlRequestReader extends XmlRequestReader {
             new SLDParser( styleFactory, reader ).parseSLD();
         
         //process the sld 
-        GetMapKvpRequestReader.processStandaloneSld(getMap, sld);
+        GetMapKvpRequestReader.processStandaloneSld(wms, getMap, sld);
     
         return getMap;
     }

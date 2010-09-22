@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.geoserver.wms.WMS;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.xml.transform.Translator;
@@ -22,14 +23,24 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryCollection;
 
 public class AtomGeoRSSTransformer extends GeoRSSTransformerBase {
+    
+    private WMS wms;
+
+    public AtomGeoRSSTransformer(WMS wms){
+        this.wms = wms;
+    }
+    
     public Translator createTranslator(ContentHandler handler) {
-        return new AtomGeoRSSTranslator(handler);
+        return new AtomGeoRSSTranslator(wms,handler);
     }
 
     public class AtomGeoRSSTranslator extends GeoRSSTranslatorSupport {
-        public AtomGeoRSSTranslator(ContentHandler contentHandler) {
+        
+        private WMS wms;
+
+        public AtomGeoRSSTranslator(WMS wms, ContentHandler contentHandler) {
             super(contentHandler, null, "http://www.w3.org/2005/Atom");
-            
+            this.wms = wms;
             nsSupport.declarePrefix("georss","http://www.georss.org/georss");
         }
 
@@ -98,13 +109,13 @@ public class AtomGeoRSSTransformer extends GeoRSSTransformerBase {
             element("title", feature.getID());
 
             start("author");
-            element("name", map.getRequest().getWMS().getGeoServer().getGlobal().getContact().getContactPerson());
+            element("name", wms.getGeoServer().getGlobal().getContact().getContactPerson());
             end("author");
 
             //id
-            element("id", AtomUtils.getEntryURI(feature, map));
+            element("id", AtomUtils.getEntryURI(wms, feature, map));
 
-            String link = AtomUtils.getEntryURL(feature, map);
+            String link = AtomUtils.getEntryURL(wms, feature, map);
             AttributesImpl atts = new AttributesImpl();
             atts.addAttribute(null, "href", "href", null, link);
             atts.addAttribute(null, "rel", "rel", null, "self");

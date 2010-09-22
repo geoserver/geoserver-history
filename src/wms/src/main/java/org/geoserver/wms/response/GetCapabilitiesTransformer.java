@@ -66,7 +66,6 @@ import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.TransformException;
 import org.springframework.util.Assert;
-import org.vfny.geoserver.wms.responses.GetLegendGraphicResponse;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.AttributesImpl;
 
@@ -1127,7 +1126,7 @@ public class GetCapabilitiesTransformer extends TransformerBase {
             } else {
                 String defaultFormat = GetLegendGraphicRequest.DEFAULT_FORMAT;
 
-                if (!GetLegendGraphicResponse.supportsFormat(defaultFormat)) {
+                if (null == wmsConfig.getLegendGraphicOutputFormat(defaultFormat)) {
                     if (LOGGER.isLoggable(Level.WARNING)) {
                         LOGGER.warning(new StringBuffer("Default legend format (")
                                 .append(defaultFormat)
