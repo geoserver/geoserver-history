@@ -175,7 +175,7 @@ public class KMLWriter extends OutputStreamWriter {
      * @param config
      *            WMSMapContext describing the map to be generated.
      */
-    public KMLWriter(OutputStream out, WMSMapContext mapContext) {
+    public KMLWriter(OutputStream out, WMSMapContext mapContext, WMS wms) {
         super(out, Charset.forName("UTF-8"));
         this.mapContext = mapContext;
 
@@ -184,10 +184,9 @@ public class KMLWriter extends OutputStreamWriter {
         transformer.setOmitXMLDeclaration(true);
         transformer.setNamespaceDeclarationEnabled(true);
 
-        WMS config = mapContext.getRequest().getWMS();
-        transformer.setNumDecimals(config.getNumDecimals());
+        transformer.setNumDecimals(wms.getNumDecimals());
         
-        this.vectorNameDescription = KMLUtils.getKMAttr(mapContext.getRequest());
+        this.vectorNameDescription = KMLUtils.getKMAttr(mapContext.getRequest(), wms);
     }
 
     /**

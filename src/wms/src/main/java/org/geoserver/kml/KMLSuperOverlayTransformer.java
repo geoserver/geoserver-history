@@ -14,6 +14,7 @@ import org.geoserver.ows.HttpErrorCodeException;
 import org.geoserver.ows.util.CaseInsensitiveMap;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.wms.MapLayerInfo;
+import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSMapContext;
 import org.geoserver.wms.util.WMSRequests;
 import org.geotools.data.simple.SimpleFeatureSource;
@@ -37,9 +38,12 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
     /**
      * The map context
      */
-    final WMSMapContext mapContext;
+    private final WMSMapContext mapContext;
 
-    public KMLSuperOverlayTransformer(WMSMapContext mapContext) {
+    private final WMS wms;
+
+    public KMLSuperOverlayTransformer(WMS wms, WMSMapContext mapContext) {
+        this.wms = wms;
         this.mapContext = mapContext;
         setNamespaceDeclarationEnabled(false);
     }
@@ -74,8 +78,8 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
 
             start("Document");
 
-            if ("cached".equals(KMLUtils.getSuperoverlayMode(mapContext.getRequest()))) {
-                if (KMLUtils.isRequestGWCCompatible(mapContext, mapLayer)) {
+            if ("cached".equals(KMLUtils.getSuperoverlayMode(mapContext.getRequest(), wms))) {
+                if (KMLUtils.isRequestGWCCompatible(mapContext, mapLayer, wms)) {
                     encodeGWCLink(mapLayer);
                 } else {
                     LOGGER.log(
@@ -192,7 +196,7 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
             if (!isVectorLayer(layer))
                 return false;
 
-            String overlayMode = KMLUtils.getSuperoverlayMode(mapContext.getRequest());
+            String overlayMode = KMLUtils.getSuperoverlayMode(mapContext.getRequest(), wms);
 
             if ("raster".equals(overlayMode))
                 return false;
@@ -220,7 +224,7 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
             if (!isVectorLayer(layer))
                 return true;
 
-            String overlayMode = KMLUtils.getSuperoverlayMode(mapContext.getRequest());
+            String overlayMode = KMLUtils.getSuperoverlayMode(mapContext.getRequest(), wms);
             if ("hybrid".equals(overlayMode) || "raster".equals(overlayMode))
                 return true;
             if ("overview".equals(overlayMode))
@@ -261,7 +265,7 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
 
             element("href", KMLUtils.getMapUrl(mapContext, mapLayer, 0, box, new String[] {
                     "width", "256", "height", "256", "format_options", foEncoded, "superoverlay",
-                    "false" }, true));
+                    "false" }, true, wms.getGeoServer()));
 
             end("Link");
             encodeRegion(box, 128, -1);
@@ -270,7 +274,7 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
 
         boolean isVectorLayer(MapLayer layer) {
             int index = Arrays.asList(mapContext.getLayers()).indexOf(layer);
-            MapLayerInfo info = mapContext.getRequest().getLayers()[index];
+            MapLayerInfo info = mapContext.getRequest().getLayers().get(index);
             return (info.getType() == MapLayerInfo.TYPE_VECTOR || info.getType() == MapLayerInfo.TYPE_REMOTE_VECTOR);
         }
 
@@ -301,7 +305,7 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
 
             try {
                 numFeatures = (KMLUtils.loadFeatureCollection(
-                        (SimpleFeatureSource) mapLayer.getFeatureSource(), mapLayer, mapContext)
+                        (SimpleFeatureSource) mapLayer.getFeatureSource(), mapLayer, mapContext, wms)
                         .size()/* == 0 */);
             } catch (WmsException e) {
                 LOGGER.severe("Caught the WmsException!");
@@ -339,7 +343,7 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
             start("Icon");
 
             String href = KMLUtils.getMapUrl(mapContext, mapLayer, 0, box, new String[] { "width",
-                    "256", "height", "256", "format", "image/png", "transparent", "true" }, true);
+                    "256", "height", "256", "format", "image/png", "transparent", "true" }, true, wms.getGeoServer());
             element("href", href);
             LOGGER.fine(href);
             end("Icon");
@@ -383,7 +387,7 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
 
             String getMap = KMLUtils.getMapUrl(mapContext, mapLayer, 0, box, new String[] {
                     "format", KMLMapOutputFormat.MIME_TYPE, "width", "256", "height", "256",
-                    "superoverlay", "true" }, false);
+                    "superoverlay", "true" }, false, wms.getGeoServer());
 
             element("href", getMap);
             LOGGER.fine("Network link " + name + ":" + getMap);

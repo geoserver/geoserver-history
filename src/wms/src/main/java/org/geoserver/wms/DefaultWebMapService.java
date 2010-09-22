@@ -251,9 +251,9 @@ public class DefaultWebMapService implements WebMapService,
         return getLegendGraphic.run(request);
     }
 
-    public void kml(GetMapRequest getMap, HttpServletResponse response) {
+    public Map kml(GetMapRequest getMap) {
         try {
-            KMLReflector.doWms(getMap, response, this, wms);
+            return KMLReflector.doWms(getMap, this, wms);
             // return response;
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -284,8 +284,13 @@ public class DefaultWebMapService implements WebMapService,
      * @see WebMapService#getMapReflect(GetMapRequest)
      */
     public Map getMapReflect(GetMapRequest request) {
-        GetMapRequest getMap = (GetMapRequest) request;
 
+        GetMapRequest getMap = autoSetMissingProperties(request);
+
+        return getMap(getMap);
+    }
+
+    public static GetMapRequest autoSetMissingProperties(GetMapRequest getMap) {
         // set the defaults
         if (getMap.getFormat() == null) {
             getMap.setFormat(FORMAT);
@@ -312,7 +317,7 @@ public class DefaultWebMapService implements WebMapService,
         // auto-magic missing info configuration
         autoSetBoundsAndSize(getMap);
 
-        return getMap(getMap);
+        return getMap;
     }
 
     /**

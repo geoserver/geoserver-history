@@ -139,7 +139,7 @@ public class KMLRasterTransformer extends KMLMapTransformer {
             end("GroundOverlay");
 
             // if the kmplacemark format option is true, add placemarks to the output
-            boolean kmplacemark = KMLUtils.getKmplacemark(mapContext.getRequest());
+            boolean kmplacemark = KMLUtils.getKmplacemark(mapContext.getRequest(), wms);
             if (kmplacemark) {
                 SimpleFeatureCollection features = null;
                 try {
@@ -147,7 +147,7 @@ public class KMLRasterTransformer extends KMLMapTransformer {
                             .loadFeatureCollection(
                                     (SimpleFeatureSource) mapLayer
                                             .getFeatureSource(), mapLayer,
-                                    mapContext);
+                                    mapContext, wms);
                 } catch (Exception ex) {
                     String msg = "Error getting features.";
                     LOGGER.log(Level.WARNING, msg, ex);

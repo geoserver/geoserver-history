@@ -10,6 +10,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.geoserver.wms.MapLayerInfo;
+import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSMapContext;
 import org.geoserver.wms.request.GetMapRequest;
 import org.geotools.data.simple.SimpleFeatureCollection;
@@ -40,7 +41,10 @@ public class KMLTransformer extends TransformerBase {
      */
     boolean kmz = false;
 
-    public KMLTransformer() {
+    private WMS wms;
+
+    public KMLTransformer(WMS wms) {
+        this.wms = wms;
         setNamespaceDeclarationEnabled(false);
     }
 
@@ -110,7 +114,7 @@ public class KMLTransformer extends TransformerBase {
             for (int i = 0; i < layers.length; i++) {
                 //layer and info
                 MapLayer layer = layers[i];
-                MapLayerInfo layerInfo = mapContext.getRequest().getLayers()[i];
+                MapLayerInfo layerInfo = mapContext.getRequest().getLayers().get(i);
 
                 //was a super overlay requested?
                 Boolean superoverlay = (Boolean)mapContext.getRequest().getFormatOptions().get("superoverlay");
@@ -157,7 +161,7 @@ public class KMLTransformer extends TransformerBase {
             SimpleFeatureCollection features = null;
 
             try {
-                features = KMLUtils.loadFeatureCollection(featureSource, layer, mapContext);
+                features = KMLUtils.loadFeatureCollection(featureSource, layer, mapContext, wms);
                 if(features == null)
                 	return;
             } catch (Exception e) {
@@ -168,7 +172,7 @@ public class KMLTransformer extends TransformerBase {
             if (kmz) {
                 //calculate kmscore to determine if we shoud write as vectors
                 // or pre-render
-                int kmscore = mapContext.getRequest().getWMS().getKmScore();
+                int kmscore = wms.getKmScore();
                 Object kmScoreObj = mapContext.getRequest().getFormatOptions().get("kmscore");
                 if(kmScoreObj != null) {
                     kmscore = (Integer) kmScoreObj;
@@ -205,7 +209,7 @@ public class KMLTransformer extends TransformerBase {
          * @return
          */
         protected KMLRasterTransformer createRasterTransfomer(WMSMapContext mapContext) {
-            return new KMLRasterTransformer(mapContext);
+            return new KMLRasterTransformer(wms, mapContext);
         }
 
         /**
@@ -215,7 +219,7 @@ public class KMLTransformer extends TransformerBase {
          */
         protected KMLVectorTransformer createVectorTransformer(WMSMapContext mapContext,
                 MapLayer layer) {
-            return new KMLVectorTransformer(mapContext, layer);
+            return new KMLVectorTransformer(wms, mapContext, layer);
         }
 
         /**
@@ -233,7 +237,7 @@ public class KMLTransformer extends TransformerBase {
          * Encodes a layer as a super overlay.
          */
         protected void encodeSuperOverlayLayer(WMSMapContext mapContext, MapLayer layer) {
-            KMLSuperOverlayTransformer tx = new KMLSuperOverlayTransformer(mapContext);
+            KMLSuperOverlayTransformer tx = new KMLSuperOverlayTransformer(wms, mapContext);
             initTransformer(tx);
             tx.createTranslator(contentHandler).encode(layer);
         }

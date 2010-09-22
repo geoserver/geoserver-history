@@ -93,4 +93,5 @@ public class WMSExtensions {
                 GetLegendGraphicOutputFormat.class, applicationContext);
         return formats;
     }
+
 }

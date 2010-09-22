@@ -300,6 +300,14 @@
       singleton="true"
       class="org.geoserver.wms.map.RawMapResponse">
     </bean>
+    
+    <bean id="wmsXMLTransformerResponse"
+      singleton="true"
+      class="org.geoserver.wms.map.XMLTransformerMapResponse">
+      <description>Handles responsed from GetMapOutputFormats that produce 
+                   an org.geoserver.wms.map.XMLTransformerMap, such as the KML and GeoRSS ones
+      </description>
+    </bean>
   
 	<bean id="PNGMapProducer"
 		singleton="false"
@@ -336,7 +344,7 @@
 		class="org.geoserver.wms.map.PDFMapOutputFormat">
 		<constructor-arg index="0" ref="wms"/>
 	</bean>
-	
+-->	
 	<bean id="KMLMapProducer" 
 		singleton="false"
 		class="org.geoserver.kml.KMLMapOutputFormat">
@@ -348,7 +356,7 @@
 		class="org.geoserver.kml.KMZMapOutputFormat">
 		<constructor-arg index="0" ref="wms"/>
 	</bean>
--->	
+
 	<bean id="OpenLayersMapProducer"
 		singleton="false"
 		class="org.geoserver.wms.map.OpenLayersMapOutputFormat">

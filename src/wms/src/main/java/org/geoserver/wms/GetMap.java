@@ -469,7 +469,7 @@ public class GetMap {
         } catch (Exception e) {
             throw new ServiceException(e, "Internal error ", "");
         } finally {
-            clearMapContext(mapContext);
+            //clearMapContext(mapContext);
             EnvFunction.clearLocalValues();
         }
     }
