@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.sld.servlets;
+package org.geoserver.sld.servlets;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -29,8 +29,12 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.impl.StyleInfoImpl;
+import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.ows.util.XmlCharsetDetector;
 import org.geoserver.platform.ServiceException;
+import org.geoserver.sld.SldException;
+import org.geoserver.sld.requests.PutStylesKvpReader;
+import org.geoserver.sld.requests.PutStylesRequest;
 import org.geoserver.wms.WMS;
 import org.geotools.styling.StyleFactory;
 import org.geotools.styling.StyleFactoryFinder;
@@ -38,9 +42,6 @@ import org.vfny.geoserver.Response;
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.servlets.AbstractService;
-import org.vfny.geoserver.sld.SldException;
-import org.vfny.geoserver.sld.requests.PutStylesKvpReader;
-import org.vfny.geoserver.sld.requests.PutStylesRequest;
 import org.vfny.geoserver.util.SLDValidator;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
@@ -366,7 +367,8 @@ public class PutStyles extends AbstractService {
     
             // validate the SLD
             SLDValidator validator = new SLDValidator();
-            List errors = validator.validateSLD(fs, context);
+            String baseURL = ResponseUtils.baseURL(request);
+            List errors = validator.validateSLD(fs, baseURL);
     
             if (errors.size() != 0) {
                 throw new SldException(SLDValidator.getErrorMessage(xml, errors));

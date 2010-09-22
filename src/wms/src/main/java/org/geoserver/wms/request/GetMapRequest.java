@@ -112,7 +112,7 @@ public class GetMapRequest extends WMSRequest {
      * Map of String,Object which contains kvp's which are specific to a particular output format.
      */
     public Map getFormatOptions() {
-        return formatOptions;
+        return formatOptions == null ? Collections.EMPTY_MAP : formatOptions;
     }
 
     /**
