@@ -1,4 +1,4 @@
-package org.geoserver.wms.xml;
+package org.geoserver.sld;
 
 import java.io.Reader;
 import java.util.Map;
