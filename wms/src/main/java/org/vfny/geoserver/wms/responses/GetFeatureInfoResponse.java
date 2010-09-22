@@ -46,7 +46,7 @@ public class GetFeatureInfoResponse implements Response {
     /**
      * The list of all the supported output formats
      */
-    private static final List supportedMimeTypes = new LinkedList();
+    private static final List<String> supportedMimeTypes = new LinkedList<String>();
 
     static {
         GetFeatureInfoDelegate producer;
@@ -247,7 +247,7 @@ public class GetFeatureInfoResponse implements Response {
      *
      * @return DOCUMENT ME!
      */
-    public static List getFormats() {
+    public static List<String> getFormats() {
         return supportedMimeTypes;
     }
 
