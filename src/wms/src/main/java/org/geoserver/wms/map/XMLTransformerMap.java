@@ -1,9 +1,18 @@
+/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.geoserver.wms.map;
 
 import org.geoserver.wms.WMSMapContext;
 import org.geoserver.wms.WebMap;
 import org.geotools.xml.transform.TransformerBase;
 
+/**
+ * A {@link WebMap} that's represented by a geotools {@link TransformerBase}, got xml output formats
+ * 
+ * @author Gabriel Roldan
+ */
 public class XMLTransformerMap extends WebMap {
 
     private TransformerBase transformer;

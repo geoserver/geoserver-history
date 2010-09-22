@@ -1,3 +1,7 @@
+/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.geoserver.wms.map;
 
 import java.io.IOException;
@@ -12,6 +16,11 @@ import org.geoserver.wms.WebMap;
 import org.geotools.xml.transform.TransformerBase;
 import org.springframework.util.Assert;
 
+/**
+ * An OWS {@link Response} handler that knows how to encode a {@link XMLTransformerMap}
+ * 
+ * @author Gabriel Roldan
+ */
 public class XMLTransformerMapResponse extends Response {
 
     public XMLTransformerMapResponse() {
@@ -32,6 +41,16 @@ public class XMLTransformerMapResponse extends Response {
         return ((XMLTransformerMap) value).getMimeType();
     }
 
+    /**
+     * Encodes the {@link XMLTransformerMap} down to the given destination output stream.
+     * 
+     * @param value
+     *            an {@link XMLTransformerMap}
+     * @param output
+     *            xml stream destination
+     * @param operation
+     *            operation descriptor for which the map was produced
+     */
     @Override
     public void write(Object value, OutputStream output, Operation operation) throws IOException,
             ServiceException {
@@ -47,7 +66,7 @@ public class XMLTransformerMapResponse extends Response {
             Throwable cause = e.getCause() != null ? e.getCause() : e.getException();
             // we need to propagate the RuntimeException
             if (cause instanceof RuntimeException) {
-                throw (RuntimeException)cause;
+                throw (RuntimeException) cause;
             }
             throw new ServiceException(operation.getId() + " operation failed.",
                     cause != null ? cause : e);
