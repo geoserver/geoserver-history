@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import junit.framework.Test;
+import junit.framework.TestCase;
 
 import org.custommonkey.xmlunit.XMLUnit;
 import org.custommonkey.xmlunit.XpathEngine;
@@ -29,7 +30,7 @@ import com.vividsolutions.jts.geom.Point;
 /**
  * Unit test suite for {@link KMLNetworkLinkTransformer}
  */
-public class KMLNetworkLinkTransformerTest extends WMSTestSupport {
+public class KMLNetworkLinkTransformerTest extends TestCase {
 
     private WMSMockData mockData;
 
@@ -39,17 +40,10 @@ public class KMLNetworkLinkTransformerTest extends WMSTestSupport {
     private GetMapRequest request;
 
     /**
-     * This is a READ ONLY TEST so we can use one time setup
-     */
-    public static Test suite() {
-        return new OneTimeTestSetup(new KMLNetworkLinkTransformerTest());
-    }
-
-    /**
      * @see junit.framework.TestCase#setUp()
      */
     @Override
-    protected void setUpInternal() throws Exception {
+    protected void setUp() throws Exception {
         mockData = new WMSMockData();
         mockData.setUp();
 
@@ -71,7 +65,7 @@ public class KMLNetworkLinkTransformerTest extends WMSTestSupport {
      * @see junit.framework.TestCase#tearDown()
      */
     @Override
-    protected void tearDownInternal() throws Exception {
+    protected void tearDown() throws Exception {
         new GeoServerExtensions().setApplicationContext(null);
     }
 
@@ -83,7 +77,7 @@ public class KMLNetworkLinkTransformerTest extends WMSTestSupport {
     public void testEncodeAsRegion() throws Exception {
         XpathEngine xpath = XMLUnit.newXpathEngine();
 
-        WMS wms = getWMS();
+        WMS wms = mockData.getWMS();
         KMLNetworkLinkTransformer transformer = new KMLNetworkLinkTransformer(wms);
         transformer.setEncodeAsRegion(true);
         transformer.setIndentation(2);
@@ -91,7 +85,6 @@ public class KMLNetworkLinkTransformerTest extends WMSTestSupport {
         request.setBbox(new Envelope(-1, 1, -10, 10));
 
         Document dom = WMSTestSupport.transform(request, transformer);
-        print(dom);
         assertXpathEvaluatesTo("1", "count(//kml/Folder)", dom);
         assertXpathEvaluatesTo("1", "count(//kml/Folder/NetworkLink)", dom);
         assertXpathEvaluatesTo("1", "count(//kml/Folder/LookAt)", dom);
@@ -135,7 +128,7 @@ public class KMLNetworkLinkTransformerTest extends WMSTestSupport {
      */
     public void testEncodeAsOverlay() throws Exception {
         XpathEngine xpath = XMLUnit.newXpathEngine();
-        WMS wms = getWMS();
+        WMS wms = mockData.getWMS();
         KMLNetworkLinkTransformer transformer = new KMLNetworkLinkTransformer(wms);
         transformer.setEncodeAsRegion(false);
         transformer.setIndentation(2);

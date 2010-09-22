@@ -39,10 +39,8 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
-import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.feature.type.FeatureType;
 import org.opengis.util.ProgressListener;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -58,6 +56,8 @@ import com.vividsolutions.jts.io.ParseException;
  * @version $Id$
  */
 public class WMSMockData {
+
+    public static final String TEST_NS_PREFIX = "geos";
 
     /**
      * Namespace used for the resources in this test suite
@@ -90,7 +90,7 @@ public class WMSMockData {
 
         namespaceInfo = new NamespaceInfoImpl();
         namespaceInfo.setId("testNs");
-        namespaceInfo.setPrefix("geos");
+        namespaceInfo.setPrefix(TEST_NS_PREFIX);
         namespaceInfo.setURI(TEST_NAMESPACE);
         catalog.add(namespaceInfo);
 
@@ -249,6 +249,7 @@ public class WMSMockData {
             throw new RuntimeException("shouldn't happen", e);
         }
         request.setRawKvp(new HashMap<String, String>());
+        request.setBaseUrl("http://example.geoserver.org/geoserver");
 
         return request;
     }
