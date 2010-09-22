@@ -12,7 +12,6 @@ import java.util.TreeSet;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.wms.response.GetFeatureInfoOutputFormat;
 import org.springframework.context.ApplicationContext;
-import org.vfny.geoserver.wms.GetLegendGraphicProducer;
 import org.vfny.geoserver.wms.GetMapProducer;
 
 /**
@@ -76,12 +75,12 @@ public class WMSExtensions {
         return GeoServerExtensions.extensions(GetFeatureInfoOutputFormat.class, applicationContext);
     }
 
-    public static GetLegendGraphicProducer findLegendGraphicFormat(final String outputFormat,
+    public static GetLegendGraphicOutputFormat findLegendGraphicFormat(final String outputFormat,
             final ApplicationContext applicationContext) {
 
-        List<GetLegendGraphicProducer> formats = findLegendGraphicFormats(applicationContext);
+        List<GetLegendGraphicOutputFormat> formats = findLegendGraphicFormats(applicationContext);
 
-        for (GetLegendGraphicProducer format : formats) {
+        for (GetLegendGraphicOutputFormat format : formats) {
             if (format.getContentType().startsWith(outputFormat)) {
                 return format;
             }
@@ -89,10 +88,10 @@ public class WMSExtensions {
         return null;
     }
 
-    public static List<GetLegendGraphicProducer> findLegendGraphicFormats(
+    public static List<GetLegendGraphicOutputFormat> findLegendGraphicFormats(
             final ApplicationContext applicationContext) {
-        List<GetLegendGraphicProducer> formats = GeoServerExtensions.extensions(
-                GetLegendGraphicProducer.class, applicationContext);
+        List<GetLegendGraphicOutputFormat> formats = GeoServerExtensions.extensions(
+                GetLegendGraphicOutputFormat.class, applicationContext);
         return formats;
     }
 }

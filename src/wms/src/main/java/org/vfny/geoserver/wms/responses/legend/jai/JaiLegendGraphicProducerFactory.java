@@ -7,7 +7,7 @@ package org.vfny.geoserver.wms.responses.legend.jai;
 import java.util.Map;
 import java.util.Set;
 
-import org.vfny.geoserver.wms.GetLegendGraphicProducer;
+import org.geoserver.wms.GetLegendGraphicOutputFormat;
 import org.vfny.geoserver.wms.GetLegendGraphicProducerSpi;
 import org.vfny.geoserver.wms.responses.helpers.JAISupport;
 
@@ -57,7 +57,7 @@ public class JaiLegendGraphicProducerFactory implements GetLegendGraphicProducer
     /**
      * @see org.vfny.geoserver.wms.responses.GetLegendGraphicProducerSpi#createLegendProducer(java.lang.String)
      */
-    public GetLegendGraphicProducer createLegendProducer(String format)
+    public GetLegendGraphicOutputFormat createLegendProducer(String format)
         throws IllegalArgumentException {
         if (!canProduce(format)) {
             throw new IllegalArgumentException(format + " not supported by this legend producer");

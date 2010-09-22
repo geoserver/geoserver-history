@@ -45,7 +45,7 @@ class PNGLegendGraphicProducer extends DefaultRasterLegendProducer {
      * Encodes the image created by the superclss to the format specified at the
      * constructor and sends it to <code>out</code>.
      *
-     * @see org.vfny.geoserver.wms.responses.GetLegendGraphicProducer#writeTo(java.io.OutputStream)
+     * @see org.GetLegendGraphicOutputFormat.geoserver.wms.GetLegendGraphicProducer#writeTo(java.io.OutputStream)
      */
     public void writeTo(OutputStream out) throws IOException, ServiceException {
         final BufferedImage image = super.getLegendGraphic();
@@ -98,7 +98,7 @@ class PNGLegendGraphicProducer extends DefaultRasterLegendProducer {
     /**
      * Returns the MIME type in which the legend graphic will be encoded.
      *
-     * @see org.vfny.geoserver.wms.responses.GetLegendGraphicProducer#getContentType()
+     * @see org.GetLegendGraphicOutputFormat.geoserver.wms.GetLegendGraphicProducer#getContentType()
      */
     public String getContentType() throws IllegalStateException {
         return "image/png";

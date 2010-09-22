@@ -7,7 +7,6 @@ package org.geoserver.wms;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.request.GetLegendGraphicRequest;
 import org.geoserver.wms.response.LegendGraphic;
-import org.vfny.geoserver.wms.GetLegendGraphicProducer;
 
 /**
  * WMS GetLegendGraphic operation default implementation.
@@ -25,7 +24,7 @@ public class GetLegendGraphic {
     public LegendGraphic run(final GetLegendGraphicRequest request) throws ServiceException {
 
         final String outputFormat = request.getFormat();
-        final GetLegendGraphicProducer format = wms.getLegendGraphicOutputFormat(outputFormat);
+        final GetLegendGraphicOutputFormat format = wms.getLegendGraphicOutputFormat(outputFormat);
         if (format == null) {
             throw new ServiceException("There is no support for creating legends in "
                     + outputFormat + " format", "InvalidFormat");

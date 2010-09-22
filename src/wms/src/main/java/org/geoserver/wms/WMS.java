@@ -35,7 +35,6 @@ import org.opengis.feature.type.Name;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.vfny.geoserver.wms.GetLegendGraphicProducer;
 import org.vfny.geoserver.wms.GetMapProducer;
 
 /**
@@ -414,11 +413,11 @@ public class WMS implements ApplicationContextAware {
 
     public Set<String> getAvailableLegendGraphicsFormats() {
 
-        List<GetLegendGraphicProducer> formats;
+        List<GetLegendGraphicOutputFormat> formats;
         formats = WMSExtensions.findLegendGraphicFormats(applicationContext);
 
         Set<String> mimeTypes = new HashSet<String>();
-        for (GetLegendGraphicProducer format : formats) {
+        for (GetLegendGraphicOutputFormat format : formats) {
             mimeTypes.add(format.getContentType());
         }
         return mimeTypes;
@@ -478,8 +477,8 @@ public class WMS implements ApplicationContextAware {
      * @return the GetLegendGraphicOutputFormat that can handle {@code mimeType}, or {@code null} if
      *         none is found
      */
-    public GetLegendGraphicProducer getLegendGraphicOutputFormat(final String outputFormat) {
-        GetLegendGraphicProducer format;
+    public GetLegendGraphicOutputFormat getLegendGraphicOutputFormat(final String outputFormat) {
+        GetLegendGraphicOutputFormat format;
         format = WMSExtensions.findLegendGraphicFormat(outputFormat, applicationContext);
         return format;
     }

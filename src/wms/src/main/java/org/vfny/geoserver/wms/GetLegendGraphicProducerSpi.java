@@ -6,11 +6,12 @@ package org.vfny.geoserver.wms;
 
 import java.util.Set;
 
+import org.geoserver.wms.GetLegendGraphicOutputFormat;
 import org.geotools.factory.Factory;
 
 
 /**
- * Constructs a live GetLegendGraphicProducer.
+ * Constructs a live GetLegendGraphicOutputFormat.
  *
  * <p>
  * An instance of this interface should exist for all legend producers which
@@ -39,7 +40,7 @@ import org.geotools.factory.Factory;
  * </p>
  *
  * <p>
- * The following example shows how a user might obtain GetLegendGraphicProducer
+ * The following example shows how a user might obtain GetLegendGraphicOutputFormat
  * capable of generating a legend graphic image in GIF format and send the
  * generated legend to a file:
  * </p>
@@ -55,7 +56,7 @@ import org.geotools.factory.Factory;
  *                  break;
  *          }
  *  }
- *  GetLegendGraphicProducer producer = glf.createLegendProducer("image/gif");
+ *  GetLegendGraphicOutputFormat producer = glf.createLegendProducer("image/gif");
  *         GetLegendGraphicRequest request = ...
  *  producer.produceLegendGraphic(request);
  *  OutputStream out = new FileOutputStream("/legend.gif");
@@ -83,7 +84,7 @@ public interface GetLegendGraphicProducerSpi extends Factory {
     Set getSupportedFormats();
 
     /**
-     * Checks if the GetLegendGraphicProducer instances this factory serves
+     * Checks if the GetLegendGraphicOutputFormat instances this factory serves
      * will be able of working properly (e.g., external dependencies are in
      * place). This method should be used to avoid asking for producer
      * instances if they are likely to fail.
@@ -105,17 +106,17 @@ public interface GetLegendGraphicProducerSpi extends Factory {
     boolean canProduce(String mimeType);
 
     /**
-     * Creates and instance of a GetLegendGraphicProducer suitable to create
+     * Creates and instance of a GetLegendGraphicOutputFormat suitable to create
      * legend graphics in the specified image format.
      *
      * @param format the MIME type of the desired image
      *
-     * @return a GetLegendGraphicProducer capable of creating legends in
+     * @return a GetLegendGraphicOutputFormat capable of creating legends in
      *         <code>format</code> image format.
      *
      * @throws IllegalArgumentException if <code>format</code> is not one of
      *         the MIME types this producer can create images in.
      */
-    GetLegendGraphicProducer createLegendProducer(String format)
+    GetLegendGraphicOutputFormat createLegendProducer(String format)
         throws IllegalArgumentException;
 }

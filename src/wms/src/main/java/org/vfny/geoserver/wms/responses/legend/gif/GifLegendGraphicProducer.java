@@ -37,7 +37,7 @@ public class GifLegendGraphicProducer extends DefaultRasterLegendProducer {
      * DefaultRasterLegendProducer#produceLegendGraphic(GetLegendGraphicRequest)}
      * to <code>out</code> in "image/gif" format.
      *
-     * @see org.vfny.geoserver.wms.responses.GetLegendGraphicProducer#writeTo(java.io.OutputStream)
+     * @see org.GetLegendGraphicOutputFormat.geoserver.wms.GetLegendGraphicProducer#writeTo(java.io.OutputStream)
      */
     public void writeTo(OutputStream out) throws IOException, ServiceException {
         //GR: shall we add a palette parameter to GetLegendGraphic too?
@@ -56,7 +56,7 @@ public class GifLegendGraphicProducer extends DefaultRasterLegendProducer {
      * @throws IllegalStateException if <code>super.getLegendGraphic() ==
      *         null</code>, to respect the workflow.
      *
-     * @see org.vfny.geoserver.wms.responses.GetLegendGraphicProducer#getContentType()
+     * @see org.GetLegendGraphicOutputFormat.geoserver.wms.GetLegendGraphicProducer#getContentType()
      */
     public String getContentType() throws IllegalStateException {
         if (super.getLegendGraphic() == null) {
