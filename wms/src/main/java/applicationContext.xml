@@ -453,10 +453,14 @@
     <bean id="SVGStreamingMapResponse" class="org.geoserver.wms.svg.SVGStreamingMapResponse">
     </bean>
 
-    <bean id="wmsSVGStrategyExclusionFilter" class="org.geoserver.wms.svg.SVGStrategyExclusionFilter">
-      <description>Excludes the SVG map producer that's to be disabled based on the WMS preferences</description>
-	  <property name="WMS"><ref bean="wms"/></property>
-    </bean>
+  <bean id="wmsSVGStrategyExclusionFilter" class="org.geoserver.wms.svg.SVGStrategyExclusionFilter">
+    <description>Excludes the SVG map producer that's to be disabled based on the WMS preferences</description>
+    <constructor-arg>
+      <description>Name (not reference) of the WMS bean, so it's lazily loaded from the app context to avoid circular
+        rerefencies (that happen only due to the mock tests set up)</description>
+      <value>wms</value>
+    </constructor-arg>
+  </bean>
  	
 	<!-- http url mapping -->
 	<bean id="kmlURLMapping" 
