@@ -19,7 +19,7 @@ import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.DefaultWebMapService;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSMapContext;
-import org.geoserver.wms.response.MapDecorationLayout;
+import org.geoserver.wms.decoration.MapDecorationLayout;
 import org.geotools.renderer.lite.StreamingRenderer;
 import org.springframework.util.Assert;
 

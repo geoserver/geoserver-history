@@ -26,7 +26,6 @@ import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSMapContext;
 import org.geoserver.wms.legendgraphic.LegendUtils;
-import org.geoserver.wms.response.MapDecoration;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.geometry.jts.LiteShape2;
