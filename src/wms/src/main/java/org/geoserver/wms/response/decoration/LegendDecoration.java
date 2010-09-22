@@ -89,6 +89,8 @@ public class LegendDecoration implements MapDecoration {
      */
     private LiteShape2 samplePoint;
 
+    private final WMS wms;
+
     private static final StyledShapePainter shapePainter = new StyledShapePainter();
 
     public LegendDecoration(WMS wms){
