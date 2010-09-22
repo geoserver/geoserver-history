@@ -390,8 +390,8 @@ public class GetCapabilitiesTransformer extends TransformerBase {
 
             start("GetFeatureInfo");
 
-            for (Iterator it = GetFeatureInfoResponse.getFormats().iterator(); it.hasNext();) {
-                element("Format", String.valueOf(it.next()));
+            for (String format : GetFeatureInfoResponse.getFormats()) {
+                element("Format", format);
             }
 
             handleDcpType(serviceUrl, serviceUrl);
@@ -404,8 +404,8 @@ public class GetCapabilitiesTransformer extends TransformerBase {
 
             start("GetLegendGraphic");
 
-            for (Iterator it = getLegendGraphicFormats.iterator(); it.hasNext();) {
-                element("Format", String.valueOf(it.next()));
+            for (String format : getLegendGraphicFormats) {
+                element("Format", format);
             }
 
             handleDcpType(serviceUrl, null);
@@ -537,8 +537,10 @@ public class GetCapabilitiesTransformer extends TransformerBase {
             element("Abstract", serviceInfo.getAbstract());
 
             List<String> srsList = serviceInfo.getSRS();
-            Set<String> srs = srsList == null ? Collections.EMPTY_SET
-                    : new HashSet<String>(srsList);
+            Set<String> srs = new HashSet<String>();
+            if (srsList != null) {
+                srs.addAll(srsList);
+            }
             handleRootCrsList(srs);
 
             handleRootBbox(layers);
@@ -638,7 +640,7 @@ public class GetCapabilitiesTransformer extends TransformerBase {
          */
         private void handleLayerTree(final LayerTree layerTree) {
             final List<LayerInfo> data = new ArrayList<LayerInfo>(layerTree.getData());
-            final Collection<LayerTree> childrens = layerTree.getChildrens();
+            final Collection<LayerTree> children = layerTree.getChildrens();
 
             Collections.sort(data, new Comparator<LayerInfo>() {
                 public int compare(LayerInfo o1, LayerInfo o2) {
@@ -675,10 +677,7 @@ public class GetCapabilitiesTransformer extends TransformerBase {
                 }
             }
 
-            LayerTree childLayerTree;
-
-            for (Iterator it = childrens.iterator(); it.hasNext();) {
-                childLayerTree = (LayerTree) it.next();
+            for (LayerTree childLayerTree : children) {
                 start("Layer");
                 element("Name", childLayerTree.getName());
                 element("Title", childLayerTree.getName());
@@ -696,6 +695,7 @@ public class GetCapabilitiesTransformer extends TransformerBase {
          * 
          * @task TODO: write wms specific elements.
          */
+        @SuppressWarnings("deprecation")
         protected void handleLayer(final LayerInfo layer) {
             // HACK: by now all our layers are queryable, since they reference
             // only featuretypes managed by this server
@@ -1007,8 +1007,6 @@ public class GetCapabilitiesTransformer extends TransformerBase {
                 }
             });
 
-            CoordinateReferenceSystem wgs84 = CRS.decode("EPSG:4326");
-
             for (LayerGroupInfo layerGroup : layerGroups) {
                 String layerName = layerGroup.getName();
 
@@ -1286,8 +1284,8 @@ class LayerTree {
      */
     public LayerTree(Collection<LayerInfo> c) {
         this.name = "";
-        this.childrens = new ArrayList();
-        this.data = new ArrayList();
+        this.childrens = new ArrayList<LayerTree>();
+        this.data = new ArrayList<LayerInfo>();
 
         for (Iterator<LayerInfo> it = c.iterator(); it.hasNext();) {
             LayerInfo layer = it.next();
@@ -1334,17 +1332,13 @@ class LayerTree {
      * @return
      */
     public LayerTree getNode(String name) {
-        LayerTree node = null;
-
-        for (Iterator it = this.childrens.iterator(); it.hasNext();) {
-            LayerTree tmpNode = (LayerTree) it.next();
-
+        for (LayerTree tmpNode : this.childrens) {
             if (tmpNode.name.equals(name)) {
-                node = tmpNode;
+                return tmpNode;
             }
         }
 
-        return node;
+        return null;
     }
 
     public Collection<LayerTree> getChildrens() {

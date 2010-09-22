@@ -9,7 +9,6 @@ import java.io.Reader;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -96,17 +95,6 @@ public class CapabilitiesXmlReader extends XmlRequestReader {
          */
         public CapabilitiesHandler(GetCapabilitiesRequest request) {
             this.request = request;
-        }
-
-        /**
-         * Returns the GetCapabilities request.
-         * 
-         * @return GetCapabilities request.
-         */
-        public GetCapabilitiesRequest getRequest(HttpServletRequest req) {
-            request.setHttpServletRequest(req);
-
-            return request;
         }
 
         /* ***********************************************************************
