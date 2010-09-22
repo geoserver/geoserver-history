@@ -1,4 +1,4 @@
-package org.vfny.geoserver.wms.responses.map.kml;
+package org.geoserver.kml;
 
 import java.util.Collections;
 import java.util.HashMap;

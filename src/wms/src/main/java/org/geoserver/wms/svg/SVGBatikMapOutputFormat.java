@@ -28,7 +28,7 @@ import org.geoserver.wms.DefaultWebMapService;
 import org.geoserver.wms.GetMapOutputFormat;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSMapContext;
-import org.geoserver.wms.map.AbstractGetMapProducer;
+import org.geoserver.wms.map.AbstractMapOutputFormat;
 import org.geoserver.wms.map.MaxErrorEnforcer;
 import org.geoserver.wms.map.RenderExceptionStrategy;
 import org.geotools.map.MapContext;
@@ -45,12 +45,12 @@ import com.vividsolutions.jts.geom.Envelope;
  * @author Justin Deoliveira, The Open Planning Project
  * 
  */
-class SVGBatikMapProducer extends AbstractGetMapProducer implements GetMapOutputFormat {
+class SVGBatikMapOutputFormat extends AbstractMapOutputFormat implements GetMapOutputFormat {
     StreamingRenderer renderer;
 
     private WMS wmsConfig;
 
-    public SVGBatikMapProducer(String mimeType, String[] outputFormats, WMS wms) {
+    public SVGBatikMapOutputFormat(String mimeType, String[] outputFormats, WMS wms) {
         super(mimeType, outputFormats);
         this.wmsConfig = wms;
     }

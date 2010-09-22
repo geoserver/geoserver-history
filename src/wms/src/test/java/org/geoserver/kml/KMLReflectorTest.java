@@ -1,4 +1,4 @@
-package org.vfny.geoserver.wms.responses.map.kml;
+package org.geoserver.kml;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathExists;

@@ -22,9 +22,9 @@ import com.sun.media.imageioimpl.common.PackageUtil;
  * @since 1.4.x
  *
  */
-public final class JPEGMapProducer extends DefaultRasterMapProducer {
+public final class JPEGMapOutputFormat extends DefaultRasterMapOutputFormat {
     /** Logger. */
-    private final static Logger LOGGER = org.geotools.util.logging.Logging.getLogger(JPEGMapProducer.class.toString());
+    private final static Logger LOGGER = org.geotools.util.logging.Logging.getLogger(JPEGMapOutputFormat.class.toString());
 
     /** the only MIME type this map producer supports */
     static final String MIME_TYPE = "image/jpeg";
@@ -33,7 +33,7 @@ public final class JPEGMapProducer extends DefaultRasterMapProducer {
     private boolean JPEGNativeAcc;
 
 
-    public JPEGMapProducer(WMS wms) {
+    public JPEGMapOutputFormat(WMS wms) {
         super(MIME_TYPE, wms);
 
         this.JPEGNativeAcc = wms.getJPEGNativeAcceleration()&& PackageUtil.isCodecLibAvailable();

@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.wms.responses.map.svg;
+package org.geoserver.wms.svg;
 
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
@@ -28,24 +28,24 @@ import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 
 public class SVGMapProducerTest extends WMSTestSupport {
-    
+
     /**
      * This is a READ ONLY TEST so we can use one time setup
      */
     public static Test suite() {
         return new OneTimeTestSetup(new SVGMapProducerTest());
     }
-    
+
     public void testHeterogeneousGeometry() throws Exception {
         GeometryFactory gf = new GeometryFactory();
         Point point = gf.createPoint(new Coordinate(10, 10));
-        LineString line = gf.createLineString(new Coordinate[] {
-                new Coordinate(50, 50), new Coordinate(100, 100) });
-        Polygon polygon = gf.createPolygon(gf
-                .createLinearRing(new Coordinate[] { new Coordinate(0, 0),
-                        new Coordinate(0, 200), new Coordinate(200, 200),
-                        new Coordinate(200, 0), new Coordinate(0, 0) }), null);
-        
+        LineString line = gf.createLineString(new Coordinate[] { new Coordinate(50, 50),
+                new Coordinate(100, 100) });
+        Polygon polygon = gf.createPolygon(
+                gf.createLinearRing(new Coordinate[] { new Coordinate(0, 0),
+                        new Coordinate(0, 200), new Coordinate(200, 200), new Coordinate(200, 0),
+                        new Coordinate(0, 0) }), null);
+
         SimpleFeatureTypeBuilder ftb = new SimpleFeatureTypeBuilder();
         ftb.setName("test");
         ftb.add("geom", Geometry.class);
@@ -71,8 +71,8 @@ public class SVGMapProducerTest extends WMSTestSupport {
         Style basicStyle = getCatalog().getStyleByName("Default").getStyle();
         map.addLayer(fs, basicStyle);
 
-        SVGMapProducer producer = new SVGMapProducer(SvgMapProducerProxy.MIME_TYPE, 
-                SvgMapProducerProxy.OUTPUT_FORMATS);
+        SVGStreamingMapOutputFormat producer = new SVGStreamingMapOutputFormat(
+                SVGMapOutputFormatProxy.MIME_TYPE, SVGMapOutputFormatProxy.OUTPUT_FORMATS);
         producer.setMapContext(map);
         producer.produceMap();
 

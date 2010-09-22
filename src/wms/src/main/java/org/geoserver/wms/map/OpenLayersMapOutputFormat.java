@@ -42,7 +42,7 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
-public class OpenLayersMapProducer extends AbstractGetMapProducer implements GetMapOutputFormat {
+public class OpenLayersMapOutputFormat extends AbstractMapOutputFormat implements GetMapOutputFormat {
     /** A logger for this class. */
     private static final Logger LOGGER = org.geotools.util.logging.Logging
             .getLogger("org.vfny.geoserver.responses.wms.map.openlayers");
@@ -82,7 +82,7 @@ public class OpenLayersMapProducer extends AbstractGetMapProducer implements Get
 
     static {
         cfg = new Configuration();
-        cfg.setClassForTemplateLoading(OpenLayersMapProducer.class, "");
+        cfg.setClassForTemplateLoading(OpenLayersMapOutputFormat.class, "");
         BeansWrapper bw = new BeansWrapper();
         bw.setExposureLevel(BeansWrapper.EXPOSE_PROPERTIES_ONLY);
         cfg.setObjectWrapper(bw);
@@ -98,7 +98,7 @@ public class OpenLayersMapProducer extends AbstractGetMapProducer implements Get
      */
     Template template;
 
-    public OpenLayersMapProducer(WMS wms) {
+    public OpenLayersMapOutputFormat(WMS wms) {
         super(MIME_TYPE, OUTPUT_FORMATS);
         this.wms = wms;
     }

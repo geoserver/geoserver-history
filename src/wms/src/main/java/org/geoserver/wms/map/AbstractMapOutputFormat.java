@@ -20,7 +20,7 @@ import org.geotools.renderer.GTRenderer;
  * @author Simone Giannecchini, GeoSolutions
  * 
  */
-public abstract class AbstractGetMapProducer implements GetMapOutputFormat {
+public abstract class AbstractMapOutputFormat implements GetMapOutputFormat {
     /**
      * Holds the map context passed to produceMap, so subclasses can use it if they need it from
      * inside {@linkPlain #formatImageOutputStream(String, BufferedImage, OutputStream)}
@@ -52,15 +52,15 @@ public abstract class AbstractGetMapProducer implements GetMapOutputFormat {
      */
     private final Set<String> outputFormatNames;
 
-    protected AbstractGetMapProducer(final String mime, final String outputFormat) {
+    protected AbstractMapOutputFormat(final String mime, final String outputFormat) {
         this(mime, new String[] { outputFormat });
     }
 
-    protected AbstractGetMapProducer(final String mime, final String[] outputFormats) {
+    protected AbstractMapOutputFormat(final String mime, final String[] outputFormats) {
         this(mime, outputFormats != null ? Arrays.asList(outputFormats) : null);
     }
 
-    protected AbstractGetMapProducer(final String mime, Collection<String> outputFormats) {
+    protected AbstractMapOutputFormat(final String mime, Collection<String> outputFormats) {
         this.mime = mime;
         if (outputFormats == null) {
             outputFormats = Collections.emptySet();
@@ -72,7 +72,7 @@ public abstract class AbstractGetMapProducer implements GetMapOutputFormat {
 
     }
 
-    protected AbstractGetMapProducer() {
+    protected AbstractMapOutputFormat() {
         this(null, (String[]) null);
     }
 

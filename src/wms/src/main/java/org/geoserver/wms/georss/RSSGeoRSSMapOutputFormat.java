@@ -22,7 +22,7 @@ import org.geoserver.wms.request.GetMapRequest;
 import org.vfny.geoserver.wms.WmsException;
 
 
-public class RSSGeoRSSMapProducer implements GetMapOutputFormat {
+public class RSSGeoRSSMapOutputFormat implements GetMapOutputFormat {
 
     /** the actual mime type for the response header */
     private static String MIME_TYPE = "application/xml";
@@ -49,7 +49,7 @@ public class RSSGeoRSSMapProducer implements GetMapOutputFormat {
 
     private WMS wms;
 
-    public RSSGeoRSSMapProducer(WMS wms){
+    public RSSGeoRSSMapOutputFormat(WMS wms){
         this.wms = wms;
     }
     

@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.wms.responses;
+package org.geoserver.wms.response;
 
 import java.awt.geom.Point2D;
 import java.io.IOException;
@@ -19,13 +19,12 @@ import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSMockData;
 import org.geoserver.wms.WMSMockData.DummyRasterMapProducer;
+import org.geoserver.wms.map.MetatileMapOutputFormat;
 import org.geoserver.wms.request.GetMapRequest;
-import org.geoserver.wms.response.GetMapResponse;
 import org.geotools.factory.CommonFactoryFinder;
 import org.opengis.filter.FilterFactory;
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.wms.WmsException;
-import org.vfny.geoserver.wms.responses.map.metatile.MetatileMapProducer;
 
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Point;
@@ -132,7 +131,7 @@ public class GetMapResponseTest extends TestCase {
             assertTrue(true);
         }
         GetMapOutputFormat delegate = response.getDelegate();
-        assertTrue(delegate instanceof MetatileMapProducer);
+        assertTrue(delegate instanceof MetatileMapOutputFormat);
     }
 
     public void testSingleVectorLayer() throws IOException {

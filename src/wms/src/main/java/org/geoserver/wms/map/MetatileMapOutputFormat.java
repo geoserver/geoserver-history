@@ -39,7 +39,7 @@ eoserver.wms.responses.map.metatile.QuickTileCache.MetaTileKey;
  * @author Andrea Aime - TOPP
  * @author Simone Giannecchini - GeoSolutions
  */
-public final class MetatileMapProducer extends AbstractGetMapProducer implements
+public final class MetatileMapOutputFormat extends AbstractMapOutputFormat implements
         GetMapOutputFormat {
     /** A logger for this class. */
     private static final Logger LOGGER = org.geotools.util.logging.Logging
@@ -50,7 +50,7 @@ public final class MetatileMapProducer extends AbstractGetMapProducer implements
 
     private GetMapRequest request;
 
-    private RasterMapProducer delegate;
+    private RasterMapOutputFormat delegate;
 
     private RenderedImage tile;
 
@@ -66,14 +66,14 @@ public final class MetatileMapProducer extends AbstractGetMapProducer implements
      */
     public static boolean isRequestTiled(GetMapRequest request, GetMapOutputFormat delegate) {
         if (!(request.isTiled() && (request.getTilesOrigin() != null)
-                && (request.getWidth() == 256) && (request.getHeight() == 256) && delegate instanceof RasterMapProducer)) {
+                && (request.getWidth() == 256) && (request.getHeight() == 256) && delegate instanceof RasterMapOutputFormat)) {
             return false;
         }
 
         return true;
     }
 
-    public MetatileMapProducer(GetMapRequest request, RasterMapProducer delegate) {
+    public MetatileMapOutputFormat(GetMapRequest request, RasterMapOutputFormat delegate) {
         if (tileCache == null) {
             tileCache = (QuickTileCache) GeoServerExtensions.bean("metaTileCache");
         }
@@ -116,8 +116,8 @@ public final class MetatileMapProducer extends AbstractGetMapProducer implements
                 // generate, split and cache
                 delegate.setMapContext(mapContext);
 
-                if (this.delegate instanceof DefaultRasterMapProducer) {
-                    ((DefaultRasterMapProducer) this.delegate).setMetatiled(true);
+                if (this.delegate instanceof DefaultRasterMapOutputFormat) {
+                    ((DefaultRasterMapOutputFormat) this.delegate).setMetatiled(true);
                 }
 
                 delegate.produceMap();

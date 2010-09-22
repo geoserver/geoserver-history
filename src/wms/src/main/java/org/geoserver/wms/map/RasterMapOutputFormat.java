@@ -20,7 +20,7 @@ import org.vfny.geoserver.wms.WmsException;
  * @author Simone Giannecchini - GeoSolutions SAS
  * 
  */
-public interface RasterMapProducer extends GetMapOutputFormat {
+public interface RasterMapOutputFormat extends GetMapOutputFormat {
     /**
      * Returns the raw image generated in the {@link GetMapOutputFormat#produceMap(WMSMapContext)}
      * step

@@ -1,4 +1,4 @@
-package org.vfny.geoserver.wms.responses.map.kml;
+package org.geoserver.kml;
 
 import junit.framework.Test;
 
@@ -30,7 +30,7 @@ public class KMLTest extends WMSTestSupport {
     public void testVector() throws Exception {
         Document doc = getAsDOM(
             "wms?request=getmap&service=wms&version=1.1.1" + 
-            "&format=" + KMLMapProducer.MIME_TYPE + 
+            "&format=" + KMLMapOutputFormat.MIME_TYPE + 
             "&layers=" + MockData.BASIC_POLYGONS.getPrefix() + ":" + MockData.BASIC_POLYGONS.getLocalPart() +
             "&styles=" + MockData.BASIC_POLYGONS.getLocalPart() + 
             "&height=1024&width=1024&bbox=-180,-90,180,90&srs=EPSG:4326" 
@@ -44,7 +44,7 @@ public class KMLTest extends WMSTestSupport {
     public void testVectorWithFeatureId() throws Exception {
         Document doc = getAsDOM(
             "wms?request=getmap&service=wms&version=1.1.1" + 
-            "&format=" + KMLMapProducer.MIME_TYPE + 
+            "&format=" + KMLMapOutputFormat.MIME_TYPE + 
             "&layers=" + MockData.BASIC_POLYGONS.getPrefix() + ":" + MockData.BASIC_POLYGONS.getLocalPart() +
             "&styles=" + MockData.BASIC_POLYGONS.getLocalPart() + 
             "&height=1024&width=1024&bbox=-180,-90,180,90&srs=EPSG:4326" +  
@@ -60,7 +60,7 @@ public class KMLTest extends WMSTestSupport {
         
         Document doc = getAsDOM(
             "wms?request=getmap&service=wms&version=1.1.1" + 
-            "&format=" + KMLMapProducer.MIME_TYPE + 
+            "&format=" + KMLMapOutputFormat.MIME_TYPE + 
             "&layers=topp:states" + 
             "&styles=Default" + 
             "&height=1024&width=1024&bbox=-180,-90,180,90&srs=EPSG:4326" +
@@ -77,7 +77,7 @@ public class KMLTest extends WMSTestSupport {
     public void testMissingGraphic() throws Exception {
         Document doc = getAsDOM(
                 "wms?request=getmap&service=wms&version=1.1.1" + 
-                "&format=" + KMLMapProducer.MIME_TYPE + 
+                "&format=" + KMLMapOutputFormat.MIME_TYPE + 
                 "&layers=" + getLayerId(MockData.BRIDGES) +  
                 "&styles=notthere" + 
                 "&height=1024&width=1024&bbox=-180,-90,180,90&srs=EPSG:4326"

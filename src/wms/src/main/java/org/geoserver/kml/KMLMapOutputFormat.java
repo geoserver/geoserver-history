@@ -18,7 +18,7 @@ import org.geoserver.config.ServiceInfo;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.GetMapOutputFormat;
 import org.geoserver.wms.WMS;
-import org.geoserver.wms.map.AbstractGetMapProducer;
+import org.geoserver.wms.map.AbstractMapOutputFormat;
 import org.geoserver.wms.request.GetMapRequest;
 import org.vfny.geoserver.wms.WmsException;
 
@@ -27,7 +27,7 @@ import org.vfny.geoserver.wms.WmsException;
  * 
  * @author James Macgill
  */
-public class KMLMapProducer extends AbstractGetMapProducer implements GetMapOutputFormat {
+public class KMLMapOutputFormat extends AbstractMapOutputFormat implements GetMapOutputFormat {
     /** standard logger */
     protected static final Logger LOGGER = org.geotools.util.logging.Logging
             .getLogger("org.vfny.geoserver.responses.wms.kml");
@@ -47,7 +47,7 @@ public class KMLMapProducer extends AbstractGetMapProducer implements GetMapOutp
 
     private WMS wms;
 
-    public KMLMapProducer(WMS wms) {
+    public KMLMapOutputFormat(WMS wms) {
         super(MIME_TYPE, OUTPUT_FORMATS);
         this.wms = wms;
     }

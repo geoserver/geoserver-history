@@ -173,7 +173,7 @@ public class RSSGeoRSSTransformerTest extends WMSTestSupport {
     Document getRSSResponse(WMSMapContext map, GeometryEncoding encoding)
             throws TransformerException, ParserConfigurationException, FactoryConfigurationError,
             SAXException, IOException {
-        RSSGeoRSSTransformer tx = new RSSGeoRSSTransformer();
+        RSSGeoRSSTransformer tx = new RSSGeoRSSTransformer(getWMS());
         tx.setGeometryEncoding(encoding);
         tx.setIndentation(2);
 

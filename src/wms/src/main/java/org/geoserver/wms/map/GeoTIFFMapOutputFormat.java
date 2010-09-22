@@ -30,7 +30,7 @@ import org.vfny.geoserver.wms.WmsException;
  * @author Simone Giannecchini, GeoSolutions
  *
  */
-public class GeoTiffMapProducer extends DefaultRasterMapProducer {
+public class GeoTIFFMapOutputFormat extends DefaultRasterMapOutputFormat {
 
     /** A logger for this class. */
     private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger(
@@ -45,12 +45,12 @@ public class GeoTiffMapProducer extends DefaultRasterMapProducer {
     private static final String[] OUTPUT_FORMATS = { "image/geotiff", "image/geotiff8" };
 
     /**
-     * Constructo for a {@link GeoTiffMapProducer}.
+     * Constructo for a {@link GeoTIFFMapOutputFormat}.
      *
      * @param wms
      *            that is asking us to encode the image.
      */
-    public GeoTiffMapProducer( WMS wms) {
+    public GeoTIFFMapOutputFormat( WMS wms) {
         super(MIME_TYPE, OUTPUT_FORMATS, wms);
     }
 

@@ -47,7 +47,7 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
             .getLogger(DefaultRasterMapProducerTest.class.getPackage().getName());
 
     /** DOCUMENT ME! */
-    private DefaultRasterMapProducer rasterMapProducer;
+    private DefaultRasterMapOutputFormat rasterMapProducer;
     
     /** DOCUMENT ME! */
     private String mapFormat = "image/gif";
@@ -75,7 +75,7 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
      * 
      * @return DOCUMENT ME!
      */
-    protected DefaultRasterMapProducer getProducerInstance() {
+    protected DefaultRasterMapOutputFormat getProducerInstance() {
         return new DummyRasterMapProducer(getWMS());
     }
 
@@ -252,7 +252,7 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
     }
     
     /**
-     * Checks {@link DefaultRasterMapProducer} makes good use of {@link RenderExceptionStrategy}
+     * Checks {@link DefaultRasterMapOutputFormat} makes good use of {@link RenderExceptionStrategy}
      */
     @SuppressWarnings("deprecation")
     public void testRenderingErrorsHandling() throws Exception {
@@ -292,7 +292,7 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
      * <p>
      * If the rendering succeeded returns the image, which is going to be a blank one but means the
      * renderer didn't complain about the exception caught. Otherwise throws back the exception
-     * thrown by {@link DefaultRasterMapProducer#produceMap()}
+     * thrown by {@link DefaultRasterMapOutputFormat#produceMap()}
      * </p>
      */
     @SuppressWarnings("unchecked")
@@ -331,16 +331,16 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
 
 
     /**
-     * This dummy producer adds no functionality to DefaultRasterMapProducer,
+     * This dummy producer adds no functionality to DefaultRasterMapOutputFormat,
      * just implements a void formatImageOutputStream to have a concrete class
-     * over which test that DefaultRasterMapProducer correctly generates the
+     * over which test that DefaultRasterMapOutputFormat correctly generates the
      * BufferedImage.
      * 
      * @author Gabriel Roldan, Axios Engineering
-     * @version $Id: DefaultRasterMapProducerTest.java 6797 2007-05-16 10:23:50Z
+     * @version $Id: DefaultRasterMapOutputFormatTest.java 6797 2007-05-16 10:23:50Z
      *          aaime $
      */
-    private static class DummyRasterMapProducer extends DefaultRasterMapProducer {
+    private static class DummyRasterMapProducer extends DefaultRasterMapOutputFormat {
 
         public DummyRasterMapProducer(WMS wms) {
             super("image/gif", new String[] { "image/gif" }, wms);

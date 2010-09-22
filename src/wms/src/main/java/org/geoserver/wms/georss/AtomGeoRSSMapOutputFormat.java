@@ -21,7 +21,7 @@ import org.geoserver.wms.WMSMapContext;
 import org.geoserver.wms.request.GetMapRequest;
 import org.vfny.geoserver.wms.WmsException;
 
-public class AtomGeoRSSMapProducer implements GetMapOutputFormat {
+public class AtomGeoRSSMapOutputFormat implements GetMapOutputFormat {
     /** mime type */
     public static String MIME_TYPE = "application/atom+xml";
 
@@ -43,7 +43,7 @@ public class AtomGeoRSSMapProducer implements GetMapOutputFormat {
 
     private WMS wms;
 
-    public AtomGeoRSSMapProducer(WMS wms) {
+    public AtomGeoRSSMapOutputFormat(WMS wms) {
         this.wms = wms;
     }
 

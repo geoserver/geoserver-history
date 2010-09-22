@@ -22,7 +22,7 @@ import org.vfny.geoserver.wms.WmsException;
  * @author Didier Richard
  * @version $Id
  */
-public class PNGMapProducer extends DefaultRasterMapProducer {
+public class PNGMapOutputFormat extends DefaultRasterMapOutputFormat {
     /** Logger */
     private static final Logger LOGGER = org.geotools.util.logging.Logging
             .getLogger("org.vfny.geoserver.wms.responses.map.png");
@@ -39,7 +39,7 @@ public class PNGMapProducer extends DefaultRasterMapProducer {
      *            the format name as to be reported in the capabilities document
      * @param wms
      */
-    public PNGMapProducer(WMS wms) {
+    public PNGMapOutputFormat(WMS wms) {
         super(MIME_TYPE, OUTPUT_FORMATS, wms);
         this.PNGNativeAcc = wms.getPNGNativeAcceleration();
     }

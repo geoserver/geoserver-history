@@ -30,7 +30,7 @@ import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.data.test.MockData;
 import org.geoserver.test.GeoServerTestSupport;
-import org.geoserver.wms.map.DefaultRasterMapProducer;
+import org.geoserver.wms.map.DefaultRasterMapOutputFormat;
 import org.geoserver.wms.request.GetMapRequest;
 import org.geotools.data.FeatureSource;
 import org.geotools.map.FeatureSourceMapLayer;
@@ -68,9 +68,9 @@ public abstract class WMSTestSupport extends GeoServerTestSupport {
      * @return The global wms singleton from the application context.
      */
     protected WMS getWMS() {
-        WMS wms = (WMS)applicationContext.getBean("wms");
-        //WMS wms = new WMS(getGeoServer());
-        //wms.setApplicationContext(applicationContext);
+        WMS wms = (WMS) applicationContext.getBean("wms");
+        // WMS wms = new WMS(getGeoServer());
+        // wms.setApplicationContext(applicationContext);
         return wms;
     }
 
@@ -303,7 +303,7 @@ public abstract class WMSTestSupport extends GeoServerTestSupport {
      * @param testName
      * @param producer
      */
-    protected void assertNotBlank(String testName, DefaultRasterMapProducer producer) {
+    protected void assertNotBlank(String testName, DefaultRasterMapOutputFormat producer) {
         BufferedImage image = (BufferedImage) producer.getImage();
         assertNotBlank(testName, image, BG_COLOR);
         showImage(testName, image);
