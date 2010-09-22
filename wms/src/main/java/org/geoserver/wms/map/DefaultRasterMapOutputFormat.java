@@ -90,7 +90,7 @@ import org.vfny.geoserver.global.GeoserverDataDirectory;
  * 
  * <p>
  * This class does the job of producing a BufferedImage using geotools LiteRenderer, so it should be
- * enough for a subclass to implement {@linkPlain #formatImageOutputStrea}
+ * enough for a subclass to implement {@linkplain #formatImageOutputStream}
  * </p>
  * 
  * <p>
@@ -153,9 +153,6 @@ public abstract class DefaultRasterMapOutputFormat extends AbstractMapOutputForm
 
     /** WMS Service configuration * */
     protected final WMS wms;
-
-    /** true iff this image is metatiled */
-    private boolean tiled = false;
 
     /**
      * 
@@ -245,18 +242,22 @@ public abstract class DefaultRasterMapOutputFormat extends AbstractMapOutputForm
     }
 
     /**
-     * Performs the execute request using geotools rendering.
-     * 
-     * @param map
-     *            The information on the types requested.
-     * 
-     * @throws ServiceException
-     *             For any problems.
-     * @see GetMapOutputFormat#produceMap(WMSMapContext)
+     * @see org.geoserver.wms.GetMapOutputFormat#produceMap(org.geoserver.wms.WMSMapContext)
      */
-    public BufferedImageMap produceMap(WMSMapContext mapContext) throws ServiceException {
+    public final BufferedImageMap produceMap(WMSMapContext mapContext) throws ServiceException {
+        return produceMap(mapContext, false);
+    }
+    
+    /**
+     * Actually produces the map image, careing about meta tiling if {@code tiled == true}.
+     * @param mapContext
+     * @param tiled
+     *            Indicates whether metatiling is activated for this map producer.
+     */
+    public BufferedImageMap produceMap(final WMSMapContext mapContext, final boolean tiled)
+            throws ServiceException {
 
-        final MapDecorationLayout layout = findDecorationLayout(mapContext);
+        final MapDecorationLayout layout = findDecorationLayout(mapContext, tiled);
 
         Rectangle paintArea = new Rectangle(0, 0, mapContext.getMapWidth(),
                 mapContext.getMapHeight());
@@ -519,7 +520,7 @@ public abstract class DefaultRasterMapOutputFormat extends AbstractMapOutputForm
         return map;
     }
 
-    public MapDecorationLayout findDecorationLayout(WMSMapContext mapContext) {
+    protected MapDecorationLayout findDecorationLayout(WMSMapContext mapContext, final boolean tiled) {
         String layoutName = null;
         if (mapContext.getRequest().getFormatOptions() != null) {
             layoutName = (String) mapContext.getRequest().getFormatOptions().get("layout");
@@ -613,13 +614,6 @@ public abstract class DefaultRasterMapOutputFormat extends AbstractMapOutputForm
         }
 
         return null;
-    }
-
-    /**
-     * Indicate whether metatiling is activated for this map producer.
-     */
-    public void setMetatiled(boolean tiled) {
-        this.tiled = tiled;
     }
 
     /**

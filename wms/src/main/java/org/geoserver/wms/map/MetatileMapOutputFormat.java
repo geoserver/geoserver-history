@@ -110,11 +110,14 @@ public final class MetatileMapOutputFormat implements GetMapOutputFormat {
                 mapContext.setMapHeight(key.getTileSize() * key.getMetaFactor());
                 mapContext.setTileSize(key.getTileSize());
 
+                BufferedImageMap metaTileMap;
                 if (this.delegate instanceof DefaultRasterMapOutputFormat) {
-                    ((DefaultRasterMapOutputFormat) this.delegate).setMetatiled(true);
+                    DefaultRasterMapOutputFormat drmof = (DefaultRasterMapOutputFormat) this.delegate;
+                    metaTileMap = drmof.produceMap(mapContext, true);
+                } else {
+                    metaTileMap = delegate.produceMap(mapContext);
                 }
 
-                BufferedImageMap metaTileMap = delegate.produceMap(mapContext);
                 RenderedImage metaTile = metaTileMap.getImage();
                 RenderedImage[] tiles = split(key, metaTile, mapContext);
                 tileCache.storeTiles(key, tiles);
