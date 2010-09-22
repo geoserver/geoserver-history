@@ -19,6 +19,7 @@ import java.util.List;
 import javax.servlet.ServletContext;
 
 import org.apache.xerces.parsers.SAXParser;
+import org.geotools.data.wms.request.GetMapRequest;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -34,11 +35,10 @@ public class GETMAPValidator {
      *  validates against the "normal" location of the schema (ie. ".../capabilities/sld/StyleLayerDescriptor.xsd"
      *  uses the geoserver_home patch
      * @param xml
-     * @param servContext servlet context
+     * @param req
      * @return
      */
-    public List validateGETMAP(InputStream xml, ServletContext servContext) {
-        // File schemaFile = new File( GeoserverDataDirectory.getGeoserverDataDirectory(servContext),"/data/capabilities/sld/StyledLayerDescriptor.xsd");
+    public List validateGETMAP(InputStream xml) {
         File schemaFile = new File(GeoserverDataDirectory.getGeoserverDataDirectory(),
                 "/data/capabilities/sld/GetMap.xsd");
 

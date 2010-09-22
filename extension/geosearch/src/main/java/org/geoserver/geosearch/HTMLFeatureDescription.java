@@ -9,13 +9,13 @@ import java.util.Map;
 import org.geoserver.ows.URLMangler.URLType;
 import org.geoserver.rest.format.DataFormat;
 import org.geoserver.rest.format.FreemarkerFormat;
+import org.geoserver.wms.response.featureinfo.FeatureTemplate;
 import org.opengis.feature.simple.SimpleFeature;
 import org.restlet.data.MediaType;
 import org.restlet.data.Method;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
-import org.vfny.geoserver.wms.responses.featureInfo.FeatureTemplate;
 
 public class HTMLFeatureDescription extends AbstractFeatureDescription {
     private final DataFormat format =

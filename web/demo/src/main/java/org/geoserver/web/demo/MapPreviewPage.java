@@ -33,10 +33,10 @@ import org.geoserver.catalog.LayerInfo;
 import org.geoserver.web.GeoServerApplication;
 import org.geoserver.web.GeoServerBasePage;
 import org.geoserver.web.demo.PreviewLayer.PreviewLayerType;
-import org.geoserver.web.wicket.GeoServerTablePanel;
 import org.geoserver.web.wicket.GeoServerDataProvider.Property;
+import org.geoserver.web.wicket.GeoServerTablePanel;
 import org.geoserver.wfs.WFSGetFeatureOutputFormat;
-import org.vfny.geoserver.wms.GetMapProducer;
+import org.geoserver.wms.GetMapOutputFormat;
 
 /**
  * Shows a paged list of the available layers and points to previews
@@ -105,9 +105,9 @@ public class MapPreviewPage extends GeoServerBasePage {
         List<String> formats = new ArrayList<String>();
 
         final GeoServerApplication application = getGeoServerApplication();
-        for (GetMapProducer producer : application
-                .getBeansOfType(GetMapProducer.class)) {
-            formats.add(producer.getOutputFormat());
+        for (GetMapOutputFormat producer : application
+                .getBeansOfType(GetMapOutputFormat.class)) {
+            formats.add(producer.getMimeType());
         }
         formats = new ArrayList<String>(new HashSet<String>(formats));
         prepareFormatList(formats, new FormatComparator("format.wms."));

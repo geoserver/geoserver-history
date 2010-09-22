@@ -11,9 +11,8 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import org.geoserver.platform.ServiceException;
-import org.vfny.geoserver.wms.GetMapProducer;
+import org.geoserver.wms.map.AbstractGetMapProducer;
 import org.vfny.geoserver.wms.WmsException;
-import org.vfny.geoserver.wms.responses.AbstractGetMapProducer;
 
 
 /**
