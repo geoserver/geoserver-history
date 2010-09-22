@@ -18,7 +18,7 @@ import org.geoserver.wms.GetMapOutputFormat;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSMapContext;
 import org.geoserver.wms.map.AbstractMapOutputFormat;
-import org.geoserver.wms.map.BufferedImageMap;
+import org.geoserver.wms.map.RenderedImageMap;
 import org.geoserver.wms.map.PNGMapOutputFormat;
 import org.geoserver.wms.map.XMLTransformerMap;
 import org.geotools.map.MapLayer;
@@ -141,7 +141,7 @@ public class KMZMapOutputFormat extends AbstractMapOutputFormat implements GetMa
                 subContext.setTransparent(true);
 
                 // render the map
-                BufferedImageMap imageMap;
+                RenderedImageMap imageMap;
                 try {
                     imageMap = mapProducer.produceMap(subContext);
                 } finally {

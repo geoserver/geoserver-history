@@ -167,12 +167,12 @@ public abstract class DefaultRasterMapOutputFormat extends AbstractMapOutputForm
      *            generated
      */
     public DefaultRasterMapOutputFormat(String mime, WMS wms) {
-        super(BufferedImageMap.class, mime);
+        super(RenderedImageMap.class, mime);
         this.wms = wms;
     }
 
     public DefaultRasterMapOutputFormat(String mime, String[] outputFormats, WMS wms) {
-        super(BufferedImageMap.class, mime, outputFormats);
+        super(RenderedImageMap.class, mime, outputFormats);
         this.wms = wms;
     }
 
@@ -180,7 +180,7 @@ public abstract class DefaultRasterMapOutputFormat extends AbstractMapOutputForm
      * Writes the image to the given destination.
      * 
      * @param value
-     *            must be a {@link BufferedImageMap}
+     *            must be a {@link RenderedImageMap}
      * @see GetMapOutputFormat#write(org.geoserver.wms.Map, OutputStream)
      * @see #formatImageOutputStream(RenderedImage, OutputStream, WMSMapContext)
      */
@@ -188,9 +188,9 @@ public abstract class DefaultRasterMapOutputFormat extends AbstractMapOutputForm
     public final void write(final Object value, final OutputStream output, final Operation operation)
             throws IOException, ServiceException {
 
-        Assert.isInstanceOf(BufferedImageMap.class, value);
+        Assert.isInstanceOf(RenderedImageMap.class, value);
 
-        final BufferedImageMap imageMap = (BufferedImageMap) value;
+        final RenderedImageMap imageMap = (RenderedImageMap) value;
         try {
             final RenderedImage image = imageMap.getImage();
             final List<GridCoverage2D> renderedCoverages = imageMap.getRenderedCoverages();
@@ -244,7 +244,7 @@ public abstract class DefaultRasterMapOutputFormat extends AbstractMapOutputForm
     /**
      * @see org.geoserver.wms.GetMapOutputFormat#produceMap(org.geoserver.wms.WMSMapContext)
      */
-    public final BufferedImageMap produceMap(WMSMapContext mapContext) throws ServiceException {
+    public final RenderedImageMap produceMap(WMSMapContext mapContext) throws ServiceException {
         return produceMap(mapContext, false);
     }
     
@@ -254,7 +254,7 @@ public abstract class DefaultRasterMapOutputFormat extends AbstractMapOutputForm
      * @param tiled
      *            Indicates whether metatiling is activated for this map producer.
      */
-    public BufferedImageMap produceMap(final WMSMapContext mapContext, final boolean tiled)
+    public RenderedImageMap produceMap(final WMSMapContext mapContext, final boolean tiled)
             throws ServiceException {
 
         final MapDecorationLayout layout = findDecorationLayout(mapContext, tiled);
@@ -327,7 +327,7 @@ public abstract class DefaultRasterMapOutputFormat extends AbstractMapOutputForm
             }
 
             if (image != null) {
-                BufferedImageMap result = new BufferedImageMap(mapContext, image, getMimeType());
+                RenderedImageMap result = new RenderedImageMap(mapContext, image, getMimeType());
                 result.setRenderedCoverages(renderedCoverages);
                 return result;
             }
@@ -516,7 +516,7 @@ public abstract class DefaultRasterMapOutputFormat extends AbstractMapOutputForm
             image = preparedImage;
         // }
 
-        BufferedImageMap map = new BufferedImageMap(mapContext, image, getMimeType());
+        RenderedImageMap map = new RenderedImageMap(mapContext, image, getMimeType());
         return map;
     }
 
