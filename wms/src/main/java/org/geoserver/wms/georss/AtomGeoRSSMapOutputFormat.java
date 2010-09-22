@@ -5,21 +5,18 @@
 package org.geoserver.wms.georss;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
 import java.util.TreeSet;
 
-import javax.xml.transform.TransformerException;
-
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.GetMapOutputFormat;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSMapContext;
+import org.geoserver.wms.map.XMLTransformerMap;
 import org.geoserver.wms.request.GetMapRequest;
-import org.vfny.geoserver.wms.WmsException;
 
 public class AtomGeoRSSMapOutputFormat implements GetMapOutputFormat {
     /** mime type */
@@ -34,36 +31,42 @@ public class AtomGeoRSSMapOutputFormat implements GetMapOutputFormat {
         FORMAT_NAMES = Collections.unmodifiableSet(names);
     }
 
-    /**
-     * current map context
-     */
-    WMSMapContext map;
-
-    private String outputFormat = MIME_TYPE;
-
     private WMS wms;
 
     public AtomGeoRSSMapOutputFormat(WMS wms) {
         this.wms = wms;
     }
 
-    public String getContentType() throws IllegalStateException {
+    /**
+     * @return {@code true}
+     * @see org.geoserver.wms.GetMapOutputFormat#enabled()
+     */
+    public boolean enabled() {
+        return true;
+    }
+
+    /**
+     * @see org.geoserver.wms.GetMapOutputFormat#getMimeType()
+     */
+    public String getMimeType() {
         return MIME_TYPE;
     }
 
     /**
-     * @deprecated
+     * @see GetMapOutputFormat#getOutputFormatNames()
      */
-    public void setContentType(String mime) {
-        throw new UnsupportedOperationException();
+    public Set<String> getOutputFormatNames() {
+        return FORMAT_NAMES;
     }
 
-    public void produceMap() throws WmsException {
-    }
+    /**
+     * @see org.geoserver.wms.GetMapOutputFormat#produceMap(org.geoserver.wms.WMSMapContext)
+     */
+    public XMLTransformerMap produceMap(WMSMapContext mapContext) throws ServiceException,
+            IOException {
 
-    public void writeTo(OutputStream out) throws ServiceException, IOException {
         AtomGeoRSSTransformer tx = new AtomGeoRSSTransformer(wms);
-        GetMapRequest request = map.getRequest();
+        GetMapRequest request = mapContext.getRequest();
 
         String geometryEncoding = (String) request.getFormatOptions().get("encoding");
         if ("gml".equals(geometryEncoding)) {
@@ -76,49 +79,9 @@ public class AtomGeoRSSMapOutputFormat implements GetMapOutputFormat {
 
         Charset encoding = wms.getCharSet();
         tx.setEncoding(encoding);
-        try {
-            tx.transform(map, out);
-        } catch (TransformerException e) {
-            throw (IOException) new IOException().initCause(e);
-        }
 
-        map = null;
-    }
-
-    public void abort() {
-        map = null;
-    }
-
-    public String getContentDisposition() {
-        return null;
-    }
-
-    public WMSMapContext getMapContext() {
-        return map;
-    }
-
-    public void setMapContext(WMSMapContext mapContext) {
-        this.map = mapContext;
-    }
-
-    public String getOutputFormat() {
-        return outputFormat;
-    }
-
-    public void setOutputFormat(String format) {
-        if (FORMAT_NAMES.contains(format)) {
-            this.outputFormat = format;
-        } else {
-            throw new IllegalArgumentException(format + " is not supported by "
-                    + getClass().getSimpleName());
-        }
-    }
-
-    /**
-     * @see GetMapOutputFormat#getOutputFormatNames()
-     */
-    public Set<String> getOutputFormatNames() {
-        return FORMAT_NAMES;
+        XMLTransformerMap result = new XMLTransformerMap(tx, mapContext, getMimeType());
+        return result;
     }
 
 }

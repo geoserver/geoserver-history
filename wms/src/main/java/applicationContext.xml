@@ -362,25 +362,31 @@
 		class="org.geoserver.wms.map.OpenLayersMapOutputFormat">
 		<constructor-arg index="0" ref="wms"/>
 	</bean>
-<!-- 
+
 	<bean id="AtomGeoRSSMapProducer"
 		singleton="false"
-		class="org.geoserver.wms.map.georss.AtomGeoRSSMapOutputFormat">
+		class="org.geoserver.wms.georss.AtomGeoRSSMapOutputFormat">
         <constructor-arg index="0" ref="wms"/>
 	</bean>
 
 	<bean id="RSSGeoRSSMapProducer"
 		singleton="false"
-		class="org.geoserver.wms.map.georss.RSSGeoRSSMapOutputFormat">
+		class="org.geoserver.wms.georss.RSSGeoRSSMapOutputFormat">
         <constructor-arg index="0" ref="wms"/>
 	</bean>
 
-	<bean id="SVGMapProducer" 
-		singleton="false"
-		class="org.geoserver.wms.svg.SVGMapOutputFormatProxy">
+	<bean id="SVGBatikMapOutputFormat" 
+		singleton="true"
+		class="org.geoserver.wms.svg.SVGBatikMapOutputFormat">
 		<constructor-arg index="0" ref="wms"/>
 	</bean>
--->	
+  
+    <bean id="SVGStreamingMapOutputFormat" 
+        singleton="true"
+        class="org.geoserver.wms.svg.SVGStreamingMapOutputFormat">
+        <constructor-arg index="0" ref="wms"/>
+    </bean>
+
  	
 	<!-- http url mapping -->
 	<bean id="kmlURLMapping" 

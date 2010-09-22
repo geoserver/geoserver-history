@@ -4,6 +4,10 @@
  */
 package org.geoserver.wms.map;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+
 import org.geoserver.wms.WMSMapContext;
 import org.geoserver.wms.response.Map;
 
@@ -18,14 +22,29 @@ public class RawMap extends Map {
 
     private byte[] mapContents;
 
+    private ByteArrayOutputStream buffer;
+
     public RawMap(final WMSMapContext mapContext, final byte[] mapContents, final String mimeType) {
         this.mapContext = mapContext;
         this.mapContents = mapContents;
         setMimeType(mimeType);
     }
 
-    public byte[] getMapContents() {
-        return mapContents;
+    public RawMap(final WMSMapContext mapContext, final ByteArrayOutputStream buff,
+            final String mimeType) {
+        this.mapContext = mapContext;
+        this.buffer = buff;
+        setMimeType(mimeType);
+    }
+
+    public void writeTo(OutputStream out) throws IOException {
+        if (mapContents != null) {
+            out.write(mapContents);
+        } else if (buffer != null) {
+            buffer.writeTo(out);
+        } else {
+            throw new IllegalStateException();
+        }
     }
 
     public WMSMapContext getMapContext() {

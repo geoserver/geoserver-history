@@ -95,6 +95,14 @@ public class OpenLayersMapOutputFormat implements GetMapOutputFormat {
     public OpenLayersMapOutputFormat(WMS wms) {
         this.wms = wms;
     }
+    
+    /**
+     * @return {@code true}
+     * @see org.geoserver.wms.GetMapOutputFormat#enabled()
+     */
+    public boolean enabled() {
+        return true;
+    }
 
     /**
      * @see org.geoserver.wms.GetMapOutputFormat#getOutputFormatNames()
@@ -149,11 +157,9 @@ public class OpenLayersMapOutputFormat implements GetMapOutputFormat {
             }
 
             template.setOutputEncoding("UTF-8");
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            template.process(map, new OutputStreamWriter(out, Charset.forName("UTF-8")));
-            byte[] mapContents = out.toByteArray();
-
-            RawMap result = new RawMap(mapContext, mapContents, MIME_TYPE);
+            ByteArrayOutputStream buff = new ByteArrayOutputStream();
+            template.process(map, new OutputStreamWriter(buff, Charset.forName("UTF-8")));
+            RawMap result = new RawMap(mapContext, buff, MIME_TYPE);
             return result;
         } catch (TemplateException e) {
             throw new WmsException(e);
