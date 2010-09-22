@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.wms.responses.featureInfo;
+package org.geoserver.wms.response.featureinfo;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -43,7 +43,7 @@ import freemarker.template.TemplateException;
  * @author Andrea Aime, TOPP
  * @version $Id$
  */
-public class HTMLTableFeatureInfoResponse extends GetFeatureInfoOutputFormat {
+public class HTMLFeatureInfoOutputFormat extends GetFeatureInfoOutputFormat {
 
     private static final String FORMAT = "text/html";
 
@@ -60,10 +60,7 @@ public class HTMLTableFeatureInfoResponse extends GetFeatureInfoOutputFormat {
 
     private WMS wms;
 
-    /**
-     *
-     */
-    public HTMLTableFeatureInfoResponse(final WMS wms) {
+    public HTMLFeatureInfoOutputFormat(final WMS wms) {
         super(FORMAT);
         this.wms = wms;
     }

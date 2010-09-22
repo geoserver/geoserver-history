@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.wms.responses.featureInfo;
+package org.geoserver.wms.response.featureinfo;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -35,11 +35,11 @@ import com.vividsolutions.jts.geom.Geometry;
  * @author James Macgill, PSU
  * @version $Id: TextFeatureInfoResponse.java,v 1.3 2004/07/19 22:31:40 jmacgill Exp $
  */
-public class TextFeatureInfoResponse extends GetFeatureInfoOutputFormat {
+public class TextFeatureInfoOutputFormat extends GetFeatureInfoOutputFormat {
 
     private WMS wms;
 
-    public TextFeatureInfoResponse(final WMS wms) {
+    public TextFeatureInfoOutputFormat(final WMS wms) {
         super("text/plain");
         this.wms = wms;
     }

@@ -45,6 +45,7 @@ import org.geoserver.catalog.WMSLayerInfo;
 import org.geoserver.config.ContactInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.ows.URLMangler.URLType;
+import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.GetCapabilities;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSInfo;
@@ -65,7 +66,6 @@ import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.TransformException;
 import org.springframework.util.Assert;
-import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.responses.GetLegendGraphicResponse;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.AttributesImpl;
@@ -393,7 +393,7 @@ public class GetCapabilitiesTransformer extends TransformerBase {
 
             start("GetFeatureInfo");
 
-            for (String format : GetFeatureInfoResponse.getFormats()) {
+            for (String format : wmsConfig.getAvailableFeatureInfoFormats()) {
                 element("Format", format);
             }
 
@@ -673,9 +673,9 @@ public class GetCapabilitiesTransformer extends TransformerBase {
                         handleLayer(layer);
                     } catch (Exception e) {
                         // report what layer we failed on to help the admin locate and fix it
-                        throw new WmsException(
+                        throw new ServiceException(
                                 "Error occurred trying to write out metadata for layer: "
-                                        + layer.getName(), "", e);
+                                        + layer.getName(), e);
                     }
                 }
             }

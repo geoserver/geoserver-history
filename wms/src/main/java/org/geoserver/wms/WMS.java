@@ -6,6 +6,7 @@ package org.geoserver.wms;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -25,6 +26,7 @@ import org.geoserver.config.GeoServerInfo;
 import org.geoserver.config.JAIInfo;
 import org.geoserver.wms.WMSInfo.WMSInterpolation;
 import org.geoserver.wms.WatermarkInfo.Position;
+import org.geoserver.wms.response.GetFeatureInfoOutputFormat;
 import org.geotools.styling.Style;
 import org.geotools.util.Converters;
 import org.geotools.util.Version;
@@ -422,5 +424,32 @@ public class WMS implements ApplicationContextAware {
     public void setApplicationContext(final ApplicationContext applicationContext)
             throws BeansException {
         this.applicationContext = applicationContext;
+    }
+
+    /**
+     * @param requestFormat
+     * @return a {@link GetFeatureInfoOutputFormat} that can handle the requested mime type or
+     *         {@code null} if none if found
+     */
+    public GetFeatureInfoOutputFormat getFeatureInfoOutputFormat(String requestFormat) {
+        List<GetFeatureInfoOutputFormat> outputFormats;
+        outputFormats = WMSExtensions.findFeatureInfoFormats(applicationContext);
+
+        for (GetFeatureInfoOutputFormat format : outputFormats) {
+            if (format.canProduce(requestFormat)) {
+                return format;
+            }
+        }
+        return null;
+    }
+
+    public List<String> getAvailableFeatureInfoFormats() {
+        List<GetFeatureInfoOutputFormat> outputFormats;
+        outputFormats = WMSExtensions.findFeatureInfoFormats(applicationContext);
+        List<String> mimeTypes = new ArrayList<String>(outputFormats.size());
+        for (GetFeatureInfoOutputFormat format : outputFormats) {
+            mimeTypes.add(format.getContentType());
+        }
+        return mimeTypes;
     }
 }

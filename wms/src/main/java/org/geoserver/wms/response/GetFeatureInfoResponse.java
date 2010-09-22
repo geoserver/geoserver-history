@@ -6,11 +6,6 @@ package org.geoserver.wms.response;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import net.opengis.wfs.FeatureCollectionType;
 
@@ -18,13 +13,9 @@ import org.geoserver.ows.Response;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.GetFeatureInfo;
+import org.geoserver.wms.WMS;
 import org.geoserver.wms.request.GetFeatureInfoRequest;
-import org.geotools.data.wms.response.GetMapResponse;
 import org.springframework.util.Assert;
-import org.vfny.geoserver.wms.WmsException;
-import org.vfny.geoserver.wms.responses.featureInfo.GmlFeatureInfoResponse;
-import org.vfny.geoserver.wms.responses.featureInfo.HTMLTableFeatureInfoResponse;
-import org.vfny.geoserver.wms.responses.featureInfo.TextFeatureInfoResponse;
 
 /**
  * A GetFeatureInfoResponse object is responsible for generating GetFeatureInfo content in the
@@ -35,39 +26,19 @@ import org.vfny.geoserver.wms.responses.featureInfo.TextFeatureInfoResponse;
  * @version $Id$
  */
 public class GetFeatureInfoResponse extends Response {
-    /** package logger */
-    private static final Logger LOGGER = org.geotools.util.logging.Logging
-            .getLogger(GetMapResponse.class.getPackage().getName());
 
-    /** list of output format specialists */
-    private static final List<GetFeatureInfoOutputFormat> delegates = new LinkedList<GetFeatureInfoOutputFormat>();
+    private final WMS wms;
 
-    /**
-     * The list of all the supported output formats
-     */
-    private static final List<String> supportedMimeTypes = new LinkedList<String>();
-
-    static {
-        GetFeatureInfoOutputFormat producer;
-
-        producer = new TextFeatureInfoResponse();
-        supportedMimeTypes.addAll(producer.getSupportedFormats());
-        delegates.add(producer);
-
-        producer = new HTMLTableFeatureInfoResponse();
-        supportedMimeTypes.addAll(producer.getSupportedFormats());
-        delegates.add(producer);
-
-        producer = new GmlFeatureInfoResponse();
-        supportedMimeTypes.addAll(producer.getSupportedFormats());
-        delegates.add(producer);
-    }
+    private GetFeatureInfoOutputFormat defaultOutputFormat;
 
     /**
      * Creates a new GetMapResponse object.
      */
-    public GetFeatureInfoResponse() {
+    public GetFeatureInfoResponse(final WMS wms,
+            final GetFeatureInfoOutputFormat defaultOutputFormat) {
         super(GetFeatureInfoRequest.class);
+        this.wms = wms;
+        this.defaultOutputFormat = defaultOutputFormat;
     }
 
     /**
@@ -93,7 +64,7 @@ public class GetFeatureInfoResponse extends Response {
                 && operation.getParameters()[0] instanceof GetFeatureInfoRequest);
 
         GetFeatureInfoRequest request = (GetFeatureInfoRequest) operation.getParameters()[0];
-        GetFeatureInfoOutputFormat outputFormat = getDelegate(request);
+        GetFeatureInfoOutputFormat outputFormat = getRequestedOutputFormat(request);
 
         return outputFormat.getContentType();
 
@@ -121,77 +92,26 @@ public class GetFeatureInfoResponse extends Response {
 
         GetFeatureInfoRequest request = (GetFeatureInfoRequest) operation.getParameters()[0];
         FeatureCollectionType results = (FeatureCollectionType) value;
-        GetFeatureInfoOutputFormat outputFormat = getDelegate(request);
+        GetFeatureInfoOutputFormat outputFormat = getRequestedOutputFormat(request);
 
         outputFormat.write(results, request, output);
     }
 
     /**
-     * Creates a GetMapDelegate specialized in generating the requested map format
-     * 
-     * @param request
-     *            a request parameter object wich holds the processed request objects, such as
-     *            layers, bbox, outpu format, etc.
-     * 
-     * @return A specialization of <code>GetMapDelegate</code> wich can produce the requested output
-     *         map format
-     * 
-     * @throws WmsException
-     *             if no specialization is configured for the output format specified in
-     *             <code>request</code> or if it can't be instantiated
+     * @throws ServiceException
+     *             if no {@link GetFeatureInfoOutputFormat} is configured for the output format
+     *             specified in <code>request</code>
      */
-    private static GetFeatureInfoOutputFormat getDelegate(GetFeatureInfoRequest request)
+    private GetFeatureInfoOutputFormat getRequestedOutputFormat(GetFeatureInfoRequest request)
             throws ServiceException {
+
         String requestFormat = request.getInfoFormat();
 
-        if (LOGGER.isLoggable(Level.FINER)) {
-            LOGGER.finer(new StringBuffer("request format is ").append(requestFormat).toString());
+        GetFeatureInfoOutputFormat format = wms.getFeatureInfoOutputFormat(requestFormat);
+        if (format == null) {
+            format = defaultOutputFormat;
         }
+        return format;
 
-        GetFeatureInfoOutputFormat curDelegate = null;
-        Class delegateClass = null;
-
-        for (Iterator it = delegates.iterator(); it.hasNext();) {
-            curDelegate = (GetFeatureInfoOutputFormat) it.next();
-
-            if (curDelegate.canProduce(requestFormat)) {
-                delegateClass = curDelegate.getClass();
-
-                if (LOGGER.isLoggable(Level.FINER)) {
-                    LOGGER.finer(new StringBuffer("found GetFeatureInfoOutputFormat ").append(
-                            delegateClass).toString());
-                }
-
-                break;
-            }
-        }
-
-        if (delegateClass == null) {
-            // let's default to something sensible. If the parameter is empty we return a
-            // TextFeatureInfoResponse, so let's do the same thing here. See the "hack" comment in
-            // GetFeatureInfoKVPReader.java.
-            delegateClass = TextFeatureInfoResponse.class;
-        }
-
-        try {
-            curDelegate = (GetFeatureInfoOutputFormat) delegateClass.newInstance();
-        } catch (Exception ex) {
-            throw new ServiceException(ex,
-                    "Cannot obtain the map generator for the requested format",
-                    "GetMapResponse::getDelegate()");
-        }
-
-        return curDelegate;
     }
-
-    /**
-     * iterates over the registered Map producers and fills a list with all the map formats' MIME
-     * types that the producers can handle
-     * 
-     * @return DOCUMENT ME!
-     */
-    public static List<String> getFormats() {
-        return supportedMimeTypes;
-    }
-
 }

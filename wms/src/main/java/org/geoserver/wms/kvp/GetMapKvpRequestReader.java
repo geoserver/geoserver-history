@@ -31,6 +31,7 @@ import org.geoserver.ows.KvpRequestReader;
 import org.geoserver.ows.util.KvpUtils;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
+import org.geoserver.wms.request.GetMapRequest;
 import org.geotools.data.DataStore;
 import org.geotools.data.FeatureReader;
 import org.geotools.data.Query;
@@ -66,7 +67,6 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.util.Requests;
 import org.vfny.geoserver.util.SLDValidator;
 import org.vfny.geoserver.wms.WmsException;
-import org.vfny.geoserver.wms.requests.GetMapRequest;
 
 public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServletRequestAware {
    
@@ -126,10 +126,9 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
         this.parseStyles = styleRequired;
     }
 
-    public Object createRequest() throws Exception {
-        GetMapRequest request = new GetMapRequest(wms);
-        request.setHttpRequest(httpRequest);
-
+    @Override
+    public GetMapRequest createRequest() throws Exception {
+        GetMapRequest request = new GetMapRequest();
         return request;
     }
 

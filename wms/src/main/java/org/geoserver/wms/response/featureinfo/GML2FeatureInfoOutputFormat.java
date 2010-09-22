@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.wms.responses.featureInfo;
+package org.geoserver.wms.response.featureinfo;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -39,7 +39,7 @@ import org.geotools.gml2.bindings.GML2EncodingUtils;
  * 
  * @author Gabriel Roldan
  */
-public class GmlFeatureInfoResponse extends GetFeatureInfoOutputFormat {
+public class GML2FeatureInfoOutputFormat extends GetFeatureInfoOutputFormat {
     /**
      * The MIME type of the format this response produces: <code>"application/vnd.ogc.gml"</code>
      */
@@ -50,7 +50,7 @@ public class GmlFeatureInfoResponse extends GetFeatureInfoOutputFormat {
     /**
      * Default constructor, sets up the supported output format string.
      */
-    public GmlFeatureInfoResponse(final WMS wms) {
+    public GML2FeatureInfoOutputFormat(final WMS wms) {
         super(FORMAT);
         this.wms = wms;
     }

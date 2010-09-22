@@ -80,7 +80,7 @@ public abstract class GetFeatureInfoOutputFormat {
      * response.
      * 
      * @param mapFormat
-     *            the MIME type of the output map format requiered
+     *            the MIME type of the required output format, might be {@code null}
      * 
      * @return true if class can produce a map in the passed format
      */
