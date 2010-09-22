@@ -173,12 +173,13 @@ public class OwsUtils {
      *
      * @return The object of the specified type, or <code>null</code>
      */
-    public static Object parameter(Object[] parameters, Class type) {
+    @SuppressWarnings("unchecked")
+    public static <T extends Object> T parameter(Object[] parameters, Class<T> type) {
         for (int i = 0; i < parameters.length; i++) {
             Object parameter = parameters[i];
 
             if ((parameter != null) && type.isAssignableFrom(parameter.getClass())) {
-                return parameter;
+                return (T) parameter;
             }
         }
 
