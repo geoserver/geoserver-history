@@ -42,14 +42,11 @@ import com.vividsolutions.jts.geom.Envelope;
 
 public class DefaultRasterMapProducerTest extends WMSTestSupport {
 
-    /** DOCUMENT ME! */
     private static final Logger LOGGER = org.geotools.util.logging.Logging
             .getLogger(DefaultRasterMapProducerTest.class.getPackage().getName());
 
-    /** DOCUMENT ME! */
     private DefaultRasterMapOutputFormat rasterMapProducer;
 
-    /** DOCUMENT ME! */
     private String mapFormat = "image/gif";
 
     /**
@@ -59,32 +56,15 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
         return new OneTimeTestSetup(new DefaultRasterMapProducerTest());
     }
 
-    /**
-     * DOCUMENT ME!
-     * 
-     * @throws Exception
-     *             DOCUMENT ME!
-     */
     public void setUpInternal() throws Exception {
         super.setUpInternal();
         this.rasterMapProducer = getProducerInstance();
     }
 
-    /**
-     * DOCUMENT ME!
-     * 
-     * @return DOCUMENT ME!
-     */
     protected DefaultRasterMapOutputFormat getProducerInstance() {
         return new DummyRasterMapProducer(getWMS());
     }
 
-    /**
-     * DOCUMENT ME!
-     * 
-     * @throws Exception
-     *             DOCUMENT ME!
-     */
     public void tearDownInternal() throws Exception {
         this.rasterMapProducer = null;
         super.tearDownInternal();
@@ -94,12 +74,6 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
         return this.mapFormat;
     }
 
-    /**
-     * DOCUMENT ME!
-     * 
-     * @throws Exception
-     *             DOCUMENT ME!
-     */
     public void testSimpleGetMapQuery() throws Exception {
 
         Catalog catalog = getCatalog();
@@ -129,12 +103,6 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
         assertNotBlank("testSimpleGetMapQuery", this.rasterMapProducer);
     }
 
-    /**
-     * DOCUMENT ME!
-     * 
-     * @throws Exception
-     *             DOCUMENT ME!
-     */
     public void testDefaultStyle() throws Exception {
         List<org.geoserver.catalog.FeatureTypeInfo> typeInfos = getCatalog().getFeatureTypes();
 
@@ -145,16 +113,6 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
         }
     }
 
-    /**
-     * DOCUMENT ME!
-     * 
-     * @throws IOException
-     *             DOCUMENT ME!
-     * @throws IllegalFilterException
-     *             DOCUMENT ME!
-     * @throws IOException
-     *             DOCUMENT ME!
-     */
     public void testBlueLake() throws IOException, IllegalFilterException, Exception {
         final Catalog catalog = getCatalog();
         org.geoserver.catalog.FeatureTypeInfo typeInfo = catalog.getFeatureTypeByName(
@@ -205,15 +163,6 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
         map.addLayer(new FeatureSourceMapLayer(ftInfo.getFeatureSource(null, null), style));
     }
 
-    /**
-     * DOCUMENT ME!
-     * 
-     * @param fSource
-     *            DOCUMENT ME!
-     * 
-     * @throws Exception
-     *             DOCUMENT ME!
-     */
     private void testDefaultStyle(FeatureSource fSource) throws Exception {
         Catalog catalog = getCatalog();
         Style style = catalog.getStyleByName("Default").getStyle();
@@ -232,7 +181,8 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
                 env.getMaxY() + shift);
 
         WMSMapContext map = new WMSMapContext();
-        map.setRequest(new GetMapRequest(getWMS()));
+        GetMapRequest request = new GetMapRequest();
+        map.setRequest(request);
         map.addLayer(fSource, style);
         map.setAreaOfInterest(new ReferencedEnvelope(env, DefaultGeographicCRS.WGS84));
         map.setMapWidth(w);
@@ -240,12 +190,15 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
         map.setBgColor(BG_COLOR);
         map.setTransparent(false);
 
-        this.rasterMapProducer.setOutputFormat(getMapFormat());
-        this.rasterMapProducer.setMapContext(map);
-        this.rasterMapProducer.produceMap();
+        // this.rasterMapProducer.setOutputFormat(getMapFormat());
+        // this.rasterMapProducer.setMapContext(map);
+        // this.rasterMapProducer.produceMap();
+        request.setFormat(getMapFormat());
+        
+        BufferedImageMap imageMap = this.rasterMapProducer.produceMap(map);
 
-        RenderedImage image = this.rasterMapProducer.getImage();
-
+        RenderedImage image = imageMap.getImage();
+        assertNotNull(image);
         String typeName = fSource.getSchema().getName().getLocalPart();
         assertNotBlank("testDefaultStyle " + typeName, this.rasterMapProducer);
     }
@@ -300,10 +253,11 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
     private RenderedImage forceRenderingError(final Exception renderExceptionToThrow)
             throws Exception {
 
+        GetMapRequest request = new GetMapRequest();
         final WMSMapContext map = new WMSMapContext();
         map.setMapWidth(100);
         map.setMapHeight(100);
-        map.setRequest(new GetMapRequest(getWMS()));
+        map.setRequest(request);
         final ReferencedEnvelope bounds = new ReferencedEnvelope(-180, 180, -90, 90,
                 DefaultGeographicCRS.WGS84);
         map.setAreaOfInterest(bounds);
@@ -353,11 +307,6 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
              * Intentionally left blank, since this class is used just to ensure the abstract raster
              * producer correctly generates a BufferedImage.
              */
-        }
-
-        public String getContentDisposition() {
-            // can be null
-            return null;
         }
     }
 
