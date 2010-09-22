@@ -1,4 +1,4 @@
-package org.vfny.geoserver.wms.responses.featureinfo;
+package org.geoserver.wms.response.featureinfo;
 
 import junit.framework.Test;
 
@@ -8,7 +8,6 @@ import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.feature.FeatureIterator;
 import org.opengis.feature.simple.SimpleFeature;
-import org.vfny.geoserver.wms.responses.featureInfo.FeatureTimeTemplate;
 
 public class FeatureTimeTemplateTest extends WMSTestSupport {
 

@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.wms.requests;
+package org.geoserver.wms.kvp;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,6 +24,7 @@ import org.geoserver.catalog.LayerInfo.Type;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
+import org.geoserver.wms.request.GetLegendGraphicRequest;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.factory.CommonFactoryFinder;
@@ -39,6 +40,7 @@ import org.opengis.feature.type.FeatureType;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.util.Requests;
 import org.vfny.geoserver.wms.WmsException;
+import org.vfny.geoserver.wms.requests.WmsKvpRequestReader;
 import org.vfny.geoserver.wms.responses.GetLegendGraphicResponse;
 
 /**
@@ -90,7 +92,7 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
      *             if some invalid parameter was passed.
      */
     public Request getRequest(HttpServletRequest httpRequest) throws ServiceException {
-        GetLegendGraphicRequest request = new GetLegendGraphicRequest(getWMS());
+        GetLegendGraphicRequest request = new GetLegendGraphicRequest();
         // TODO: we should really get rid of the HttpServletRequest dependency
         // beyond the HTTP facade. Neither the request readers should depend on
         // it

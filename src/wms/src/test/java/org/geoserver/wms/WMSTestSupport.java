@@ -30,6 +30,7 @@ import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.data.test.MockData;
 import org.geoserver.test.GeoServerTestSupport;
+import org.geoserver.wms.request.GetMapRequest;
 import org.geotools.data.FeatureSource;
 import org.geotools.map.FeatureSourceMapLayer;
 import org.geotools.map.MapLayer;
@@ -39,45 +40,44 @@ import org.geotools.xml.transform.TransformerBase;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 import org.vfny.geoserver.Request;
-import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
 import com.vividsolutions.jts.geom.Envelope;
 
-
 /**
  * Base support class for wms tests.
  * <p>
- * Deriving from this test class provides the test case with preconfigured
- * geoserver and wms objects.
+ * Deriving from this test class provides the test case with preconfigured geoserver and wms
+ * objects.
  * </p>
+ * 
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
- *
+ * 
  */
 public abstract class WMSTestSupport extends GeoServerTestSupport {
-    
+
     /** DOCUMENT ME! */
     protected static final int SHOW_TIMEOUT = 2000;
 
     /** DOCUMENT ME! */
     protected static final boolean INTERACTIVE = false;
-    
+
     /** DOCUMENT ME! */
     protected static final Color BG_COLOR = Color.white;
-   
+
     /**
      * @return The global wms singleton from the application context.
      */
     protected WMS getWMS() {
         return new WMS(getGeoServer());
     }
-    
+
     @Override
     protected void oneTimeSetUp() throws Exception {
         super.oneTimeSetUp();
-        
+
         Map<String, String> namespaces = new HashMap<String, String>();
         namespaces.put("xlink", "http://www.w3.org/1999/xlink");
         namespaces.put("wfs", "http://www.opengis.net/wfs");
@@ -86,7 +86,7 @@ public abstract class WMSTestSupport extends GeoServerTestSupport {
         getTestData().registerNamespaces(namespaces);
         XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(namespaces));
     }
-    
+
     @Override
     protected void populateDataDirectory(MockData dataDirectory) throws Exception {
         super.populateDataDirectory(dataDirectory);
@@ -98,48 +98,52 @@ public abstract class WMSTestSupport extends GeoServerTestSupport {
      * <p>
      * The map layer is created with the default style for the layer.
      * </p>
-     * @param layerName The name of the layer.
-     *
+     * 
+     * @param layerName
+     *            The name of the layer.
+     * 
      * @return A new map layer.
      */
-    protected MapLayer createMapLayer(QName layerName)
-        throws IOException {
+    protected MapLayer createMapLayer(QName layerName) throws IOException {
         return createMapLayer(layerName, null);
     }
-    
+
     /**
      * Convenience method for subclasses to create a map layer from a layer name and a style name.
      * <p>
      * The map layer is created with the default style for the layer.
      * </p>
-     * @param layerName The name of the layer.
-     * @param a style in the catalog (or null if you want to use the default style)
-     *
+     * 
+     * @param layerName
+     *            The name of the layer.
+     * @param a
+     *            style in the catalog (or null if you want to use the default style)
+     * 
      * @return A new map layer.
      */
-    protected MapLayer createMapLayer(QName layerName, String styleName)
-        throws IOException {
-        //TODO: support coverages
+    protected MapLayer createMapLayer(QName layerName, String styleName) throws IOException {
+        // TODO: support coverages
         Catalog catalog = getCatalog();
-        org.geoserver.catalog.FeatureTypeInfo info = catalog.getFeatureTypeByName(layerName.getNamespaceURI(), layerName.getLocalPart());
+        org.geoserver.catalog.FeatureTypeInfo info = catalog.getFeatureTypeByName(
+                layerName.getNamespaceURI(), layerName.getLocalPart());
         LayerInfo layerInfo = catalog.getLayerByName(layerName.getLocalPart());
         Style style = layerInfo.getDefaultStyle().getStyle();
-        if(styleName != null){
+        if (styleName != null) {
             style = catalog.getStyleByName(styleName).getStyle();
         }
-        
+
         FeatureSource<? extends FeatureType, ? extends Feature> featureSource;
         featureSource = info.getFeatureSource(null, null);
-        
+
         MapLayer layer = new FeatureSourceMapLayer(featureSource, style);
-        layer.setTitle( layer.getTitle() );
-        
+        layer.setTitle(layer.getTitle());
+
         return layer;
     }
 
     /**
      * Calls through to {@link #createGetMapRequest(QName[])}.
-     *
+     * 
      */
     protected GetMapRequest createGetMapRequest(QName layerName) {
         return createGetMapRequest(new QName[] { layerName });
@@ -149,24 +153,25 @@ public abstract class WMSTestSupport extends GeoServerTestSupport {
      * Convenience method for subclasses to create a new GetMapRequest object.
      * <p>
      * The returned object has the following properties:
-     *  <ul>
-     *    <li>styles set to default styles for layers specified
-     *    <li>bbox set to (-180,-90,180,180 )
-     *    <li>crs set to epsg:4326
-     *  </ul>
-     *  Caller must set additional parameters of request as need be.
+     * <ul>
+     * <li>styles set to default styles for layers specified
+     * <li>bbox set to (-180,-90,180,180 )
+     * <li>crs set to epsg:4326
+     * </ul>
+     * Caller must set additional parameters of request as need be.
      * </p>
-     *
-     * @param The layer names of the request.
-     *
+     * 
+     * @param The
+     *            layer names of the request.
+     * 
      * @return A new GetMapRequest object.
      */
     protected GetMapRequest createGetMapRequest(QName[] layerNames) {
-        GetMapRequest request = new GetMapRequest(getWMS());
+        GetMapRequest request = new GetMapRequest();
         request.setBaseUrl("http://localhost:8080/geoserver");
-        request.setHttpServletRequest(createRequest("wms"));
+        request.setHttpRequest(createRequest("wms"));
 
-        MapLayerInfo[] layers = new MapLayerInfo[layerNames.length];
+        List<MapLayerInfo> layers = new ArrayList<MapLayerInfo>(layerNames.length);
         List styles = new ArrayList();
 
         for (int i = 0; i < layerNames.length; i++) {
@@ -176,7 +181,7 @@ public abstract class WMSTestSupport extends GeoServerTestSupport {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            layers[i] = new MapLayerInfo(layerInfo);
+            layers.add(new MapLayerInfo(layerInfo));
         }
 
         request.setLayers(layers);
@@ -187,17 +192,17 @@ public abstract class WMSTestSupport extends GeoServerTestSupport {
         request.setRawKvp(new HashMap());
         return request;
     }
-    
-    
+
     /**
-     * Asserts that the image is not blank, in the sense that there must be
-     * pixels different from the passed background color.
-     *
-     * @param testName the name of the test to throw meaningfull messages if
-     *        something goes wrong
-     * @param image the imgage to check it is not "blank"
-     * @param bgColor the background color for which differing pixels are
-     *        looked for
+     * Asserts that the image is not blank, in the sense that there must be pixels different from
+     * the passed background color.
+     * 
+     * @param testName
+     *            the name of the test to throw meaningfull messages if something goes wrong
+     * @param image
+     *            the imgage to check it is not "blank"
+     * @param bgColor
+     *            the background color for which differing pixels are looked for
      */
     protected void assertNotBlank(String testName, BufferedImage image, Color bgColor) {
         int pixelsDiffer = countNonBlankPixels(testName, image, bgColor);
@@ -206,6 +211,7 @@ public abstract class WMSTestSupport extends GeoServerTestSupport {
 
     /**
      * Counts the number of non black pixels
+     * 
      * @param testName
      * @param image
      * @param bgColor
@@ -223,7 +229,7 @@ public abstract class WMSTestSupport extends GeoServerTestSupport {
         }
 
         LOGGER.info(testName + ": pixel count=" + (image.getWidth() * image.getHeight())
-            + " non bg pixels: " + pixelsDiffer);
+                + " non bg pixels: " + pixelsDiffer);
         return pixelsDiffer;
     }
 
@@ -234,37 +240,38 @@ public abstract class WMSTestSupport extends GeoServerTestSupport {
      * Parsing the response is done in a namespace aware way.
      * </p>
      * 
-     * @param req,
-     *                the Object to run the xml transformation against with {@code tr}, usually an
-     *                instance of a {@link Request} subclass
-     * @param tr,
-     *                the transformer to run the transformation with and produce the result as a DOM
+     * @param req
+     *            , the Object to run the xml transformation against with {@code tr}, usually an
+     *            instance of a {@link Request} subclass
+     * @param tr
+     *            , the transformer to run the transformation with and produce the result as a DOM
      */
     public static Document transform(Object req, TransformerBase tr) throws Exception {
         return transform(req, tr, true);
     }
-    
+
     /**
      * Utility method to run the transformation on tr with the provided request and returns the
      * result as a DOM
      * 
-     * @param req,
-     *                the Object to run the xml transformation against with {@code tr}, usually an
-     *                instance of a {@link Request} subclass
-     * @param tr,
-     *                the transformer to run the transformation with and produce the result as a DOM
+     * @param req
+     *            , the Object to run the xml transformation against with {@code tr}, usually an
+     *            instance of a {@link Request} subclass
+     * @param tr
+     *            , the transformer to run the transformation with and produce the result as a DOM
      * @param namespaceAware
-     *                whether to use a namespace aware parser for the response or not
+     *            whether to use a namespace aware parser for the response or not
      */
-    public static Document transform(Object req, TransformerBase tr, boolean namespaceAware) throws Exception {
+    public static Document transform(Object req, TransformerBase tr, boolean namespaceAware)
+            throws Exception {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         tr.transform(req, out);
-    
+
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setNamespaceAware(namespaceAware);
-    
+
         DocumentBuilder db = dbf.newDocumentBuilder();
-    
+
         /**
          * Resolves everything to an empty xml document, useful for skipping errors due to missing
          * dtds and the like
@@ -278,18 +285,18 @@ public abstract class WMSTestSupport extends GeoServerTestSupport {
                 InputSource source = new InputSource(reader);
                 source.setPublicId(publicId);
                 source.setSystemId(systemId);
-    
+
                 return source;
             }
         }
         db.setEntityResolver(new EmptyResolver());
-    
-        //System.out.println(out.toString());
-    
+
+        // System.out.println(out.toString());
+
         Document doc = db.parse(new ByteArrayInputStream(out.toByteArray()));
         return doc;
     }
-    
+
     /**
      * Checks that the image generated by the map producer is not blank.
      * 
@@ -357,5 +364,4 @@ public abstract class WMSTestSupport extends GeoServerTestSupport {
         }
     }
 
-    
 }

@@ -9,6 +9,7 @@ public class GetStylesRequest extends WMSRequest {
     String sldVer;
 
     public GetStylesRequest() {
+        super("GetStyles");
     }
 
     public String getSldVer() {

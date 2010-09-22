@@ -4,39 +4,36 @@
  */
 package org.geoserver.wms.request;
 
-import org.geoserver.wms.MapLayerInfo;
-import org.geoserver.wms.WMS;
-import org.geoserver.wms.request.WMSRequest;
+import java.util.List;
 
+import org.geoserver.wms.MapLayerInfo;
 
 /**
  * Represents a WMS 1.1.1 GetFeatureInfo request.
  * <p>
- * The "GetMap" part of the request is represented by a
- * <code>GetMapRequest</code> object by itself. It is
- * intended to provide enough map context information about
- * the map over the GetFeatureInfo request is performed.
+ * The "GetMap" part of the request is represented by a <code>GetMapRequest</code> object by itself.
+ * It is intended to provide enough map context information about the map over the GetFeatureInfo
+ * request is performed.
  * </p>
- *
+ * 
  * @author Gabriel Roldan
  * @version $Id$
  */
 public class GetFeatureInfoRequest extends WMSRequest {
     private static final String DEFAULT_EXCEPTION_FORMAT = "application/vnd.ogc.se_xml";
+
     private static final int DEFAULT_MAX_FEATURES = 1;
 
     /**
-     * Holds the GetMap part of the GetFeatureInfo request, wich is meant
-     * to provide enough context information about the map over the
-     * GetFeatureInfo request is being made.
+     * Holds the GetMap part of the GetFeatureInfo request, wich is meant to provide enough context
+     * information about the map over the GetFeatureInfo request is being made.
      */
     private GetMapRequest getMapRequest;
 
     /**
-     * List of FeatureTypeInfo's parsed from the <code>QUERY_LAYERS</code>
-     * mandatory parameter.
+     * List of FeatureTypeInfo's parsed from the <code>QUERY_LAYERS</code> mandatory parameter.
      */
-    private MapLayerInfo[] queryLayers;
+    private List<MapLayerInfo> queryLayers;
 
     /**
      * Holder for the <code>INFO_FORMAT</code> optional parameter
@@ -44,8 +41,7 @@ public class GetFeatureInfoRequest extends WMSRequest {
     private String infoFormat;
 
     /**
-     * Holder for the <code>FEATURE_COUNT</code> optional parameter.
-     * Deafults to 1.
+     * Holder for the <code>FEATURE_COUNT</code> optional parameter. Deafults to 1.
      */
     private int featureCount = DEFAULT_MAX_FEATURES;
 
@@ -60,22 +56,27 @@ public class GetFeatureInfoRequest extends WMSRequest {
     private int YPixel;
 
     /**
-     * Holder for the optional <code>EXCEPTIONS</code> parameter,
-     * defaults to <code>"application/vnd.ogc.se_xml"</code>
+     * Holder for the optional <code>EXCEPTIONS</code> parameter, defaults to
+     * <code>"application/vnd.ogc.se_xml"</code>
      */
     private String exeptionFormat = DEFAULT_EXCEPTION_FORMAT;
-    
+
+    public GetFeatureInfoRequest() {
+        super("GetFeatureInfo");
+    }
+
     /**
      * @return Returns the exeptionFormat.
      */
-    public String getExeptionFormat() {
+    public String getExceptions() {
         return exeptionFormat;
     }
 
     /**
-     * @param exeptionFormat The exeptionFormat to set.
+     * @param exeptionFormat
+     *            The exeptionFormat to set.
      */
-    public void setExeptionFormat(String exeptionFormat) {
+    public void setExceptions(String exeptionFormat) {
         this.exeptionFormat = exeptionFormat;
     }
 
@@ -87,7 +88,8 @@ public class GetFeatureInfoRequest extends WMSRequest {
     }
 
     /**
-     * @param featureCount The featureCount to set.
+     * @param featureCount
+     *            The featureCount to set.
      */
     public void setFeatureCount(int featureCount) {
         this.featureCount = featureCount;
@@ -101,7 +103,8 @@ public class GetFeatureInfoRequest extends WMSRequest {
     }
 
     /**
-     * @param getMapRequest The getMapRequest to set.
+     * @param getMapRequest
+     *            The getMapRequest to set.
      */
     public void setGetMapRequest(GetMapRequest getMapRequest) {
         this.getMapRequest = getMapRequest;
@@ -115,7 +118,8 @@ public class GetFeatureInfoRequest extends WMSRequest {
     }
 
     /**
-     * @param infoFormat The infoFormat to set.
+     * @param infoFormat
+     *            The infoFormat to set.
      */
     public void setInfoFormat(String infoFormat) {
         this.infoFormat = infoFormat;
@@ -124,14 +128,15 @@ public class GetFeatureInfoRequest extends WMSRequest {
     /**
      * @return Returns the queryLayers.
      */
-    public MapLayerInfo[] getQueryLayers() {
+    public List<MapLayerInfo> getQueryLayers() {
         return queryLayers;
     }
 
     /**
-     * @param queryLayers The queryLayers to set.
+     * @param queryLayers
+     *            The queryLayers to set.
      */
-    public void setQueryLayers(MapLayerInfo[] queryLayers) {
+    public void setQueryLayers(List<MapLayerInfo> queryLayers) {
         this.queryLayers = queryLayers;
     }
 
@@ -143,7 +148,8 @@ public class GetFeatureInfoRequest extends WMSRequest {
     }
 
     /**
-     * @param pixel The xPixel to set.
+     * @param pixel
+     *            The xPixel to set.
      */
     public void setXPixel(int pixel) {
         XPixel = pixel;
@@ -157,7 +163,8 @@ public class GetFeatureInfoRequest extends WMSRequest {
     }
 
     /**
-     * @param pixel The yPixel to set.
+     * @param pixel
+     *            The yPixel to set.
      */
     public void setYPixel(int pixel) {
         YPixel = pixel;

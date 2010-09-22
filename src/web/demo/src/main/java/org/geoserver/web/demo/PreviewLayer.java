@@ -18,11 +18,10 @@ import org.geoserver.web.CatalogIconFactory;
 import org.geoserver.web.GeoServerApplication;
 import org.geoserver.wms.DefaultWebMapService;
 import org.geoserver.wms.MapLayerInfo;
-import org.geoserver.wms.WMS;
+import org.geoserver.wms.request.GetMapRequest;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.gml2.bindings.GML2EncodingUtils;
 import org.geotools.util.logging.Logging;
-import org.vfny.geoserver.wms.requests.GetMapRequest;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -116,10 +115,10 @@ public class PreviewLayer {
     GetMapRequest getRequest() {
         if (request == null) {
             GeoServerApplication app = GeoServerApplication.get();
-            request = new GetMapRequest(new WMS(app.getGeoServer()));
+            request = new GetMapRequest();
             Catalog catalog = app.getCatalog();
             List<MapLayerInfo> layers = expandLayers(catalog);
-            request.setLayers(layers.toArray(new MapLayerInfo[layers.size()]));
+            request.setLayers(layers);
             request.setFormat("application/openlayers");
             
             // in the case of groups we already know about the envelope and the target SRS

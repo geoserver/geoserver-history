@@ -1,4 +1,4 @@
-package org.vfny.geoserver.wms.responses.featureinfo;
+package org.geoserver.wms;
 
 import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.createMock;

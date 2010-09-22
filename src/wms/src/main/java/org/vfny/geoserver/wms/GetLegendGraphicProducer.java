@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import org.geoserver.platform.ServiceException;
-import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
+import org.geoserver.wms.request.GetLegendGraphicRequest;
 
 
 /**

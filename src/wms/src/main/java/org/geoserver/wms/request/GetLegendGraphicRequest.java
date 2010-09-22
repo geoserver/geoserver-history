@@ -7,8 +7,6 @@ package org.geoserver.wms.request;
 import java.util.Collections;
 import java.util.Map;
 
-import org.geoserver.wms.WMS;
-import org.geoserver.wms.request.WMSRequest;
 import org.geotools.styling.Rule;
 import org.geotools.styling.Style;
 import org.opengis.feature.type.FeatureType;
@@ -41,11 +39,11 @@ import org.opengis.feature.type.FeatureType;
  * </pre>
  * 
  * </p>
- *<p>
+ * <p>
  * There's also a custom {@code STRICT} parameter that defaults to {@code true} and controls whether
  * the mandatory parameters are to be checked. This is useful mainly to be able of requesting a
  * legend graphic for no layer in particular, so the LAYER parameter can be omitted.
- *</p>
+ * </p>
  * <p>
  * The GetLegendGraphic operation itself is optional for an SLD-enabled WMS. It provides a general
  * mechanism for acquiring legend symbols, beyond the LegendURL reference of WMS Capabilities.
@@ -63,22 +61,19 @@ public class GetLegendGraphicRequest extends WMSRequest {
     public static final String SLD_VERSION = "1.0.0";
 
     /**
-     * default legend graphic width, in pixels, to apply if no WIDTH parameter
-     * was passed
+     * default legend graphic width, in pixels, to apply if no WIDTH parameter was passed
      */
     public static final int DEFAULT_WIDTH = 20;
 
     /**
-     * default legend graphic height, in pixels, to apply if no WIDTH parameter
-     * was passed
+     * default legend graphic height, in pixels, to apply if no WIDTH parameter was passed
      */
     public static final int DEFAULT_HEIGHT = 20;
 
     /**
-     * The default image format in which to produce a legend graphic. Not
-     * really used when performing user requests, since FORMAT is a mandatory
-     * parameter, but by now serves as a default for expressing LegendURL
-     * layer attribute in GetCapabilities.
+     * The default image format in which to produce a legend graphic. Not really used when
+     * performing user requests, since FORMAT is a mandatory parameter, but by now serves as a
+     * default for expressing LegendURL layer attribute in GetCapabilities.
      */
     public static final String DEFAULT_FORMAT = "image/png";
 
@@ -86,18 +81,17 @@ public class GetLegendGraphicRequest extends WMSRequest {
     private FeatureType layer;
 
     /**
-     * The Style object for styling the legend graphic, or layer's default if
-     * not provided. This style can be aquired by evaluating the STYLE
-     * parameter, which provides one of the  layer's named styles, the SLD
-     * parameter, which provides a URL for an external SLD document, or the
+     * The Style object for styling the legend graphic, or layer's default if not provided. This
+     * style can be aquired by evaluating the STYLE parameter, which provides one of the layer's
+     * named styles, the SLD parameter, which provides a URL for an external SLD document, or the
      * SLD_BODY parameter, which provides the SLD body in the request body.
      */
     private Style style;
 
     /**
-     * should hold FEATURETYPE parameter value, though not used by now, since
-     * GeoServer WMS still does not supports nested layers and layers has only
-     * a single feature type. This should change in the future.
+     * should hold FEATURETYPE parameter value, though not used by now, since GeoServer WMS still
+     * does not supports nested layers and layers has only a single feature type. This should change
+     * in the future.
      */
     private String featureType;
 
@@ -105,35 +99,34 @@ public class GetLegendGraphicRequest extends WMSRequest {
     private Rule rule;
 
     /**
-     * holds the standarized scale denominator passed as the SCALE parameter
-     * value, or <code>-1.0</code> if not provided
+     * holds the standarized scale denominator passed as the SCALE parameter value, or
+     * <code>-1.0</code> if not provided
      */
     private double scale = -1d;
 
     /**
-     * the mime type of the file format in which to return the legend graphic,
-     * as requested by the FORMAT request parameter value.
+     * the mime type of the file format in which to return the legend graphic, as requested by the
+     * FORMAT request parameter value.
      */
     private String format;
 
     /**
-     * the width in pixels of the returned graphic, or
-     * <code>DEFAULT_WIDTH</code> if not provided
+     * the width in pixels of the returned graphic, or <code>DEFAULT_WIDTH</code> if not provided
      */
     private int width = DEFAULT_WIDTH;
 
     /**
-     * the height in pixels of the returned graphic, or
-     * <code>DEFAULT_HEIGHT</code> if not provided
+     * the height in pixels of the returned graphic, or <code>DEFAULT_HEIGHT</code> if not provided
      */
     private int height = DEFAULT_HEIGHT;
 
     /** mime type of the format in which to return exceptions information. */
     private String exceptionsFormat = GetMapRequest.SE_XML;
-    
-    /** holds the geoserver-specific getLegendGraphic options for controlling
-     * things like the label font, label font style, label font antialiasing, etc.
-     */ 
+
+    /**
+     * holds the geoserver-specific getLegendGraphic options for controlling things like the label
+     * font, label font style, label font antialiasing, etc.
+     */
     private Map legendOptions;
 
     /**
@@ -149,13 +142,13 @@ public class GetLegendGraphicRequest extends WMSRequest {
      * @param wms
      *            The WMS configuration object.
      */
-    public GetLegendGraphicRequest(WMS wms) {
-        super(wms);
+    public GetLegendGraphicRequest() {
+        super("GetLegendGraphic");
     }
-    
+
     /**
      * DOCUMENT ME!
-     *
+     * 
      * @return DOCUMENT ME!
      */
     public String getExceptionsFormat() {
@@ -164,8 +157,9 @@ public class GetLegendGraphicRequest extends WMSRequest {
 
     /**
      * DOCUMENT ME!
-     *
-     * @param exceptionsFormat DOCUMENT ME!
+     * 
+     * @param exceptionsFormat
+     *            DOCUMENT ME!
      */
     public void setExceptionsFormat(String exceptionsFormat) {
         this.exceptionsFormat = exceptionsFormat;
@@ -173,7 +167,7 @@ public class GetLegendGraphicRequest extends WMSRequest {
 
     /**
      * DOCUMENT ME!
-     *
+     * 
      * @return DOCUMENT ME!
      */
     public String getFeatureType() {
@@ -182,8 +176,9 @@ public class GetLegendGraphicRequest extends WMSRequest {
 
     /**
      * DOCUMENT ME!
-     *
-     * @param featureType DOCUMENT ME!
+     * 
+     * @param featureType
+     *            DOCUMENT ME!
      */
     public void setFeatureType(String featureType) {
         this.featureType = featureType;
@@ -191,7 +186,7 @@ public class GetLegendGraphicRequest extends WMSRequest {
 
     /**
      * DOCUMENT ME!
-     *
+     * 
      * @return DOCUMENT ME!
      */
     public String getFormat() {
@@ -200,8 +195,9 @@ public class GetLegendGraphicRequest extends WMSRequest {
 
     /**
      * DOCUMENT ME!
-     *
-     * @param format DOCUMENT ME!
+     * 
+     * @param format
+     *            DOCUMENT ME!
      */
     public void setFormat(String format) {
         this.format = format;
@@ -209,7 +205,7 @@ public class GetLegendGraphicRequest extends WMSRequest {
 
     /**
      * DOCUMENT ME!
-     *
+     * 
      * @return DOCUMENT ME!
      */
     public int getHeight() {
@@ -218,8 +214,9 @@ public class GetLegendGraphicRequest extends WMSRequest {
 
     /**
      * DOCUMENT ME!
-     *
-     * @param height DOCUMENT ME!
+     * 
+     * @param height
+     *            DOCUMENT ME!
      */
     public void setHeight(int height) {
         this.height = height;
@@ -227,7 +224,7 @@ public class GetLegendGraphicRequest extends WMSRequest {
 
     /**
      * DOCUMENT ME!
-     *
+     * 
      * @return DOCUMENT ME!
      */
     public FeatureType getLayer() {
@@ -236,8 +233,9 @@ public class GetLegendGraphicRequest extends WMSRequest {
 
     /**
      * DOCUMENT ME!
-     *
-     * @param layer DOCUMENT ME!
+     * 
+     * @param layer
+     *            DOCUMENT ME!
      */
     public void setLayer(FeatureType layer) {
         this.layer = layer;
@@ -245,7 +243,7 @@ public class GetLegendGraphicRequest extends WMSRequest {
 
     /**
      * DOCUMENT ME!
-     *
+     * 
      * @return DOCUMENT ME!
      */
     public Rule getRule() {
@@ -254,8 +252,9 @@ public class GetLegendGraphicRequest extends WMSRequest {
 
     /**
      * DOCUMENT ME!
-     *
-     * @param rule DOCUMENT ME!
+     * 
+     * @param rule
+     *            DOCUMENT ME!
      */
     public void setRule(Rule rule) {
         this.rule = rule;
@@ -263,7 +262,7 @@ public class GetLegendGraphicRequest extends WMSRequest {
 
     /**
      * DOCUMENT ME!
-     *
+     * 
      * @return DOCUMENT ME!
      */
     public double getScale() {
@@ -272,8 +271,9 @@ public class GetLegendGraphicRequest extends WMSRequest {
 
     /**
      * DOCUMENT ME!
-     *
-     * @param scale DOCUMENT ME!
+     * 
+     * @param scale
+     *            DOCUMENT ME!
      */
     public void setScale(double scale) {
         this.scale = scale;
@@ -281,7 +281,7 @@ public class GetLegendGraphicRequest extends WMSRequest {
 
     /**
      * DOCUMENT ME!
-     *
+     * 
      * @return DOCUMENT ME!
      */
     public Style getStyle() {
@@ -290,8 +290,9 @@ public class GetLegendGraphicRequest extends WMSRequest {
 
     /**
      * DOCUMENT ME!
-     *
-     * @param style DOCUMENT ME!
+     * 
+     * @param style
+     *            DOCUMENT ME!
      */
     public void setStyle(Style style) {
         this.style = style;
@@ -299,7 +300,7 @@ public class GetLegendGraphicRequest extends WMSRequest {
 
     /**
      * DOCUMENT ME!
-     *
+     * 
      * @return DOCUMENT ME!
      */
     public int getWidth() {
@@ -308,16 +309,17 @@ public class GetLegendGraphicRequest extends WMSRequest {
 
     /**
      * DOCUMENT ME!
-     *
-     * @param width DOCUMENT ME!
+     * 
+     * @param width
+     *            DOCUMENT ME!
      */
     public void setWidth(int width) {
         this.width = width;
     }
-    
+
     /**
-     * Returns the possibly empty set of key/value pair parameters to control
-     * some aspects of legend generation.
+     * Returns the possibly empty set of key/value pair parameters to control some aspects of legend
+     * generation.
      * <p>
      * These parameters are meant to be passed as the request parameter
      * <code>"LEGEND_OPTIONS"</code> with the format
@@ -326,32 +328,31 @@ public class GetLegendGraphicRequest extends WMSRequest {
      * <p>
      * The known options, all optional, are:
      * <ul>
-     * <li><code>fontName</code>: name of the system font used for legend
-     * rule names. Defaults to "Sans-Serif"
+     * <li><code>fontName</code>: name of the system font used for legend rule names. Defaults to
+     * "Sans-Serif"
      * <li><code>fontStyle</code>: one of "plain", "italic" or "bold"
      * <li><code>fontSize</code>: integer for the font size in pixels
-     * <li><code>fontColor</code>: a <code>String</code> that represents
-     * an opaque color as a 24-bit integer
-     * <li><code>bgColor</code>: allows to override the legend background
-     * color
-     * <li><code>fontAntiAliasing</code>: a boolean indicating whether to
-     * use antia aliasing in font rendering. Anything of the following works:
-     * "yes", "true", "1". Anything else means false.
-     * <li><code>forceLabels</code>: "on" means labels will always be drawn,
-     * even if only one rule is available. "off" means labels will never be
-     * drawn, even if multiple rules are available.
+     * <li><code>fontColor</code>: a <code>String</code> that represents an opaque color as a 24-bit
+     * integer
+     * <li><code>bgColor</code>: allows to override the legend background color
+     * <li><code>fontAntiAliasing</code>: a boolean indicating whether to use antia aliasing in font
+     * rendering. Anything of the following works: "yes", "true", "1". Anything else means false.
+     * <li><code>forceLabels</code>: "on" means labels will always be drawn, even if only one rule
+     * is available. "off" means labels will never be drawn, even if multiple rules are available.
      * </ul>
      * </p>
      * 
      * @return
      */
     public Map getLegendOptions() {
-        return legendOptions == null? Collections.EMPTY_MAP : legendOptions;
+        return legendOptions == null ? Collections.EMPTY_MAP : legendOptions;
     }
-    
+
     /**
      * Sets the legend options parameters.
-     * @param legendOptions the key/value pair of legend options strings
+     * 
+     * @param legendOptions
+     *            the key/value pair of legend options strings
      * @see #getLegendOptions()
      */
     public void setLegendOptions(Map legendOptions) {
@@ -359,25 +360,23 @@ public class GetLegendGraphicRequest extends WMSRequest {
     }
 
     /**
-     * Sets the value of the background transparency flag depending on the value
-     * of the <code>TRANSPARENT</code> request parameter.
+     * Sets the value of the background transparency flag depending on the value of the
+     * <code>TRANSPARENT</code> request parameter.
      * 
      * @param transparentBackground
-     *            whether the legend graphic background shall be transparent or
-     *            not
+     *            whether the legend graphic background shall be transparent or not
      */
     public void setTransparent(boolean transparentBackground) {
         this.transparent = transparentBackground;
     }
 
     /**
-     * Returns the value of the optional request parameter
-     * <code>TRANSPARENT</code>, which might be either the literal
-     * <code>true</code> or <code>false</code> and specifies if the
-     * background of the legend graphic to return shall be transparent or not.
+     * Returns the value of the optional request parameter <code>TRANSPARENT</code>, which might be
+     * either the literal <code>true</code> or <code>false</code> and specifies if the background of
+     * the legend graphic to return shall be transparent or not.
      * <p>
-     * If the <code>TRANSPARENT</code> parameter is not specified, this
-     * property defaults to <code>false</code>.
+     * If the <code>TRANSPARENT</code> parameter is not specified, this property defaults to
+     * <code>false</code>.
      * </p>
      * 
      * @return whether the legend graphic background shall be transparent or not

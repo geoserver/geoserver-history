@@ -25,6 +25,7 @@ import org.geoserver.config.GeoServer;
 import org.geoserver.config.impl.GeoServerImpl;
 import org.geoserver.config.impl.GeoServerInfoImpl;
 import org.geoserver.platform.ServiceException;
+import org.geoserver.wms.request.GetMapRequest;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.memory.MemoryDataStore;
@@ -42,7 +43,6 @@ import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.RasterMapProducer;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
-import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.vfny.geoserver.wms.responses.GetMapResponse;
 
 import com.mockrunner.mock.web.MockHttpServletRequest;
@@ -234,7 +234,7 @@ public class WMSMockData {
     public GetMapRequest createRequest() {
         GetMapRequest request;
 
-        request = new GetMapRequest(mockWMS);
+        request = new GetMapRequest();
         request.setFormat(DummyRasterMapProducer.MIME_TYPE);
         request.setWidth(512);
         request.setHeight(256);
@@ -250,7 +250,7 @@ public class WMSMockData {
         request.setRawKvp(new HashMap<String, Serializable>());
 
         MockHttpServletRequest servletRequest = new MockHttpServletRequest();
-        request.setHttpServletRequest(servletRequest);
+        request.setHttpRequest(servletRequest);
         MockHttpSession session = new MockHttpSession();
         servletRequest.setSession(session);
         MockServletContext context = new MockServletContext();

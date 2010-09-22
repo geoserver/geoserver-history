@@ -6,7 +6,6 @@ package org.geoserver.wms.request;
 
 import org.geoserver.ows.Dispatcher;
 import org.geoserver.ows.Request;
-import org.geoserver.wms.WMS;
 
 /**
  * Defines a general Request type and provides accessor methods for universal request information.
@@ -29,8 +28,6 @@ abstract class WMSRequest extends Request {
 
     protected String baseUrl;
 
-    private WMS wms;
-
     /**
      * Creates the new request, supplying the request name and the sevlet handling the request.
      * 
@@ -40,22 +37,8 @@ abstract class WMSRequest extends Request {
      *            The wms configuration object.
      * 
      */
-    public WMSRequest() {
-    }
-
-    /**
-     * @deprecated in the end request should not reference WMS
-     * @param wms
-     */
-    public WMSRequest(WMS wms) {
-        this.wms = wms;
-    }
-
-    /**
-     * @deprecated in the end request should not reference WMS
-     */
-    public WMS getWMS() {
-        return wms;
+    protected WMSRequest(final String request) {
+        setRequest(request);
     }
 
     /**

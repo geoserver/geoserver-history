@@ -28,6 +28,10 @@ public class DescribeLayerRequest extends WMSRequest {
      */
     private List<MapLayerInfo> layers = new ArrayList<MapLayerInfo>(2);
 
+    public DescribeLayerRequest() {
+        super("DescribeLayer");
+    }
+
     public void addLayer(MapLayerInfo layer) {
         if (layer == null) {
             throw new NullPointerException();
@@ -45,7 +49,7 @@ public class DescribeLayerRequest extends WMSRequest {
     }
 
     public String toString() {
-        StringBuffer sb = new StringBuffer("DescribeLayerRequesr[layers=");
+        StringBuffer sb = new StringBuffer("DescribeLayerRequest[layers=");
 
         for (Iterator<MapLayerInfo> it = layers.iterator(); it.hasNext();) {
             sb.append(((MapLayerInfo) it.next()).getName());

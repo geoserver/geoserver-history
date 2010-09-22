@@ -17,6 +17,10 @@ public class GetCapabilitiesRequest extends WMSRequest {
 
     private String namespace;
 
+    public GetCapabilitiesRequest() {
+        super("GetCapabilities");
+    }
+
     /**
      * Returns a string representation of this CapabilitiesRequest.
      * 

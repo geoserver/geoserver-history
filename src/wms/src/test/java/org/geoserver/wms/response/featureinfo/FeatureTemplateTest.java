@@ -1,4 +1,4 @@
-package org.vfny.geoserver.wms.responses.featureinfo;
+package org.geoserver.wms.response.featureinfo;
 
 import java.util.Iterator;
 
@@ -6,11 +6,10 @@ import junit.framework.Test;
 
 import org.geoserver.data.test.MockData;
 import org.geoserver.wms.WMSTestSupport;
+import org.geoserver.wms.response.featureinfo.dummy.Dummy;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.opengis.feature.simple.SimpleFeature;
-import org.vfny.geoserver.wms.responses.featureInfo.FeatureTemplate;
-import org.vfny.geoserver.wms.responses.featureinfo.dummy.Dummy;
 
 public class FeatureTemplateTest extends WMSTestSupport {
     

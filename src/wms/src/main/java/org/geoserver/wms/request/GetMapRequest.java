@@ -27,10 +27,9 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import com.vividsolutions.jts.geom.Envelope;
 
-
 /**
  * Represents a WMS GetMap request. as a extension to the WMS spec 1.1.
- *
+ * 
  * @author Gabriel Roldan
  * @author Simone Giannecchini
  * @version $Id$
@@ -41,6 +40,7 @@ public class GetMapRequest extends WMSRequest {
 
     /** DOCUMENT ME! */
     public static final String SE_XML = "SE_XML";
+
     private static final String GETMAP_REQUEST_TYPE = "GetMap";
 
     /** set of mandatory request's parameters */
@@ -50,20 +50,24 @@ public class GetMapRequest extends WMSRequest {
     private OptionalParameters optionalParams = new OptionalParameters();
 
     /** format options */
-    private Map <String,Object> formatOptions = new CaseInsensitiveMap(new HashMap());
-    
+    private Map<String, Object> formatOptions = new CaseInsensitiveMap(new HashMap());
+
     /** SLD replacement */
-    private Map /*<String,Object>*/ env = new HashMap();
-    
+    private Map /* <String,Object> */env = new HashMap();
+
     /** sql view parameters */
-    private Map<String,String> viewParams = new HashMap<String, String>();
+    private Map<String, String> viewParams = new HashMap<String, String>();
 
     /** raw kvp parameters non-parsed */
-    private Map <String,String> rawKvp;
+    private Map<String, String> rawKvp;
+
+    public GetMapRequest() {
+        super("GetMap");
+    }
 
     /**
      * DOCUMENT ME!
-     *
+     * 
      * @return DOCUMENT ME!
      */
     public Envelope getBbox() {
@@ -72,7 +76,7 @@ public class GetMapRequest extends WMSRequest {
 
     /**
      * DOCUMENT ME!
-     *
+     * 
      * @return DOCUMENT ME!
      */
     public java.awt.Color getBgColor() {
@@ -81,11 +85,11 @@ public class GetMapRequest extends WMSRequest {
 
     /**
      * DJB: spec says SRS is *required*, so if they dont specify one, we should throw an error
-     *      instead we use "NONE" - which is no-projection.
-     *      Previous behavior was to the WSG84 lat/long (4326)
-     *
-     * @return request CRS, or <code>null</code> if not set.
-     * TODO: make CRS manditory as for spec conformance
+     * instead we use "NONE" - which is no-projection. Previous behavior was to the WSG84 lat/long
+     * (4326)
+     * 
+     * @return request CRS, or <code>null</code> if not set. TODO: make CRS manditory as for spec
+     *         conformance
      */
     public CoordinateReferenceSystem getCrs() {
         return this.optionalParams.crs;
@@ -97,7 +101,7 @@ public class GetMapRequest extends WMSRequest {
 
     /**
      * DOCUMENT ME!
-     *
+     * 
      * @return DOCUMENT ME!
      */
     public String getExceptions() {
@@ -106,7 +110,7 @@ public class GetMapRequest extends WMSRequest {
 
     /**
      * DOCUMENT ME!
-     *
+     * 
      * @return DOCUMENT ME!
      */
     public String getFormat() {
@@ -114,8 +118,7 @@ public class GetMapRequest extends WMSRequest {
     }
 
     /**
-     * Map of String,Object which contains kvp's which are specific to a
-     * particular output format.
+     * Map of String,Object which contains kvp's which are specific to a particular output format.
      */
     public Map getFormatOptions() {
         return formatOptions;
@@ -123,14 +126,16 @@ public class GetMapRequest extends WMSRequest {
 
     /**
      * Map of strings that make up the SLD enviroment for variable substitution
+     * 
      * @return
      */
     public Map getEnv() {
         return env;
     }
-    
+
     /**
-     * Map of strings that contain the parameter values for SQL views 
+     * Map of strings that contain the parameter values for SQL views
+     * 
      * @return
      */
     public Map<String, String> getViewParams() {
@@ -139,7 +144,7 @@ public class GetMapRequest extends WMSRequest {
 
     /**
      * DOCUMENT ME!
-     *
+     * 
      * @return DOCUMENT ME!
      */
     public int getHeight() {
@@ -149,14 +154,14 @@ public class GetMapRequest extends WMSRequest {
     /**
      * @return the non null list of layers, may be empty
      */
-    public MapLayerInfo[] getLayers() {
+    public List<MapLayerInfo> getLayers() {
         List<MapLayerInfo> layers = mandatoryParams.layers;
-        return layers.toArray(new MapLayerInfo[layers.size()]);
+        return layers;
     }
 
     /**
      * Gets a list of the styles to be returned by the server.
-     *
+     * 
      * @return A list of {@link Style}
      */
     public List<Style> getStyles() {
@@ -178,8 +183,8 @@ public class GetMapRequest extends WMSRequest {
     }
 
     /**
-     * Gets the value of the "VALIDATESCHEMA" parameter which controls wether
-     * the value of the "SLD paramter is schema validated.
+     * Gets the value of the "VALIDATESCHEMA" parameter which controls wether the value of the "SLD
+     * paramter is schema validated.
      */
     public Boolean getValidateSchema() {
         return this.optionalParams.validateSLD;
@@ -187,7 +192,7 @@ public class GetMapRequest extends WMSRequest {
 
     /**
      * Gets a list of the the filters that will be applied to each layer before rendering
-     *
+     * 
      * @return -
      * @deprecated use {@link #getFilter()}.
      */
@@ -197,29 +202,27 @@ public class GetMapRequest extends WMSRequest {
 
     /**
      * Gets a list of the the filters that will be applied to each layer before rendering
-     *
-     * @return  A list of {@link Filter}.
-     *
+     * 
+     * @return A list of {@link Filter}.
+     * 
      */
     public List getFilter() {
         return this.optionalParams.filters;
     }
 
     /**
-     * Gets a list of the cql filtesr that will be applied to each layer before
-     * rendering.
-     *
+     * Gets a list of the cql filtesr that will be applied to each layer before rendering.
+     * 
      * @return A list of {@link Filter}.
-     *
+     * 
      */
     public List getCQLFilter() {
         return this.optionalParams.cqlFilters;
     }
 
     /**
-     * Gets a list of the feature ids that will be used to filter each layer
-     * before rendering.
-     *
+     * Gets a list of the feature ids that will be used to filter each layer before rendering.
+     * 
      * @return A list of {@link String}.
      */
     public List getFeatureId() {
@@ -228,17 +231,18 @@ public class GetMapRequest extends WMSRequest {
 
     /**
      * DOCUMENT ME!
-     *
+     * 
      * @return DOCUMENT ME!
-     *
+     * 
      */
     public boolean isTransparent() {
         return this.optionalParams.transparent;
     }
 
     /**
-     * <a href="http://wiki.osgeo.org/index.php/WMS_Tiling_Client_Recommendation">WMS-C specification</a> tiling hint
-     *
+     * <a href="http://wiki.osgeo.org/index.php/WMS_Tiling_Client_Recommendation">WMS-C
+     * specification</a> tiling hint
+     * 
      */
     public boolean isTiled() {
         return this.optionalParams.tiled;
@@ -252,13 +256,13 @@ public class GetMapRequest extends WMSRequest {
         return this.optionalParams.buffer;
     }
 
-	public InverseColorMapOp getPalette() {
-		return this.optionalParams.paletteInverter;
-	}
+    public InverseColorMapOp getPalette() {
+        return this.optionalParams.paletteInverter;
+    }
 
     /**
      * DOCUMENT ME!
-     *
+     * 
      * @return DOCUMENT ME!
      */
     public int getWidth() {
@@ -276,7 +280,7 @@ public class GetMapRequest extends WMSRequest {
             return kmscore.intValue();
         }
 
-        return 40; //old default
+        return 40; // old default
     }
 
     /**
@@ -290,22 +294,22 @@ public class GetMapRequest extends WMSRequest {
             return kmattr.booleanValue();
         }
 
-        return true; //old default
+        return true; // old default
     }
 
-//    /**
-//     * @return super overlay flag, <code>true</code> if super overlay requested.
-//     * @deprecated use <code>getFormatOptions().get( "superoverlay" )</code>
-//     */
-//    public boolean getSuperOverlay() {
-//        Boolean superOverlay = (Boolean) getFormatOptions().get("superoverlay");
-//
-//        if (superOverlay != null) {
-//            return superOverlay.booleanValue();
-//        }
-//
-//        return false; //old default
-//    }
+    // /**
+    // * @return super overlay flag, <code>true</code> if super overlay requested.
+    // * @deprecated use <code>getFormatOptions().get( "superoverlay" )</code>
+    // */
+    // public boolean getSuperOverlay() {
+    // Boolean superOverlay = (Boolean) getFormatOptions().get("superoverlay");
+    //
+    // if (superOverlay != null) {
+    // return superOverlay.booleanValue();
+    // }
+    //
+    // return false; //old default
+    // }
 
     /**
      * @return kml legend flag, <code>true</code> if legend is enabled.
@@ -318,7 +322,7 @@ public class GetMapRequest extends WMSRequest {
             return legend.booleanValue();
         }
 
-        return false; //old default
+        return false; // old default
     }
 
     /**
@@ -337,14 +341,16 @@ public class GetMapRequest extends WMSRequest {
 
     /**
      * Returs the feature version optional parameter
+     * 
      * @return
      */
     public String getFeatureVersion() {
         return this.optionalParams.featureVersion;
     }
-    
+
     /**
      * Returns the remote OWS type
+     * 
      * @return
      */
     public String getRemoteOwsType() {
@@ -353,6 +359,7 @@ public class GetMapRequest extends WMSRequest {
 
     /**
      * Returs the remote OWS URL
+     * 
      * @return
      */
     public URL getRemoteOwsURL() {
@@ -365,11 +372,12 @@ public class GetMapRequest extends WMSRequest {
     public Map getRawKvp() {
         return rawKvp;
     }
-    
+
     /**
      * DOCUMENT ME!
-     *
-     * @param bbox DOCUMENT ME!
+     * 
+     * @param bbox
+     *            DOCUMENT ME!
      */
     public void setBbox(Envelope bbox) {
         this.mandatoryParams.bbox = bbox;
@@ -377,8 +385,9 @@ public class GetMapRequest extends WMSRequest {
 
     /**
      * DOCUMENT ME!
-     *
-     * @param bgColor DOCUMENT ME!
+     * 
+     * @param bgColor
+     *            DOCUMENT ME!
      */
     public void setBgColor(java.awt.Color bgColor) {
         this.optionalParams.bgColor = bgColor;
@@ -386,8 +395,9 @@ public class GetMapRequest extends WMSRequest {
 
     /**
      * DOCUMENT ME!
-     *
-     * @param crs DOCUMENT ME!
+     * 
+     * @param crs
+     *            DOCUMENT ME!
      */
     public void setCrs(CoordinateReferenceSystem crs) {
         this.optionalParams.crs = crs;
@@ -395,8 +405,9 @@ public class GetMapRequest extends WMSRequest {
 
     /**
      * DOCUMENT ME!
-     *
-     * @param crs DOCUMENT ME!
+     * 
+     * @param crs
+     *            DOCUMENT ME!
      */
     public void setSRS(String srs) {
         this.optionalParams.srs = srs;
@@ -404,18 +415,20 @@ public class GetMapRequest extends WMSRequest {
 
     /**
      * DOCUMENT ME!
-     *
-     * @param exceptions DOCUMENT ME!
+     * 
+     * @param exceptions
+     *            DOCUMENT ME!
      */
     public void setExceptions(String exceptions) {
         this.optionalParams.exceptions = exceptions;
     }
 
     /**
-     * Sets the GetMap request value for the FORMAT parameter, which is
-     * the MIME type for the kind of image required.
-     *
-     * @param format DOCUMENT ME!
+     * Sets the GetMap request value for the FORMAT parameter, which is the MIME type for the kind
+     * of image required.
+     * 
+     * @param format
+     *            DOCUMENT ME!
      */
     public void setFormat(String format) {
         this.mandatoryParams.format = format;
@@ -423,8 +436,9 @@ public class GetMapRequest extends WMSRequest {
 
     /**
      * Sets the format options.
-     *
-     * @param formatOptions A map of String,Object
+     * 
+     * @param formatOptions
+     *            A map of String,Object
      * @see #getFormatOptions()
      */
     public void setFormatOptions(Map formatOptions) {
@@ -433,14 +447,16 @@ public class GetMapRequest extends WMSRequest {
 
     /**
      * Sets the SLD environment substitution
+     * 
      * @param enviroment
      */
     public void setEnv(Map enviroment) {
         this.env = enviroment;
     }
-    
+
     /**
      * Sets the SQL views parameters
+     * 
      * @param viewParams
      */
     public void setViewParams(Map<String, String> viewParams) {
@@ -449,8 +465,9 @@ public class GetMapRequest extends WMSRequest {
 
     /**
      * DOCUMENT ME!
-     *
-     * @param height DOCUMENT ME!
+     * 
+     * @param height
+     *            DOCUMENT ME!
      */
     public void setHeight(int height) {
         this.mandatoryParams.height = height;
@@ -460,23 +477,13 @@ public class GetMapRequest extends WMSRequest {
         this.mandatoryParams.height = height.intValue();
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param layers DOCUMENT ME!
-     */
-    public void setLayers(MapLayerInfo[] layers) {
-        this.mandatoryParams.layers = layers == null ? Collections.EMPTY_LIST : Arrays
-                .asList(layers);
+    public void setLayers(List<MapLayerInfo> layers) {
+        this.mandatoryParams.layers = layers == null ? Collections.EMPTY_LIST : layers;
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param styles List&lt;org.geotools.styling.Style&gt;
-     */
     public void setStyles(List<Style> styles) {
-        this.mandatoryParams.styles = styles == null? Collections.EMPTY_LIST : new ArrayList<Style>(styles);
+        this.mandatoryParams.styles = styles == null ? Collections.EMPTY_LIST
+                : new ArrayList<Style>(styles);
     }
 
     /**
@@ -494,8 +501,7 @@ public class GetMapRequest extends WMSRequest {
     }
 
     /**
-     * Sets the flag to validate the "SLD" parameter or not.
-     * //TODO
+     * Sets the flag to validate the "SLD" parameter or not. //TODO
      */
     public void setValidateSchema(Boolean validateSLD) {
         this.optionalParams.validateSLD = validateSLD;
@@ -503,8 +509,9 @@ public class GetMapRequest extends WMSRequest {
 
     /**
      * Sets a list of filters, one for each layer
-     *
-     * @param filters A list of {@link Filter}.
+     * 
+     * @param filters
+     *            A list of {@link Filter}.
      * @deprecated use {@link #setFilter(List)}.
      */
     public void setFilters(List filters) {
@@ -513,8 +520,9 @@ public class GetMapRequest extends WMSRequest {
 
     /**
      * Sets a list of filters, one for each layer
-     *
-     * @param filters A list of {@link Filter}.
+     * 
+     * @param filters
+     *            A list of {@link Filter}.
      */
     public void setFilter(List filters) {
         this.optionalParams.filters = filters;
@@ -522,8 +530,9 @@ public class GetMapRequest extends WMSRequest {
 
     /**
      * Sets a list of filters ( cql ), one for each layer.
-     *
-     * @param cqlFilters A list of {@link Filter}.
+     * 
+     * @param cqlFilters
+     *            A list of {@link Filter}.
      */
     public void setCQLFilter(List cqlFilters) {
         this.optionalParams.cqlFilters = cqlFilters;
@@ -531,8 +540,9 @@ public class GetMapRequest extends WMSRequest {
 
     /**
      * Sets a list of feature ids, one for each layer.
-     *
-     * @param featureIds A list of {@link String}.
+     * 
+     * @param featureIds
+     *            A list of {@link String}.
      */
     public void setFeatureId(List featureIds) {
         this.optionalParams.featureIds = featureIds;
@@ -540,28 +550,30 @@ public class GetMapRequest extends WMSRequest {
 
     /**
      * DOCUMENT ME!
-     *
-     * @param transparent DOCUMENT ME!
+     * 
+     * @param transparent
+     *            DOCUMENT ME!
      */
     public void setTransparent(boolean transparent) {
         this.optionalParams.transparent = transparent;
     }
 
     public void setTransparent(Boolean transparent) {
-        this.optionalParams.transparent = (transparent != null) ? transparent.booleanValue() : false;
+        this.optionalParams.transparent = (transparent != null) ? transparent.booleanValue()
+                : false;
     }
 
     public void setBuffer(int buffer) {
         this.optionalParams.buffer = buffer;
     }
 
-	public void setPalette(InverseColorMapOp paletteInverter) {
-		this.optionalParams.paletteInverter = paletteInverter;
-	}
+    public void setPalette(InverseColorMapOp paletteInverter) {
+        this.optionalParams.paletteInverter = paletteInverter;
+    }
+
     public void setBuffer(Integer buffer) {
         this.optionalParams.buffer = (buffer != null) ? buffer.intValue() : 0;
     }
-
 
     public void setTiled(boolean tiled) {
         this.optionalParams.tiled = tiled;
@@ -577,8 +589,9 @@ public class GetMapRequest extends WMSRequest {
 
     /**
      * DOCUMENT ME!
-     *
-     * @param width DOCUMENT ME!
+     * 
+     * @param width
+     *            DOCUMENT ME!
      */
     public void setWidth(int width) {
         this.mandatoryParams.width = width;
@@ -589,7 +602,8 @@ public class GetMapRequest extends WMSRequest {
     }
 
     /**
-     * @param score the KML/KMZ score value for image vs. vector response, from 0 to 100
+     * @param score
+     *            the KML/KMZ score value for image vs. vector response, from 0 to 100
      * @deprecated use <code>getFormatOptions().put( "kmscore", new Integer( score ) );</code>
      */
     public void setKMScore(int score) {
@@ -597,7 +611,8 @@ public class GetMapRequest extends WMSRequest {
     }
 
     /**
-     * @param on true: full attribution; false: no attribution
+     * @param on
+     *            true: full attribution; false: no attribution
      * @deprecated use <code>getFormatOptions().put( "kmattr", new Boolean( on ) );</code>
      */
     public void setKMattr(boolean on) {
@@ -606,7 +621,9 @@ public class GetMapRequest extends WMSRequest {
 
     /**
      * Sets the super overlay parameter on the request.
-     * @deprecated use <code>getFormatOptions().put( "superoverlay", new Boolean( superOverlay ) );</code>
+     * 
+     * @deprecated use
+     *             <code>getFormatOptions().put( "superoverlay", new Boolean( superOverlay ) );</code>
      */
     public void setSuperOverlay(boolean superOverlay) {
         getFormatOptions().put("superoverlay", new Boolean(superOverlay));
@@ -614,6 +631,7 @@ public class GetMapRequest extends WMSRequest {
 
     /**
      * Sets the kml legend parameter of the request.
+     * 
      * @deprecated use <code>getFormatOptions().put( "legend", new Boolean( legend ) );</code>
      */
     public void setLegend(boolean legend) {
@@ -622,7 +640,7 @@ public class GetMapRequest extends WMSRequest {
 
     /**
      * Sets the time request parameter.
-     *
+     * 
      */
     public void setTime(List<Date> time) {
         this.optionalParams.time = new ArrayList<Date>(time);
@@ -637,12 +655,13 @@ public class GetMapRequest extends WMSRequest {
 
     /**
      * Sets the feature version optional param
+     * 
      * @param featureVersion
      */
     public void setFeatureVersion(String featureVersion) {
         this.optionalParams.featureVersion = featureVersion;
     }
-    
+
     public void setRemoteOwsType(String remoteOwsType) {
         this.optionalParams.remoteOwsType = remoteOwsType;
     }
@@ -657,10 +676,10 @@ public class GetMapRequest extends WMSRequest {
      * This property only applies if the reqeust is for a vector layer.
      * </p>
      */
-    public void setMaxFeatures( Integer maxFeatures ) {
+    public void setMaxFeatures(Integer maxFeatures) {
         this.optionalParams.maxFeatures = maxFeatures;
     }
-    
+
     /**
      * The maximum number of features to fetch in this request.
      */
@@ -669,21 +688,18 @@ public class GetMapRequest extends WMSRequest {
     }
 
     /**
-     * Sets the offset or start index at which to start returning features in 
-     * the request.
+     * Sets the offset or start index at which to start returning features in the request.
      * <p>
-     * It is used in conjunction with {@link #getMaxFeatures()} to page through
-     * a feature set. This property only applies if the request is for a vector 
-     * layer.
+     * It is used in conjunction with {@link #getMaxFeatures()} to page through a feature set. This
+     * property only applies if the request is for a vector layer.
      * </p>
      */
-    public void setStartIndex( Integer startIndex ) {
+    public void setStartIndex(Integer startIndex) {
         this.optionalParams.startIndex = startIndex;
     }
-    
+
     /**
-     * The offset or start index at which to start returning features in 
-     * the request.
+     * The offset or start index at which to start returning features in the request.
      */
     public Integer getStartIndex() {
         return this.optionalParams.startIndex;
@@ -692,25 +708,26 @@ public class GetMapRequest extends WMSRequest {
     /**
      * Sets the raw kvp parameters which were used to create the request.
      */
-    public void setRawKvp( Map rawKvp ) {
+    public void setRawKvp(Map rawKvp) {
         this.rawKvp = rawKvp;
     }
-    
+
     public double getAngle() {
-    	return this.optionalParams.angle;
+        return this.optionalParams.angle;
     }
-    
+
     /**
      * Sets the map rotation
+     * 
      * @param rotation
      */
     public void setAngle(double rotation) {
-    	this.optionalParams.angle = rotation;
+        this.optionalParams.angle = rotation;
     }
-    
+
     /**
      * DOCUMENT ME!
-     *
+     * 
      * @author Gabriel Roldan, Axios Engineering
      * @version $Id$
      */
@@ -719,34 +736,33 @@ public class GetMapRequest extends WMSRequest {
         List<MapLayerInfo> layers = Collections.emptyList();
 
         /**
-         * ordered list of requested layers' styles, in a one to one
-         * relationship with <code>layers</code>
+         * ordered list of requested layers' styles, in a one to one relationship with
+         * <code>layers</code>
          */
         List<Style> styles = Collections.emptyList();
 
-        /** DOCUMENT ME!  */
+        /** DOCUMENT ME! */
         Envelope bbox;
 
-        /** DOCUMENT ME!  */
+        /** DOCUMENT ME! */
         int width;
 
-        /** DOCUMENT ME!  */
+        /** DOCUMENT ME! */
         int height;
 
-        /** DOCUMENT ME!  */
+        /** DOCUMENT ME! */
         String format;
     }
 
     /**
      * DOCUMENT ME!
-     *
+     * 
      * @author Gabriel Roldan, Axios Engineering
      * @version $Id$
      */
     private class OptionalParameters {
         /**
-         * the map's background color requested, or the default (white) if not
-         * specified
+         * the map's background color requested, or the default (white) if not specified
          */
         Color bgColor = DEFAULT_BG;
 
@@ -765,37 +781,39 @@ public class GetMapRequest extends WMSRequest {
         /** feature id filters */
         List featureIds;
 
-        /** DOCUMENT ME!  */
+        /** DOCUMENT ME! */
         String exceptions = SE_XML;
 
-        /** DOCUMENT ME!  */
+        /** DOCUMENT ME! */
         boolean transparent = false;
 
         /**
-         * Tiling hint, according to the
-         * <a href="http://wiki.osgeo.org/index.php/WMS_Tiling_Client_Recommendation">WMS-C specification</a>
+         * Tiling hint, according to the <a
+         * href="http://wiki.osgeo.org/index.php/WMS_Tiling_Client_Recommendation">WMS-C
+         * specification</a>
          */
         boolean tiled;
 
         /**
-         * Temporary hack since finding a good tiling origin would require us to compute
-         * the bbox on the fly
-         * TODO: remove this once we cache the real bbox of vector layers
+         * Temporary hack since finding a good tiling origin would require us to compute the bbox on
+         * the fly TODO: remove this once we cache the real bbox of vector layers
          */
         public Point2D tilesOrigin;
 
         /** the rendering buffer, in pixels **/
         int buffer;
 
-		/** The paletteInverter used for rendering, if any */
-		InverseColorMapOp paletteInverter;
+        /** The paletteInverter used for rendering, if any */
+        InverseColorMapOp paletteInverter;
 
-        /** time elevation parameter, a list since many pattern setup can be possible, see
-         *  for example http://mapserver.gis.umn.edu/docs/howto/wms_time_support/#time-patterns */
+        /**
+         * time elevation parameter, a list since many pattern setup can be possible, see for
+         * example http://mapserver.gis.umn.edu/docs/howto/wms_time_support/#time-patterns
+         */
         List<Date> time;
 
         /** time elevation parameter */
-        double elevation=Double.NaN;
+        double elevation = Double.NaN;
 
         /**
          * SLD parameter
@@ -812,24 +830,25 @@ public class GetMapRequest extends WMSRequest {
 
         /** feature version (for versioned requests) */
         String featureVersion;
-        
+
         /** Remote OWS type */
         String remoteOwsType;
-        
+
         /** Remote OWS url */
         URL remoteOwsURL;
-        
+
         /** paging parameters */
         Integer maxFeatures;
+
         Integer startIndex;
-        
+
         /** map rotation */
         double angle;
     }
 
     /**
      * Standard override of toString()
-     *
+     * 
      * @return a String representation of this request.
      */
     public String toString() {
@@ -837,11 +856,11 @@ public class GetMapRequest extends WMSRequest {
         returnString.append("\n version: " + version);
         returnString.append("\n output format: " + mandatoryParams.format);
         returnString.append("\n width height: " + mandatoryParams.height + ","
-            + mandatoryParams.width);
+                + mandatoryParams.width);
         returnString.append("\n bbox: " + mandatoryParams.bbox);
         returnString.append("\n layers: ");
 
-        for (Iterator<MapLayerInfo> i = mandatoryParams.layers.iterator();i.hasNext();) {
+        for (Iterator<MapLayerInfo> i = mandatoryParams.layers.iterator(); i.hasNext();) {
             returnString.append(i.next().getName());
             if (i.hasNext()) {
                 returnString.append(",");
@@ -859,7 +878,7 @@ public class GetMapRequest extends WMSRequest {
             }
         }
 
-        //returnString.append("\n inside: " + filter.toString());
+        // returnString.append("\n inside: " + filter.toString());
         return returnString.toString();
     }
 }
