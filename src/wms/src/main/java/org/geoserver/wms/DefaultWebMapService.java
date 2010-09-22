@@ -16,6 +16,7 @@ import net.opengis.wfs.FeatureCollectionType;
 import org.geoserver.kml.KMLReflector;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.ServiceException;
+import org.geoserver.sld.GetStyles;
 import org.geoserver.sld.GetStylesRequest;
 import org.geoserver.wms.response.DescribeLayerTransformer;
 import org.geoserver.wms.response.GetCapabilitiesTransformer;

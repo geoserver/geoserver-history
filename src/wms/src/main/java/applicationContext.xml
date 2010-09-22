@@ -32,7 +32,7 @@
 	</bean>
 
     <bean id="wmsGetStyles"
-        class="org.geoserver.wms.GetStyles">
+        class="org.geoserver.sld.GetStyles">
        <description>WMS GetStyles operation</description>
        <constructor-arg ref="wms"/>
     </bean>
