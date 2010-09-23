@@ -108,9 +108,9 @@ achieve this:
 #. The ``schema.xsd`` file is copied into the feature type directory for the
    ``topp:myDataset``::
 
-      copy schema.xsd $GEOSERVER_DATA_DIR/featureTypes/<ds>_myDataset/
+      copy schema.xsd $GEOSERVER_DATA_DIR/workspaces/<workspace>/<datastore>/myDataset/
 
-   Where ``<ds>`` is the name of the data store which contains ``myDataset``
+   Where ``<workspace>`` is the name of the workspace containing your datastore and  ``<datastore>`` is the name of the data store which contains ``myDataset``
 
 In order for the new schema to to be picked up by GeoServer the configuration 
 must be reloaded. This cab be done by logging into the admin interface and 

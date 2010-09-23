@@ -366,7 +366,7 @@ There are two ways to specify a label for a feature in Google Earth. The first i
 Freemarker Templates
 ````````````````````
 
-Specifying labels via a Freemarker template involves creating a special text file called ``title.ftl`` and placing it into the ``featureTypes`` directory (inside the GeoServer data directory) for the dataset to be labeled. For example, to create a template to label the ``states`` dataset by state name one would create the file here:  ``<data_dir>/featureTypes/states/title.ftl``. The content of the file would be:
+Specifying labels via a Freemarker template involves creating a special text file called ``title.ftl`` and placing it into the ``workspaces/<ws name>/<datastore name>/<feature type name>`` directory (inside the GeoServer data directory) for the dataset to be labeled. For example, to create a template to label the ``states`` dataset by state name one would create the file here:  ``<data_dir>/workspaces/topp/states_shapefile/states/title.ftl``. The content of the file would be:
 
 .. code-block:: none
 
@@ -453,7 +453,7 @@ When working with KML, each feature is linked to a description, accessible when 
    
    *Figure 22: Default description for a feature*
 
-It is possible to modify this default behavior. Much like with featureType titles, which are edited by creating a ``title.ftl`` template, a custom description can be used by creating template called ``description.ftl`` and placing it into the featureTypes directory (inside the GeoServer data directory) for the dataset. For instance, to create a template to provide a description for the states dataset, one would create the file: ``<data_dir>/featureTypes/states/description.ftl``. As an example, if the content of the description template is:
+It is possible to modify this default behavior. Much like with featureType titles, which are edited by creating a ``title.ftl`` template, a custom description can be used by creating template called ``description.ftl`` and placing it into the feature type directory (inside the GeoServer data directory) for the dataset. For instance, to create a template to provide a description for the states dataset, one would create the file: ``<data_dir>/workspaces/topp/states_shapefile/states/description.ftl``. As an example, if the content of the description template is:
 
 .. code-block:: none
 
@@ -466,7 +466,7 @@ The resultant description will look like this:
    
    *Figure 23: A custom description*
 
-It is also possible to create one description template for all featureTypes in a given namespace. To do this, create a ``description.ftl`` file as above, and save it as ``<data_dir>/templates/<namespace>/description.ftl``. Please note that if a description template is created for a specific featureType that also has an associated namespace description template, the featureType template (i.e. the most specific template) will take priority.
+It is also possible to create one description template for all featureTypes in a given namespace. To do this, create a ``description.ftl`` file as above, and save it as ``<data_dir>/templates/<workspace>/description.ftl``. Please note that if a description template is created for a specific featureType that also has an associated namespace description template, the featureType template (i.e. the most specific template) will take priority.
 
 One can also create more complex descriptions using a combination of HTML and the attributes of the data. A full tutorial on how to use templates to create descriptions is available in our page on KML Placemark Templates.  (LINK?)
 

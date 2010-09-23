@@ -119,9 +119,9 @@ Custom Templates
 ````````````````		
 So, what do you have to do if you want to override the custom templates? Well, it depends on which template you want to override.
 
-``header.ftl`` and ``footer.ftl`` are type independent, so if you want to override them you have to place a file named ``header.ftl`` or ``footer.ftl`` in the ``featureTypes`` directory, located in your GeoServer :ref:`data_directory`.  On the contrary, ``content.ftl`` may be generic, or specific to a feature type.
+``header.ftl`` and ``footer.ftl`` are type independent, so if you want to override them you have to place a file named ``header.ftl`` or ``footer.ftl`` in the ``templates`` directory, located in your GeoServer :ref:`data_directory`.  On the contrary, ``content.ftl`` may be generic, or specific to a feature type.
 
-For example, let's say you would prefer a bulleted list appearance for your feature info output, and you want this to be applied to all GetFeatureInfo HTML output. In that case you would drop the following ``content.ftl`` in the featureTypes directory::
+For example, let's say you would prefer a bulleted list appearance for your feature info output, and you want this to be applied to all GetFeatureInfo HTML output. In that case you would drop the following ``content.ftl`` in the templates directory::
 
 	<ul>
 	<#list features as feature>
@@ -146,7 +146,7 @@ With this template in place, the output would be:
 	
 Looking at the output we notice that point of interest features refer to image files, which we know are stored inside the default GeoServer distribution in the ``demo_app/pics`` path. So, we could provide a POI specific override that actually loads the images. 
 	
-This is easy: just put the following template in the feature type folder, which in this case is ``featureTypes/DS_poi_poi`` (you should refer to your Internet visible server address instead of localhost, or its IP if you have fixed IPs)::
+This is easy: just put the following template in the feature type folder, which in this case is ``workspaces/topp/DS_poi/poi`` (you should refer to your Internet visible server address instead of localhost, or its IP if you have fixed IPs)::
 
 	<ul>
 	<#list features as feature>

@@ -8,7 +8,7 @@ KML output can leverage some powerful visualization abilities in Google Earth. *
 Titles
 ------
 
-Specifying labels via a template involves creating a special text file called ``title.ftl`` and placing it into the featuretypes directory inside the :ref:`data_directory` for the dataset to be labeled. For instance, to create a template to label the ``states`` layer by state name, one would create the file: ``<data_dir>/featureTypes/states/title.ftl``. The content of the file would be::
+Specifying labels via a template involves creating a special text file called ``title.ftl`` and placing it into the featuretypes directory inside the :ref:`data_directory` for the dataset to be labeled. For instance, to create a template to label the ``states`` layer by state name, one would create the file: ``<data_dir>/workspaces/topp/states_shapefile/states/title.ftl``. The content of the file would be::
 
    ${STATE_NAME.value}
 
@@ -21,7 +21,7 @@ When working with KML, each feature is linked to a description, accessible when 
 
 .. warning:  Add SS:  Default description for a feature
 
-It is possible to modify this default behavior. Much like with featuretype titles, which are edited by creating a ``title.ftl`` template, specifying descriptions via a template involves creating a special text file called ``description.ftl`` and placing it into the featuretypes directory inside the :ref:`data_directory` for the dataset to be labeled. For instance, a sample description template would be saved here: ``<data_dir>/featureTypes/states/description.ftl``. The content of the file could be::
+It is possible to modify this default behavior. Much like with featuretype titles, which are edited by creating a ``title.ftl`` template, specifying descriptions via a template involves creating a special text file called ``description.ftl`` and placing it into the featuretypes directory inside the :ref:`data_directory` for the dataset to be labeled. For instance, a sample description template would be saved here: ``<data_dir>/workspaces/topp/states_shapefile/states/description.ftl``. The content of the file could be::
 
    This is the state of ${STATE_NAME.value}.
 

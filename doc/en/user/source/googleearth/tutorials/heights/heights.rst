@@ -31,7 +31,7 @@ To view the ``topp:states`` layer (packaged with all releases of GeoServer) in G
 Step Two
 --------
 
-An interesting value to use for the height would be the population of each state (so that more populated states appear taller on the map).  We can do this by creating a file called ``height.ftl`` in the GeoServer data directory under ``featureTypes/states_states``.  To set the population value, we enter the following text inside this new file::
+An interesting value to use for the height would be the population of each state (so that more populated states appear taller on the map).  We can do this by creating a file called ``height.ftl`` in the GeoServer data directory under ``workspaces/topp/states_shapefile/states``.  To set the population value, we enter the following text inside this new file::
 
 	${PERSONS.value}
 	

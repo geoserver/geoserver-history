@@ -8,7 +8,7 @@ Height
 
 GeoServer by default creates two dimensional overlays in Google Earth.  However, GeoServer can output features with height information (also called "KML extrudes") if desired. This can have the effect of having features "float" above the ground, or create bar graph style structures in the shape of the features. The height of features can be linked to an attribute of the data.
 
-Setting the height of features is determined by using a KML Freemarker template. Create a file called ``height.ftl``, and save it in the same directory as the featuretype in your :ref:`data_directory`. For example, to create a height template for the ``states`` layer, the file should be saved in ``<data_dir>/featureTypes/states/height.ftl``.
+Setting the height of features is determined by using a KML Freemarker template. Create a file called ``height.ftl``, and save it in the same directory as the featuretype in your :ref:`data_directory`. For example, to create a height template for the ``states`` layer, the file should be saved in ``<data_dir>/workspaces/topp/states_shapefile/states/height.ftl``.
 
 To set the height based on an attribute, the syntax is::
 

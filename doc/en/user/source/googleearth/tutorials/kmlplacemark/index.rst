@@ -38,7 +38,7 @@ Ok, time to get to creating our first template. We will start off an extremely s
 
 	Hello World!
 
-3. Save the file in the ``featureTypes/states`` directory of your "data directory". The data directory is the location of all the GeoServer configuration files. It is normally pointed to by the environment variable ``GEOSERVER_DATA_DIR``.
+3. Save the file in the ``workspaces/topp/states_shapefile/states`` directory of your "data directory". The data directory is the location of all the GeoServer configuration files. It is normally pointed to by the environment variable ``GEOSERVER_DATA_DIR``.
 4. Start GeoServer is it is not already running.
 
 And thats it. We can now test out our template by adding the following network link in google earth::

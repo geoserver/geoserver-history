@@ -54,7 +54,7 @@ The temporal attribute is ``RPT_YEAR`` and is the one that matters to us. Ok, ti
 
   ${RPT_YEAR.value?date('yyyy')}
 
-3. Save the file to the ``<GEOSERVER_DATA_DIR>/featureTypes/inet_weu_inet_weu`` directory. Where ``<GEOSERVER_DATA_DIR>`` is the location of the "data directory" of your GeoServer installation. Usually pointed to via the ``GEOSERVER_DATA_DIR`` environment variable.
+3. Save the file to the ``<GEOSERVER_DATA_DIR>/workspaces/topp/inet_weu_shapefile/inet_weu`` directory. Where ``<GEOSERVER_DATA_DIR>`` is the location of the "data directory" of your GeoServer installation. Usually pointed to via the ``GEOSERVER_DATA_DIR`` environment variable.
 
 See the ref:`references` section for more information about specifying a date format.
 
