@@ -1351,10 +1351,12 @@ public class ResourcePool {
         }
         
         protected boolean removeLRU(LinkEntry entry) {
-            FeatureTypeInfo info = (FeatureTypeInfo) entry.getKey();
+            String id = (String) entry.getKey();
+            FeatureType featureType = (FeatureType) entry.getValue();
+            FeatureTypeInfo info = catalog.getFeatureType(id);
             LOGGER.info( "Disposing feature type '" + info.getName() + "'");
             
-            fireDisposed(info, (FeatureType) entry.getValue());
+            fireDisposed(info, featureType);
             return super.removeLRU(entry);
         }
     }
