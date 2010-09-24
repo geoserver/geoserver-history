@@ -4,25 +4,40 @@
  */
 package org.vfny.geoserver.util;
 
+import java.awt.image.SampleModel;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.media.jai.Interpolation;
 
+import org.geoserver.catalog.CoverageDimensionInfo;
+import org.geoserver.catalog.CoverageInfo;
+import org.geoserver.wcs.WCSInfo;
 import org.geotools.coverage.grid.GridCoverage2D;
+import org.geotools.coverage.grid.GridEnvelope2D;
 import org.geotools.coverage.grid.GridGeometry2D;
+import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
+import org.geotools.coverage.grid.io.DecimationPolicy;
+import org.geotools.coverage.grid.io.OverviewPolicy;
 import org.geotools.coverage.processing.CoverageProcessor;
 import org.geotools.coverage.processing.operation.Interpolate;
 import org.geotools.coverage.processing.operation.Resample;
 import org.geotools.coverage.processing.operation.SelectSampleDimension;
 import org.geotools.factory.Hints;
+import org.geotools.geometry.GeneralEnvelope;
+import org.geotools.referencing.CRS;
+import org.geotools.util.NumberRange;
 import org.opengis.coverage.Coverage;
 import org.opengis.coverage.grid.GridCoverage;
+import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.MathTransform;
 import org.vfny.geoserver.wcs.WcsException;
 
 /**
@@ -34,6 +49,8 @@ import org.vfny.geoserver.wcs.WcsException;
 public class WCSUtils {
 
     private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger(WCSUtils.class);
+    
+    public static final String ELEVATION = "ELEVATION";
     
     public final static Hints LENIENT_HINT = new Hints(Hints.LENIENT_DATUM_SHIFT, Boolean.TRUE);
 
@@ -239,5 +256,222 @@ public class WCSUtils {
         return bandSelectedCoverage;
     }
 
-	public static final String ELEVATION = "ELEVATION";
+    /**
+     * Checks the coverage described by the specified geometry and sample model does not exceeds the output
+     * WCS limits 
+     * @param info
+     * @param gridRange2D
+     * @param sampleModel
+     */
+	public static void checkOutputLimits(WCSInfo info, GridEnvelope2D gridRange2D, SampleModel sampleModel) {
+        // do we have to check a limit at all?
+	    long limit = info.getMaxOutputMemory() * 1024;
+        if(limit <= 0) {
+            return;
+        }
+        
+        // compute the coverage memory usage and compare with limit
+        long actual = getCoverageSize(gridRange2D, sampleModel);
+        if(actual > limit) {
+            throw new WcsException("This request is trying to generate too much data, " +
+                    "the limit is " + formatBytes(limit) + " but the actual amount of bytes to be " +
+                            "written in the output is " + formatBytes(actual));
+        }
+    }
+
+    /**
+     * Checks the coverage read is below the input limits. Mind, at this point the reader might have
+     * have subsampled the original image in some way so it is expected the coverage is actually
+     * smaller than what computed but {@link #checkInputLimits(CoverageInfo, AbstractGridCoverage2DReader, GeneralEnvelope)},
+     * however that method might have failed the computation due to lack of metadata (or wrong metadata)
+     * so it's safe to double check the actual coverage wit this one.
+     * Mind, this method might cause the coverage to be fully read in memory (if that is the case,
+     * the actual WCS processing chain would result in the same behavior so this is not causing
+     * any extra memory usage, just makes it happen sooner)
+     * @param coverage
+     */
+    public static void checkInputLimits(WCSInfo info, GridCoverage2D coverage) {
+        // do we have to check a limit at all?
+        long limit = info.getMaxInputMemory() * 1024;
+        if(limit <= 0) {
+            return;
+        }
+        
+        // compute the coverage memory usage and compare with limit
+        long actual = getCoverageSize(coverage.getGridGeometry().getGridRange2D(), 
+                coverage.getRenderedImage().getSampleModel());
+        if(actual > limit) {
+            throw new WcsException("This request is trying to read too much data, " +
+                    "the limit is " + formatBytes(limit) + " but the actual amount of " +
+                    		"bytes to be read is " + formatBytes(actual));
+        }
+    }
+    
+    /**
+     * Computes the size of a grid coverage given its grid envelope and the target sample model
+     * @param envelope
+     * @param sm
+     * @return
+     */
+    static long getCoverageSize(GridEnvelope2D envelope, SampleModel sm) {
+        long pixels = 1;
+        for(int i = 0; i < envelope.getDimension(); i++) {
+            pixels *= envelope.getSpan(i);
+        }
+        long pixelSize = 0;
+        for (int i = 0; i < sm.getNumBands(); i++) {
+            pixelSize += sm.getSampleSize(i);
+        }
+        return pixels * pixelSize / 8;
+    }
+
+    /**
+     * Utility method to called to check the amount of data to be read does not exceed the WCS read limits.
+     * This method has to jump through a few hoops to estimate the size of the data to be read without
+     * having to actually read the coverage (which might trigger the loading of the full coverage in
+     * memory) 
+     * @param meta
+     * @param reader
+     * @param requestedEnvelope
+     * @throws WcsException if the coverage size exceeds the configured limits
+     */
+    public static void checkInputLimits(WCSInfo info, CoverageInfo meta, 
+            AbstractGridCoverage2DReader reader, GridGeometry2D gridGeometry) throws WcsException {
+        // do we have to check a limit at all?
+        long limit = info.getMaxInputMemory() * 1024;
+        if(limit <= 0) {
+            return;
+        }
+        
+        // compute the actual amount of data read
+        long actual = 0;
+        try {
+            // if necessary reproject back to the original CRS
+            GeneralEnvelope requestedEnvelope = new GeneralEnvelope(gridGeometry.getEnvelope());
+            final CoordinateReferenceSystem requestCRS = requestedEnvelope.getCoordinateReferenceSystem();
+            final CoordinateReferenceSystem nativeCRS = reader.getCrs();
+            if(!CRS.equalsIgnoreMetadata(requestCRS, nativeCRS)) {
+                requestedEnvelope = CRS.transform(CRS.findMathTransform(requestCRS, nativeCRS, true), requestedEnvelope);
+            }
+            // intersect with the native envelope, we cannot read outside of it
+            requestedEnvelope.intersect(reader.getOriginalEnvelope());
+            
+            // check if we are still reading anything
+            if(!requestedEnvelope.isEmpty()) {
+                MathTransform crsToGrid = meta.getGrid().getGridToCRS().inverse();
+                GeneralEnvelope requestedGrid = CRS.transform(crsToGrid, requestedEnvelope);
+                double[] spans = new double[requestedGrid.getDimension()];
+                double[] resolutions = new double[requestedGrid.getDimension()];
+                for (int i = 0; i < spans.length; i++) {
+                    spans[i] = requestedGrid.getSpan(i);
+                    resolutions[i] = requestedEnvelope.getSpan(i) / spans[i];
+                }
+                
+                // adjust the spans based on the overview policy
+                OverviewPolicy policy = info.getOverviewPolicy();
+                double[] readResoutions = reader.getReadingResolutions(policy, resolutions);
+                double[] baseResolutions = reader.getReadingResolutions(OverviewPolicy.IGNORE, resolutions);
+                for (int i = 0; i < spans.length; i++) {
+                    spans[i] *= readResoutions[i] / baseResolutions[i]; 
+                }
+                
+                // compute how many pixels we're going to read
+                long pixels = 1;
+                for (int i = 0; i < requestedGrid.getDimension(); i++) {
+                    pixels *= Math.ceil(requestedGrid.getSpan(i));
+                }
+                
+                // compute the size of a pixel using the coverage metadata (the reader won't give
+                // us any information about the bands)
+                long pixelSize = 0;
+                if(meta.getDimensions() != null) {
+                    for (CoverageDimensionInfo dimension : meta.getDimensions()) {
+                        int size = guessSizeFromRange(dimension.getRange());
+                        if(size == 0) {
+                            LOGGER.log(Level.INFO, "Failed to guess the size of dimension " 
+                                    + dimension.getName() + ", skipping the pre-read check");
+                            pixelSize = -1;
+                            break;
+                        }
+                        pixelSize += size;
+                    }
+                }
+                
+                actual = pixels * pixelSize / 8;
+            }
+        } catch(Throwable t) {
+            throw new WcsException("An error occurred while checking serving limits", t);
+        }
+        
+        if(actual < 0) {
+            // TODO: provide some more info about the request? It seems to be we'd have to
+            // log again the full request... unless the request logger starts dumping the thread
+            // id, in that case we can just refer to that and tell the admin to enable 
+            // the request logger to debug these issues?
+            LOGGER.log(Level.INFO, "Warning, we could not estimate the amount of bytes to be " +
+                    "read from the coverage source for the current request");
+        }
+        
+        if(actual > limit) {
+            throw new WcsException("This request is trying to read too much data, " +
+                    "the limit is " + formatBytes(limit) + " but the actual amount of bytes " +
+                    		"to be read is " + formatBytes(actual));
+        }
+    }
+
+    /**
+     * Guesses the size of the sample able to contain the range fully
+     * @param range
+     * @return
+     */
+    static int guessSizeFromRange(NumberRange range) {
+        double min = range.getMinimum();
+        double max = range.getMaximum();
+        double diff = max - min;
+        
+        if(diff <= ((int) Byte.MAX_VALUE - (int) Byte.MIN_VALUE)) {
+            return 8;
+        } else if(diff <= ((int) Short.MAX_VALUE - (int) Short.MIN_VALUE)) {
+            return 16;
+        } else if(diff <= ((double) Integer.MAX_VALUE - (double) Integer.MIN_VALUE)) {
+            return 32;
+        } else if(diff <= ((double) Float.MAX_VALUE - (double) Float.MIN_VALUE)) {
+            return 32;
+        } else {
+            return 64;
+        }
+    }
+    
+    /**
+     * Utility function to format a byte amount into a human readable string
+     * @param bytes
+     * @return
+     */
+    static String formatBytes(long bytes) {
+        if(bytes < 1024) {
+            return bytes + "B";
+        } else if(bytes < 1024 * 1024) {
+            return new DecimalFormat("#.##").format(bytes / 1024.0) + "KB";
+        } else {
+            return new DecimalFormat("#.##").format(bytes / 1024.0 / 1024.0) + "MB";
+        }
+    }
+
+    /**
+     * Returns the reader hints based on the current WCS configuration
+     * @param wcs
+     * @return
+     */
+    public static Hints getReaderHints(WCSInfo wcs) {
+        Hints hints = new Hints();
+        hints.add(new Hints(Hints.LENIENT_DATUM_SHIFT, Boolean.TRUE));
+        if (wcs.getOverviewPolicy() == null) {
+            hints.add(new Hints(Hints.OVERVIEW_POLICY, OverviewPolicy.IGNORE));
+        } else {
+            hints.add(new Hints(Hints.OVERVIEW_POLICY, wcs.getOverviewPolicy()));
+        }
+        hints.put(Hints.DECIMATION_POLICY, wcs.isSubsamplingEnabled() ? DecimationPolicy.ALLOW
+                : DecimationPolicy.DISALLOW);
+        return hints;
+    }
 }

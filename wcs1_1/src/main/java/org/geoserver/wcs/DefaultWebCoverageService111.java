@@ -1,6 +1,6 @@
 package org.geoserver.wcs;
 
-import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.InvalidParameterValue;
+import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.*;
 
 import java.awt.geom.AffineTransform;
 import java.io.IOException;
@@ -50,8 +50,6 @@ import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridGeometry2D;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
-import org.geotools.coverage.grid.io.OverviewPolicy;
-import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.gml2.bindings.GML2EncodingUtils;
 import org.geotools.parameter.DefaultParameterDescriptor;
@@ -81,12 +79,6 @@ import org.vfny.geoserver.wcs.responses.CoverageResponseDelegateFactory;
 
 public class DefaultWebCoverageService111 implements WebCoverageService111 {
     Logger LOGGER = Logging.getLogger(DefaultWebCoverageService111.class);
-
-    private final static Hints HINTS = new Hints();
-    static {
-        HINTS.add(new Hints(Hints.LENIENT_DATUM_SHIFT, Boolean.TRUE));
-        HINTS.add(new Hints(Hints.OVERVIEW_POLICY, OverviewPolicy.IGNORE));
-    }
 
     private WCSInfo wcs;
 
@@ -160,7 +152,7 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
             checkOutput(meta, request.getOutput());
 
             // grab the format, the reader using the default params
-            final AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) meta.getGridCoverageReader(null, HINTS);
+            final AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) meta.getGridCoverageReader(null, WCSUtils.getReaderHints(wcs));
 
             // handle spatial domain subset, if needed
             final GeneralEnvelope originalEnvelope = reader.getOriginalEnvelope();
@@ -199,7 +191,7 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
                 requestedEnvelopeInSourceCRS = reader.getOriginalEnvelope();
                 requestedEnvelope = requestedEnvelopeInSourceCRS;
             }
-
+            
             final GridCrsType gridCRS = request.getOutput().getGridCRS();
 
             // Compute the target crs, the crs that the final coverage will be
@@ -395,6 +387,10 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
                 readParametersClone[readParameters.length+addedParams--]=elevation;            
             readParameters=readParametersClone;
             
+            // Check we're not being requested to read too much data from input (first check,
+            // guesses the grid size using the information contained in CoverageInfo)
+            WCSUtils.checkInputLimits(wcs, meta, reader, requestedGridGeometry);
+            
             //
             // perform Read ...
             //
@@ -402,6 +398,9 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
             if ((coverage == null) || !(coverage instanceof GridCoverage2D)) {
                 throw new IOException("The requested coverage could not be found.");
             }
+            
+            // now that we have read the coverage double check the input size
+            WCSUtils.checkInputLimits(wcs, coverage);
 
             /**
              * Band Select (works on just one field)
@@ -454,7 +453,7 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
                     }
                 }
             }
-
+            
             /**
              * Checking for supported Interpolation Methods
              */
@@ -474,6 +473,12 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
              */
             // adjust the grid geometry to use the final bbox and crs
             final GridGeometry2D destinationGridGeometry =new GridGeometry2D(PixelInCell.CELL_CENTER, gridToCRS, intersectionEnvelope, null);
+            
+            // before extracting the output make sure it's not too big
+            WCSUtils.checkOutputLimits(wcs, destinationGridGeometry.getGridRange2D(), 
+                    bandSelectedCoverage.getRenderedImage().getSampleModel());
+            
+            // reproject and 
             final GridCoverage2D reprojectedCoverage = WCSUtils.resample(
             		bandSelectedCoverage,
                     nativeCRS, targetCRS, destinationGridGeometry,interpolation);
@@ -497,7 +502,7 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
             bbox.setCrs("EPSG:4326");
         
         CoordinateReferenceSystem bboxCRs = CRS.decode(bbox.getCrs());
-        Envelope gridEnvelope = meta.getGridCoverage(null, HINTS).getEnvelope();
+        Envelope gridEnvelope = meta.getGridCoverage(null, WCSUtils.getReaderHints(wcs)).getEnvelope();
         GeneralEnvelope gridEnvelopeBboxCRS = null;
         if (bboxCRs instanceof GeographicCRS) {
             try {
