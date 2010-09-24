@@ -17,22 +17,6 @@ Request limits
 
 The request limit options allow the administrator to limit the resources consumed by each WMS ``GetMap`` request.
 
-GeoServer does not provide a user interface for these options, so you'll have to modify directly the service configuration file located in your GeoServer data directory, in particular ``$GEOSERVER_DATA_DIR/services.xml``, following this example:
-
-.. code-block:: xml
-
-  <service enabled = "true" type = "WMS">
-      <name>WMS</name>
-      <title>GeoServer Web Map Service</title>
-      ...
-      <maxBuffer>25</maxBuffer>
-      <maxRequestMemory>8148</maxRequestMemory>
-      <maxRenderingTime>30</maxRenderingTime>
-      <maxRenderingErrors>10</maxRenderingErrors>
-      ...
-  </service>
-
-
 The following table shows each option name, a description, and the minimum GeoServer version at which the option is available (old versions will just ignore it if set).
 
 .. list-table::

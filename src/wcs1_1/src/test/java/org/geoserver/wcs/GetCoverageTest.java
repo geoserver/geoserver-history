@@ -14,6 +14,7 @@ import junit.framework.Test;
 import junit.textui.TestRunner;
 import net.opengis.wcs11.GetCoverageType;
 
+import org.geoserver.config.GeoServer;
 import org.geoserver.wcs.kvp.GetCoverageRequestReader;
 import org.geoserver.wcs.test.WCSTestSupport;
 import org.geoserver.wcs.xml.v1_1_1.WCSConfiguration;
@@ -240,8 +241,57 @@ public class GetCoverageTest extends WCSTestSupport {
         assertEquals("ows:ExceptionReport", dom.getDocumentElement().getNodeName());
     }
 
-    public static void main(String[] args) {
-        TestRunner.run(suite());
+    public void testInputLimits() throws Exception {
+        try {
+            // ridicolous limit, just one byte
+            setInputLimit(1);
+            String queryString = "&request=getcoverage&service=wcs&version=1.1.1&&format=image/geotiff"
+                    + "&BoundingBox=-45,146,-42,147,urn:ogc:def:crs:EPSG:6.6:4326";
+            Document dom = getAsDOM("wcs/BlueMarble/wcs?identifier=" + getLayerId(TASMANIA_BM)
+                    + queryString);
+            //print(dom);
+            // check it's an error, check we're getting it because of the input limits
+            assertEquals("ows:ExceptionReport", dom.getDocumentElement().getNodeName());
+            String error = xpath.evaluate("/ows:ExceptionReport/ows:Exception/ows:ExceptionText/text()", dom);
+            assertTrue(error.matches(".*read too much data.*"));
+        } finally {
+            setInputLimit(0);
+        }
     }
+    
+    public void testOutputLimits() throws Exception {
+        try {
+            // ridicolous limit, just one byte
+            setOutputLimit(1);
+            String queryString = "&request=getcoverage&service=wcs&version=1.1.1&&format=image/geotiff"
+                    + "&BoundingBox=-45,146,-42,147,urn:ogc:def:crs:EPSG:6.6:4326";
+            Document dom = getAsDOM("wcs/BlueMarble/wcs?identifier=" + getLayerId(TASMANIA_BM)
+                    + queryString);
+            //print(dom);
+            // check it's an error, check we're getting it because of the output limits
+            assertEquals("ows:ExceptionReport", dom.getDocumentElement().getNodeName());
+            String error = xpath.evaluate("/ows:ExceptionReport/ows:Exception/ows:ExceptionText/text()", dom);
+            System.out.println(error);
+            assertTrue(error.matches(".*generate too much data.*"));
+        } finally {
+            setOutputLimit(0);
+        }
+    }
+
+    private void setInputLimit(int kbytes) {
+        GeoServer gs = getGeoServer();
+        WCSInfo info = gs.getService(WCSInfo.class);
+        info.setMaxInputMemory(kbytes);
+        gs.save(info);
+    } 
+    
+
+    private void setOutputLimit(int kbytes) {
+        GeoServer gs = getGeoServer();
+        WCSInfo info = gs.getService(WCSInfo.class);
+        info.setMaxOutputMemory(kbytes);
+        gs.save(info);
+    } 
+
 
 }
