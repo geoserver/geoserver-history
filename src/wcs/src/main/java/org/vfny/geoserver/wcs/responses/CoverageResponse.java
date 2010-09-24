@@ -22,12 +22,12 @@ import org.geoserver.config.GeoServer;
 import org.geoserver.config.ServiceInfo;
 import org.geoserver.data.util.CoverageUtils;
 import org.geoserver.platform.ServiceException;
+import org.geoserver.wcs.WCSInfo;
 import org.geotools.coverage.grid.GeneralGridEnvelope;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridGeometry2D;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
-import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
 import org.opengis.coverage.Coverage;
@@ -58,17 +58,6 @@ import org.vfny.geoserver.wcs.requests.CoverageRequest;
 public class CoverageResponse implements Response {
     /** Standard logging instance for class */
     private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.responses");
-    private final static Hints LENIENT_HINT = new Hints(Hints.LENIENT_DATUM_SHIFT, Boolean.TRUE);
-    private final static Hints hints = new Hints();
-
-    static {
-        // ///////////////////////////////////////////////////////////////////
-        //
-        // HINTS
-        //
-        // ///////////////////////////////////////////////////////////////////
-        hints.add(LENIENT_HINT);
-    }
 
     /**
      *
@@ -190,7 +179,8 @@ public class CoverageResponse implements Response {
             throw new WcsException("Output format: " + outputFormat + " not supported by geoserver " +
             		"for this Coverage", WcsExceptionCode.InvalidParameterValue, "format");
 
-        final Catalog catalog = request.getWCS().getGeoServer().getCatalog();
+        final WCSInfo wcs = request.getWCS();
+        final Catalog catalog = wcs.getGeoServer().getCatalog();
         CoverageInfo meta = null;
         GridCoverage coverage = null;
 
@@ -207,7 +197,7 @@ public class CoverageResponse implements Response {
 
             final Format format = meta.getStore().getFormat();
             final AbstractGridCoverage2DReader reader = 
-            	(AbstractGridCoverage2DReader) catalog.getResourcePool().getGridCoverageReader(meta.getStore(),hints);
+            	(AbstractGridCoverage2DReader) catalog.getResourcePool().getGridCoverageReader(meta.getStore(), WCSUtils.getReaderHints(wcs));
 
             // /////////////////////////////////////////////////////////
             //
@@ -387,21 +377,29 @@ public class CoverageResponse implements Response {
                 }
             }
         }
+        
+        // check input size before reading
+        GridGeometry2D requestedGridGeometry = new GridGeometry2D(new GeneralGridEnvelope(destinationSize), destinationEnvelopeInSourceCRS);
+        WCSUtils.checkInputLimits(request.getWCS(), meta, coverageReader, requestedGridGeometry);
 
         // /////////////////////////////////////////////////////////
         //
         // Reading the coverage
         //
         // /////////////////////////////////////////////////////////
+        
         parameters.put(AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString(),
-            new GridGeometry2D(new GeneralGridEnvelope(destinationSize), destinationEnvelopeInSourceCRS));
+            requestedGridGeometry);
 
-        final GridCoverage coverage = coverageReader.read(CoverageUtils.getParameters(
+        final GridCoverage2D coverage = coverageReader.read(CoverageUtils.getParameters(
                     coverageReader.getFormat().getReadParameters(), parameters, true));
 
         if ((coverage == null) || !(coverage instanceof GridCoverage2D)) {
             throw new IOException("The requested coverage could not be found.");
         }
+        
+        // double check after reading
+        WCSUtils.checkInputLimits(request.getWCS(), coverage);
 
         /**
          * Band Select
@@ -428,6 +426,9 @@ public class CoverageResponse implements Response {
         subCoverage = WCSUtils.scale(croppedGridCoverage, newGridrange, croppedGridCoverage, cvCRS,
                 destinationEnvelopeInSourceCRS);
         //}
+        
+        // before extracting the output make sure it's not too big
+        WCSUtils.checkOutputLimits(request.getWCS(), requestedGridGeometry.getGridRange2D(), subCoverage.getRenderedImage().getSampleModel());
 
         /**
          * Reproject

@@ -61,9 +61,8 @@
 		<constructor-arg ref="wcsServiceDescriptor"/>
         <constructor-arg ref="geoServer"/>
 		<property name="contentType" value="application/vnd.ogc.se_xml"/>
-		<property name="schemaLocation" value="wcs/1.0.0/OGC-exception.xsd"/>
 	</bean>
- 	
+  
  	<!-- kvp request readers -->
  	<bean id="wcsGetCapabilitiesKvpReader" 
  		class="org.geoserver.wcs.kvp.WCSKvpRequestReaderAdapter">

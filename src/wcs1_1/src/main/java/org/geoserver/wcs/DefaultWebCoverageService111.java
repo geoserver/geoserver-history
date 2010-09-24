@@ -249,6 +249,11 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
             final GeneralEnvelope intersected = new GeneralEnvelope(destinationEnvelopeInSourceCRS);
             intersected.intersect(originalEnvelope);
             final GridGeometry2D destinationGridGeometry =new GridGeometry2D(PixelInCell.CELL_CENTER, gridToCRS, intersected, null);
+            
+            // Check we're not being requested to read too much data from input (first check,
+            // guesses the grid size using the information contained in CoverageInfo)
+            WCSUtils.checkInputLimits(wcs, meta, reader, destinationGridGeometry);
+            
             parameters.put(AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString(),
                     destinationGridGeometry);
             coverage = (GridCoverage2D) reader.read(CoverageUtils.getParameters(reader.getFormat()
@@ -256,6 +261,9 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
             if ((coverage == null) || !(coverage instanceof GridCoverage2D)) {
                 throw new IOException("The requested coverage could not be found.");
             }
+            
+            // now that we have read the coverage double check the input size
+            WCSUtils.checkInputLimits(wcs, coverage);
 
             /**
              * Band Select (works on just one field)
@@ -336,6 +344,10 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
              */
             final GridCoverage2D scaledCoverage = WCSUtils.scale(croppedGridCoverage,
                     destinationGridGeometry);
+            
+            // before extracting the output make sure it's not too big
+            WCSUtils.checkOutputLimits(wcs, destinationGridGeometry.getGridRange2D(), 
+                    bandSelectedCoverage.getRenderedImage().getSampleModel());
 
             /**
              * Reproject
