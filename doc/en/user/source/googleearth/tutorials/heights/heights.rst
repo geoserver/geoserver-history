@@ -23,10 +23,10 @@ To view the ``topp:states`` layer (packaged with all releases of GeoServer) in G
 
 	http://localhost:8080/geoserver/wms/reflect?layers=topp:states&format=application/vnd.google-earth.kml+xml
 	
-	.. figure:: height-none.png
-	   :align: center
+.. figure:: height-none.png
+   :align: center
 
-	   *topp:states in Google Earth*
+   *topp:states in Google Earth*
 
 Step Two
 --------
