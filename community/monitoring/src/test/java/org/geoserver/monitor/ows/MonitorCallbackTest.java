@@ -34,14 +34,14 @@ import org.geoserver.monitor.RequestData;
 import org.geoserver.ows.Request;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.Service;
+import org.geoserver.wms.GetFeatureInfoRequest;
+import org.geoserver.wms.GetMapRequest;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
 import org.geotools.util.Version;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.vfny.geoserver.wms.requests.GetFeatureInfoRequest;
-import org.vfny.geoserver.wms.requests.GetMapRequest;
 
 public class MonitorCallbackTest {
 
@@ -142,10 +142,9 @@ public class MonitorCallbackTest {
     
     @Test
     public void testWMSGetMap() throws Exception {
-        WMS wms = new WMS(createMock(GeoServer.class));
-        GetMapRequest gm = new GetMapRequest(wms);
+        GetMapRequest gm = new GetMapRequest();
         
-        gm.setLayers(new MapLayerInfo[]{createMapLayer("foo", "acme")});
+        gm.setLayers(Arrays.asList(createMapLayer("foo", "acme")));
         callback.operationDispatched(new Request(), op("GetMap", "WMS", "1.1.1", gm));
         
         assertEquals("acme:foo", data.getLayers().get(0));
@@ -153,11 +152,9 @@ public class MonitorCallbackTest {
     
     @Test
     public void testWMSGetFeatureInfo() throws Exception {
-        WMS wms = new WMS(createMock(GeoServer.class));
-        GetFeatureInfoRequest gfi = new GetFeatureInfoRequest(wms);
+        GetFeatureInfoRequest gfi = new GetFeatureInfoRequest();
         
-        gfi.setQueryLayers(new MapLayerInfo[]{
-            createMapLayer("foo", "acme"), createMapLayer("bar", "acme")});
+        gfi.setQueryLayers(Arrays.asList(createMapLayer("foo", "acme"), createMapLayer("bar", "acme")));
         callback.operationDispatched(new Request(), op("GetFeatureInfo", "WMS", "1.1.1", gfi));
         
         assertEquals("acme:foo", data.getLayers().get(0));
