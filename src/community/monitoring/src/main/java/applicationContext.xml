@@ -35,7 +35,7 @@
     </bean>
     
     <bean id="monitor" class="org.geoserver.monitor.Monitor">
-      <constructor-arg ref="monitorDAO"/>
+      <constructor-arg ref="monitorConfig"/>
     </bean>
     
     <!-- the top level monitoring filter -->
