@@ -10,6 +10,7 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStreamReader;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -18,6 +19,7 @@ import org.geoserver.monitor.Monitor;
 import org.geoserver.monitor.MonitorTestData;
 import org.geoserver.monitor.RequestData;
 import org.geoserver.rest.PageInfo;
+import org.geotools.feature.type.DateUtil;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -88,7 +90,8 @@ public class RequestResourceTest {
             assertTrue(it.hasNext());
             
             RequestData data = it.next();
-            String expected = data.getId() + "," + data.getPath() + "," + data.getStartTime();
+            String expected = data.getId() + "," + data.getPath() + "," + 
+                DateUtil.serializeDateTime(data.getStartTime());
             assertEquals(expected, line);
         }
         

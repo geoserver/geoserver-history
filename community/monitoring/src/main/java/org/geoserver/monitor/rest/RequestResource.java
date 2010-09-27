@@ -24,6 +24,7 @@ import org.geoserver.rest.format.DataFormat;
 import org.geoserver.rest.format.MediaTypes;
 import org.geoserver.rest.format.ReflectiveHTMLFormat;
 import org.geoserver.rest.format.StreamDataFormat;
+import org.geotools.feature.type.DateUtil;
 import org.geotools.util.Converters;
 import org.restlet.data.Form;
 import org.restlet.data.MediaType;
@@ -196,8 +197,6 @@ public class RequestResource extends ReflectiveResource {
     
     static class CSVFormat extends StreamDataFormat {
 
-        static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-        
         String[] fields;
         protected CSVFormat(String[] fields) {
             super(new MediaType("application/csv"));
@@ -229,7 +228,7 @@ public class RequestResource extends ReflectiveResource {
                 for (String fld : fields) {
                     Object val = OwsUtils.get(r, fld);
                     if (val instanceof Date) {
-                        val = DATE_FORMAT.format((Date)val);
+                        val = DateUtil.serializeDateTime((Date)val);
                     }
                     if (val != null) {
                         val = val.toString().replaceAll(",", " ").replaceAll("\n", " ");
