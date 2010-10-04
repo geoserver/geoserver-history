@@ -339,7 +339,7 @@ public abstract class DataStoreUtils {
     
     public static Collection<DataAccessFactory> getAvailableDataStoreFactories() {
         List<DataAccessFactory> factories = new ArrayList();
-        Iterator<DataStoreFactorySpi> it = DataStoreFinder.getAvailableDataStores();
+        Iterator<DataAccessFactory> it = DataAccessFinder.getAvailableDataStores();
         while(it.hasNext()) {
             factories.add(it.next());
         }
