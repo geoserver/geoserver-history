@@ -7,6 +7,12 @@ The different types of services in GeoServer include WFS, WMS, and WCS, commonly
 
 A *virtual service* is a view of the global service that consists only of a subset of the layers. Virtual services are based on GeoServer workspaces. For each workspace that exists a virtual service exists along with it. The virtual service publishes only those layers that fall under the corresponding workspace.
 
+.. warning::
+
+   Virtual services only apply to the core OWS services, and not OWS services
+   accessed through GeoWebCache. It also does not apply to other subsystems such
+   as REST.
+
 When a client accesses a virtual service that client only has access to those layers published by that virtual service. Access to layers in the global service via the virtual service will result in an exception. This makes virtual services ideal for compartmentalizing access to layers. A service provider may wish to create multiple services for different clients handing one service url to one client, and a different service url to another client. Virtual services allow the service provider to achieve this with a single GeoServer instance.
 
 Filtering by workspace
