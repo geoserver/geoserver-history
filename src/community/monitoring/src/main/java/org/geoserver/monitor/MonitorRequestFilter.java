@@ -7,12 +7,15 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.geoserver.platform.FileWatcher;
 import org.geoserver.platform.GeoServerResourceLoader;
 import org.springframework.util.AntPathMatcher;
+
+import static org.geoserver.monitor.MonitorFilter.LOGGER;
 
 public class MonitorRequestFilter {
 
@@ -58,6 +61,9 @@ public class MonitorRequestFilter {
         }
          
         String path = req.getServletPath() + req.getPathInfo();
+        if (LOGGER.isLoggable(Level.FINER)) {
+            LOGGER.finer("Testing " + path + " for monitor filtering");
+        }
         for (Filter f : filters) {
             if (f.matches(path)) {
                 return true;

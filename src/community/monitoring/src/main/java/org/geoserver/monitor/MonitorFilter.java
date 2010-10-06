@@ -55,6 +55,9 @@ public class MonitorFilter implements Filter {
         HttpServletResponse resp = (HttpServletResponse) response;
         
         if (requestFilter.filter(req)) {
+            if (LOGGER.isLoggable(Level.FINE)) {
+                LOGGER.fine(req.getRequestURI() + " was filtered from monitoring");
+            }
             //don't monitor this request
             chain.doFilter(request, response);
             return;
