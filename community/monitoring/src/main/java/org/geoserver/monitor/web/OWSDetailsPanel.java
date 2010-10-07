@@ -33,7 +33,7 @@ public class OWSDetailsPanel extends OWSSummaryChartBasePanel {
         HashMap<String,Integer> data = new HashMap();
         
         public void visit(RequestData req) {
-            String op = req.getOwsOperation();
+            String op = req.getOwsOperation().toLowerCase();
             Integer count = data.get(op);
             if (count == null) {
                 count = new Integer(1);

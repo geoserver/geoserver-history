@@ -21,19 +21,19 @@ public class OWSSummaryPage extends MonitorBasePage {
         tabs.add(new AbstractTab(new ResourceModel("wfs")) {
             @Override
             public Panel getPanel(String panelId) {
-                return new OWSDetailsPanel(panelId, getMonitor(), "WFS");
+                return new OWSDetailsPanel(panelId, getMonitor(), "wfs");
             }
         });
         tabs.add(new AbstractTab(new ResourceModel("wms")) {
             @Override
             public Panel getPanel(String panelId) {
-                return new OWSDetailsPanel(panelId, getMonitor(), "WMS");
+                return new OWSDetailsPanel(panelId, getMonitor(), "wms");
             }
         });
         tabs.add(new AbstractTab(new ResourceModel("wcs")) {
             @Override
             public Panel getPanel(String panelId) {
-                return new OWSDetailsPanel(panelId, getMonitor(), "WCS");
+                return new OWSDetailsPanel(panelId, getMonitor(), "wcs");
             }
         });
         add(new TabbedPanel("charts", tabs));
