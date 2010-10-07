@@ -185,6 +185,16 @@
   </bean>
   
   <!-- 
+   Tool menu item
+   -->
+  <bean id="toolMenuPage" class="org.geoserver.web.MenuPageInfo">
+    <property name="id" value="tools"/>
+    <property name="titleKey" value="tools.title"/>
+    <property name="descriptionKey" value="tools.description"/>
+    <property name="componentClass" value="org.geoserver.web.ToolPage"/>
+  </bean>
+  
+  <!-- 
     Resource configuration panels 
     -->
   <bean id="basicResourceConfigPanel" class="org.geoserver.web.data.resource.ResourceConfigurationPanelInfo">

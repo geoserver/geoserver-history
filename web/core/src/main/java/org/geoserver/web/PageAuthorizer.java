@@ -6,7 +6,11 @@ package org.geoserver.web;
 
 import org.acegisecurity.Authentication;
 
-public interface PageAuthorizer {
+/**
+ * 
+ * @deprecated use {@link ComponentAuthorizer}
+ */
+public interface PageAuthorizer extends ComponentAuthorizer {
     
     /**
      * Checks if the (bookmarkable) page can be accessed

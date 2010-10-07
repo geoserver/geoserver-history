@@ -40,7 +40,11 @@ public abstract class ComponentInfo<C extends Component> implements Serializable
      * the class of the component
      */
     Class<C> componentClass;
-    
+    /**
+     * Controls access to the component
+     */
+    ComponentAuthorizer authorizer = ComponentAuthorizer.ALLOW;
+   
     /**
      * The id of the component.
      */
@@ -103,4 +107,19 @@ public abstract class ComponentInfo<C extends Component> implements Serializable
     public void setComponentClass(Class<C> componentClass) {
         this.componentClass = componentClass;
     }
+   
+    /**
+     * The authorizer that controls access to the component.
+     */
+    public ComponentAuthorizer getAuthorizer() {
+        return authorizer;
+    }
+    
+    /**
+     * Sets the authorizer that controls access to the component.
+     */
+    public void setAuthorizer(ComponentAuthorizer authorizer) {
+        this.authorizer = authorizer;
+    }
+   
 }
