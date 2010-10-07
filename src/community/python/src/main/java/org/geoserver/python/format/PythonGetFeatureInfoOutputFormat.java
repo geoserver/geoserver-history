@@ -2,37 +2,36 @@ package org.geoserver.python.format;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+
+import net.opengis.wfs.FeatureCollectionType;
 
 import org.geoserver.platform.ServiceException;
-import org.vfny.geoserver.wms.responses.featureInfo.AbstractFeatureInfoResponse;
+import org.geoserver.wms.GetFeatureInfoRequest;
+import org.geoserver.wms.featureinfo.GetFeatureInfoOutputFormat;
 
-public class PythonGetFeatureInfoOutputFormat extends AbstractFeatureInfoResponse {
+public class PythonGetFeatureInfoOutputFormat extends GetFeatureInfoOutputFormat {
 
     PythonVectorFormatAdapter adapter;
     
     public PythonGetFeatureInfoOutputFormat(PythonVectorFormatAdapter adapter) {
+        super(adapter.getMimeType());
         this.adapter = adapter;
-        format = adapter.getMimeType();
-        supportedFormats = Arrays.asList(format, adapter.getName());
+        
+        //supportedFormats = Arrays.asList(format, adapter.getName());
     }
-
+    
     @Override
-    public void writeTo(OutputStream out) throws ServiceException, IOException {
+    public void write(FeatureCollectionType results, GetFeatureInfoRequest request, OutputStream out)
+            throws ServiceException, IOException {
+        
         try {
-            adapter.write((List)results, out);
+            adapter.write(results, out);
         } 
         catch (Exception e) {
             throw new ServiceException(e);
         }
     }
 
-    public HashMap<String, String> getResponseHeaders() {
-        return null;
-    }
-    
     @Override
     public Object clone() throws CloneNotSupportedException {
         return new PythonGetFeatureInfoOutputFormat(adapter);

@@ -6,11 +6,11 @@ import java.util.Collections;
 import java.util.Set;
 
 import org.geoserver.platform.ServiceException;
-import org.vfny.geoserver.wms.GetMapProducer;
-import org.vfny.geoserver.wms.WMSMapContext;
-import org.vfny.geoserver.wms.WmsException;
+import org.geoserver.wms.GetMapOutputFormat;
+import org.geoserver.wms.WMSMapContext;
+import org.geoserver.wms.WebMap;
 
-public class PythonMapGetMapOutputFormat implements GetMapProducer {
+public class PythonMapGetMapOutputFormat implements GetMapOutputFormat {
     
     PythonMapFormatAdapter adapter;
     WMSMapContext context;
@@ -19,34 +19,16 @@ public class PythonMapGetMapOutputFormat implements GetMapProducer {
         this.adapter = adapter;
     }
     
-    public String getContentDisposition() {
-        return null;
-    }
-
-    public String getContentType() throws IllegalStateException {
+    public String getMimeType() {
         return adapter.getMimeType();
     }
-
-    public void setMapContext(WMSMapContext mapContext) {
-        this.context = mapContext;
-    }
-
-    public WMSMapContext getMapContext() {
-        return context;
-    }
-
+    
     public Set<String> getOutputFormatNames() {
         return Collections.singleton(adapter.getName());
     }
-    
-    public void setOutputFormat(String format) {
-    }
 
-    public String getOutputFormat() {
-        return adapter.getName();
-    }
-
-    public void produceMap() throws WmsException {
+    public WebMap produceMap(WMSMapContext mapContext) throws ServiceException, IOException {
+        return new PythonWebMap(mapContext, adapter);
     }
     
     public void writeTo(OutputStream out) throws ServiceException, IOException {
@@ -58,6 +40,4 @@ public class PythonMapGetMapOutputFormat implements GetMapProducer {
         }
     }
 
-    public void abort() {
-    }
 }

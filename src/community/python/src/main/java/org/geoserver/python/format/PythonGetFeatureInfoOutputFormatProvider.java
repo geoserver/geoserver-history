@@ -1,21 +1,21 @@
 package org.geoserver.python.format;
 
 import org.geoserver.python.Python;
-import org.vfny.geoserver.wms.responses.featureInfo.GetFeatureInfoDelegate;
+import org.geoserver.wms.featureinfo.GetFeatureInfoOutputFormat;
 
 public class PythonGetFeatureInfoOutputFormatProvider 
-    extends PythonOutputFormatProvider<GetFeatureInfoDelegate> {
+    extends PythonOutputFormatProvider<GetFeatureInfoOutputFormat> {
 
     public PythonGetFeatureInfoOutputFormatProvider(Python py) {
         super(py);
     }
 
-    public Class<GetFeatureInfoDelegate> getExtensionPoint() {
-        return GetFeatureInfoDelegate.class;
+    public Class<GetFeatureInfoOutputFormat> getExtensionPoint() {
+        return GetFeatureInfoOutputFormat.class;
     }
     
     @Override
-    protected GetFeatureInfoDelegate createOutputFormat(PythonFormatAdapter adapter) {
+    protected GetFeatureInfoOutputFormat createOutputFormat(PythonFormatAdapter adapter) {
         return new PythonGetFeatureInfoOutputFormat((PythonVectorFormatAdapter) adapter);
     }
 

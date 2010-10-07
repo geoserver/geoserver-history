@@ -8,13 +8,13 @@ import java.util.List;
 import net.opengis.wfs.FeatureCollectionType;
 
 import org.geoserver.python.Python;
+import org.geoserver.wms.WMSMapContext;
 import org.geotools.data.FeatureSource;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.map.FeatureLayer;
 import org.geotools.map.MapLayer;
 import org.python.core.Py;
 import org.python.core.PyObject;
-import org.vfny.geoserver.wms.WMSMapContext;
 
 public class PythonVectorFormatAdapter extends PythonFormatAdapter {
 

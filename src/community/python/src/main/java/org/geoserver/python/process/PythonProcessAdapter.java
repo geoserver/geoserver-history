@@ -18,6 +18,7 @@ import org.python.core.PyException;
 import org.python.core.PyFunction;
 import org.python.core.PyList;
 import org.python.core.PyObject;
+import org.python.core.PySequenceList;
 import org.python.core.PyStringMap;
 import org.python.core.PyType;
 import org.python.util.PythonInterpreter;
@@ -81,8 +82,10 @@ public class PythonProcessAdapter {
     
     public Map<String,Parameter<?>> getOutputParameters(String name) {
         try {
-            PyList args = (PyList) process(name).__getattr__("result");
-            return parameters(args);
+            PySequenceList args = (PySequenceList) process(name).__getattr__("result");
+            PyList list = new PyList();
+            list.add(args);
+            return parameters(list);
         }
         catch(Exception e) {
             throw new RuntimeException("Error occurred looking up result for process " + name, e);

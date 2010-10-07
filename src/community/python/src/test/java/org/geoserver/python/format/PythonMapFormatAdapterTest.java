@@ -11,6 +11,7 @@ import net.opengis.wfs.WfsFactory;
 import org.apache.commons.io.FileUtils;
 import org.geoserver.platform.GeoServerResourceLoader;
 import org.geoserver.python.Python;
+import org.geoserver.wms.WMSMapContext;
 import org.geotools.data.DataUtilities;
 import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.feature.FeatureCollection;
@@ -22,7 +23,6 @@ import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.vfny.geoserver.wms.WMSMapContext;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
