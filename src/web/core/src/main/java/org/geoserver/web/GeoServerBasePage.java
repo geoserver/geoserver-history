@@ -128,7 +128,7 @@ public class GeoServerBasePage extends WebPage implements IAjaxIndicatorAware {
                 getApplication().getConfigurationType()));
         
         final Map<Category,List<MenuPageInfo>> links = splitByCategory(
-            filterSecured(getGeoServerApplication().getBeansOfType(MenuPageInfo.class))
+            filterByAuth(getGeoServerApplication().getBeansOfType(MenuPageInfo.class))
         );
 
         List<MenuPageInfo> standalone = links.containsKey(null) 
@@ -262,25 +262,25 @@ public class GeoServerBasePage extends WebPage implements IAjaxIndicatorAware {
 
         return map;
     }
-    
+
     /**
-     * Filters out all of the pages that cannot be accessed by the current user
-     * @param pageList
-     * @return
+     * Filters a set of component descriptors based on the current authenticated user.
      */
-    private List<MenuPageInfo> filterSecured(List<MenuPageInfo> pageList) {
+    protected <T extends ComponentInfo> List<T> filterByAuth(List<T> list) {
         Authentication user = getSession().getAuthentication();
-        List<MenuPageInfo> result = new ArrayList<MenuPageInfo>();
-        for (MenuPageInfo page : pageList) {
-            final Class<GeoServerBasePage> pageClass = page.getComponentClass();
-            if(GeoServerSecuredPage.class.isAssignableFrom(pageClass) &&
-                    !page.getPageAuthorizer().isAccessAllowed(pageClass, user))
+        List<T> result = new ArrayList<T>();
+        for (T component : list) {
+            if (component.getAuthorizer() == null) {
                 continue;
-            result.add(page);
+            }
+            
+            final Class clazz = component.getComponentClass();
+            if(!component.getAuthorizer().isAccessAllowed(clazz, user))
+                continue;
+            result.add(component);
         }
         return result;
     }
-    
     @Override
     protected void configureResponse() {
         super.configureResponse();

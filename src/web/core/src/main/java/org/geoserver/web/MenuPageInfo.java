@@ -21,6 +21,17 @@ public class MenuPageInfo extends ComponentInfo<GeoServerBasePage> implements Co
     int order;
     String icon;
 
+    public MenuPageInfo() {
+        /*
+         * Returns the object used to check whether this page can be accessed or not.<br>
+         * It's used to hide the pages that cannot be accessed from the left menu.<br>
+         * This method is invoked only if the page happens to be a {@link GeoServerSecuredPage}. 
+         * <p>If you do override this method, make sure to override the authorizer grabbing
+         * method in the page as well</p>
+         * @return
+         */
+        setAuthorizer(GeoServerSecuredPage.DEFAULT_AUTHORIZER);
+    }
     public void setCategory(Category category){
         this.category = category;
     }
@@ -47,17 +58,5 @@ public class MenuPageInfo extends ComponentInfo<GeoServerBasePage> implements Co
 
     public int compareTo(MenuPageInfo other){
         return getOrder() - other.getOrder();
-    }
-    
-    /**
-     * Returns the object used to check whether this page can be accessed or not.<br>
-     * It's used to hide the pages that cannot be accessed from the left menu.<br>
-     * This method is invoked only if the page happens to be a {@link GeoServerSecuredPage}. 
-     * <p>If you do override this method, make sure to override the authorizer grabbing
-     * method in the page as well</p>
-     * @return
-     */
-    public PageAuthorizer getPageAuthorizer() {
-        return GeoServerSecuredPage.DEFAULT_AUTHORIZER;
     }
 }
