@@ -46,8 +46,7 @@ else
   fi
 fi
 
-#export JAVA_OPTS="-Xmx512m -Dcite.headless=true -Djava.awt.headless=true"
-export JAVA_OPTS="-Xmx512m"
+export JAVA_OPTS="-Xmx512m -Dcite.headless=true -Djava.awt.headless=true"
 if [ "$mode" = "resume" ]; then
   sh engine/bin/test.sh -mode=$mode -source=$ctl -workdir=target/work -logdir=${logdir} -session=$1
 
