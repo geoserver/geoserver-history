@@ -48,22 +48,21 @@ import com.vividsolutions.jts.geom.Geometry;
  * @author Andrea Aime - TOPP
  *
  */
-public class InsertElementHandler implements TransactionElementHandler {
+public class InsertElementHandler extends AbstractTransactionElementHandler {
     /**
      * logger
      */
     static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.wfs");
-    private WFSInfo wfs;
     private FilterFactory filterFactory;
 
     public InsertElementHandler(GeoServer gs, FilterFactory filterFactory) {
-        this.wfs = gs.getService( WFSInfo.class );
+        super(gs);
         this.filterFactory = filterFactory;
     }
 
     public void checkValidity(EObject element, Map featureTypeInfos)
         throws WFSTransactionException {
-        if (!wfs.getServiceLevel().getOps().contains( WFSInfo.Operation.TRANSACTION_INSERT)) {
+        if (!getInfo().getServiceLevel().getOps().contains( WFSInfo.Operation.TRANSACTION_INSERT)) {
             throw new WFSException("Transaction INSERT support is not enabled");
         }
     }
@@ -119,7 +118,7 @@ public class InsertElementHandler implements TransactionElementHandler {
                 if (collection != null) {
                     // if we really need to, make sure we are inserting coordinates that do
                     // match the CRS area of validity
-                    if(wfs.isCiteCompliant()) {
+                    if(getInfo().isCiteCompliant()) {
                         checkFeatureCoordinatesRange(collection);
                     }
                     

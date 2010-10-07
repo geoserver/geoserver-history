@@ -35,17 +35,17 @@ import org.geotools.xml.Encoder;
 import org.opengis.filter.identity.FeatureId;
 
 
-public class TransactionResponse extends Response {
+public class TransactionResponse extends WFSResponse {
     private boolean verbose = false;
     private String indent = " ";
     private String offset = "";
-    WFSInfo wfs;
+    
     Catalog catalog;
     WFSConfiguration configuration;
 
     public TransactionResponse(GeoServer gs, WFSConfiguration configuration) {
-        super(TransactionResponseType.class);
-        this.wfs = gs.getService( WFSInfo.class );
+        super(gs, TransactionResponseType.class);
+        
         this.catalog = gs.getCatalog();
         this.configuration = configuration;
     }
@@ -70,7 +70,7 @@ public class TransactionResponse extends Response {
         throws IOException, ServiceException {
         TransactionResultsType result = response.getTransactionResults();
 
-        Charset charset = Charset.forName( wfs.getGeoServer().getGlobal().getCharset() );
+        Charset charset = Charset.forName( getInfo().getGeoServer().getGlobal().getCharset() );
         Writer writer = new OutputStreamWriter(output, charset);
         writer = new BufferedWriter(writer);
 
@@ -196,7 +196,7 @@ public class TransactionResponse extends Response {
         }
 
         Encoder encoder = new Encoder(configuration, configuration.schema());
-        encoder.setEncoding(Charset.forName( wfs.getGeoServer().getGlobal().getCharset()) );
+        encoder.setEncoding(Charset.forName( getInfo().getGeoServer().getGlobal().getCharset()) );
 
         TransactionType req = (TransactionType)operation.getParameters()[0];
         

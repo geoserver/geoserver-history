@@ -39,12 +39,12 @@ import org.vfny.geoserver.wcs.responses.CoverageResponseDelegateFactory;
  */
 public class WCSGetCoverageStoreResponse extends Response {
     
+    GeoServer geoServer;
     Catalog catalog;
-    WCSInfo wcs;
-
+    
     public WCSGetCoverageStoreResponse(GeoServer gs) {
         super(GridCoverage[].class);
-        this.wcs = gs.getService(WCSInfo.class);
+        this.geoServer = gs;
         this.catalog = gs.getCatalog();
     }
 
@@ -118,6 +118,7 @@ public class WCSGetCoverageStoreResponse extends Response {
                 appendPath("temp/wcs", coverageFile.getName()), null, URLType.RESOURCE);
         
         // build the response
+        WCSInfo wcs = geoServer.getService(WCSInfo.class);
         CoveragesTransformer tx = new CoveragesTransformer(wcs, request, coverageLocation);
         try {
             tx.transform(coverageInfo, output);

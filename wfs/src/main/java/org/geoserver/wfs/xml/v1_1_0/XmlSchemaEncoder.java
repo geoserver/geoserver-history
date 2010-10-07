@@ -19,14 +19,11 @@ import org.geoserver.platform.GeoServerResourceLoader;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wfs.WFSDescribeFeatureTypeOutputFormat;
-import org.geoserver.wfs.WFSInfo;
 import org.geoserver.wfs.xml.FeatureTypeSchemaBuilder;
 
 
 public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
-    /** wfs configuration */
-    WFSInfo wfs;
-
+    
     /** the catalog */
     Catalog catalog;
 
@@ -37,9 +34,9 @@ public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
     FeatureTypeSchemaBuilder schemaBuilder;
 
     public XmlSchemaEncoder(String mimeType, GeoServer gs, FeatureTypeSchemaBuilder schemaBuilder) {
-        super(mimeType);
+        super(gs, mimeType);
         
-        this.wfs = gs.getService( WFSInfo.class );
+       
         this.catalog = gs.getCatalog();
         this.resourceLoader = catalog.getResourceLoader();
         this.schemaBuilder = schemaBuilder;
@@ -54,7 +51,7 @@ public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
     protected void write(FeatureTypeInfo[] featureTypeInfos, OutputStream output,
         Operation describeFeatureType) throws IOException {
         
-        GeoServerInfo global = wfs.getGeoServer().getGlobal();
+        GeoServerInfo global = gs.getGlobal();
         //create the schema
         DescribeFeatureTypeType req = (DescribeFeatureTypeType)describeFeatureType.getParameters()[0];
         XSDSchema schema = schemaBuilder.build(featureTypeInfos, req.getBaseUrl());

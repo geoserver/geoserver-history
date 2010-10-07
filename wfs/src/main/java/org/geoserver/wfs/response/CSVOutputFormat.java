@@ -42,17 +42,12 @@ import org.opengis.feature.type.AttributeDescriptor;
  */
 public class CSVOutputFormat extends WFSGetFeatureOutputFormat {
 
-    private WFSInfo wfs;
-
     public CSVOutputFormat(GeoServer gs) {
         //this is the name of your output format, it is the string
         // that will be used when requesting the format in a 
         // GEtFeature request: 
         // ie ;.../geoserver/wfs?request=getfeature&outputFormat=myOutputFormat
-        super("csv");
-        this.wfs = gs.getService( WFSInfo.class );
-        if(wfs == null)
-            throw new IllegalArgumentException("A valid WFS object must be provided in order for this class to work");
+        super(gs, "csv");
     }
     
     /**
@@ -109,7 +104,7 @@ public class CSVOutputFormat extends WFSGetFeatureOutputFormat {
         
         // prepare the formatter for numbers
         NumberFormat coordFormatter = NumberFormat.getInstance(Locale.US);
-        coordFormatter.setMaximumFractionDigits(wfs.getGeoServer().getGlobal().getNumDecimals());
+        coordFormatter.setMaximumFractionDigits(getInfo().getGeoServer().getGlobal().getNumDecimals());
         coordFormatter.setGroupingUsed(false);
            
         //write out the features

@@ -30,21 +30,16 @@ import org.geotools.xml.Encoder;
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
  *
  */
-public class HitsOutputFormat extends Response {
-    /**
-     * WFS configuration
-     */
-    WFSInfo wfs;
-
+public class HitsOutputFormat extends WFSResponse {
+    
     /**
      * Xml configuration
      */
     WFSConfiguration configuration;
 
     public HitsOutputFormat(GeoServer gs, WFSConfiguration configuration) {
-        super(FeatureCollectionType.class);
+        super(gs, FeatureCollectionType.class);
 
-        this.wfs = gs.getService( WFSInfo.class );
         this.configuration = configuration;
     }
 
@@ -68,6 +63,8 @@ public class HitsOutputFormat extends Response {
 
     public void write(Object value, OutputStream output, Operation operation)
         throws IOException, ServiceException {
+        WFSInfo wfs = getInfo();
+        
         FeatureCollectionType featureCollection = (FeatureCollectionType) value;
 
         //create a new feautre collcetion type with just the numbers

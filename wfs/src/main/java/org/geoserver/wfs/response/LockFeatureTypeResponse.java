@@ -29,14 +29,14 @@ import org.geotools.xml.Encoder;
 import org.opengis.filter.identity.FeatureId;
 
 
-public class LockFeatureTypeResponse extends Response {
-    WFSInfo wfs;
+public class LockFeatureTypeResponse extends WFSResponse {
+    
     Catalog catalog;
     WFSConfiguration configuration;
 
     public LockFeatureTypeResponse(GeoServer gs, WFSConfiguration configuration) {
-        super(LockFeatureResponseType.class);
-        this.wfs = gs.getService( WFSInfo.class );
+        super(gs, LockFeatureResponseType.class);
+        
         this.catalog = gs.getCatalog();
         this.configuration = configuration;
     }
@@ -48,6 +48,8 @@ public class LockFeatureTypeResponse extends Response {
 
     public void write(Object value, OutputStream output, Operation operation)
         throws IOException, ServiceException {
+        WFSInfo wfs = getInfo();
+        
         LockFeatureResponseType lockResponse = (LockFeatureResponseType) value;
 
         if (new Version("1.1.0").equals(operation.getService().getVersion())) {
@@ -122,7 +124,7 @@ public class LockFeatureTypeResponse extends Response {
     void write1_1(LockFeatureResponseType lockResponse, OutputStream output, Operation operation)
         throws IOException {
         Encoder encoder = new Encoder(configuration, configuration.schema());
-        encoder.setEncoding(Charset.forName( wfs.getGeoServer().getGlobal().getCharset()) );
+        encoder.setEncoding(Charset.forName( getInfo().getGeoServer().getGlobal().getCharset()) );
         
         LockFeatureType req = (LockFeatureType)operation.getParameters()[0];
         

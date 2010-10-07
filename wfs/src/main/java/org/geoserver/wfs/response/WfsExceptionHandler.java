@@ -26,24 +26,26 @@ import org.geoserver.wfs.WFSInfo;
  *
  */
 public class WfsExceptionHandler extends DefaultServiceExceptionHandler {
-    /**
-     * WFS configuration
-     */
-    WFSInfo wfs;
 
+    GeoServer gs;
+    
     /**
      * @param service The wfs service descriptors.
      */
     public WfsExceptionHandler(List services, GeoServer gs) {
         super(services);
-        this.wfs = gs.getService( WFSInfo.class );
+        this.gs = gs;
     }
 
+    public WFSInfo getInfo() {
+        return gs.getService(WFSInfo.class);
+    }
+    
     /**
      * Encodes a ogc:ServiceExceptionReport to output.
      */
     public void handleServiceException(ServiceException e, Request request) {
-        verboseExceptions = wfs.getGeoServer().getGlobal().isVerboseExceptions();
+        verboseExceptions = getInfo().getGeoServer().getGlobal().isVerboseExceptions();
         if ("1.0.0".equals(request.getVersion())) {
             handle1_0(e, request.getHttpResponse());
         } else {
@@ -63,7 +65,7 @@ public class WfsExceptionHandler extends DefaultServiceExceptionHandler {
             s.append(tab + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n");
             s.append(tab);
             s.append("xsi:schemaLocation=\"http://www.opengis.net/ogc ");
-            s.append(ResponseUtils.appendPath(wfs.getSchemaBaseURL(), "wfs/1.0.0/OGC-exception.xsd")
+            s.append(ResponseUtils.appendPath(getInfo().getSchemaBaseURL(), "wfs/1.0.0/OGC-exception.xsd")
                 + "\">\n");
 
             s.append(tab + "<ServiceException");

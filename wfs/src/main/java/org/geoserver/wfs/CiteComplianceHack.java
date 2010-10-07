@@ -26,16 +26,17 @@ import org.springframework.web.servlet.ModelAndView;
  */
 public class CiteComplianceHack implements HandlerInterceptor {
     
-    WFSInfo wfs;
+    GeoServer gs;
+    
     public CiteComplianceHack(GeoServer gs ) {
-        this.wfs = gs.getService( WFSInfo.class );
+        this.gs = gs;
     }
 
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
         Object handler) throws Exception {
         if (handler instanceof Dispatcher) {
             Dispatcher dispatcher = (Dispatcher) handler;
-            dispatcher.setCiteCompliant(wfs.isCiteCompliant());
+            dispatcher.setCiteCompliant(getInfo().isCiteCompliant());
         }
 
         return true;
@@ -50,4 +51,9 @@ public class CiteComplianceHack implements HandlerInterceptor {
         Object handler, Exception ex) throws Exception {
         //do nothing
     }
+    
+    WFSInfo getInfo() {
+        return gs.getService( WFSInfo.class );
+    }
+    
 }

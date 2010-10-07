@@ -36,16 +36,10 @@ public class GeoJSONOutputFormat extends WFSGetFeatureOutputFormat {
     private final Logger LOGGER = org.geotools.util.logging.Logging
     .getLogger(this.getClass().toString());
 
-    /**
-     * WFS configuration
-     */
-    private WFSInfo wfs;
-
     public static final String FORMAT = "json";
 
     public GeoJSONOutputFormat(GeoServer gs) {
-        super(FORMAT);
-        this.wfs = gs.getService( WFSInfo.class );
+        super(gs, FORMAT);
     }
 
     public String getMimeType(Object value, Operation operation)
@@ -82,6 +76,8 @@ public class GeoJSONOutputFormat extends WFSGetFeatureOutputFormat {
             OutputStream output, Operation getFeature) throws IOException,
             ServiceException {
 
+        WFSInfo wfs = getInfo();
+        
         // TODO: investigate setting proper charsets in this
         // it's part of the constructor, just need to hook it up.
         Writer outWriter = new BufferedWriter(

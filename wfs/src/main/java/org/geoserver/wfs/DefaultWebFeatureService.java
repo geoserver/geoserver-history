@@ -33,10 +33,9 @@ import org.springframework.context.ApplicationContextAware;
  */
 public class DefaultWebFeatureService implements WebFeatureService, ApplicationContextAware {
     /**
-     * WFS service configuration.
+     * GeoServer configuration
      */
-    protected WFSInfo wfs;
-
+    protected GeoServer geoServer;
     /**
      * The catalog
      */
@@ -54,7 +53,7 @@ public class DefaultWebFeatureService implements WebFeatureService, ApplicationC
     protected ApplicationContext context;
 
     public DefaultWebFeatureService(GeoServer gs) {
-        this.wfs = gs.getService( WFSInfo.class );
+        this.geoServer = gs;
         this.catalog = gs.getCatalog();
     }
 
@@ -66,7 +65,7 @@ public class DefaultWebFeatureService implements WebFeatureService, ApplicationC
     }
 
     public WFSInfo getServiceInfo() {
-        return wfs;
+        return geoServer.getService(WFSInfo.class);
     }
     
     /**
@@ -81,7 +80,7 @@ public class DefaultWebFeatureService implements WebFeatureService, ApplicationC
      */
     public TransformerBase getCapabilities(GetCapabilitiesType request)
         throws WFSException {
-        return new GetCapabilities(wfs, catalog).run(request);
+        return new GetCapabilities(getServiceInfo(), catalog).run(request);
     }
 
     /**
@@ -95,7 +94,7 @@ public class DefaultWebFeatureService implements WebFeatureService, ApplicationC
      */
     public FeatureTypeInfo[] describeFeatureType(DescribeFeatureTypeType request)
         throws WFSException {
-        return new DescribeFeatureType(wfs, catalog).run(request);
+        return new DescribeFeatureType(getServiceInfo(), catalog).run(request);
     }
 
     /**
@@ -109,7 +108,7 @@ public class DefaultWebFeatureService implements WebFeatureService, ApplicationC
      */
     public FeatureCollectionType getFeature(GetFeatureType request)
         throws WFSException {
-        GetFeature getFeature = new GetFeature(wfs, catalog);
+        GetFeature getFeature = new GetFeature(getServiceInfo(), catalog);
         getFeature.setFilterFactory(filterFactory);
 
         return getFeature.run(request);
@@ -140,7 +139,7 @@ public class DefaultWebFeatureService implements WebFeatureService, ApplicationC
      */
     public LockFeatureResponseType lockFeature(LockFeatureType request)
         throws WFSException {
-        LockFeature lockFeature = new LockFeature(wfs, catalog);
+        LockFeature lockFeature = new LockFeature(getServiceInfo(), catalog);
         lockFeature.setFilterFactory(filterFactory);
 
         return lockFeature.lockFeature(request);
@@ -157,7 +156,7 @@ public class DefaultWebFeatureService implements WebFeatureService, ApplicationC
      */
     public TransactionResponseType transaction(TransactionType request)
         throws WFSException {
-        Transaction transaction = new Transaction(wfs, catalog, context);
+        Transaction transaction = new Transaction(getServiceInfo(), catalog, context);
         transaction.setFilterFactory(filterFactory);
 
         return transaction.transaction(request);
@@ -175,7 +174,7 @@ public class DefaultWebFeatureService implements WebFeatureService, ApplicationC
      */
     public Object getGmlObject(GetGmlObjectType request) throws WFSException {
         
-        GetGmlObject getGmlObject = new GetGmlObject(wfs,catalog);
+        GetGmlObject getGmlObject = new GetGmlObject(getServiceInfo(),catalog);
         getGmlObject.setFilterFactory( filterFactory );
         
         return getGmlObject.run( request );
@@ -183,11 +182,11 @@ public class DefaultWebFeatureService implements WebFeatureService, ApplicationC
     
     //the following operations are not part of the spec
     public void releaseLock(String lockId) throws WFSException {
-        new LockFeature(wfs, catalog).release(lockId);
+        new LockFeature(getServiceInfo(), catalog).release(lockId);
     }
 
     public void releaseAllLocks() throws WFSException {
-        new LockFeature(wfs, catalog).releaseAll();
+        new LockFeature(getServiceInfo(), catalog).releaseAll();
     }
 
     public void setApplicationContext(ApplicationContext context)

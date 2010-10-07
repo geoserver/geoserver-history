@@ -35,14 +35,12 @@ import org.opengis.feature.simple.SimpleFeatureType;
 
 public class GML2OutputFormat2 extends WFSGetFeatureOutputFormat {
 
-    WFSInfo wfs;
     Catalog catalog;
     GeoServerResourceLoader resourceLoader;
     
     public GML2OutputFormat2(GeoServer gs) {
-        super(new HashSet(Arrays.asList(new Object[] {"gml2", "text/xml; subtype=gml/2.1.2"})));
+        super(gs, new HashSet(Arrays.asList(new Object[] {"gml2", "text/xml; subtype=gml/2.1.2"})));
 
-        this.wfs = gs.getService( WFSInfo.class );
         this.catalog = gs.getCatalog();
         this.resourceLoader = catalog.getResourceLoader();
     }

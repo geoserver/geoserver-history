@@ -30,6 +30,7 @@ import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.QueryType;
 
 import org.apache.commons.io.FileUtils;
+import org.geoserver.config.GeoServer;
 import org.geoserver.data.util.IOUtils;
 import org.geoserver.feature.RetypingFeatureCollection;
 import org.geoserver.ows.util.OwsUtils;
@@ -92,8 +93,15 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat implements A
         FeatureWriter<SimpleFeatureType, SimpleFeature> writer;
     }
 
+    /**
+     * @deprecated use {@link #ShapeZipOutputFormat(GeoServer)}
+     */
     public ShapeZipOutputFormat() {
-        super("SHAPE-ZIP");
+        this(GeoServerExtensions.bean(GeoServer.class));
+    }
+    
+    public ShapeZipOutputFormat(GeoServer gs) {
+        super(gs, "SHAPE-ZIP");
     }
 
     /**

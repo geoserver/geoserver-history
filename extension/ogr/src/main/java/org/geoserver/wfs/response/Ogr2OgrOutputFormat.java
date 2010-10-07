@@ -22,6 +22,7 @@ import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.QueryType;
 
+import org.geoserver.config.GeoServer;
 import org.geoserver.data.util.IOUtils;
 import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.platform.Operation;
@@ -86,10 +87,10 @@ public class Ogr2OgrOutputFormat extends WFSGetFeatureOutputFormat {
      */
     static Map<String, OgrFormat> formats = new ConcurrentHashMap<String, OgrFormat>();
 
-    public Ogr2OgrOutputFormat() {
+    public Ogr2OgrOutputFormat(GeoServer gs) {
         // initialize with the key set of formats, so that it will change as
         // we register new formats
-        super(formats.keySet());
+        super(gs, formats.keySet());
     }
 
     /**

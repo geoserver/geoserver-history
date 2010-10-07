@@ -29,6 +29,7 @@ import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.WfsFactory;
 
+import org.geoserver.config.impl.GeoServerImpl;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.Service;
 import org.geotools.data.DataStore;
@@ -65,7 +66,7 @@ public class Ogr2OgrFormatTest extends TestCase {
         dataStore = new PropertyDataStore(new File("./src/test/java/org/geoserver/wfs/response"));
 
         // the output format (and let's add a few output formats to play with
-        ogr = new Ogr2OgrOutputFormat();
+        ogr = new Ogr2OgrOutputFormat(new GeoServerImpl());
         ogr.addFormat(new OgrFormat("KML", "OGR-KML", ".kml"));
         ogr.addFormat(new OgrFormat("CSV", "OGR-CSV", ".csv"));
         ogr.addFormat(new OgrFormat("SHP", "OGR-SHP", ".shp"));

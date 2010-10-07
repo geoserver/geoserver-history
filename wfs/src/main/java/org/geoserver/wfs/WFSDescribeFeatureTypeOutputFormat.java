@@ -10,9 +10,11 @@ import java.io.OutputStream;
 import net.opengis.wfs.FeatureCollectionType;
 
 import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.config.GeoServer;
 import org.geoserver.ows.Response;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
+import org.geoserver.wfs.response.WFSResponse;
 
 
 /**
@@ -28,14 +30,14 @@ import org.geoserver.platform.ServiceException;
  * @author Justin Deoliveira, The Open Planning Project
  *
  */
-public abstract class WFSDescribeFeatureTypeOutputFormat extends Response {
+public abstract class WFSDescribeFeatureTypeOutputFormat extends WFSResponse {
     /**
      * Constructor which sets the outputFormat.
      *
      * @param outputFormat The well-known name of the format, not <code>null</code>
      */
-    public WFSDescribeFeatureTypeOutputFormat(String outputFormat) {
-        super(FeatureTypeInfo[].class, outputFormat);
+    public WFSDescribeFeatureTypeOutputFormat(GeoServer gs, String outputFormat) {
+        super(gs, FeatureTypeInfo[].class, outputFormat);
     }
 
     /**

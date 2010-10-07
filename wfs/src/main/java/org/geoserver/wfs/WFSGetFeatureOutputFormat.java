@@ -13,10 +13,12 @@ import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.ResultTypeType;
 
+import org.geoserver.config.GeoServer;
 import org.geoserver.ows.Response;
 import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
+import org.geoserver.wfs.response.WFSResponse;
 
 
 /**
@@ -34,7 +36,7 @@ import org.geoserver.platform.ServiceException;
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
  *
  */
-public abstract class WFSGetFeatureOutputFormat extends Response {
+public abstract class WFSGetFeatureOutputFormat extends WFSResponse {
 
     /**
      * logger
@@ -45,8 +47,8 @@ public abstract class WFSGetFeatureOutputFormat extends Response {
      *
      * @param outputFormat The well-known name of the format, not <code>null</code>
      */
-    public WFSGetFeatureOutputFormat(String outputFormat) {
-        super(FeatureCollectionType.class, outputFormat);
+    public WFSGetFeatureOutputFormat(GeoServer gs, String outputFormat) {
+        super(gs, FeatureCollectionType.class, outputFormat);
     }
     
     /**
@@ -54,8 +56,8 @@ public abstract class WFSGetFeatureOutputFormat extends Response {
      *
      * @param outputFormats Set of well-known name of the format, not <code>null</code>
      */
-    public WFSGetFeatureOutputFormat(Set<String> outputFormats) {
-        super(FeatureCollectionType.class, outputFormats);
+    public WFSGetFeatureOutputFormat(GeoServer gs, Set<String> outputFormats) {
+        super(gs, FeatureCollectionType.class, outputFormats);
     }
 
     /**

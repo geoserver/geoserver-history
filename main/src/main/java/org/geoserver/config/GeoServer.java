@@ -10,7 +10,25 @@ import org.geoserver.catalog.Catalog;
 
 /**
  * Facade providing access to the GeoServer configuration.
+ * <p>
+ * <h3>Note for singletons</h3>
+ * Singleton objects must take care not to maintain references to configuration entities. For 
+ * instance the following would an error:
+ * <pre>
+ * class MySingleton {
  * 
+ *   ServiceInfo service;
+ *   
+ *   MySingleton(GeoServer gs) {
+ *      this.service = gs.getServiceByName("mySerfvice", ServiceInfo.class); 
+ *   }
+ *   
+ * }
+ * </pre>
+ * The reason being that when changes occur to the configuration externally (be it through the web
+ * ui or restconfig, etc...) any cached configuration objects become stale. So singleton objects
+ * should look up configuration objects on demand.
+ * </p>
  * @author Justin Deoliveira, The Open Planning Project
  * 
  * TODO: events
@@ -91,7 +109,9 @@ public interface GeoServer {
 
     /**
      * GeoServer services filtered by class.
+     * <p>
      * 
+     * </p>
      * @param clazz
      *                The class of the services to return.
      */
