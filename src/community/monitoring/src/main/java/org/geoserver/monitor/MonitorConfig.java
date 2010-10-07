@@ -46,7 +46,7 @@ public class MonitorConfig implements ApplicationContextAware {
     }
     
     public Sync getSync() {
-        return Sync.valueOf(props().getProperty("sync", "async"));
+        return Sync.valueOf(props().getProperty("sync", "async").toUpperCase());
     }
     
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
