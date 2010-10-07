@@ -18,20 +18,21 @@ GeoServer allows the loading and serving of the following data formats by defaul
    * Gtopo30
    * ImageMosaic
    * WorldImage
-
+* Other data formats
+   * External WMS layers
 
 Other data sources require the use of GeoServer extensions, extra downloads that add functionality to GeoServer.  These extensions are always available on the `GeoServer download page <http://geoserver.org/display/GEOS/Download>`_.
 
-.. warning:: Make sure to match the version of the extension to the version of the GeoServer instance!
-
+.. warning:: If an extension is required to load the data source, make sure to match the version of the extension to the version of the GeoServer instance!
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    shapefile/
    postgis/
    directory/
    wfs/
+   wms/
    properties/
    arcgrid/
    geotiff/
