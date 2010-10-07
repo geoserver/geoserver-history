@@ -32,6 +32,7 @@
           <descriptor>release/ext-printing.xml</descriptor>
           <descriptor>release/ext-wps.xml</descriptor>
           <descriptor>release/ext-monitor.xml</descriptor>
+          <descriptor>release/ext-python.xml</descriptor>
         </descriptors>
       </configuration>
      </plugin>
@@ -139,6 +140,7 @@
         <module>ftp</module>
         <module>wps</module>
         <module>monitoring</module>
+        <module>python</module>
       </modules>
     </profile>
     <profile>
