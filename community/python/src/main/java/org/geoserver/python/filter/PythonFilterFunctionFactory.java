@@ -51,7 +51,11 @@ public class PythonFilterFunctionFactory implements FunctionFactory {
     }
     
     public Function function(String name, List<Expression> args, Literal fallback) {
-        return new PythonFunction(name, args, adapter(name));
+        PythonFilterFunctionAdapter adapter = adapter(name);
+        if (adapter == null) {
+            return null;
+        }
+        return new PythonFunction(name, args, adapter);
     }
     
     Python py() {
@@ -73,7 +77,10 @@ public class PythonFilterFunctionFactory implements FunctionFactory {
                     catch (IOException e) {
                         throw new RuntimeException(e);
                     }
-                    adapters.put(name, adapter);
+                    
+                    if (adapter != null) {
+                        adapters.put(name, adapter);
+                    }
                 }
             }
         }
@@ -90,7 +97,6 @@ public class PythonFilterFunctionFactory implements FunctionFactory {
             }
         }
         
-        throw new IllegalArgumentException("Could not find filter function " + name);
-        
+        return null;
     }
 }

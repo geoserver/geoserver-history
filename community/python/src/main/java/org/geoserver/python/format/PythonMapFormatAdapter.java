@@ -4,9 +4,9 @@ import java.io.File;
 import java.io.OutputStream;
 
 import org.geoserver.python.Python;
+import org.geoserver.wms.WMSMapContext;
 import org.python.core.Py;
 import org.python.core.PyObject;
-import org.vfny.geoserver.wms.WMSMapContext;
 
 public class PythonMapFormatAdapter extends PythonFormatAdapter {
 
@@ -25,5 +25,5 @@ public class PythonMapFormatAdapter extends PythonFormatAdapter {
         
         output.flush();
     }
-    
+
 }

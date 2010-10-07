@@ -36,6 +36,11 @@
      <constructor-arg ref="python"/>
   </bean>
   
+  <bean id="pythonGetMapResponseProvider"
+      class="org.geoserver.python.format.PythonGetMapResponseProvider">
+     <constructor-arg ref="python"/>
+  </bean>
+  
   <bean id="pythonGetFeatureInfoOutputFormatProvider"
       class="org.geoserver.python.format.PythonGetFeatureInfoOutputFormatProvider">
      <constructor-arg ref="python"/>
