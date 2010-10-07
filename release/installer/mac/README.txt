@@ -33,8 +33,7 @@ B. Create the GeoServer Disk Image
 
   a. Set the Volume Name to 'GeoServer-<VERSION>'
   b. Set the Volume Size to 100 MB
-  c. Set Partition to 'No Partition Map' 
-  d. Accept the rest of the defaults
+  c. Accept the rest of the defaults
 
 2. Mount the new image.
 
