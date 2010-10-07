@@ -789,6 +789,9 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
     static ResourceInfo unwrap(ResourceInfo info) {
         if(info instanceof SecuredFeatureTypeInfo)
             return ((SecuredFeatureTypeInfo) info).unwrap(ResourceInfo.class);
+        if (info instanceof SecuredCoverageInfo)
+            return ((SecuredCoverageInfo) info).unwrap(ResourceInfo.class);
+        
         return info;
     }
     
