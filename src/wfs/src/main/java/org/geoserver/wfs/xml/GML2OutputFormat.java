@@ -88,11 +88,6 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
     private boolean compressOutput = false;
 
     /**
-     * WFS configuration
-     */
-    private WFSInfo wfs;
-
-    /**
      * GeoServer configuration
      */
     private GeoServer geoServer;
@@ -107,9 +102,8 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
      * using it.
      */
     public GML2OutputFormat(GeoServer geoServer) {
-        super(new HashSet(Arrays.asList(new String[] { "GML2", MIME_TYPE, "GML2-GZIP" })));
+        super(geoServer, new HashSet(Arrays.asList(new String[] { "GML2", MIME_TYPE, "GML2-GZIP" })));
 
-        this.wfs = geoServer.getService(WFSInfo.class);
         this.geoServer = geoServer;
         this.catalog = geoServer.getCatalog();
     }
@@ -206,6 +200,8 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
         if (numDecimals == -1) {
             numDecimals = global.getNumDecimals();
         }
+        
+        WFSInfo wfs = getInfo();
         
         transformer.setIndentation(wfs.isVerbose() ? INDENT_SIZE : (NO_FORMATTING));
         transformer.setNumDecimals(numDecimals);

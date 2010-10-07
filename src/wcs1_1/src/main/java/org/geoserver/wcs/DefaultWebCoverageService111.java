@@ -80,20 +80,17 @@ import org.vfny.geoserver.wcs.responses.CoverageResponseDelegateFactory;
 public class DefaultWebCoverageService111 implements WebCoverageService111 {
     Logger LOGGER = Logging.getLogger(DefaultWebCoverageService111.class);
 
-    private WCSInfo wcs;
-
     private Catalog catalog;
 
 	private GeoServer geoServer;
 
     public DefaultWebCoverageService111(GeoServer geoServer) {
-        this.wcs = geoServer.getService(WCSInfo.class);
         this.geoServer = geoServer;
         this.catalog = geoServer.getCatalog();
     }
     
     public WCSInfo getServiceInfo() {
-        return wcs;
+        return geoServer.getService(WCSInfo.class);
     }
 
     public WCSCapsTransformer getCapabilities(GetCapabilitiesType request) {
@@ -111,7 +108,7 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
 
         if ("1.1.0".equals(version) || "1.1.1".equals(version)) {
             WCSCapsTransformer capsTransformer = new WCSCapsTransformer(geoServer);
-            capsTransformer.setEncoding(Charset.forName((wcs.getGeoServer().getGlobal().getCharset())));
+            capsTransformer.setEncoding(Charset.forName((getServiceInfo().getGeoServer().getGlobal().getCharset())));
             return capsTransformer;
         }
 
@@ -121,6 +118,7 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
     public DescribeCoverageTransformer describeCoverage(DescribeCoverageType request) {
         final String version = request.getVersion();
         if ("1.1.0".equals(version) || "1.1.1".equals(version)) {
+            WCSInfo wcs = getServiceInfo();
             DescribeCoverageTransformer describeTransformer = new DescribeCoverageTransformer(wcs, catalog);
             describeTransformer.setEncoding(Charset.forName(wcs.getGeoServer().getGlobal().getCharset()));
             return describeTransformer;
@@ -135,6 +133,8 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
             LOGGER.finest(new StringBuffer("execute CoverageRequest response. Called request is: ").append(request).toString());
         }
 
+        WCSInfo wcs = getServiceInfo();
+        
         CoverageInfo meta = null;
         GridCoverage2D coverage = null;
         try {
@@ -147,7 +147,7 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
             }
             
             // first let's run some sanity checks on the inputs
-            checkDomainSubset(meta, request.getDomainSubset());
+            checkDomainSubset(meta, request.getDomainSubset(), wcs);
             checkRangeSubset(meta, request.getRangeSubset());
             checkOutput(meta, request.getOutput());
 
@@ -493,7 +493,7 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
 
     }
 
-    private void checkDomainSubset(CoverageInfo meta, DomainSubsetType domainSubset)
+    private void checkDomainSubset(CoverageInfo meta, DomainSubsetType domainSubset, WCSInfo wcs)
             throws Exception {
         BoundingBoxType bbox = domainSubset.getBoundingBox();
         
@@ -833,4 +833,5 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
 
        return ret;
     }
+
 }

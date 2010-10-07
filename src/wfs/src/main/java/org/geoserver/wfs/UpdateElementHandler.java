@@ -58,21 +58,20 @@ import com.vividsolutions.jts.geom.Geometry;
  * @author Andrea Aime - TOPP
  *
  */
-public class UpdateElementHandler implements TransactionElementHandler {
+public class UpdateElementHandler extends AbstractTransactionElementHandler {
     /**
      * logger
      */
     static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.wfs");
-    private WFSInfo wfs;
-
+    
     public UpdateElementHandler(GeoServer gs) {
-        this.wfs = gs.getService( WFSInfo.class );
+        super(gs);
     }
 
     public void checkValidity(EObject element, Map typeInfos)
         throws WFSTransactionException {
         // check inserts are enabled
-        if (!wfs.getServiceLevel().getOps().contains(WFSInfo.Operation.TRANSACTION_UPDATE) ) {
+        if (!getInfo().getServiceLevel().getOps().contains(WFSInfo.Operation.TRANSACTION_UPDATE) ) {
             throw new WFSException("Transaction Update support is not enabled");
         }
 
@@ -183,7 +182,7 @@ public class UpdateElementHandler implements TransactionElementHandler {
                         target = ((GeometryDescriptor)types[j]).getCoordinateReferenceSystem();
                     }
                     
-                    if(wfs.isCiteCompliant())
+                    if(getInfo().isCiteCompliant())
                         JTS.checkCoordinatesRange(geometry, source != null ? source : target);
                     
                     //if we have a source and target and they are not equal, do 

@@ -49,7 +49,8 @@ import org.opengis.feature.type.Name;
 
 
 public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
-    WFSInfo wfs;
+    
+    GeoServer geoServer;
     Catalog catalog;
     GeoServerInfo global;
     WFSConfiguration configuration;
@@ -60,9 +61,9 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
 }
     
     public GML3OutputFormat(Set<String> outputFormats, GeoServer geoServer, WFSConfiguration configuration) {
-        super(outputFormats);
+        super(geoServer, outputFormats);
 
-        this.wfs = geoServer.getService( WFSInfo.class );
+        this.geoServer = geoServer;
         this.catalog = geoServer.getCatalog();
         this.global = geoServer.getGlobal();
         
@@ -132,6 +133,8 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
             }
         }
 
+        WFSInfo wfs = getInfo();
+        
         //set feature bounding parameter
         //JD: this is quite bad as its not at all thread-safe, once we remove the configuration
         // as being a singleton on trunk/2.0.x this should not be an issue

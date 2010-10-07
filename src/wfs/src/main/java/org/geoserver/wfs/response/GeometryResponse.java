@@ -9,7 +9,6 @@ import org.geoserver.ows.Response;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wfs.WFSException;
-import org.geoserver.wfs.WFSInfo;
 import org.geotools.gml3.GML;
 import org.geotools.gml3.GMLConfiguration;
 import org.geotools.xml.Encoder;
@@ -28,16 +27,10 @@ import com.vividsolutions.jts.geom.Polygon;
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
  *
  */
-public class GeometryResponse extends Response {
-
-    /**
-     * Service configuration
-     */
-    private WFSInfo wfs;
+public class GeometryResponse extends WFSResponse {
 
     public GeometryResponse(GeoServer gs) {
-        super( Geometry.class );
-        this.wfs = gs.getService( WFSInfo.class );
+        super( gs, Geometry.class );
     }
     
     public String getMimeType(Object value, Operation operation)
@@ -50,7 +43,7 @@ public class GeometryResponse extends Response {
             throws IOException, ServiceException {
     
         Encoder encoder = new Encoder( new GMLConfiguration() );
-        encoder.setEncoding(Charset.forName( wfs.getGeoServer().getGlobal().getCharset() ));
+        encoder.setEncoding(Charset.forName( getInfo().getGeoServer().getGlobal().getCharset() ));
         
         if ( value instanceof Point ) {
             encoder.encode( value, GML.Point, output );

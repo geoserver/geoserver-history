@@ -46,17 +46,16 @@ import com.vividsolutions.jts.geom.Envelope;
  * @author Andrea Aime - TOPP
  *
  */
-public class DeleteElementHandler implements TransactionElementHandler {
+public class DeleteElementHandler extends AbstractTransactionElementHandler {
     /**
      * logger
      */
     static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.wfs");
-    private WFSInfo wfs;
     
     FilterFactory factory = CommonFactoryFinder.getFilterFactory(null);
 
     public DeleteElementHandler(GeoServer gs) {
-        this.wfs = gs.getService( WFSInfo.class );
+        super(gs);
     }
 
     public Class getElementClass() {
@@ -69,7 +68,7 @@ public class DeleteElementHandler implements TransactionElementHandler {
 
     public void checkValidity(EObject element, Map featureTypeInfos)
         throws WFSTransactionException {
-        if (!wfs.getServiceLevel().getOps().contains(WFSInfo.Operation.TRANSACTION_DELETE)) {
+        if (!getInfo().getServiceLevel().getOps().contains(WFSInfo.Operation.TRANSACTION_DELETE)) {
             throw new WFSException("Transaction Delete support is not enabled");
         }
 

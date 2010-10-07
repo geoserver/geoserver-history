@@ -21,6 +21,7 @@ import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.geoserver.config.GeoServer;
 import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
@@ -42,12 +43,12 @@ public class ExcelOutputFormat extends WFSGetFeatureOutputFormat {
     static final int EXCELL_CELL_CHAR_LIMIT = (int) Math.pow(2,15) - 1; //32,767
     static final String STRING_LENGTH_WARNING = "DATA TRUNCATED (EXCEEDS EXCEL LIMIT)";
 
-    public ExcelOutputFormat() {
+    public ExcelOutputFormat(GeoServer gs) {
         //this is the name of your output format, it is the string
         // that will be used when requesting the format in a 
         // GEtFeature request: 
         // ie ;.../geoserver/wfs?request=getfeature&outputFormat=myOutputFormat
-        super("excel");
+        super(gs, "excel");
     }
     
     /**

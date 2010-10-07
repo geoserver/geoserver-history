@@ -56,12 +56,12 @@ public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
 
     /** Fixed return footer information */
     private static final String FOOTER = "\n</xs:schema>";
-    WFSInfo wfs;
+    
     Catalog catalog;
 
     public XmlSchemaEncoder(GeoServer gs) {
-        super("XMLSCHEMA");
-        this.wfs = gs.getService( WFSInfo.class );
+        super(gs, "XMLSCHEMA");
+        
         this.catalog = gs.getCatalog();
     }
 
@@ -72,6 +72,8 @@ public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
 
     protected void write(FeatureTypeInfo[] featureTypeInfos, OutputStream output,
         Operation describeFeatureType) throws IOException {
+        WFSInfo wfs = getInfo();
+        
         //generates response, using general function
         String xmlResponse = generateTypes(featureTypeInfos, (DescribeFeatureTypeType) describeFeatureType.getParameters()[0]);
 
@@ -105,7 +107,7 @@ public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
         // Initialize return information and intermediate return objects
         StringBuffer tempResponse = new StringBuffer();
 
-        tempResponse.append("<?xml version=\"1.0\" encoding=\"" + wfs.getGeoServer().getGlobal().getCharset()
+        tempResponse.append("<?xml version=\"1.0\" encoding=\"" + getInfo().getGeoServer().getGlobal().getCharset()
             + "\"?>" + "\n<xs:schema ");
 
         //allSameType will throw WFSException if there are types that are not found.
