@@ -20,6 +20,7 @@
         <include>spring-orm-*jar</include>
         <include>jfreechart-*jar</include>
         <include>jcommon-*jar</include>
+        <include>jta-*.jar</include>
       </includes>
     </fileSet>
   </fileSets>
