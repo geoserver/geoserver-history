@@ -5,6 +5,7 @@ import java.io.OutputStream;
 
 import net.opengis.wfs.FeatureCollectionType;
 
+import org.geoserver.config.GeoServer;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wfs.WFSGetFeatureOutputFormat;
@@ -13,8 +14,8 @@ public class PythonGetFeatureOutputFormat extends WFSGetFeatureOutputFormat {
 
     PythonVectorFormatAdapter adapter;
     
-    public PythonGetFeatureOutputFormat(PythonVectorFormatAdapter adapter) {
-        super(adapter.getName());
+    public PythonGetFeatureOutputFormat(PythonVectorFormatAdapter adapter, GeoServer gs) {
+        super(gs, adapter.getName());
         this.adapter = adapter;
         
     }
