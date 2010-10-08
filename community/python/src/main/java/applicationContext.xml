@@ -24,6 +24,7 @@
   <bean id="pythonGetFeatureOutputFormatProvider"
       class="org.geoserver.python.format.PythonGetFeatureOutputFormatProvider">
      <constructor-arg ref="python"/>
+     <constructor-arg ref="geoServer"/>
   </bean>
   
   <bean id="pythonVectorGetMapOutputFormatProvider"
