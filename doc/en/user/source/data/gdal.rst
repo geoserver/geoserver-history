@@ -17,16 +17,17 @@ The following image formats can be read by GeoServer using GDAL:
 Installing GDAL
 ---------------
 
-GDAL is not a standard GeoServer extension, as the GDAL library files are built into GeoServer by default.  However, in order for GeoServer to leverage these libraries, the GDAL (binary) program itself must be installed through your host system's OS.  Once this program is installed, GeoServer will be able to recognize GDAL data types.
+GDAL is not a standard GeoServer extension, as the GDAL library files are built into GeoServer by default.  However, in order for GeoServer to leverage these libraries, the GDAL (binary) program itself must be installed through your host system's OS.  Once this program is installed, GeoServer will be able to recognize GDAL data types. In order to install the GDAL Native libraries:
 
-#. Navigate to the `imageio-ext download page <https://imageio-ext.dev.java.net>`_.
+#. Navigate to the `imageio-ext document and files download page <https://imageio-ext.dev.java.net/servlets/ProjectDocumentList?folderID=10435&expandFolder=10435&folderID=0>`_.
 #. Select the most recent stable binary release.
 #. Select "native libraries".
 #. Download and extract/install the correct version for your OS.
 
    .. note:: If you are on Windows, make sure that the GDAL DLL files are on your PATH. If you are on Linux, be sure to set the LD_LIBRARY_PATH environment variable to be the folder where the SOs are extracted.
 
-#. Download and extract the GDAL CRS definitions.
+#. Select "libraries" from the last stable release root.
+#. Download and extract the gdal_data-1.X.X archive.
 
    .. note:: Make sure to set a GDAL_DATA environment variable to the folder where you have extracted this file.
 
@@ -36,6 +37,23 @@ Once these steps have been completed, restart GeoServer.  If done correctly, new
    :align: center
 
    *GDAL image formats in the list of raster data stores*
+   
+Note on running GeoServer as a Service on Windows
+-------------------------------------------------
+Simply deploying the GDAL ImageI/O-Ext native libraries in a location referred by the PATH environment variable (like, as an instance, the JDK/bin folder) doesn't allow GeoServer to leverage on GDAL, when run as a service. As a result, during the service startup, GeoServer log reports this worrysome message:
+
+*it.geosolutions.imageio.gdalframework.GDALUtilities loadGDAL
+WARNING: Native library load failed.java.lang.UnsatisfiedLinkError: no gdaljni in java.library.path*
+
+Taking a look at the wrapper.conf configuration file available inside the GeoServer installation (at bin/wrapper/wrapper.conf), there is this useful entry:
+
+# Java Library Path (location of Wrapper.DLL or libwrapper.so)
+wrapper.java.library.path.1=bin/wrapper/lib
+
+To allow the GDAL native DLLs getting loaded, you have 2 possible ways:
+
+#. Move the native DLLs on the referred path (bin/wrapper/lib)
+#. Add a wrapper.java.library.path.2=path/where/you/deployed/nativelibs entry just after the wrapper.java.library.path1=bin/wrapper/lib line.
 
 Adding support for ECW and Kakadu
 ---------------------------------
