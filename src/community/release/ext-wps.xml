@@ -12,6 +12,8 @@
         <include>*sextante*</include>
         <include>wps*</include>
         <include>gt-process*</include>
+        <include>gt-xsd-wps*</include>
+        <include>net.opengis.wps*</include>
       </includes>
     </fileSet>
   </fileSets>
