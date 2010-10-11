@@ -8,7 +8,7 @@ information about each request a GeoServer instance handles and produces reports
 based on the request data. 
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
    installation/
    overview/

@@ -3,14 +3,14 @@
 Monitor HTTP API
 ================
 
-The monitor extension provides an api for retrieving request information via a
-simple set of http calls.
+The monitor extension provides an API for retrieving request information via a
+simple set of HTTP calls.
 
-The most simple of all calls would be to retrieve information all requests::
+The most simple of all calls would be to retrieve information about all requests::
 
   GET http://localhost:8080/geoserver/rest/monitor/requests.html
 
-The above call would return an html document containing information about 
+This would return an HTML document containing information about 
 all requests. The general structure of a query for a set of requests is::
 
   GET http://<host>:<port>/geoserver/rest/monitor/requests.<format>
@@ -31,12 +31,13 @@ is as described above.
 
    An alternative to specifying the returned representation with the 
    ``format`` extension is to use the http ``Accept`` header and specify 
-   one of the mime types:
+   one of the MIME types:
 
      * text/html
      * application/csv
 
-   See the `http specification <http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html>`_ for more information about the ``Accept`` header.
+   See the `HTTP specification <http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html>`_
+   for more information about the ``Accept`` header.
 
 
 API Reference
@@ -89,8 +90,8 @@ Specifies that only live (currently executing) requests be returned.
    * - live=<yes|no|true|false>
      - requests.html?live=yes
   
-This parameter relies on a monitor mode being used that maintains real time 
-request information. 
+This parameter relies on a :ref:`monitor_mode` being used that maintains real time 
+request information (either **live** or **mixed**).
 
 from
 ^^^^
@@ -118,7 +119,7 @@ Specifies an inclusive upper bound on the timestamp for the start of a request.
    * - Syntax
      - Example
    * - to=<timestamp>
-     - requests.html?from=2010-07-23T00:00:00?to=2010-07-24T00:00:00
+     - requests.html?to=2010-07-24T00:00:00
 
 order
 ^^^^^
@@ -137,9 +138,6 @@ Specifies which attribute of a request to sort by.
      - requests.html?order=startTime:DESC
    * - 
      - requests.html?order=totalTime:ASC
-
-
-See ... for the complete list of request attributes available to sort by.
 
 
 Examples
