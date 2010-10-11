@@ -398,6 +398,13 @@ public class GetMapResponse implements Response {
                                     reader, CoverageUtils.getParameters(params, layers[i]
                                             .getCoverage().getParameters())), layerStyle);
 
+                            int cacheMaxAge = layers[i].getCacheMaxAge();
+                            if(cacheMaxAge > 0) {
+                                maxAge =cacheMaxAge;
+                            } else {
+                                cachingPossible = false;
+                            }
+                            
                             layer.setTitle(layers[i].getCoverage().getName());
                             layer.setQuery(Query.ALL);
                             map.addLayer(layer);
