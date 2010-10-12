@@ -370,6 +370,7 @@ Instead of passing in the nested feature type's targetElement in the containing 
 
 .. note::
     * The mappingName is namespace aware and case sensitive.
+    * When the referred mappingName contains special characters such as '-', it must be enclosed with single quotes in the linkElement. E.g. <linkElement>'observation-method'</linkElement>.
     * Each mappingName must be unique against other mappingName and targetElement tags across the application. 
     * The mappingName is only to be used to identify the chained type from the nesting type. It is not a solution for multiple FeatureTypeMapping instances where > 1 of them can be queried as top level features. 
     * When queried as a top level feature, the normal targetElement is to be used. Filters involving the nested type should still use the targetElement in the PropertyName part of the query. 
