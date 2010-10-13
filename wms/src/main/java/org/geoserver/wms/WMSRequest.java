@@ -6,10 +6,7 @@ package org.geoserver.wms;
 
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.geoserver.ows.Dispatcher;
-import org.geoserver.ows.HttpServletRequestAware;
 
 /**
  * Defines a general Request type and provides accessor methods for universal request information.
@@ -22,7 +19,7 @@ import org.geoserver.ows.HttpServletRequestAware;
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  * @version $Id$
  */
-public abstract class WMSRequest implements HttpServletRequestAware {
+public abstract class WMSRequest {
 
     private String baseUrl;
 
@@ -109,7 +106,7 @@ public abstract class WMSRequest implements HttpServletRequestAware {
     }
 
     /**
-     * Setter for the 'WMTVER' parameter, which is an alias for 'VERSION'.�
+     * Setter for the 'WMTVER' parameter, which is an alias for 'VERSION'.
      * 
      */
     public void setWmtVer(String version) {
@@ -123,15 +120,7 @@ public abstract class WMSRequest implements HttpServletRequestAware {
         return requestCharset;
     }
 
-    /**
-     * Implements {@link HttpServletRequestAware#setHttpRequest(HttpServletRequest)} to gather
-     * request information for some properties like {@link #isGet()} and
-     * {@link #getRequestCharset()}.
-     * 
-     * @see org.geoserver.ows.HttpServletRequestAware#setHttpRequest(javax.servlet.http.HttpServletRequest)
-     */
-    public void setHttpRequest(HttpServletRequest request) {
-        this.requestCharset = request.getCharacterEncoding();
-        this.get = "GET".equals(request.getMethod());
+    public void setRequestCharset(String requestCharset) {
+        this.requestCharset = requestCharset;
     }
 }
