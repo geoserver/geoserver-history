@@ -69,7 +69,7 @@ import org.vfny.geoserver.util.Requests;
 import org.vfny.geoserver.util.SLDValidator;
 
 public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServletRequestAware {
-   
+
     /**
      * current request
      */
@@ -106,6 +106,13 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
         this.wms = wms;
     }
 
+    /**
+     * Implements {@link HttpServletRequestAware#setHttpRequest(HttpServletRequest)} to gather
+     * request information for some properties like {@link GetMapRequest#isGet()} and
+     * {@link GetMapRequest#getRequestCharset()}.
+     * 
+     * @see org.geoserver.ows.HttpServletRequestAware#setHttpRequest(javax.servlet.http.HttpServletRequest)
+     */
     public void setHttpRequest(HttpServletRequest httpRequest) {
         this.httpRequest = httpRequest;
     }
@@ -129,6 +136,10 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
     @Override
     public GetMapRequest createRequest() throws Exception {
         GetMapRequest request = new GetMapRequest();
+        if (this.httpRequest != null) {
+            request.setRequestCharset(httpRequest.getCharacterEncoding());
+            request.setGet("GET".equalsIgnoreCase(httpRequest.getMethod()));
+        }
         return request;
     }
 
@@ -166,10 +177,10 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
 
         // remote OWS url
         URL remoteOwsUrl = getMap.getRemoteOwsURL();
-        if (remoteOwsUrl != null && remoteOwsType == null){
+        if (remoteOwsUrl != null && remoteOwsType == null) {
             throw new ServiceException("REMOTE_OWS_URL specified, but REMOTE_OWS_TYPE is missing");
         }
-        
+
         final List<Object> requestedLayerInfos = new ArrayList<Object>();
         // layers
         String layerParam = (String) rawKvp.get("LAYERS");
@@ -178,21 +189,20 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
             requestedLayerInfos.addAll(parseLayers(layerNames, remoteOwsUrl, remoteOwsType));
 
             List<MapLayerInfo> layers = new ArrayList<MapLayerInfo>();
-            for(Object o : requestedLayerInfos){
-                if(o instanceof LayerInfo){
-                    layers.add(new MapLayerInfo((LayerInfo)o));
-                }else if(o instanceof LayerGroupInfo){
-                    for(LayerInfo l : ((LayerGroupInfo)o).getLayers()){
+            for (Object o : requestedLayerInfos) {
+                if (o instanceof LayerInfo) {
+                    layers.add(new MapLayerInfo((LayerInfo) o));
+                } else if (o instanceof LayerGroupInfo) {
+                    for (LayerInfo l : ((LayerGroupInfo) o).getLayers()) {
                         layers.add(new MapLayerInfo(l));
                     }
-                }else if(o instanceof MapLayerInfo){
-                    //it was a remote OWS layer, add it directly
+                } else if (o instanceof MapLayerInfo) {
+                    // it was a remote OWS layer, add it directly
                     layers.add((MapLayerInfo) o);
                 }
             }
             getMap.setLayers(layers);
         }
-
 
         // raw styles parameter
         String stylesParam = (String) kvp.get("STYLES");
@@ -200,7 +210,7 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
         if (stylesParam != null) {
             styleNameList.addAll(KvpUtils.readFlat(stylesParam));
         }
-        
+
         // pre parse filters
         List<Filter> filters = parseFilters(getMap);
 
@@ -212,19 +222,20 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
             }
 
             if (getMap.getValidateSchema().booleanValue()) {
-                ByteArrayInputStream stream = new ByteArrayInputStream(getMap.getSldBody().getBytes());
+                ByteArrayInputStream stream = new ByteArrayInputStream(getMap.getSldBody()
+                        .getBytes());
                 List errors = validateSld(stream, getMap.getBaseUrl());
 
                 if (errors.size() != 0) {
-                    throw new ServiceException(SLDValidator.getErrorMessage(new ByteArrayInputStream(
-                            getMap.getSldBody().getBytes()), errors));
+                    throw new ServiceException(SLDValidator.getErrorMessage(
+                            new ByteArrayInputStream(getMap.getSldBody().getBytes()), errors));
                 }
             }
 
             StyledLayerDescriptor sld = parseSld(new ByteArrayInputStream(getMap.getSldBody()
                     .getBytes()));
             processSld(getMap, requestedLayerInfos, sld, styleNameList);
-            
+
             // set filter in, we'll check consistency later
             getMap.setFilter(filters);
         } else if (getMap.getSld() != null) {
@@ -265,7 +276,7 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
             } finally {
                 input.close();
             }
-            
+
             // set filter in, we'll check consistency later
             getMap.setFilter(filters);
         } else {
@@ -274,66 +285,67 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
             }
 
             // ok, parse the styles parameter in isolation
-            if (styleNameList.size() > 0){
+            if (styleNameList.size() > 0) {
                 List<Style> parseStyles = parseStyles(styleNameList);
                 getMap.setStyles(parseStyles);
             }
-            
+
             // first, expand base layers and default styles
             if (isParseStyle() && requestedLayerInfos.size() > 0) {
-                List<Style> oldStyles = getMap.getStyles() != null ? new ArrayList(getMap.getStyles())
-                        : new ArrayList();
+                List<Style> oldStyles = getMap.getStyles() != null ? new ArrayList(
+                        getMap.getStyles()) : new ArrayList();
                 List<Style> newStyles = new ArrayList<Style>();
                 List<Filter> newFilters = filters == null ? null : new ArrayList<Filter>();
 
                 for (int i = 0; i < requestedLayerInfos.size(); i++) {
                     Object o = requestedLayerInfos.get(i);
                     Style style = oldStyles.isEmpty() ? null : (Style) oldStyles.get(i);
-                    
+
                     if (o instanceof LayerGroupInfo) {
-                        LayerGroupInfo groupInfo = (LayerGroupInfo)o;
-                        for(int j = 0; j < groupInfo.getStyles().size(); j++) {
+                        LayerGroupInfo groupInfo = (LayerGroupInfo) o;
+                        for (int j = 0; j < groupInfo.getStyles().size(); j++) {
                             StyleInfo si = groupInfo.getStyles().get(j);
-                            if(si == null)
+                            if (si == null)
                                 si = groupInfo.getLayers().get(j).getDefaultStyle();
                             newStyles.add(si.getStyle());
                         }
                         // expand the filter on the layer group to all its sublayers
-                        if(filters != null) {
+                        if (filters != null) {
                             for (int j = 0; j < groupInfo.getLayers().size(); j++) {
                                 newFilters.add(getFilter(filters, i));
                             }
                         }
-                    } else if(o instanceof LayerInfo){
+                    } else if (o instanceof LayerInfo) {
                         style = oldStyles.size() > 0 ? oldStyles.get(i) : null;
                         if (style != null) {
                             newStyles.add(style);
                         } else {
                             LayerInfo layer = (LayerInfo) o;
-                            if(layer.getResource() instanceof WMSLayerInfo) {
+                            if (layer.getResource() instanceof WMSLayerInfo) {
                                 // NamedStyle is a subclass of Style -> we use it as a way to convey
                                 // cascaded WMS layer styles
-                                NamedStyle namedStyle = CommonFactoryFinder.getStyleFactory(null).createNamedStyle();
+                                NamedStyle namedStyle = CommonFactoryFinder.getStyleFactory(null)
+                                        .createNamedStyle();
                                 namedStyle.setName(null);
                                 newStyles.add(namedStyle);
                             } else {
-                                StyleInfo defaultStyle = ((LayerInfo)o).getDefaultStyle();
+                                StyleInfo defaultStyle = ((LayerInfo) o).getDefaultStyle();
                                 newStyles.add(defaultStyle.getStyle());
                             }
                         }
                         // add filter if needed
-                        if(filters != null)
+                        if (filters != null)
                             newFilters.add(getFilter(filters, i));
-                    } else if(o instanceof MapLayerInfo){
-                        style = oldStyles.size() > 0? oldStyles.get(i) : null;
-                        if (style != null){
+                    } else if (o instanceof MapLayerInfo) {
+                        style = oldStyles.size() > 0 ? oldStyles.get(i) : null;
+                        if (style != null) {
                             newStyles.add(style);
-                        } else{
+                        } else {
                             throw new ServiceException("no style requested for layer "
                                     + ((MapLayerInfo) o).getName(), "NoDefaultStyle");
                         }
                         // add filter if needed
-                        if(filters != null)
+                        if (filters != null)
                             newFilters.add(getFilter(filters, i));
                     }
                 }
@@ -367,13 +379,12 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
                     }
                 }
             }
-            
+
             // check filter size matches with the layer list size
             List mapFilters = getMap.getFilter();
             List<MapLayerInfo> mapLayers = getMap.getLayers();
             if (mapFilters != null && mapFilters.size() != mapLayers.size()) {
-                String msg = mapLayers.size()
-                        + " layers requested, but found " + mapFilters.size()
+                String msg = mapLayers.size() + " layers requested, but found " + mapFilters.size()
                         + " filters specified. ";
                 throw new ServiceException(msg, getClass().getName());
             }
@@ -381,38 +392,38 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
 
         return getMap;
     }
-    
+
     Filter getFilter(List<Filter> filters, int index) {
-        if(filters.size() == 1 && filters.get(0) instanceof FeatureId) {
+        if (filters.size() == 1 && filters.get(0) instanceof FeatureId) {
             // feature id filters must be expanded to all layers
             return filters.get(0);
-        } else if(index < filters.size()) {
+        } else if (index < filters.size()) {
             return filters.get(index);
         } else {
-            throw new ServiceException("Layers and filters are mismatched, " +
-            		"you need to provide one filter for each layer");
+            throw new ServiceException("Layers and filters are mismatched, "
+                    + "you need to provide one filter for each layer");
         }
     }
-    
+
     /**
-     * Checks the various options, OGC filter, fid filter, CQL filter, and returns
-     * a list of parsed filters
+     * Checks the various options, OGC filter, fid filter, CQL filter, and returns a list of parsed
+     * filters
+     * 
      * @param getMap
      * @return the list of parsed filters, or null if none was found
      */
     private List<Filter> parseFilters(GetMapRequest getMap) {
-        List<Filter> filters = (getMap.getFilter() != null) ? getMap.getFilter()
-                    : Collections.emptyList();
-        List cqlFilters = (getMap.getCQLFilter() != null) ? getMap
-                .getCQLFilter() : Collections.EMPTY_LIST;
-        List featureId = (getMap.getFeatureId() != null) ? getMap
-                .getFeatureId() : Collections.EMPTY_LIST;
+        List<Filter> filters = (getMap.getFilter() != null) ? getMap.getFilter() : Collections
+                .emptyList();
+        List cqlFilters = (getMap.getCQLFilter() != null) ? getMap.getCQLFilter()
+                : Collections.EMPTY_LIST;
+        List featureId = (getMap.getFeatureId() != null) ? getMap.getFeatureId()
+                : Collections.EMPTY_LIST;
 
         if (!featureId.isEmpty()) {
             if (!filters.isEmpty()) {
                 throw new ServiceException("GetMap KVP request contained "
-                        + "conflicting filters.  Filter: " + filters
-                        + ", fid: " + featureId);
+                        + "conflicting filters.  Filter: " + filters + ", fid: " + featureId);
             }
 
             Set ids = new HashSet();
@@ -425,15 +436,15 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
         if (!cqlFilters.isEmpty()) {
             if (!filters.isEmpty()) {
                 throw new ServiceException("GetMap KVP request contained "
-                        + "conflicting filters.  Filter: " + filters
-                        + ", fid: " + featureId + ", cql: " + cqlFilters);
+                        + "conflicting filters.  Filter: " + filters + ", fid: " + featureId
+                        + ", cql: " + cqlFilters);
             }
 
             filters = cqlFilters;
         }
 
         // return null in case we found no filters
-        if(filters.size() == 0) {
+        if (filters.size() == 0) {
             filters = null;
         }
         return filters;
@@ -459,8 +470,9 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
         return parser.parseSLD();
     }
 
-    private void processSld(final GetMapRequest request, final List<?>requestedLayers, final StyledLayerDescriptor sld,
-            final List styleNames) throws ServiceException, IOException {
+    private void processSld(final GetMapRequest request, final List<?> requestedLayers,
+            final StyledLayerDescriptor sld, final List styleNames) throws ServiceException,
+            IOException {
         if (requestedLayers.size() == 0) {
             processStandaloneSld(wms, request, sld);
         } else {
@@ -499,7 +511,8 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
      *            the list of requested style names
      */
     private void processLibrarySld(final GetMapRequest request, final StyledLayerDescriptor sld,
-            final List<?> requestedLayers, List<String> styleNames) throws ServiceException, IOException {
+            final List<?> requestedLayers, List<String> styleNames) throws ServiceException,
+            IOException {
         final StyledLayer[] styledLayers = sld.getStyledLayers();
         final int slCount = styledLayers.length;
 
@@ -509,35 +522,35 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
 
         final List<MapLayerInfo> layers = new ArrayList<MapLayerInfo>();
         final List<Style> styles = new ArrayList<Style>();
-            
+
         MapLayerInfo currLayer = null;
         String styleName = null;
 
         for (int i = 0; i < requestedLayers.size(); i++) {
-            if (styleNames != null && styleNames.size() > 0){
+            if (styleNames != null && styleNames.size() > 0) {
                 styleName = styleNames.get(i);
             }
             Object o = requestedLayers.get(i);
-            if(o instanceof LayerInfo){
-                currLayer = new MapLayerInfo((LayerInfo)o);
-                
+            if (o instanceof LayerInfo) {
+                currLayer = new MapLayerInfo((LayerInfo) o);
+
                 if (styledLayers[i] instanceof NamedLayer) {
                     NamedLayer namedLayer = ((NamedLayer) styledLayers[i]);
                     currLayer.setLayerFeatureConstraints(namedLayer.getLayerFeatureConstraints());
                 }
-                
+
                 layers.add(currLayer);
                 Style style = findStyleOf(request, currLayer, styleName, styledLayers);
                 styles.add(style);
-            }else if(o instanceof LayerGroupInfo){
-                List<LayerInfo> subLayers = ((LayerGroupInfo)o).getLayers();
-                for(LayerInfo layer : subLayers){
+            } else if (o instanceof LayerGroupInfo) {
+                List<LayerInfo> subLayers = ((LayerGroupInfo) o).getLayers();
+                for (LayerInfo layer : subLayers) {
                     currLayer = new MapLayerInfo(layer);
                     layers.add(currLayer);
                     Style style = findStyleOf(request, currLayer, styleName, styledLayers);
                     styles.add(style);
                 }
-            }else{
+            } else {
                 throw new IllegalArgumentException("Unknown layer info type: " + o);
             }
         }
@@ -552,7 +565,7 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
      * 
      * @param request
      * @param sld
-     * @throws IOException 
+     * @throws IOException
      */
     public static void processStandaloneSld(final WMS wms, final GetMapRequest request,
             final StyledLayerDescriptor sld) throws IOException {
@@ -570,13 +583,13 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
 
         String layerName;
         UserLayer ul;
-        for(StyledLayer sl: styledLayers) {
+        for (StyledLayer sl : styledLayers) {
             layerName = sl.getName();
 
             if (null == layerName) {
                 throw new ServiceException("A UserLayer without layer name was passed");
             }
-            
+
             if (sl instanceof UserLayer && ((((UserLayer) sl)).getRemoteOWS() != null)) {
                 // this beast can define multiple feature sources and multiple styles, we'll
                 // have to mix and match them (ugh)
@@ -584,7 +597,8 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
                 try {
                     addRemoteLayersFromUserLayer(request, ul, layers, styles);
                 } catch (IOException e) {
-                    throw new ServiceException("Error accessing remote layers", e, "RemoteAccessFailed");
+                    throw new ServiceException("Error accessing remote layers", e,
+                            "RemoteAccessFailed");
                 }
             } else {
                 // simpler case, one layer, eventually multiple styles
@@ -596,18 +610,18 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
                     ul = ((UserLayer) sl);
 
                     try {
-                       currLayer =  initializeInlineFeatureLayer(request, ul);
+                        currLayer = initializeInlineFeatureLayer(request, ul);
                     } catch (Exception e) {
                         throw new ServiceException(e);
                     }
                 } else {
-                    if(wms.getLayerGroupByName(layerName) != null) {
+                    if (wms.getLayerGroupByName(layerName) != null) {
                         LayerGroupInfo group = wms.getLayerGroupByName(layerName);
-                        for(int i = 0; i < group.getLayers().size(); i++) {
+                        for (int i = 0; i < group.getLayers().size(); i++) {
                             LayerInfo layer = group.getLayers().get(i);
                             layers.add(new MapLayerInfo(layer));
                             StyleInfo style = group.getStyles().get(i);
-                            if(style != null) {
+                            if (style != null) {
                                 styles.add(style.getStyle());
                             } else {
                                 styles.add(layer.getDefaultStyle().getStyle());
@@ -617,14 +631,15 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
                         continue;
                     } else {
                         LayerInfo layerInfo = wms.getLayerByName(layerName);
-                        
-                        if(layerInfo == null)
+
+                        if (layerInfo == null)
                             throw new ServiceException("Unknown layer: " + layerName);
-                        
+
                         currLayer = new MapLayerInfo(layerInfo);
                         if (sl instanceof NamedLayer) {
                             NamedLayer namedLayer = ((NamedLayer) sl);
-                            currLayer.setLayerFeatureConstraints(namedLayer.getLayerFeatureConstraints());
+                            currLayer.setLayerFeatureConstraints(namedLayer
+                                    .getLayerFeatureConstraints());
                         }
                     }
                 }
@@ -647,7 +662,7 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
                         styles.add(currStyle);
                     }
                 } else {
-                	addStyles(wms, request, currLayer, sl, layers, styles);
+                    addStyles(wms, request, currLayer, sl, layers, styles);
                 }
             }
         }
@@ -676,8 +691,8 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
             remoteTypeNames = new ArrayList(Arrays.asList(remoteWFS.getTypeNames()));
             Collections.sort(remoteTypeNames);
         } catch (MalformedURLException e) {
-            throw new ServiceException("Invalid online resource url: '" + service.getOnlineResource()
-                    + "'");
+            throw new ServiceException("Invalid online resource url: '"
+                    + service.getOnlineResource() + "'");
         }
 
         Style[] layerStyles = ul.getUserStyles();
@@ -731,10 +746,10 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
      * @param layer
      * @param layers
      * @param styles
-     * @throws IOException 
+     * @throws IOException
      */
-    public static void addStyles(WMS wms, GetMapRequest request, MapLayerInfo currLayer, StyledLayer layer,
-            List layers, List styles) throws ServiceException, IOException {
+    public static void addStyles(WMS wms, GetMapRequest request, MapLayerInfo currLayer,
+            StyledLayer layer, List layers, List styles) throws ServiceException, IOException {
         if (currLayer == null) {
             return; // protection
         }
@@ -814,15 +829,16 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
      * 
      * @return the configured style named <code>currStyleName</code> or <code>null</code> if such a
      *         style does not exist on this server.
-     * @throws IOException 
+     * @throws IOException
      */
-    private static Style findStyle(final WMS wms, GetMapRequest request, String currStyleName) throws IOException {
-//        Style currStyle;
-//        Map configuredStyles = request.getWMS().getData().getStyles();
-//
-//        currStyle = (Style) configuredStyles.get(currStyleName);
-//
-//        return currStyle;
+    private static Style findStyle(final WMS wms, GetMapRequest request, String currStyleName)
+            throws IOException {
+        // Style currStyle;
+        // Map configuredStyles = request.getWMS().getData().getStyles();
+        //
+        // currStyle = (Style) configuredStyles.get(currStyleName);
+        //
+        // return currStyle;
         return wms.getStyleByName(currStyleName);
     }
 
@@ -939,7 +955,8 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
             if (styleName == null || "".equals(styleName)) {
                 style = layer.getDefaultStyle();
                 if (style == null)
-                    throw new ServiceException("Could not find a default style for " + layer.getName());
+                    throw new ServiceException("Could not find a default style for "
+                            + layer.getName());
             } else {
                 style = wms.getStyleByName(styleName);
                 if (style == null) {
@@ -992,7 +1009,8 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
                     }
                 }
             } catch (IOException ioe) {
-                throw new RuntimeException("Error getting FeatureType, this should never happen!", ioe);
+                throw new RuntimeException("Error getting FeatureType, this should never happen!",
+                        ioe);
             }
         }
 
@@ -1024,8 +1042,9 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
 
     // JD: the reason this method is static is to share logic among the xml
     // and kvp reader, ugh...
-    private static MapLayerInfo initializeInlineFeatureLayer(GetMapRequest getMapRequest, UserLayer ul) throws Exception {
-        
+    private static MapLayerInfo initializeInlineFeatureLayer(GetMapRequest getMapRequest,
+            UserLayer ul) throws Exception {
+
         SimpleFeatureSource featureSource;
 
         // what if they didn't put an "srsName" on their geometry in their
@@ -1034,8 +1053,7 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
         // output SRS of the
         // request they're making.
         if (ul.getInlineFeatureType().getCoordinateReferenceSystem() == null) {
-            LOGGER
-                    .warning("No CRS set on inline features default geometry.  Assuming the requestor has their inlinefeatures in the boundingbox CRS.");
+            LOGGER.warning("No CRS set on inline features default geometry.  Assuming the requestor has their inlinefeatures in the boundingbox CRS.");
 
             SimpleFeatureType currFt = ul.getInlineFeatureType();
             Query q = new Query(currFt.getTypeName(), Filter.INCLUDE);
@@ -1048,7 +1066,7 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
             MemoryDataStore reTypedDS = new MemoryDataStore(new ForceCoordinateSystemFeatureReader(
                     ilReader, crs));
             featureSource = reTypedDS.getFeatureSource(typeName);
-        }else{
+        } else {
             DataStore inlineFeatureDatastore = ul.getInlineFeatureDatastore();
             String typeName = inlineFeatureDatastore.getTypeNames()[0];
             featureSource = inlineFeatureDatastore.getFeatureSource(typeName);
@@ -1092,14 +1110,15 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
                 }
             }
 
-            //not a remote layer, lets look up for a registered one
+            // not a remote layer, lets look up for a registered one
             LayerInfo layerInfo = wms.getLayerByName(layerName);
             if (layerInfo != null) {
                 layersOrGroups.add(layerInfo);
             } else {
                 LayerGroupInfo layerGroup = wms.getLayerGroupByName(layerName);
                 if (layerGroup == null) {
-                    throw new ServiceException("Could not find layer " + layerName, "LayerNotDefined");
+                    throw new ServiceException("Could not find layer " + layerName,
+                            "LayerNotDefined");
                 }
                 layersOrGroups.add(layerGroup);
             }
@@ -1117,14 +1136,14 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
         // ////
         // boolean found = false;
         // String catalogLayerName = null;
-        //	    
+        //
         // for (Iterator c_keys = catalog.getLayerNames().iterator(); c_keys.hasNext();) {
         // catalogLayerName = (String) c_keys.next();
-        //	    
+        //
         // try {
         // FeatureTypeInfo ftype = findFeatureLayer(catalogLayerName);
         // String wmsPath = ftype.getWmsPath();
-        //	    
+        //
         // if ((wmsPath != null) && wmsPath.matches(".*/" + layerName)) {
         // layers.add(buildMapLayerInfo(catalogLayerName));
         // found = true;
@@ -1133,7 +1152,7 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
         // try {
         // CoverageInfo cv = findCoverageLayer(catalogLayerName);
         // String wmsPath = cv.getWmsPath();
-        //	    
+        //
         // if ((wmsPath != null) && wmsPath.matches(".*/" + layerName)) {
         // layers.add(buildMapLayerInfo(catalogLayerName));
         // found = true;
