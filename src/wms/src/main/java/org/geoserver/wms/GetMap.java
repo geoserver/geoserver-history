@@ -199,6 +199,13 @@ public class GetMap {
             for (int i = 0; i < layers.size(); i++) {
                 final MapLayerInfo mapLayerInfo = layers.get(i);
 
+                cachingPossible &= mapLayerInfo.isCachingEnabled();
+                if (cachingPossible) {
+                    maxAge = Math.min(maxAge, mapLayerInfo.getCacheMaxAge());
+                } else {
+                    cachingPossible = false;
+                }
+
                 final Style layerStyle = styles[i];
                 final Filter layerFilter = filters[i];
 
@@ -206,10 +213,6 @@ public class GetMap {
 
                 int layerType = mapLayerInfo.getType();
                 if (layerType == MapLayerInfo.TYPE_REMOTE_VECTOR) {
-                    // we just assume remote WFS is not cacheable since it's just used
-                    // in feature portrayal requests (which are noe off and don't have a way to
-                    // tell us how often the remote WFS changes)
-                    cachingPossible = false;
 
                     final SimpleFeatureSource source = mapLayerInfo.getRemoteFeatureSource();
                     layer = new DefaultMapLayer(source, layerStyle);
@@ -439,25 +442,6 @@ public class GetMap {
                     }
                 } else {
                     throw new IllegalArgumentException("Unkown layer type " + layerType);
-                }
-
-                // handle caching
-                if (layerType != MapLayerInfo.TYPE_REMOTE_VECTOR && cachingPossible) {
-                    if (mapLayerInfo.isCachingEnabled()) {
-                        int nma = mapLayerInfo.getCacheMaxAge();
-
-                        // suppose the map contains multiple cachable
-                        // layers...we can only cache the combined map for
-                        // the
-                        // time specified by the shortest-cached layer.
-                        if (nma < maxAge) {
-                            maxAge = nma;
-                        }
-                    } else {
-                        // if one layer isn't cachable, then we can't cache
-                        // any of them. Disable caching.
-                        cachingPossible = false;
-                    }
                 }
             }
 
