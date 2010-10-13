@@ -119,20 +119,19 @@ public class GetMap {
             throw new ServiceException("Internal error ", e);
         }
     }
-    
+
     /**
-     * TODO: This method have become a 300+ lines monster, refactor it to private methods from
-     * which names one can infer what's going on... but get a decent test coverage on it first as
-     * to avoid regressions as much as possible
+     * TODO: This method have become a 300+ lines monster, refactor it to private methods from which
+     * names one can infer what's going on... but get a decent test coverage on it first as to avoid
+     * regressions as much as possible
      */
-    public WebMap run(final GetMapRequest request, WMSMapContext mapContext) throws ServiceException,
-            IOException {
-       assertMandatory(request);
+    public WebMap run(final GetMapRequest request, WMSMapContext mapContext)
+            throws ServiceException, IOException {
+        assertMandatory(request);
 
         final String outputFormat = request.getFormat();
 
         GetMapOutputFormat delegate = getDelegate(outputFormat);
-        
 
         final Envelope env = request.getBbox();
 
@@ -191,265 +190,267 @@ public class GetMap {
             LOGGER.fine("setting up map");
         }
 
-        try { 
-            // track the external caching strategy for any map layers
-            boolean cachingPossible = request.isGet();
-            final String featureVersion = request.getFeatureVersion();
-            int maxAge = Integer.MAX_VALUE;
-            for (int i = 0; i < layers.size(); i++) {
-                final MapLayerInfo mapLayerInfo = layers.get(i);
+        // track the external caching strategy for any map layers
+        boolean cachingPossible = request.isGet();
+        final String featureVersion = request.getFeatureVersion();
+        int maxAge = Integer.MAX_VALUE;
+        for (int i = 0; i < layers.size(); i++) {
+            final MapLayerInfo mapLayerInfo = layers.get(i);
 
-                cachingPossible &= mapLayerInfo.isCachingEnabled();
-                if (cachingPossible) {
-                    maxAge = Math.min(maxAge, mapLayerInfo.getCacheMaxAge());
-                } else {
-                    cachingPossible = false;
-                }
-
-                final Style layerStyle = styles[i];
-                final Filter layerFilter = filters[i];
-
-                final MapLayer layer;
-
-                int layerType = mapLayerInfo.getType();
-                if (layerType == MapLayerInfo.TYPE_REMOTE_VECTOR) {
-
-                    final SimpleFeatureSource source = mapLayerInfo.getRemoteFeatureSource();
-                    layer = new DefaultMapLayer(source, layerStyle);
-                    layer.setTitle(mapLayerInfo.getRemoteFeatureSource().getSchema().getTypeName());
-
-                    final Query definitionQuery = new Query(source.getSchema().getTypeName());
-                    definitionQuery.setFilter(layerFilter);
-                    definitionQuery.setVersion(featureVersion);
-                    int maxFeatures = request.getMaxFeatures() != null ? request.getMaxFeatures()
-                            : Integer.MAX_VALUE;
-                    definitionQuery.setMaxFeatures(maxFeatures);
-
-                    layer.setQuery(definitionQuery);
-                    mapContext.addLayer(layer);
-                } else if (layerType == MapLayerInfo.TYPE_VECTOR) {
-                    FeatureSource<? extends FeatureType, ? extends Feature> source;
-                    // /////////////////////////////////////////////////////////
-                    //
-                    // Adding a feature layer
-                    //
-                    // /////////////////////////////////////////////////////////
-                    try {
-                        source = mapLayerInfo.getFeatureSource(true);
-
-                        // NOTE for the feature. Here there was some code that
-                        // sounded like:
-                        // * get the bounding box from feature source
-                        // * eventually reproject it to the actual CRS used for
-                        // map
-                        // * if no intersection, don't bother adding the feature
-                        // source to the map
-                        // This is not an optimization, on the contrary,
-                        // computing the bbox may be
-                        // very expensive depending on the data size. Using
-                        // sigma.openplans.org data
-                        // and a tiled client like OpenLayers, it dragged the
-                        // server to his knees
-                        // and the client simply timed out
-                    } catch (IOException exp) {
-                        if (LOGGER.isLoggable(Level.SEVERE)) {
-                            LOGGER.log(Level.SEVERE, new StringBuffer("Getting feature source: ")
-                                    .append(exp.getMessage()).toString(), exp);
-                        }
-
-                        throw new ServiceException("Internal error", exp);
-                    }
-
-                    layer = new FeatureSourceMapLayer(source, layerStyle);
-                    layer.setTitle(mapLayerInfo.getFeature().getPrefixedName());
-
-                    final Query definitionQuery = new Query(source.getSchema().getName()
-                            .getLocalPart());
-                    definitionQuery.setVersion(featureVersion);
-                    definitionQuery.setFilter(layerFilter);
-                    if (request.getViewParams() != null && request.getViewParams().size() > 0) {
-                        definitionQuery.setHints(new Hints(Hints.VIRTUAL_TABLE_PARAMETERS, request
-                                .getViewParams()));
-                    }
-
-                    // check for startIndex + offset
-                    final Integer startIndex = request.getStartIndex();
-                    if (startIndex != null) {
-                        QueryCapabilities queryCapabilities = source.getQueryCapabilities();
-                        if (queryCapabilities.isOffsetSupported()) {
-                            // fsource is required to support
-                            // SortBy.NATURAL_ORDER so we don't bother checking
-                            definitionQuery.setStartIndex(startIndex);
-                        } else {
-                            // source = new PagingFeatureSource(source,
-                            // request.getStartIndex(), limit);
-                            throw new ServiceException("startIndex is not supported for the "
-                                    + mapLayerInfo.getName() + " layer");
-                        }
-                    }
-
-                    int maxFeatures = request.getMaxFeatures() != null ? request.getMaxFeatures()
-                            : Integer.MAX_VALUE;
-                    definitionQuery.setMaxFeatures(maxFeatures);
-
-                    layer.setQuery(definitionQuery);
-                    mapContext.addLayer(layer);
-                } else if (layerType == MapLayerInfo.TYPE_RASTER) {
-
-                    // /////////////////////////////////////////////////////////
-                    //
-                    // Adding a coverage layer
-                    //
-                    // /////////////////////////////////////////////////////////
-                    final AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) mapLayerInfo.getCoverageReader();
-                    if (reader != null) {
-
-                        // get the group of parameters tha this reader supports
-                        final ParameterValueGroup readParametersDescriptor = reader.getFormat()
-                                .getReadParameters();
-                        GeneralParameterValue[] readParameters = CoverageUtils.getParameters(
-                                readParametersDescriptor, mapLayerInfo.getCoverage()
-                                        .getParameters());
-
-                        //
-                        // Setting coverage reading params.
-                        //
-
-                        /*
-                         * Test if the parameter "TIME" is present in the WMS request, and by the
-                         * way in the reading parameters. If it is the case, one can adds it to the
-                         * request. If an exception is thrown, we have nothing to do.
-                         */
-                        final List dateTime = request.getTime();
-                        final boolean hasTime = dateTime != null && dateTime.size() > 0;
-                        final List<GeneralParameterDescriptor> parameterDescriptors = readParametersDescriptor
-                                .getDescriptor().descriptors();
-                        if (hasTime)
-                            for (GeneralParameterDescriptor pd : parameterDescriptors) {
-
-                                // TIME
-                                if (pd.getName().getCode().equalsIgnoreCase("TIME")) {
-                                    final ParameterValue time = (ParameterValue) pd.createValue();
-                                    if (time != null) {
-                                        time.setValue(request.getTime());
-                                    }
-
-                                    // add to the list
-                                    GeneralParameterValue[] readParametersClone = new GeneralParameterValue[readParameters.length + 1];
-                                    System.arraycopy(readParameters, 0, readParametersClone, 0,
-                                            readParameters.length);
-                                    readParametersClone[readParameters.length] = time;
-                                    readParameters = readParametersClone;
-
-                                    // leave
-                                    break;
-                                }
-                            }
-
-                        // uncomment when the DIM_RANGE vendor parameter will be
-                        // enabled
-                        // try {
-                        // ParameterValue dimRange =
-                        // reader.getFormat().getReadParameters()
-                        // .parameter("DIM_RANGE");
-                        // if (dimRange != null && request.getDimRange() !=
-                        // null) {
-                        // dimRange.setValue(request.getDimRange());
-                        // }
-                        // } catch (ParameterNotFoundException p) {
-                        // }
-
-                        /*
-                         * Test if the parameter "TIME" is present in the WMS request, and by the
-                         * way in the reading parameters. If it is the case, one can adds it to the
-                         * request. If an exception is thrown, we have nothing to do.
-                         */
-                        final double elevationValue = request.getElevation();
-                        final boolean hasElevation = !Double.isNaN(elevationValue);
-                        if (hasElevation)
-                            for (GeneralParameterDescriptor pd : parameterDescriptors) {
-
-                                // ELEVATION
-                                if (pd.getName().getCode().equalsIgnoreCase("ELEVATION")) {
-                                    final ParameterValue elevation = (ParameterValue) pd
-                                            .createValue();
-                                    if (elevation != null) {
-                                        elevation.setValue(request.getElevation());
-                                    }
-
-                                    // add to the list
-                                    GeneralParameterValue[] readParametersClone = new GeneralParameterValue[readParameters.length + 1];
-                                    System.arraycopy(readParameters, 0, readParametersClone, 0,
-                                            readParameters.length);
-                                    readParametersClone[readParameters.length] = elevation;
-                                    readParameters = readParametersClone;
-
-                                    // leave
-                                    break;
-                                }
-                            }
-
-                        try {
-
-                            try {
-                                layer = new DefaultMapLayer(FeatureUtilities.wrapGridCoverageReader(
-                                        reader, readParameters), layerStyle);
-                            } catch (Exception e) {
-                                throw new RuntimeException(e);
-                            }
-
-                            layer.setTitle(mapLayerInfo.getCoverage().getPrefixedName());
-                            layer.setQuery(Query.ALL);
-                            mapContext.addLayer(layer);
-                        } catch (IllegalArgumentException e) {
-                            if (LOGGER.isLoggable(Level.SEVERE)) {
-                                LOGGER.log(Level.SEVERE,
-                                        new StringBuilder("Wrapping GC in feature source: ")
-                                                .append(e.getLocalizedMessage()).toString(), e);
-                            }
-
-                            throw new ServiceException(
-                                    "Internal error : unable to get reader for this coverage layer "
-                                            + mapLayerInfo);
-                        }
-                    } else {
-                        throw new ServiceException(new StringBuffer(
-                                "Internal error : unable to get reader for this coverage layer ")
-                                .append(mapLayerInfo.toString()).toString());
-                    }
-                } else if (layerType == MapLayerInfo.TYPE_WMS) {
-                    WMSLayerInfo wmsLayer = (WMSLayerInfo) mapLayerInfo.getResource();
-                    WebMapServer wms = wmsLayer.getStore().getWebMapServer(null);
-                    Layer gt2Layer = wmsLayer.getWMSLayer(null);
-
-                    // see if we can merge this layer with the previous one
-                    boolean merged = false;
-                    if (mapContext.getLayerCount() > 0) {
-                        MapLayer lastLayer = mapContext.getLayer(mapContext.getLayerCount() - 1);
-                        if (lastLayer instanceof WMSMapLayer) {
-                            WMSMapLayer lastWMS = (WMSMapLayer) lastLayer;
-                            WebMapServer otherWMS = lastWMS.getWebMapServer();
-                            if (otherWMS.equals(wms)) {
-                                lastWMS.addLayer(gt2Layer);
-                                merged = true;
-                            }
-                        }
-                    }
-                    if (!merged) {
-                        WMSMapLayer mapLayer = new WMSMapLayer(wms, gt2Layer);
-                        mapLayer.setTitle(wmsLayer.getPrefixedName());
-                        mapContext.addLayer(mapLayer);
-                    }
-                } else {
-                    throw new IllegalArgumentException("Unkown layer type " + layerType);
-                }
+            cachingPossible &= mapLayerInfo.isCachingEnabled();
+            if (cachingPossible) {
+                maxAge = Math.min(maxAge, mapLayerInfo.getCacheMaxAge());
+            } else {
+                cachingPossible = false;
             }
 
-            // setup the SLD variable substitution environment
-            EnvFunction.setLocalValues(request.getEnv());
+            final Style layerStyle = styles[i];
+            final Filter layerFilter = filters[i];
 
+            final MapLayer layer;
+
+            int layerType = mapLayerInfo.getType();
+            if (layerType == MapLayerInfo.TYPE_REMOTE_VECTOR) {
+
+                final SimpleFeatureSource source = mapLayerInfo.getRemoteFeatureSource();
+                layer = new DefaultMapLayer(source, layerStyle);
+                layer.setTitle(mapLayerInfo.getRemoteFeatureSource().getSchema().getTypeName());
+
+                final Query definitionQuery = new Query(source.getSchema().getTypeName());
+                definitionQuery.setFilter(layerFilter);
+                definitionQuery.setVersion(featureVersion);
+                int maxFeatures = request.getMaxFeatures() != null ? request.getMaxFeatures()
+                        : Integer.MAX_VALUE;
+                definitionQuery.setMaxFeatures(maxFeatures);
+
+                layer.setQuery(definitionQuery);
+                mapContext.addLayer(layer);
+            } else if (layerType == MapLayerInfo.TYPE_VECTOR) {
+                FeatureSource<? extends FeatureType, ? extends Feature> source;
+                // /////////////////////////////////////////////////////////
+                //
+                // Adding a feature layer
+                //
+                // /////////////////////////////////////////////////////////
+                try {
+                    source = mapLayerInfo.getFeatureSource(true);
+
+                    // NOTE for the feature. Here there was some code that
+                    // sounded like:
+                    // * get the bounding box from feature source
+                    // * eventually reproject it to the actual CRS used for
+                    // map
+                    // * if no intersection, don't bother adding the feature
+                    // source to the map
+                    // This is not an optimization, on the contrary,
+                    // computing the bbox may be
+                    // very expensive depending on the data size. Using
+                    // sigma.openplans.org data
+                    // and a tiled client like OpenLayers, it dragged the
+                    // server to his knees
+                    // and the client simply timed out
+                } catch (IOException exp) {
+                    if (LOGGER.isLoggable(Level.SEVERE)) {
+                        LOGGER.log(Level.SEVERE, new StringBuffer("Getting feature source: ")
+                                .append(exp.getMessage()).toString(), exp);
+                    }
+
+                    throw new ServiceException("Internal error", exp);
+                }
+
+                layer = new FeatureSourceMapLayer(source, layerStyle);
+                layer.setTitle(mapLayerInfo.getFeature().getPrefixedName());
+
+                final Query definitionQuery = new Query(source.getSchema().getName().getLocalPart());
+                definitionQuery.setVersion(featureVersion);
+                definitionQuery.setFilter(layerFilter);
+                if (request.getViewParams() != null && request.getViewParams().size() > 0) {
+                    definitionQuery.setHints(new Hints(Hints.VIRTUAL_TABLE_PARAMETERS, request
+                            .getViewParams()));
+                }
+
+                // check for startIndex + offset
+                final Integer startIndex = request.getStartIndex();
+                if (startIndex != null) {
+                    QueryCapabilities queryCapabilities = source.getQueryCapabilities();
+                    if (queryCapabilities.isOffsetSupported()) {
+                        // fsource is required to support
+                        // SortBy.NATURAL_ORDER so we don't bother checking
+                        definitionQuery.setStartIndex(startIndex);
+                    } else {
+                        // source = new PagingFeatureSource(source,
+                        // request.getStartIndex(), limit);
+                        throw new ServiceException("startIndex is not supported for the "
+                                + mapLayerInfo.getName() + " layer");
+                    }
+                }
+
+                int maxFeatures = request.getMaxFeatures() != null ? request.getMaxFeatures()
+                        : Integer.MAX_VALUE;
+                definitionQuery.setMaxFeatures(maxFeatures);
+
+                layer.setQuery(definitionQuery);
+                mapContext.addLayer(layer);
+            } else if (layerType == MapLayerInfo.TYPE_RASTER) {
+
+                // /////////////////////////////////////////////////////////
+                //
+                // Adding a coverage layer
+                //
+                // /////////////////////////////////////////////////////////
+                final AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) mapLayerInfo
+                        .getCoverageReader();
+                if (reader != null) {
+
+                    // get the group of parameters tha this reader supports
+                    final ParameterValueGroup readParametersDescriptor = reader.getFormat()
+                            .getReadParameters();
+                    GeneralParameterValue[] readParameters = CoverageUtils.getParameters(
+                            readParametersDescriptor, mapLayerInfo.getCoverage().getParameters());
+
+                    //
+                    // Setting coverage reading params.
+                    //
+
+                    /*
+                     * Test if the parameter "TIME" is present in the WMS request, and by the way in
+                     * the reading parameters. If it is the case, one can adds it to the request. If
+                     * an exception is thrown, we have nothing to do.
+                     */
+                    final List dateTime = request.getTime();
+                    final boolean hasTime = dateTime != null && dateTime.size() > 0;
+                    final List<GeneralParameterDescriptor> parameterDescriptors = readParametersDescriptor
+                            .getDescriptor().descriptors();
+                    if (hasTime)
+                        for (GeneralParameterDescriptor pd : parameterDescriptors) {
+
+                            // TIME
+                            if (pd.getName().getCode().equalsIgnoreCase("TIME")) {
+                                final ParameterValue time = (ParameterValue) pd.createValue();
+                                if (time != null) {
+                                    time.setValue(request.getTime());
+                                }
+
+                                // add to the list
+                                GeneralParameterValue[] readParametersClone = new GeneralParameterValue[readParameters.length + 1];
+                                System.arraycopy(readParameters, 0, readParametersClone, 0,
+                                        readParameters.length);
+                                readParametersClone[readParameters.length] = time;
+                                readParameters = readParametersClone;
+
+                                // leave
+                                break;
+                            }
+                        }
+
+                    // uncomment when the DIM_RANGE vendor parameter will be
+                    // enabled
+                    // try {
+                    // ParameterValue dimRange =
+                    // reader.getFormat().getReadParameters()
+                    // .parameter("DIM_RANGE");
+                    // if (dimRange != null && request.getDimRange() !=
+                    // null) {
+                    // dimRange.setValue(request.getDimRange());
+                    // }
+                    // } catch (ParameterNotFoundException p) {
+                    // }
+
+                    /*
+                     * Test if the parameter "TIME" is present in the WMS request, and by the way in
+                     * the reading parameters. If it is the case, one can adds it to the request. If
+                     * an exception is thrown, we have nothing to do.
+                     */
+                    final double elevationValue = request.getElevation();
+                    final boolean hasElevation = !Double.isNaN(elevationValue);
+                    if (hasElevation)
+                        for (GeneralParameterDescriptor pd : parameterDescriptors) {
+
+                            // ELEVATION
+                            if (pd.getName().getCode().equalsIgnoreCase("ELEVATION")) {
+                                final ParameterValue elevation = (ParameterValue) pd.createValue();
+                                if (elevation != null) {
+                                    elevation.setValue(request.getElevation());
+                                }
+
+                                // add to the list
+                                GeneralParameterValue[] readParametersClone = new GeneralParameterValue[readParameters.length + 1];
+                                System.arraycopy(readParameters, 0, readParametersClone, 0,
+                                        readParameters.length);
+                                readParametersClone[readParameters.length] = elevation;
+                                readParameters = readParametersClone;
+
+                                // leave
+                                break;
+                            }
+                        }
+
+                    try {
+
+                        try {
+                            layer = new DefaultMapLayer(FeatureUtilities.wrapGridCoverageReader(
+                                    reader, readParameters), layerStyle);
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+
+                        layer.setTitle(mapLayerInfo.getCoverage().getPrefixedName());
+                        layer.setQuery(Query.ALL);
+                        mapContext.addLayer(layer);
+                    } catch (IllegalArgumentException e) {
+                        if (LOGGER.isLoggable(Level.SEVERE)) {
+                            LOGGER.log(
+                                    Level.SEVERE,
+                                    new StringBuilder("Wrapping GC in feature source: ").append(
+                                            e.getLocalizedMessage()).toString(), e);
+                        }
+
+                        throw new ServiceException(
+                                "Internal error : unable to get reader for this coverage layer "
+                                        + mapLayerInfo);
+                    }
+                } else {
+                    throw new ServiceException(new StringBuffer(
+                            "Internal error : unable to get reader for this coverage layer ")
+                            .append(mapLayerInfo.toString()).toString());
+                }
+            } else if (layerType == MapLayerInfo.TYPE_WMS) {
+                WMSLayerInfo wmsLayer = (WMSLayerInfo) mapLayerInfo.getResource();
+                WebMapServer wms = wmsLayer.getStore().getWebMapServer(null);
+                Layer gt2Layer = wmsLayer.getWMSLayer(null);
+
+                // see if we can merge this layer with the previous one
+                boolean merged = false;
+                if (mapContext.getLayerCount() > 0) {
+                    MapLayer lastLayer = mapContext.getLayer(mapContext.getLayerCount() - 1);
+                    if (lastLayer instanceof WMSMapLayer) {
+                        WMSMapLayer lastWMS = (WMSMapLayer) lastLayer;
+                        WebMapServer otherWMS = lastWMS.getWebMapServer();
+                        if (otherWMS.equals(wms)) {
+                            lastWMS.addLayer(gt2Layer);
+                            merged = true;
+                        }
+                    }
+                }
+                if (!merged) {
+                    WMSMapLayer mapLayer = new WMSMapLayer(wms, gt2Layer);
+                    mapLayer.setTitle(wmsLayer.getPrefixedName());
+                    mapContext.addLayer(mapLayer);
+                }
+            } else {
+                throw new IllegalArgumentException("Unkown layer type " + layerType);
+            }
+        }
+
+        // setup the SLD variable substitution environment
+        EnvFunction.setLocalValues(request.getEnv());
+
+        WebMap map;
+        try {
             // set the buffer value if the admin has set a specific value for some layers
             // in this map
+            // GR: question: does setupRenderingBuffer need EnvFunction.setLocalValues to be already
+            // set? otherwise move this call out of the try block and above setLovalValues
             setupRenderingBuffer(mapContext, layers);
 
             // /////////////////////////////////////////////////////////
@@ -457,24 +458,24 @@ public class GetMap {
             // Producing the map in the requested format.
             //
             // /////////////////////////////////////////////////////////
-            WebMap map = delegate.produceMap(mapContext);
-
-            if (cachingPossible) {
-                map.setResponseHeader("Cache-Control", "max-age=" + maxAge + ", must-revalidate");
-
-                Date expires = new Date();
-                expires.setTime(expires.getTime() + maxAge * 1000);
-                DateFormat format = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.US);
-                format.setTimeZone(TimeZone.getTimeZone("GMT"));
-                map.setResponseHeader("Expires", format.format(expires));
-            }
-
-            return map;
+            map = delegate.produceMap(mapContext);
 
         } finally {
-            //clearMapContext(mapContext);
             EnvFunction.clearLocalValues();
         }
+        
+        if (cachingPossible) {
+            map.setResponseHeader("Cache-Control", "max-age=" + maxAge + ", must-revalidate");
+
+            Date expires = new Date();
+            expires.setTime(expires.getTime() + maxAge * 1000);
+            DateFormat format = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.US);
+            format.setTimeZone(TimeZone.getTimeZone("GMT"));
+            map.setResponseHeader("Expires", format.format(expires));
+        }
+
+        return map;
+
     }
 
     /**
