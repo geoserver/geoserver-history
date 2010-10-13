@@ -197,20 +197,23 @@ public class GetMap {
             final String featureVersion = request.getFeatureVersion();
             int maxAge = Integer.MAX_VALUE;
             for (int i = 0; i < layers.size(); i++) {
+                final MapLayerInfo mapLayerInfo = layers.get(i);
+
                 final Style layerStyle = styles[i];
                 final Filter layerFilter = filters[i];
 
                 final MapLayer layer;
-                int layerType = layers.get(i).getType();
+
+                int layerType = mapLayerInfo.getType();
                 if (layerType == MapLayerInfo.TYPE_REMOTE_VECTOR) {
                     // we just assume remote WFS is not cacheable since it's just used
                     // in feature portrayal requests (which are noe off and don't have a way to
                     // tell us how often the remote WFS changes)
                     cachingPossible = false;
 
-                    final SimpleFeatureSource source = layers.get(i).getRemoteFeatureSource();
+                    final SimpleFeatureSource source = mapLayerInfo.getRemoteFeatureSource();
                     layer = new DefaultMapLayer(source, layerStyle);
-                    layer.setTitle(layers.get(i).getRemoteFeatureSource().getSchema().getTypeName());
+                    layer.setTitle(mapLayerInfo.getRemoteFeatureSource().getSchema().getTypeName());
 
                     final Query definitionQuery = new Query(source.getSchema().getTypeName());
                     definitionQuery.setFilter(layerFilter);
@@ -229,7 +232,7 @@ public class GetMap {
                     //
                     // /////////////////////////////////////////////////////////
                     try {
-                        source = layers.get(i).getFeatureSource(true);
+                        source = mapLayerInfo.getFeatureSource(true);
 
                         // NOTE for the feature. Here there was some code that
                         // sounded like:
@@ -255,7 +258,7 @@ public class GetMap {
                     }
 
                     layer = new FeatureSourceMapLayer(source, layerStyle);
-                    layer.setTitle(layers.get(i).getFeature().getPrefixedName());
+                    layer.setTitle(mapLayerInfo.getFeature().getPrefixedName());
 
                     final Query definitionQuery = new Query(source.getSchema().getName()
                             .getLocalPart());
@@ -278,7 +281,7 @@ public class GetMap {
                             // source = new PagingFeatureSource(source,
                             // request.getStartIndex(), limit);
                             throw new ServiceException("startIndex is not supported for the "
-                                    + layers.get(i).getName() + " layer");
+                                    + mapLayerInfo.getName() + " layer");
                         }
                     }
 
@@ -295,15 +298,14 @@ public class GetMap {
                     // Adding a coverage layer
                     //
                     // /////////////////////////////////////////////////////////
-                    final AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) layers
-                            .get(i).getCoverageReader();
+                    final AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) mapLayerInfo.getCoverageReader();
                     if (reader != null) {
 
                         // get the group of parameters tha this reader supports
                         final ParameterValueGroup readParametersDescriptor = reader.getFormat()
                                 .getReadParameters();
                         GeneralParameterValue[] readParameters = CoverageUtils.getParameters(
-                                readParametersDescriptor, layers.get(i).getCoverage()
+                                readParametersDescriptor, mapLayerInfo.getCoverage()
                                         .getParameters());
 
                         //
@@ -393,7 +395,7 @@ public class GetMap {
                                 throw new RuntimeException(e);
                             }
 
-                            layer.setTitle(layers.get(i).getCoverage().getPrefixedName());
+                            layer.setTitle(mapLayerInfo.getCoverage().getPrefixedName());
                             layer.setQuery(Query.ALL);
                             mapContext.addLayer(layer);
                         } catch (IllegalArgumentException e) {
@@ -405,15 +407,15 @@ public class GetMap {
 
                             throw new ServiceException(
                                     "Internal error : unable to get reader for this coverage layer "
-                                            + layers.get(i));
+                                            + mapLayerInfo);
                         }
                     } else {
                         throw new ServiceException(new StringBuffer(
                                 "Internal error : unable to get reader for this coverage layer ")
-                                .append(layers.get(i).toString()).toString());
+                                .append(mapLayerInfo.toString()).toString());
                     }
                 } else if (layerType == MapLayerInfo.TYPE_WMS) {
-                    WMSLayerInfo wmsLayer = (WMSLayerInfo) layers.get(i).getResource();
+                    WMSLayerInfo wmsLayer = (WMSLayerInfo) mapLayerInfo.getResource();
                     WebMapServer wms = wmsLayer.getStore().getWebMapServer(null);
                     Layer gt2Layer = wmsLayer.getWMSLayer(null);
 
@@ -441,8 +443,8 @@ public class GetMap {
 
                 // handle caching
                 if (layerType != MapLayerInfo.TYPE_REMOTE_VECTOR && cachingPossible) {
-                    if (layers.get(i).isCachingEnabled()) {
-                        int nma = layers.get(i).getCacheMaxAge();
+                    if (mapLayerInfo.isCachingEnabled()) {
+                        int nma = mapLayerInfo.getCacheMaxAge();
 
                         // suppose the map contains multiple cachable
                         // layers...we can only cache the combined map for
