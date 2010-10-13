@@ -265,6 +265,12 @@ public final class MapLayerInfo {
         if (layerInfo == null) {
             return false;
         }
+        if (type == TYPE_REMOTE_VECTOR) {
+            // we just assume remote WFS is not cacheable since it's just used
+            // in feature portrayal requests (which are one off and don't have a way to
+            // tell us how often the remote WFS changes)
+            return false;
+        }
         ResourceInfo resource = layerInfo.getResource();
         Boolean cachingEnabled = resource.getMetadata().get("cachingEnabled", Boolean.class);
         return cachingEnabled == null ? false : cachingEnabled.booleanValue();
