@@ -288,15 +288,14 @@ public class GeoserverDataDirectory {
         
         if (loader == null) {
             // get the loader from the context
-            loader = (GeoServerResourceLoader) context
-                    .getBean("resourceLoader");
+            loader = (GeoServerResourceLoader) context.getBean("resourceLoader");
 
             File dataDir = null;
 
             String dataDirStr = findGeoServerDataDir(servContext);
 
             dataDir = new File(dataDirStr);
-            loader.setBaseDirectory(dataDir);
+            //loader.setBaseDirectory(dataDir);
             loader.addSearchLocation(new File(dataDir, "data"));
             loader.addSearchLocation(new File(dataDir, "WEB-INF"));
             LOGGER
@@ -323,76 +322,12 @@ public class GeoserverDataDirectory {
      * 
      * @param servContext
      * @return String representation of path, null otherwise
+     * @deprecated use {@link GeoServerResourceLoader#lookupGeoServerDataDirectory(ServletContext)}
      */
     public static String findGeoServerDataDir(ServletContext servContext) {
-        final String[] typeStrs = { "Java environment variable ",
-                "Servlet context parameter ", "System environment variable " };
-
-        String dataDirStr = null;
-        
-        final String[] varStrs = { "GEOSERVER_DATA_DIR", "GEOSERVER_DATA_ROOT" };
-
-        String msgPrefix = null;
-        int iVar = 0;
-        // Loop over variable names
-        for (int i = 0; i < varStrs.length && dataDirStr == null; i++) {
-            
-            // Loop over variable access methods
-            for (int j = 0; j < typeStrs.length && dataDirStr == null; j++) {
-                String value = null;
-                String varStr = new String(varStrs[i]);
-                String typeStr = typeStrs[j];
-
-                // Lookup section
-                switch (j) {
-                case 0:
-                    value = System.getProperty(varStr);
-                    break;
-                case 1:
-                    value = servContext.getInitParameter(varStr);
-                    break;
-                case 2:
-                    value = System.getenv(varStr);
-                    break;
-                }
-
-                if (value == null || value.equalsIgnoreCase("")) {
-                    LOGGER.finer("Found " + typeStr + varStr + " to be unset");
-                    continue;
-                }
-
-                
-                // Verify section
-                File fh = new File(value);
-
-                // Being a bit pessimistic here
-                msgPrefix = "Found " + typeStr + varStr + " set to " + value;
-
-                if (!fh.exists()) {
-                    LOGGER.fine(msgPrefix + " , but this path does not exist");
-                    continue;
-                }
-                if (!fh.isDirectory()) {
-                    LOGGER.fine(msgPrefix + " , which is not a directory");
-                    continue;
-                }
-                if (!fh.canWrite()) {
-                    LOGGER.fine(msgPrefix + " , which is not writeable");
-                    continue;
-                }
-
-                // Sweet, we can work with this
-                dataDirStr = value;
-                iVar = i;
-            }
-        }
-        
-        // fall back to embedded data dir
-        if(dataDirStr == null)
-            dataDirStr = servContext.getRealPath("/data");
-        
-        return dataDirStr;
+        return GeoServerResourceLoader.lookupGeoServerDataDirectory(servContext);
     }
+    
     /**
      * Signals the data directory to throw away all global state.
      * <p>
