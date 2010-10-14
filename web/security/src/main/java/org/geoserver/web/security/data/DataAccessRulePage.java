@@ -64,7 +64,7 @@ public class DataAccessRulePage extends GeoServerSecuredPage {
 
             @Override
             protected void onClick(AjaxRequestTarget target) {
-                setResponsePage(new EditDataAccessRulePage((DataAccessRule) getModelObject()));
+                setResponsePage(new EditDataAccessRulePage((DataAccessRule) getDefaultModelObject()));
             }
 
         };

@@ -41,10 +41,18 @@ public class GZIPResponseStream extends ServletOutputStream {
         gzipstream.finish();
 
         byte[] bytes = baos.toByteArray();
-
-
-        response.addHeader("Content-Length", 
-                Integer.toString(bytes.length)); 
+        String contentLength = Integer.toString(bytes.length);
+        
+        //JD: we need to be careful about how we set the header, checking first if it has 
+        // already been set, if we don't the result will be two values for the content lenght
+        // header which will throw off most http clients
+        if (response.containsHeader("Content-Length")) {
+            response.setHeader("Content-Length", contentLength);
+        }
+        else {
+            response.addHeader("Content-Length", contentLength);
+        }
+         
         response.addHeader("Content-Encoding", "gzip");
         output.write(bytes);
         output.flush();

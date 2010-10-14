@@ -28,7 +28,7 @@ public class NewDataAccessRulePage extends AbstractDataAccessRulePage {
     @Override
     protected void onFormSubmit() {
         try {
-            String roles = parseRole(rolesForComponent.getRolePalette().getModelObjectAsString());
+            String roles = parseRole(rolesForComponent.getRolePalette().getDefaultModelObjectAsString());
             DataAccessRule rule = new DataAccessRule((String) workspace.getConvertedInput(),
                     (String) layer.getConvertedInput(),
                     (AccessMode) accessMode.getConvertedInput(), roles);
@@ -57,7 +57,7 @@ public class NewDataAccessRulePage extends AbstractDataAccessRulePage {
             DataAccessRule rule = new DataAccessRule((String) workspace.getConvertedInput(),
                     (String) layer.getConvertedInput(),
                     (AccessMode) accessMode.getConvertedInput(), rolesForComponent.getRolePalette()
-                            .getModelObjectAsString());
+                            .getDefaultModelObjectAsString());
             if (DataAccessRuleDAO.get().getRules().contains(rule)) {
                 form.error(new ParamResourceModel("duplicateRule", getPage(), rule.getKey())
                         .getString());

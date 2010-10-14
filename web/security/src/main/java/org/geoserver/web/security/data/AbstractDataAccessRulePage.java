@@ -46,7 +46,7 @@ public abstract class AbstractDataAccessRulePage extends GeoServerSecuredPage {
     Form form;
 
     public AbstractDataAccessRulePage(DataAccessRule rule) {
-        setModel(new CompoundPropertyModel(new DataAccessRule(rule)));
+        setDefaultModel(new CompoundPropertyModel(new DataAccessRule(rule)));
 
         // build the form
         form = new Form("ruleForm");

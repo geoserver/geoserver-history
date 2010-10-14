@@ -58,9 +58,10 @@ public class WorkspaceEditPageTest extends GeoServerWicketTestSupport {
         form.submit();
 
         tester.assertRenderedPage(WorkspaceEditPage.class);
-        List<ValidationErrorFeedback> messages = tester.getMessages(FeedbackMessage.ERROR);
+        List messages = tester.getMessages(FeedbackMessage.ERROR);
         assertEquals(1, messages.size());
-        assertEquals("Invalid URI syntax: not a valid uri", messages.get(0).getMessage());
+        assertEquals("Invalid URI syntax: not a valid uri", 
+            ((ValidationErrorFeedback)messages.get(0)).getMessage());
     }
 
     /**

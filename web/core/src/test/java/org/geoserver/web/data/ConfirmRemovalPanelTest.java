@@ -32,7 +32,7 @@ public class ConfirmRemovalPanelTest extends GeoServerWicketTestSupport {
         
         tester.assertLabel("form:panel:removedObjects:storesRemoved:stores", "cite");
         
-        String layers = tester.getComponentFromLastRenderedPage("form:panel:removedObjects:layersRemoved:layers").getModelObjectAsString();
+        String layers = tester.getComponentFromLastRenderedPage("form:panel:removedObjects:layersRemoved:layers").getDefaultModelObjectAsString();
         String[] layerArray = layers.split(", ");
         DataStoreInfo citeStore = getCatalog().getStoreByName("cite", DataStoreInfo.class);
         List<FeatureTypeInfo> typeInfos = getCatalog().getResourcesByStore(citeStore, FeatureTypeInfo.class);

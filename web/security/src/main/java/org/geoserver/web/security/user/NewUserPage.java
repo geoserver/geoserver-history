@@ -48,7 +48,7 @@ public class NewUserPage extends AbstractUserPage {
     @Override
     protected void onFormSubmit() {
         try {
-            UserUIModel user = (UserUIModel) NewUserPage.this.getModelObject();
+            UserUIModel user = (UserUIModel) NewUserPage.this.getDefaultModelObject();
             GeoserverUserDao dao = GeoserverUserDao.get();
             dao.putUser(user.toAcegiUser());
             dao.storeUsers();

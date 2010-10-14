@@ -115,7 +115,7 @@ public abstract class SRSListPanel extends Panel {
 
             @Override
             protected void onClick(AjaxRequestTarget target) {
-                onCodeClicked(target, getModelObjectAsString());
+                onCodeClicked(target, getDefaultModelObjectAsString());
                 
             }
         };

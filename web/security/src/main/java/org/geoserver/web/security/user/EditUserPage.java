@@ -23,7 +23,7 @@ public class EditUserPage extends AbstractUserPage {
     @Override
     protected void onFormSubmit() {
         try {
-            UserUIModel model = (UserUIModel) getModelObject();
+            UserUIModel model = (UserUIModel) getDefaultModelObject();
             GeoserverUserDao dao = GeoserverUserDao.get();
             dao.setUser(model.toAcegiUser());
             dao.storeUsers();

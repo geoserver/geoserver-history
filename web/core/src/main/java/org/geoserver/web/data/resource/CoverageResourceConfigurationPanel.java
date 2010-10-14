@@ -38,7 +38,8 @@ public class CoverageResourceConfigurationPanel extends ResourceConfigurationPan
             
             @Override
             protected void populateItem(ListItem item) {
-                Component inputComponent = getInputComponent("parameterPanel", paramsModel, item.getModelObjectAsString());
+                Component inputComponent = getInputComponent("parameterPanel", paramsModel, 
+                    item.getDefaultModelObjectAsString());
                 item.add(inputComponent);
             }
         };

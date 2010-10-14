@@ -36,7 +36,7 @@ public abstract class LayerEditTabPanel extends Panel {
      * Returns the layer currently being edited by the panel.
      */
     public LayerInfo getLayer() {
-        return (LayerInfo) getModel().getObject();
+        return (LayerInfo) getDefaultModel().getObject();
     }
 
 }

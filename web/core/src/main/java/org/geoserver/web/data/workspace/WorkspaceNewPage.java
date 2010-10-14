@@ -42,7 +42,7 @@ public class WorkspaceNewPage extends GeoServerSecuredPage {
                 
                 NamespaceInfo ns = catalog.getFactory().createNamespace();
                 ns.setPrefix ( ws.getName() );
-                ns.setURI(nsUriTextField.getModelObjectAsString());
+                ns.setURI(nsUriTextField.getDefaultModelObjectAsString());
                 
                 catalog.add( ws );
                 catalog.add( ns );

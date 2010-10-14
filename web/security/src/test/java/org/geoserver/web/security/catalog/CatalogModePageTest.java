@@ -29,7 +29,7 @@ public class CatalogModePageTest extends GeoServerWicketTestSupport {
     public void testDefaultCatalogMode() throws Exception {
         tester.assertRenderedPage(CatalogModePage.class);
         assertEquals("HIDE", tester.getComponentFromLastRenderedPage("catalogModeForm:catalogMode")
-                .getModelObject().toString());
+                .getDefaultModelObject().toString());
     }
 
     public void testEditCatalogMode() throws Exception {
@@ -37,7 +37,7 @@ public class CatalogModePageTest extends GeoServerWicketTestSupport {
         
         // simple test 
         assertFalse(("CHALLENGE".equals(tester.getComponentFromLastRenderedPage(
-                "catalogModeForm:catalogMode").getModelObject())));
+                "catalogModeForm:catalogMode").getDefaultModelObject())));
         
         // edit catalogMode value
         final FormTester form = tester.newFormTester("catalogModeForm");
@@ -54,7 +54,7 @@ public class CatalogModePageTest extends GeoServerWicketTestSupport {
         });
 
         assertEquals("MIXED", tester.getComponentFromLastRenderedPage(
-                "catalogModeForm:catalogMode").getModelObject().toString());
+                "catalogModeForm:catalogMode").getDefaultModelObject().toString());
 
     }
 

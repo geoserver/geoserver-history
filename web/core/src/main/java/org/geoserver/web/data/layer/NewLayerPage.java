@@ -92,7 +92,7 @@ public class NewLayerPage extends GeoServerSecuredPage {
         selectLayers.add(storeName = new Label("storeName", new Model()));
         if(storeId != null) {
             StoreInfo store = getCatalog().getStore(storeId, StoreInfo.class);
-            storeName.setModelObject(store.getName());
+            storeName.setDefaultModelObject(store.getName());
         }
         
         provider = new NewLayerPageProvider();
@@ -181,7 +181,7 @@ public class NewLayerPage extends GeoServerSecuredPage {
                     StoreInfo store = (StoreInfo) stores.getModelObject();
                     NewLayerPage.this.storeId = store.getId();
                     provider.setStoreId(store.getId());
-                    storeName.setModelObject(store.getName());
+                    storeName.setDefaultModelObject(store.getName());
                     selectLayers.setVisible(true);
 
                     // make sure we can actually list the contents, it may happen
@@ -226,7 +226,7 @@ public class NewLayerPage extends GeoServerSecuredPage {
 
             @Override
             protected void onClick(AjaxRequestTarget target) {
-                Resource resource = (Resource) getModelObject();
+                Resource resource = (Resource) getDefaultModelObject();
                 setResponsePage(new ResourceConfigurationPage(
                         buildLayerInfo(resource), true));
             }

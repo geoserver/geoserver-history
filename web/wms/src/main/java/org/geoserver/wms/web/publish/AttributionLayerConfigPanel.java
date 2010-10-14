@@ -83,9 +83,9 @@ public class AttributionLayerConfigPanel extends LayerConfigurationPanel{
 
         add(new AjaxSubmitLink("verifyImage") {
             protected void onSubmit(AjaxRequestTarget target, Form form) {
-                if (logo.getModelObjectAsString() != null) {
+                if (logo.getDefaultModelObjectAsString() != null) {
                     try { 
-                        URL url = new URL(logo.getModelObjectAsString());
+                        URL url = new URL(logo.getDefaultModelObjectAsString());
                         URLConnection conn = url.openConnection();
                         type.getModel().setObject(conn.getContentType());
                         BufferedImage image = ImageIO.read(conn.getInputStream());

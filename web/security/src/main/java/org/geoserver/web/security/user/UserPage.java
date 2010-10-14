@@ -91,7 +91,7 @@ public class UserPage extends GeoServerSecuredPage {
 
             @Override
             protected void onClick(AjaxRequestTarget target) {
-                setResponsePage(new EditUserPage((UserDetails) getModelObject()));
+                setResponsePage(new EditUserPage((UserDetails) getDefaultModelObject()));
             }
 
         };

@@ -23,7 +23,7 @@ public class EditServiceAccessRulePage extends AbstractServiceAccessRulePage {
     protected void onFormSubmit() {
         try {
             ServiceAccessRuleDAO dao = ServiceAccessRuleDAO.get();
-            dao.addRule((ServiceAccessRule) getModelObject()); 
+            dao.addRule((ServiceAccessRule) getDefaultModelObject()); 
             dao.storeRules();
             setResponsePage(ServiceAccessRulePage.class);
         } catch(Exception e) {

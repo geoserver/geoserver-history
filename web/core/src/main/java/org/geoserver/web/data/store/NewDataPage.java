@@ -78,7 +78,7 @@ public class NewDataPage extends GeoServerSecuredPage {
         final ListView dataStoreLinks = new ListView("vectorResources", sortedDsNames) {
             @Override
             protected void populateItem(ListItem item) {
-                final String dataStoreFactoryName = item.getModelObjectAsString();
+                final String dataStoreFactoryName = item.getDefaultModelObjectAsString();
                 final DataAccessFactory factory = getAvailableDataStores()
                         .get(dataStoreFactoryName);
                 final String description = factory.getDescription();
@@ -107,7 +107,7 @@ public class NewDataPage extends GeoServerSecuredPage {
         final ListView coverageLinks = new ListView("rasterResources", sortedCoverageNames) {
             @Override
             protected void populateItem(ListItem item) {
-                final String coverageFactoryName = item.getModelObjectAsString();
+                final String coverageFactoryName = item.getDefaultModelObjectAsString();
                 final Map<String, Format> coverages = getAvailableCoverageStores();
                 Format format = coverages.get(coverageFactoryName);
                 final String description = format.getDescription();

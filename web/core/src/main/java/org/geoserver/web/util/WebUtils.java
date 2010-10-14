@@ -48,16 +48,7 @@ public class WebUtils {
      * @return
      */
     public static String localize(String key, IModel model, Object... params) {
-        StringResourceModel rm = new StringResourceModel(key, null, model, params) {
-            @Override
-            public void setLocalizer(Localizer localizer) {
-                super.setLocalizer(localizer);
-                // crude hack to force into the StringResoruceLoader to grab a locale,
-                // which is needed to format numbers with the MessageFormat approach
-                // See also: https://issues.apache.org/jira/browse/WICKET-1719
-                load();
-            }
-        };
+        StringResourceModel rm = new StringResourceModel(key, null, model, params);
         rm.setLocalizer(GeoServerApplication.get().getResourceSettings().getLocalizer());
         return rm.getString();
     }

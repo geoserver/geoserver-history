@@ -46,7 +46,7 @@ public class StyleNewPageTest extends GeoServerWicketTestSupport {
         FormTester form = tester.newFormTester("form");
         File styleFile = new File(new java.io.File(getClass().getResource("default_point.sld").toURI()));
         String sld = IOUtils.toString(new FileReader(styleFile));
-        form.setValue("form:sld:editor", sld);
+        form.setValue("editor", sld);
         form.submit();
         
         tester.assertRenderedPage(StyleNewPage.class);

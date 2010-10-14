@@ -27,6 +27,6 @@ public class LayerConfigurationPanel extends Panel {
 	}
 	
 	public LayerInfo getLayerInfo(){
-		return (LayerInfo)getModelObject();
+		return (LayerInfo)getDefaultModelObject();
 	}
 }

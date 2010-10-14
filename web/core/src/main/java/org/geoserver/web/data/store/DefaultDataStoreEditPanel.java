@@ -121,7 +121,7 @@ public class DefaultDataStoreEditPanel extends StoreEditPanel {
 
             @Override
             protected void populateItem(ListItem item) {
-                String paramName = item.getModelObjectAsString();
+                String paramName = item.getDefaultModelObjectAsString();
                 ParamInfo paramMetadata = paramsMetadata.get(paramName);
 
                 Component inputComponent;

@@ -23,7 +23,7 @@ public class EditDataAccessRulePage extends AbstractDataAccessRulePage {
     protected void onFormSubmit() {
         try {
             DataAccessRuleDAO dao = DataAccessRuleDAO.get();
-            dao.addRule((DataAccessRule) getModelObject());
+            dao.addRule((DataAccessRule) getDefaultModelObject());
             dao.storeRules();
             setResponsePage(DataAccessRulePage.class);
         } catch (Exception e) {

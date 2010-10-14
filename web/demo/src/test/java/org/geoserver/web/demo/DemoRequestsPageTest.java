@@ -91,7 +91,7 @@ public class DemoRequestsPageTest extends GeoServerWicketTestSupport {
 
         tester.assertVisible("responseWindow");
 
-        IModel model = tester.getLastRenderedPage().getModel();
+        IModel model = tester.getLastRenderedPage().getDefaultModel();
         assertTrue(model.getObject() instanceof DemoRequest);
         DemoRequest req = (DemoRequest) model.getObject();
 
@@ -127,7 +127,7 @@ public class DemoRequestsPageTest extends GeoServerWicketTestSupport {
 
         tester.assertVisible("responseWindow");
 
-        IModel model = tester.getLastRenderedPage().getModel();
+        IModel model = tester.getLastRenderedPage().getDefaultModel();
         assertTrue(model.getObject() instanceof DemoRequest);
         DemoRequest req = (DemoRequest) model.getObject();
 
@@ -169,7 +169,7 @@ public class DemoRequestsPageTest extends GeoServerWicketTestSupport {
 
         tester.assertVisible("responseWindow");
 
-        IModel model = tester.getLastRenderedPage().getModel();
+        IModel model = tester.getLastRenderedPage().getDefaultModel();
         assertTrue(model.getObject() instanceof DemoRequest);
         DemoRequest req = (DemoRequest) model.getObject();
 

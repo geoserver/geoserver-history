@@ -123,7 +123,7 @@ public class MetadataLinkEditor extends Panel {
     }
 
     private void updateLinksVisibility() {
-        ResourceInfo ri = (ResourceInfo) getModelObject();
+        ResourceInfo ri = (ResourceInfo) getDefaultModelObject();
         boolean anyLink = ri.getMetadataLinks().size() > 0;
         table.setVisible(anyLink);
         noMetadata.setVisible(!anyLink);

@@ -298,7 +298,7 @@ public abstract class GeoServerTablePanel<T> extends Panel {
 
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
-                if(Boolean.FALSE.equals(getComponent().getModelObject())) {
+                if(Boolean.FALSE.equals(getComponent().getDefaultModelObject())) {
                     selectAllValue = false;
                     target.addComponent(selectAll);
                 }
@@ -339,7 +339,7 @@ public abstract class GeoServerTablePanel<T> extends Panel {
 
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form form) {
-                updateFilter(target, filter.getModelObjectAsString());
+                updateFilter(target, filter.getDefaultModelObjectAsString());
             }
 
         };
@@ -489,9 +489,9 @@ public abstract class GeoServerTablePanel<T> extends Panel {
          */
         void updateMatched() {
             if (dataProvider.getKeywords() == null) {
-                matched.setModel(showingAllRecords(first(), last(), dataProvider.fullSize()));
+                matched.setDefaultModel(showingAllRecords(first(), last(), dataProvider.fullSize()));
             } else {
-                matched.setModel(matchedXOutOfY(first(), last(), dataProvider.size(), dataProvider.fullSize()));
+                matched.setDefaultModel(matchedXOutOfY(first(), last(), dataProvider.size(), dataProvider.fullSize()));
             }
         }
 

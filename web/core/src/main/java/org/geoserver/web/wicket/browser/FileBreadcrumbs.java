@@ -63,7 +63,7 @@ public abstract class FileBreadcrumbs extends Panel {
     }
     
     public void setSelection(File selection) {
-    	setModelObject(selection);
+    	setDefaultModelObject(selection);
     }
 
     protected abstract void pathItemClicked(File file,
