@@ -22,7 +22,7 @@ public class MimetypeNewPage extends GeoServerSecuredPage {
         final Form form = new Form("form") {
             @Override
             protected void onSubmit() {
-                String newMimetype = mimetype.getModelObjectAsString();
+                String newMimetype = mimetype.getDefaultModelObjectAsString();
                 ProxyConfig config = ProxyConfig.loadConfFromDisk();
                 config.mimetypeWhitelist.add(newMimetype);
                 ProxyConfig.writeConfigToDisk(config);
