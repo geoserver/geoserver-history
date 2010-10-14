@@ -4,6 +4,7 @@
  */
 package org.geoserver.web.data.store;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -31,9 +32,9 @@ public class StoreProvider extends GeoServerDataProvider<StoreInfo> {
             return new Model(itemModel) {
                 
                 @Override
-                public Object getObject() {
+                public Serializable getObject() {
                     StoreInfo si = (StoreInfo) itemModel.getObject();
-                    return getPropertyValue(si);
+                    return (String) getPropertyValue(si);
                 }
             };
         }

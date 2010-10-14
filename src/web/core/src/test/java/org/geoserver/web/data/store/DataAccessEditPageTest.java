@@ -60,7 +60,7 @@ public class DataAccessEditPageTest extends GeoServerWicketTestSupport {
         // missing click link , the validation triggers before it
 
         tester.assertRenderedPage(DataAccessEditPage.class);
-        tester.assertErrorMessages(new String[] { "Store name is required" });
+        tester.assertErrorMessages(new String[] { "Field 'Data Source Name' is required." });
     }
 
     /**

@@ -39,7 +39,7 @@ public abstract class AbstractServiceAccessRulePage extends GeoServerSecuredPage
     Form form;
 
     public AbstractServiceAccessRulePage(ServiceAccessRule rule) {
-        setModel(new CompoundPropertyModel(new ServiceAccessRule(rule)));
+        setDefaultModel(new CompoundPropertyModel(new ServiceAccessRule(rule)));
 
         // build the form
         form = new Form("ruleForm");

@@ -109,7 +109,7 @@ public class BasicResourceConfig extends ResourceConfigurationPanel {
             public void onSubmit(final AjaxRequestTarget target, Form form) {
                 // perform manual processing otherwise the component contents won't be updated
                 form.process();
-                ResourceInfo resource = (ResourceInfo) BasicResourceConfig.this.getModelObject();
+                ResourceInfo resource = (ResourceInfo) BasicResourceConfig.this.getDefaultModelObject();
                 try {
                     CatalogBuilder cb = new CatalogBuilder(GeoServerApplication.get().getCatalog());
                     ReferencedEnvelope bounds = cb.getNativeBounds(resource);

@@ -1,6 +1,7 @@
 package org.geoserver.web.data.resource;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.logging.Level;
 
 import org.apache.wicket.Component;
@@ -48,11 +49,11 @@ public class FeatureResourceConfigurationPanel extends ResourceConfigurationPane
         // just use the direct attributes, this is not editable atm
         ListView attributes = new ListView("attributes", new Model() {
             @Override
-            public Object getObject() {
+            public Serializable getObject() {
                 FeatureTypeInfo typeInfo = (FeatureTypeInfo) model.getObject();
                 try {
                     final ResourcePool resourcePool = GeoServerApplication.get().getCatalog().getResourcePool();
-                    return resourcePool.getAttributes(typeInfo);
+                    return (Serializable) resourcePool.getAttributes(typeInfo);
                 } catch (IOException e) {
                     throw new WicketRuntimeException(e);
                 }

@@ -28,7 +28,7 @@ public class ServiceAccessRulePageTest extends GeoServerWicketTestSupport {
         tester.clickLink("table:listContainer:items:1:itemProperties:0:component:link");
         tester.assertRenderedPage(EditServiceAccessRulePage.class);
         assertEquals("GetMap", tester.getComponentFromLastRenderedPage("ruleForm:method")
-                .getModelObject());
+                .getDefaultModelObject());
     }
     
 //    public void testNewRule() throws Exception {

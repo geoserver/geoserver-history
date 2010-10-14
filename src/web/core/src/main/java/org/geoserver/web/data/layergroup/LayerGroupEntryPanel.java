@@ -125,7 +125,7 @@ public class LayerGroupEntryPanel extends Panel {
             
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
-                Boolean useDefault = (Boolean) getComponent().getModelObject();
+                Boolean useDefault = (Boolean) getComponent().getDefaultModelObject();
                 entry.setDefaultStyle(useDefault);
                 target.addComponent(layerTable);
                 

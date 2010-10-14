@@ -19,6 +19,6 @@ public class GeoSearchLayerConfigPanel extends LayerConfigurationPanel{
     public GeoSearchLayerConfigPanel(String id, IModel model){
         super(id, model);
 
-        add(new CheckBox("geosearch.enable", new MapModel(new PropertyModel(getModel(), "resource.metadata"), "indexingEnabled")));
+        add(new CheckBox("geosearch.enable", new MapModel(new PropertyModel(getDefaultModel(), "resource.metadata"), "indexingEnabled")));
     }
 }

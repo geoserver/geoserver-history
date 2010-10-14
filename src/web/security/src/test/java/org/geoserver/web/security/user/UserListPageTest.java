@@ -27,7 +27,7 @@ public class UserListPageTest extends GeoServerWicketTestSupport {
         // the name link for the first user
         tester.clickLink("table:listContainer:items:1:itemProperties:0:component:link");
         tester.assertRenderedPage(EditUserPage.class);
-        assertEquals("admin", tester.getComponentFromLastRenderedPage("userForm:username").getModelObject());
+        assertEquals("admin", tester.getComponentFromLastRenderedPage("userForm:username").getDefaultModelObject());
     }
     
 //    public void testNewUser() throws Exception {

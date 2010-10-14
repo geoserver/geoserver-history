@@ -35,7 +35,7 @@ public class DataAccessRulePageTest extends GeoServerWicketTestSupport {
         tester.clickLink("table:listContainer:items:1:itemProperties:0:component:link");
         tester.assertRenderedPage(EditDataAccessRulePage.class);
         assertEquals("*", tester.getComponentFromLastRenderedPage("ruleForm:workspace")
-                .getModelObject());
+                .getDefaultModelObject());
     }
 
 //    public void testNewRule() throws Exception {

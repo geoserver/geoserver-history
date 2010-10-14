@@ -70,7 +70,7 @@ public class GeoServerStringResourceLoader implements IStringResourceLoader
         {
             // Iterator over all the combinations
             ResourceNameIterator iter = new ResourceNameIterator(path, style, locale,
-                "properties,xml");
+                ",properties,xml");
             while (iter.hasNext())
             {
                 String newPath = (String)iter.next();

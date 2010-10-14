@@ -221,7 +221,7 @@ abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
                 WorkspaceInfo ws = (WorkspaceInfo) wsDropDown.getModelObject();
                 String prefix = ws.getName();
                 NamespaceInfo namespaceInfo = getCatalog().getNamespaceByPrefix(prefix);
-                namespacePanel.setModelObject(namespaceInfo);
+                namespacePanel.setDefaultModelObject(namespaceInfo);
                 target.addComponent(namespacePanel.getFormComponent());
             }
         });
@@ -230,7 +230,7 @@ abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
     @SuppressWarnings("unchecked")
     private NamespacePanel findNamespacePanel(MarkupContainer c) {
         Component child;
-        for (Iterator<Component> it = ((MarkupContainer) c).iterator(); it.hasNext();) {
+        for (Iterator<? extends Component> it = ((MarkupContainer) c).iterator(); it.hasNext();) {
             child = it.next();
             if (child instanceof NamespacePanel) {
                 return (NamespacePanel) child;

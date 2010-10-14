@@ -13,6 +13,8 @@ import org.apache.wicket.util.tester.WicketTester;
 import org.geoserver.web.ComponentBuilder;
 import org.geoserver.web.FormTestPage;
 
+import static org.geoserver.web.GeoServerWicketTestSupport.initResourceSettings;
+
 public class FileDataViewTest extends TestCase {
 
     private WicketTester tester;
@@ -30,6 +32,8 @@ public class FileDataViewTest extends TestCase {
     @Override
     protected void setUp() throws Exception {
         tester = new WicketTester();
+        initResourceSettings(tester);
+        
         root = new File("target/test-dataview");
         if(root.exists())
             FileUtils.deleteDirectory(root);

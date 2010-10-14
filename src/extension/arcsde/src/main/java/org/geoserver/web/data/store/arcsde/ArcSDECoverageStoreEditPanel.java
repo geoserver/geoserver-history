@@ -85,7 +85,7 @@ public final class ArcSDECoverageStoreEditPanel extends StoreEditPanel {
         super(componentId, storeEditForm);
 
         final IModel model = storeEditForm.getModel();
-        setModel(model);
+        setDefaultModel(model);
         final CoverageStoreInfo storeInfo = (CoverageStoreInfo) storeEditForm.getModelObject();
         {
             Map<String, String> existingParameters = parseConnectionParameters(storeInfo);
@@ -294,7 +294,7 @@ public final class ArcSDECoverageStoreEditPanel extends StoreEditPanel {
 
         @Override
         protected Object load() {
-            final StoreInfo storeInfo = (StoreInfo) getModelObject();
+            final StoreInfo storeInfo = (StoreInfo) getDefaultModelObject();
             final Catalog catalog = storeInfo.getCatalog();
 
             List<StoreInfo> stores = catalog.getStores(StoreInfo.class);

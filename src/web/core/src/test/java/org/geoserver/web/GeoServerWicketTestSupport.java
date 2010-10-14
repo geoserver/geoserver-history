@@ -118,12 +118,21 @@ public abstract class GeoServerWicketTestSupport extends GeoServerTestSupport {
         
 
         public Object component(Component component) {
-            if(content.equals(component.getModelObject())) {
+            if(content.equals(component.getDefaultModelObject())) {
                 this.candidate = component;
                 return Component.IVisitor.STOP_TRAVERSAL;
             }
             return Component.IVisitor.CONTINUE_TRAVERSAL;
         }
         
+    }
+    
+    /**
+     * Helper method to initialize a standalone WicketTester with the proper 
+     * customizations to do message lookups.
+     */
+    public static void initResourceSettings(WicketTester tester) {
+        tester.getApplication().getResourceSettings().setResourceStreamLocator(new GeoServerResourceStreamLocator());
+        tester.getApplication().getResourceSettings().addStringResourceLoader(0, new GeoServerStringResourceLoader());
     }
 }

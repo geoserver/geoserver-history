@@ -126,10 +126,10 @@ public class CRSPanel extends FormComponentPanel {
                 CoordinateReferenceSystem crs = (CoordinateReferenceSystem) getConvertedInput();
                 if(crs != null) {
                     setModelObject(crs);
-                    wktLabel.setModelObject(crs.getName().toString());
+                    wktLabel.setDefaultModelObject(crs.getName().toString());
                     wktLink.setEnabled(true);
                 } else {
-                    wktLabel.setModelObject(null);
+                    wktLabel.setDefaultModelObject(null);
                     wktLink.setEnabled(false);
                 }
                 target.addComponent(wktLink);
@@ -171,9 +171,9 @@ public class CRSPanel extends FormComponentPanel {
         CoordinateReferenceSystem crs = (CoordinateReferenceSystem) getModelObject();
         if ( crs != null ) {
             srsTextField.setModelObject( toSRS(crs) );
-            wktLabel.setModelObject( crs.getName().toString() );    
+            wktLabel.setDefaultModelObject( crs.getName().toString() );    
         } else {
-            wktLabel.setModelObject(null);
+            wktLabel.setDefaultModelObject(null);
             wktLink.setEnabled(false);
         }
         
@@ -266,7 +266,7 @@ public class CRSPanel extends FormComponentPanel {
                 target.addComponent( srsTextField );
                 
                 CoordinateReferenceSystem crs = fromSRS( srs );
-                wktLabel.setModelObject( crs.getName().toString() );
+                wktLabel.setDefaultModelObject( crs.getName().toString() );
                 wktLink.setEnabled(true);
                 target.addComponent( wktLink );
             }
@@ -288,7 +288,7 @@ public class CRSPanel extends FormComponentPanel {
             add( wktLabel );
             
             if ( crs != null ) {
-                wktLabel.setModel( new Model( crs.toString() ) );
+                wktLabel.setDefaultModel( new Model( crs.toString() ) );
             }
         }
     }

@@ -136,7 +136,7 @@ public class GeoServerDialog extends Panel {
 
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form form) {
-                if (delegate.onSubmit(target, (Component) this.getModelObject())) {
+                if (delegate.onSubmit(target, (Component) this.getDefaultModelObject())) {
                     window.close(target);
                     delegate = null;
                 }
@@ -148,7 +148,7 @@ public class GeoServerDialog extends Panel {
             }
 
         };
-        link.setModel(new Model(contents));
+        link.setDefaultModel(new Model(contents));
         return link;
     }
 

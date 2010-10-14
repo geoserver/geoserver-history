@@ -165,9 +165,9 @@ public class GeoServerApplication extends SpringWebApplication {
             getResourceSettings().addStringResourceLoader(loader);
         }
 
-        getResourceSettings().addStringResourceLoader(new GeoServerStringResourceLoader());
-        getResourceSettings().addStringResourceLoader(new ComponentStringResourceLoader());
-        getResourceSettings().addStringResourceLoader(new ClassStringResourceLoader(this.getClass()));
+        getResourceSettings().addStringResourceLoader(0, new GeoServerStringResourceLoader());
+        //getResourceSettings().addStringResourceLoader(new ComponentStringResourceLoader());
+        //getResourceSettings().addStringResourceLoader(new ClassStringResourceLoader(this.getClass()));
         
         // we have our own application wide gzip compression filter 
         getResourceSettings().setDisableGZipCompression(true);

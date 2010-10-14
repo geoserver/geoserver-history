@@ -11,6 +11,8 @@ import org.apache.wicket.util.tester.WicketTester;
 import org.geoserver.web.ComponentBuilder;
 import org.geoserver.web.FormTestPage;
 
+import static org.geoserver.web.GeoServerWicketTestSupport.initResourceSettings;
+
 public class KeywordsEditorTest extends TestCase {
     
     WicketTester tester;
@@ -19,6 +21,7 @@ public class KeywordsEditorTest extends TestCase {
     @Override
     protected void setUp() throws Exception {
         tester = new WicketTester();
+        initResourceSettings(tester);
         keywords = new ArrayList<String>();
         keywords.add("one");
         keywords.add("two");

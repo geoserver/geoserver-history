@@ -22,6 +22,8 @@ public class CoverageStoreEditPageTest extends GeoServerWicketTestSupport {
 
     @Override
     protected void setUpInternal() throws Exception {
+        login();
+        
         coverageStore = getCatalog().getStoreByName(MockData.TASMANIA_BM.getLocalPart(),
                 CoverageStoreInfo.class);
         tester.startPage(new CoverageStoreEditPage(coverageStore.getId()));
@@ -55,7 +57,7 @@ public class CoverageStoreEditPageTest extends GeoServerWicketTestSupport {
         tester.clickLink("rasterStoreForm:save");
 
         tester.assertRenderedPage(CoverageStoreEditPage.class);
-        tester.assertErrorMessages(new String[] { "Store name is required" });
+        tester.assertErrorMessages(new String[] { "Field 'Data Source Name' is required." });
     }
 
     /**

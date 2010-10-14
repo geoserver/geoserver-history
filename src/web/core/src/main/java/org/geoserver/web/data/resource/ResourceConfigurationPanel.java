@@ -31,6 +31,6 @@ public class ResourceConfigurationPanel extends Panel {
 	}
 	
 	public ResourceInfo getResourceInfo(){
-		return (ResourceInfo)getModelObject();
+		return (ResourceInfo)getDefaultModelObject();
 	}
 }

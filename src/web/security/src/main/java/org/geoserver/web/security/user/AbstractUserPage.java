@@ -37,7 +37,7 @@ public abstract class AbstractUserPage extends GeoServerSecuredPage {
         // build the form
         Form form = new Form("userForm");
         form.setModel(new CompoundPropertyModel(userModel));
-        setModel(userModel);
+        setDefaultModel(userModel);
         add(form);
         
         // populate the form editing components

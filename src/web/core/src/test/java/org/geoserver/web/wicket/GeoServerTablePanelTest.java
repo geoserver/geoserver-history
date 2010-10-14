@@ -38,7 +38,7 @@ public class GeoServerTablePanelTest extends TestCase {
         // check the contents are as expected
         String firstLabelPath = "form:panel:listContainer:items:1:itemProperties:0:component";
         tester.assertComponent(firstLabelPath, Label.class);
-        assertEquals(new Integer(0), tester.getComponentFromLastRenderedPage(firstLabelPath).getModelObject());
+        assertEquals(new Integer(0), tester.getComponentFromLastRenderedPage(firstLabelPath).getDefaultModelObject());
         
         // check we actually rendered 10 rows
         DataView dv = (DataView) tester.getComponentFromLastRenderedPage("form:panel:listContainer:items");

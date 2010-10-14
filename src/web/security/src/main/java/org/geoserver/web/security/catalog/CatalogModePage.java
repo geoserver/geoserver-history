@@ -27,7 +27,7 @@ public class CatalogModePage extends GeoServerSecuredPage {
     RadioChoice catalogMode;
 
     public CatalogModePage() {
-        setModel(new CompoundPropertyModel(new CatalogModeModel(DataAccessRuleDAO.get().getMode())));
+        setDefaultModel(new CompoundPropertyModel(new CatalogModeModel(DataAccessRuleDAO.get().getMode())));
 
         formCatalogMode = new Form("catalogModeForm");
         add(formCatalogMode);

@@ -70,7 +70,7 @@ public class DemoRequestsPage extends GeoServerBasePage {
                     + e.getMessage());
         }
         DemoRequest model = new DemoRequest(demoDir);
-        setModel(new Model(model));
+        setDefaultModel(new Model(model));
 
         setUpDemoRequestsForm(demoDir);
     }
@@ -83,7 +83,7 @@ public class DemoRequestsPage extends GeoServerBasePage {
     DemoRequestsPage(final File demoDir) {
         this.demoDir = demoDir;
         DemoRequest model = new DemoRequest(demoDir);
-        setModel(new Model(model));
+        setDefaultModel(new Model(model));
         setUpDemoRequestsForm(demoDir);
     }
 
@@ -114,7 +114,7 @@ public class DemoRequestsPage extends GeoServerBasePage {
     }
 
     private void setUpDemoRequestsForm(final File demoDir) {
-        final IModel requestModel = getModel();
+        final IModel requestModel = getDefaultModel();
 
         final Form demoRequestsForm;
         demoRequestsForm = new Form("demoRequestsForm");

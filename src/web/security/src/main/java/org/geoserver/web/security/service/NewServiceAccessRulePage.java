@@ -28,7 +28,7 @@ public class NewServiceAccessRulePage extends AbstractServiceAccessRulePage {
 	protected void onFormSubmit() {
 		try {
 			String roles = parseRole(rolesForComponent.getRolePalette()
-					.getModelObjectAsString());
+					.getDefaultModelObjectAsString());
 			ServiceAccessRule rule = new ServiceAccessRule((String) service
 					.getConvertedInput(), (String) method
 					.getConvertedInput(), roles);
@@ -58,7 +58,7 @@ public class NewServiceAccessRulePage extends AbstractServiceAccessRulePage {
 			ServiceAccessRule rule = new ServiceAccessRule((String) service
 					.getConvertedInput(), (String) method
 					.getConvertedInput(), rolesForComponent.getRolePalette()
-					.getModelObjectAsString());
+					.getDefaultModelObjectAsString());
 			if (ServiceAccessRuleDAO.get().getRules().contains(rule)) {
 				form.error(new ParamResourceModel("duplicateRule", getPage(),
 						rule.getKey()).getString());

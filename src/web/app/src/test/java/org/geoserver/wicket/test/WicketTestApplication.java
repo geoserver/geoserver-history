@@ -59,11 +59,12 @@ public class WicketTestApplication extends WebApplication
                 }
             });
         }
-
+        
         /**
 	 * @see wicket.Application#getHomePage()
 	 */
-	public Class<?> getHomePage()
+        
+	public Class<? extends Page> getHomePage()
 	{
 		return TestHomePage.class;
 	}

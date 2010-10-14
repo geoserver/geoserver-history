@@ -91,7 +91,7 @@ public class ServiceAccessRulePage extends GeoServerSecuredPage {
 
             @Override
             protected void onClick(AjaxRequestTarget target) {
-                setResponsePage(new EditServiceAccessRulePage((ServiceAccessRule) getModelObject()));
+                setResponsePage(new EditServiceAccessRulePage((ServiceAccessRule) getDefaultModelObject()));
             }
 
         };

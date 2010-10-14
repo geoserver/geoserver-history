@@ -16,7 +16,7 @@ public class LayerGroupNewPageTest extends LayerGroupBaseTest {
         tester.startPage(page);
         tester.assertRenderedPage(LayerGroupNewPage.class);
         FormTester form = tester.newFormTester("form");
-        form.submit("submit");
+        form.submit();
         
         // should not work, no name provided, so we remain
         // in the same page
@@ -31,7 +31,7 @@ public class LayerGroupNewPageTest extends LayerGroupBaseTest {
         tester.assertRenderedPage(LayerGroupNewPage.class);
         FormTester form = tester.newFormTester("form");
         form.setValue("name", "lakes");
-        form.submit("submit");
+        form.submit();
         
         // should not work, duplicate provided, so we remain
         // in the same page
@@ -47,7 +47,7 @@ public class LayerGroupNewPageTest extends LayerGroupBaseTest {
         tester.assertRenderedPage(LayerGroupNewPage.class);
         FormTester form = tester.newFormTester("form");
         form.setValue("name", "newGroup");
-        form.submit("submit");
+        form.submit();
         
         // should work, we switch to the edit page
         tester.assertRenderedPage(LayerGroupNewPage.class);
