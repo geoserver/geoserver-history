@@ -22,7 +22,7 @@ public class HostnameNewPage extends GeoServerSecuredPage {
         final Form form = new Form("form") {
             @Override
             protected void onSubmit() {
-                String newHostname = hostname.getModelObjectAsString();
+                String newHostname = hostname.getDefaultModelObjectAsString();
                 ProxyConfig config = ProxyConfig.loadConfFromDisk();
                 config.hostnameWhitelist.add(newHostname);
                 ProxyConfig.writeConfigToDisk(config);
