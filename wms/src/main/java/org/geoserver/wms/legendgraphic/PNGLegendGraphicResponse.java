@@ -29,7 +29,7 @@ import org.springframework.util.Assert;
  * @author Gabriel Roldan
  * @version $Id$
  */
-public class PNGLegendGraphicResponse extends Response {
+public class PNGLegendGraphicResponse extends AbstractGetLegendGraphicResponse {
 
     public PNGLegendGraphicResponse() {
         super(BufferedImageLegendGraphic.class, PNGLegendOutputFormat.MIME_TYPE);
@@ -91,7 +91,7 @@ public class PNGLegendGraphicResponse extends Response {
         try {
             writer.write(null, new IIOImage(finalImage, null, null), iwp);
             memOutStream.flush();
-            //this doesn't close the destination output stream
+            // this doesn't close the destination output stream
             memOutStream.close();
         } finally {
             writer.dispose();

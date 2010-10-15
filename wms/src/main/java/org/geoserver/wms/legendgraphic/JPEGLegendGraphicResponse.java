@@ -22,7 +22,7 @@ import org.springframework.util.Assert;
  * @author Gabriel Roldan
  * @version $Id$
  */
-public class JPEGLegendGraphicResponse extends Response {
+public class JPEGLegendGraphicResponse extends AbstractGetLegendGraphicResponse {
 
     public JPEGLegendGraphicResponse() {
         super(BufferedImageLegendGraphic.class, JPEGLegendOutputFormat.MIME_TYPE);

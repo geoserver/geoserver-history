@@ -102,7 +102,6 @@ public class GetLegendGraphicKvpReader extends KvpRequestReader {
         // + "\"");
         // }
         final String layer = (String) rawKvp.get("LAYER");
-        final String format = request.getFormat();
         final boolean strict = rawKvp.containsKey("STRICT") ? Boolean.valueOf((String) rawKvp
                 .get("STRICT")) : request.isStrict();
         request.setStrict(strict);
@@ -110,7 +109,7 @@ public class GetLegendGraphicKvpReader extends KvpRequestReader {
             throw new ServiceException("LAYER parameter not present for GetLegendGraphic",
                     "LayerNotDefined");
         }
-        if (strict && format == null) {
+        if (strict && request.getFormat() == null) {
             throw new ServiceException("Missing FORMAT parameter for GetLegendGraphic",
                     "MissingFormat");
         }
@@ -150,11 +149,13 @@ public class GetLegendGraphicKvpReader extends KvpRequestReader {
             }
         }
 
-        if (format != null && null == wms.getLegendGraphicOutputFormat(format)) {
-            throw new ServiceException(new StringBuffer("Invalid graphic format: ").append(format)
-                    .toString(), "InvalidFormat");
+        if (request.getFormat() == null) {
+            request.setFormat(GetLegendGraphicRequest.DEFAULT_FORMAT);
         }
-        request.setFormat(format);
+        if (null == wms.getLegendGraphicOutputFormat(request.getFormat())) {
+            throw new ServiceException(new StringBuffer("Invalid graphic format: ").append(
+                    request.getFormat()).toString(), "InvalidFormat");
+        }
 
         try {
             parseOptionalParameters(request, mli, rawKvp);

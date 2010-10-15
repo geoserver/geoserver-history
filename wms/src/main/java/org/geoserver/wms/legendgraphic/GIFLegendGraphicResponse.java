@@ -22,7 +22,7 @@ import org.springframework.util.Assert;
  * @author groldan
  * 
  */
-public class GIFLegendGraphicResponse extends Response {
+public class GIFLegendGraphicResponse extends AbstractGetLegendGraphicResponse {
 
     public GIFLegendGraphicResponse() {
         super(BufferedImageLegendGraphic.class, GIFLegendOutputFormat.MIME_TYPE);
@@ -37,7 +37,7 @@ public class GIFLegendGraphicResponse extends Response {
         Assert.isInstanceOf(BufferedImageLegendGraphic.class, value);
         return GIFLegendOutputFormat.MIME_TYPE;
     }
-
+    
     /**
      * @param legend
      *            a {@link BufferedImageLegendGraphic}
