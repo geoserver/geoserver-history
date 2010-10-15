@@ -44,22 +44,9 @@ public class CoverageStoreFileResource extends StoreFileResource {
         String workspace = getAttribute("workspace");
         String coveragestore = getAttribute("coveragestore");
         String format = getAttribute("format");
-        String method = ((String) request.getResourceRef().getLastSegment()).toLowerCase();
+        String method = getUploadMethod(request);
         
-        File directory = null;
-        boolean isExternal = true;
-        
-        // Prepare the directory only in case this is not an external upload
-        if (method != null && (method.startsWith("file.") || method.startsWith("url."))){ 
-            isExternal = false;
-            try {
-                 directory = catalog.getResourceLoader().createDirectory( "data/" + coveragestore );
-            } 
-            catch (IOException e) {
-                throw new RestletException( e.getMessage(), Status.SERVER_ERROR_INTERNAL, e );
-            }
-        }
-        final File uploadedFile = handleFileUpload(coveragestore, format, directory);
+        final File uploadedFile = doFileUpload(method, coveragestore, format);
         
         // /////////////////////////////////////////////////////////////////////
         //
@@ -91,7 +78,7 @@ public class CoverageStoreFileResource extends StoreFileResource {
         }
         
         info.setType(coverageFormat.getName());
-        if (!isExternal) {
+        if (isInlineUpload(method)) {
             info.setURL("file:data/" + coveragestore + "/" + uploadedFile.getName() );
         }
         else {

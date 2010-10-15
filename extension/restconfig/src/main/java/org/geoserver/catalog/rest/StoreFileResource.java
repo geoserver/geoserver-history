@@ -5,6 +5,7 @@
 package org.geoserver.catalog.rest;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -50,6 +51,45 @@ public abstract class StoreFileResource extends Resource {
          return RESTUtils.getAttribute(getRequest(), attribute);
      }
 
+     /**
+      * Determines the upload method from a request.
+      */
+     protected String getUploadMethod(Request request) {
+         return ((String) request.getResourceRef().getLastSegment()).toLowerCase();
+     }
+     
+     /**
+      * Determines if the upload method is inline, ie the content is specified directly in the 
+      * request payload, or referenced by a url.
+      * 
+      * @param method One of 'file.' (inline), 'url.' (via url), or 'external.' (already on server) 
+      */
+     protected boolean isInlineUpload(String method) {
+         return method != null && (method.startsWith("file.") || method.startsWith("url."));
+     }
+     
+     /**
+      * Does the file upload based on the specified method.
+      * 
+      * @param method The method, one of 'file.' (inline), 'url.' (via url), or 'external.' (already on server)
+      * @param storeName The name of the store being added
+      * @param format The store format.
+      */
+     protected File doFileUpload(String method, String storeName, String format) {
+         File directory = null;
+         
+         // Prepare the directory only in case this is not an external upload
+         if (isInlineUpload(method)){ 
+             try {
+                  directory = catalog.getResourceLoader().createDirectory( "data/" + storeName );
+             } 
+             catch (IOException e) {
+                 throw new RestletException( e.getMessage(), Status.SERVER_ERROR_INTERNAL, e );
+             }
+         }
+         return handleFileUpload(storeName, format, directory);
+     }
+     
     /**
      * 
      * @param store
