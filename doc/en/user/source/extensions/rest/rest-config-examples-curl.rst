@@ -102,6 +102,39 @@ retrieves the created feature type as XML::
      ...
    </featureType>
 
+Adding an existing Shapefile
+----------------------------
+
+In the previous example a Shapefile was uploaded directly by sending a zip file
+in the body of a request. This example shows how to add a Shapefile that already
+exists on the server.
+
+Consider a directory on the server ``/data/shapefiles/roads`` that contains the Shapefile ``roads.shp``. The following adds a new datastore for the 
+Shapefile::
+
+  curl -u admin:geoserver -XPUT -H 'Content-type: text/plain' \ 
+     -d 'file:///data/shapefiles/roads/roads.shp' \
+     http://localhost:8080/geoserver/rest/workspaces/acme/datastores/roads/external.shp
+
+Note the ``external.shp`` part of the request uri.
+
+Adding a directory of existing Shapefiles
+-----------------------------------------
+
+In the previous example a datastore was created for a single Shapefile that 
+already existed on the server. This example shows how to add a directory of 
+Shapefiles.
+
+Consider a directory on the server ``/data/shapefiles`` that contains a number
+of different Shapefiles. The following adds a new datastore for all the 
+Shapefiles in the directory::
+
+  curl -u admin:geoserver -XPUT -H 'Content-type: text/plain' \ 
+     -d 'file:///data/shapefiles/roads' \
+     "http://localhost:8080/geoserver/rest/workspaces/acme/datastores/roads/external.shp?configure=all"
+
+Note the ``configure=all`` query string parameter.
+
 Changing a feature type style
 -----------------------------
 
