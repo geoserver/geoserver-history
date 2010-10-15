@@ -50,7 +50,7 @@ public class DataStoreFileResource extends StoreFileResource {
         String workspace = getAttribute("workspace");
         String datastore = getAttribute("datastore");
         String format = getAttribute("format");
-
+        
         //find the directory containig the files
         File directory;
         try {
@@ -96,21 +96,12 @@ public class DataStoreFileResource extends StoreFileResource {
         String workspace = getAttribute("workspace");
         String datastore = getAttribute("datastore");
         String format = getAttribute("format");
-
+        String method = getUploadMethod(getRequest());
+        
         getResponse().setStatus(Status.SUCCESS_ACCEPTED);
         Form form = getRequest().getResourceRef().getQueryAsForm();
 
-        //get the directory to put the file into 
-        //TODO: add a method createDirectory(String...) so as not to specify the file seperator
-        File directory;
-        try {
-            directory = catalog.getResourceLoader().createDirectory( "data/" + datastore );
-        } 
-        catch (IOException e) {
-            throw new RestletException( e.getMessage(), Status.SERVER_ERROR_INTERNAL, e );
-        }
-        
-        File uploadedFile = handleFileUpload(datastore, format, directory);
+        File uploadedFile = doFileUpload(method, datastore, format);
 
         //create a builder to help build catalog objects
         CatalogBuilder builder = new CatalogBuilder(catalog);
@@ -141,7 +132,7 @@ public class DataStoreFileResource extends StoreFileResource {
                 
                 if ( "directory".equals( p.key ) ) {
                     //set the value to be the directory
-                    f = directory;
+                    f = f.getParentFile();
                 }
                 
                 //convert to the required type

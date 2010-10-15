@@ -7,13 +7,22 @@ package org.geoserver.catalog.rest;
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.geoserver.rest.util.RESTUtils;
 import org.geoserver.test.GeoServerTestSupport;
 import org.w3c.dom.Document;
 
@@ -95,6 +104,27 @@ public class DataStoreFileUploadTest extends GeoServerTestSupport {
         assertFeatures( dom );
     }
    
+    public void testShapeFileUploadExternal() throws Exception {
+        Document dom = getAsDOM( "wfs?request=getfeature&typename=gs:pds" );
+        assertEquals("ows:ExceptionReport", dom.getDocumentElement().getNodeName());
+        
+        File target = new File("target");
+        File f = File.createTempFile("rest", "dir", target);
+        f.delete();
+        f.mkdir();
+        
+        File zip = new File(f, "pds.zip");
+        IOUtils.copy(getClass().getResourceAsStream( "test-data/pds.zip" ), new FileOutputStream(zip));
+        org.geoserver.rest.util.IOUtils.inflate(new ZipFile(zip), f, null);
+        
+        MockHttpServletResponse resp = putAsServletResponse("/rest/workspaces/gs/datastores/pds/external.shp", 
+            new File(f, "pds.shp").toURL().toString(), "text/plain");
+        assertEquals(201, resp.getStatusCode());
+        
+        dom = getAsDOM( "wfs?request=getfeature&typename=gs:pds" );
+        assertFeatures(dom);
+    }
+    
     public void testGet() throws Exception {
         MockHttpServletResponse resp = getAsServletResponse("/rest/workspaces/gs/datastores/pds/file.properties");
         assertEquals( 404, resp.getStatusCode() );
