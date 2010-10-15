@@ -102,6 +102,22 @@ retrieves the created feature type as XML::
      ...
    </featureType>
 
+Adding an existing Shapefile
+----------------------------
+
+In the previous example a Shapefile was uploaded directly by sending a zip file
+in the body of a request. This example shows how to add a Shapefile that already
+exists on the server.
+
+Consider a directory on the server ``/data/shapefiles/roads`` that contains the Shapefile ``roads.shp``. The following adds a new datastore for the 
+Shapefile::
+
+  curl -u admin:geoserver -XPUT -H 'Content-type: text/plain' \ 
+     -d 'file:///data/shapefiles/roads/roads.shp' \
+     http://localhost:8080/geoserver/rest/workspaces/acme/datastores/roads/external.shp
+
+Note the ``external.shp`` part of the request uri.
+
 Changing a feature type style
 -----------------------------
 
