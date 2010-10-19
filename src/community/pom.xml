@@ -27,7 +27,7 @@
       <version>2.1</version>
       <configuration>
         <descriptors>
-          <descriptor>release/ext-css.xml</descriptor>
+          <!--descriptor>release/ext-css.xml</descriptor-->
           <descriptor>release/ext-ftp.xml</descriptor>
           <descriptor>release/ext-printing.xml</descriptor>
           <descriptor>release/ext-wps.xml</descriptor>
@@ -134,7 +134,7 @@
     <profile>
       <id>communityRelease</id>
       <modules>
-        <module>css</module>
+        <!--module>css</module-->
         <module>printing</module>
         <module>release</module>
         <module>ftp</module>
