@@ -182,7 +182,7 @@ public class RequestBuilderPanel extends Panel {
 				request.setRequestUrl(url);
 				request
 						.setRequestBody((String) responseWindow
-								.getModelObject());
+								.getDefaultModelObject());
 				return new DemoRequestResponse(new Model(request));
 			}
 		});
@@ -195,7 +195,7 @@ public class RequestBuilderPanel extends Panel {
 			protected void onClick(AjaxRequestTarget target, Form form) {
 				processChoice.processInput();
 				if (execute.processName != null) {
-					responseWindow.setModel(new Model(
+					responseWindow.setDefaultModel(new Model(
 							getDescribeXML(execute.processName)));
 					responseWindow.show(target);
 				}
