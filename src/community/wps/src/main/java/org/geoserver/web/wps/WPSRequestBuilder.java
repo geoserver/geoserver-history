@@ -70,7 +70,7 @@ public class WPSRequestBuilder extends GeoServerBasePage {
                 HttpServletRequest http = ((WebRequest) WPSRequestBuilder.this.getRequest()).getHttpServletRequest();
                 String url = ResponseUtils.buildURL(ResponseUtils.baseURL(http), "ows", Collections.singletonMap("strict", "true"), URLType.SERVICE);
                 request.setRequestUrl(url);
-                request.setRequestBody((String) responseWindow.getModelObject());
+                request.setRequestBody((String) responseWindow.getDefaultModelObject());
                 return new DemoRequestResponse(new Model(request));
             }
         });
@@ -80,7 +80,7 @@ public class WPSRequestBuilder extends GeoServerBasePage {
 
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form form) {
-				responseWindow.setModel(new Model(getRequestXML()));
+				responseWindow.setDefaultModel(new Model(getRequestXML()));
 				responseWindow.show(target);
 			}
 			

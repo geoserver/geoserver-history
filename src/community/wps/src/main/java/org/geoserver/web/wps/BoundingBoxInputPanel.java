@@ -37,12 +37,12 @@ public class BoundingBoxInputPanel extends Panel {
 	public BoundingBoxInputPanel(String id, InputParameterValues pv, int valueIndex) {
 		super(id);
 		setOutputMarkupId(true);
-		setModel(new PropertyModel(pv, "values[" + valueIndex + "]"));
-		valueModel = new PropertyModel(getModel(), "value");
+		setDefaultModel(new PropertyModel(pv, "values[" + valueIndex + "]"));
+		valueModel = new PropertyModel(getDefaultModel(), "value");
 		mimeTypes = pv.getSupportedMime();
 		
 		typeChoice = new DropDownChoice("type", new PropertyModel(
-				getModelObject(), "type"), Arrays
+				getDefaultModelObject(), "type"), Arrays
 				.asList(ParameterType.values()));
 		add(typeChoice);
 
@@ -73,7 +73,7 @@ public class BoundingBoxInputPanel extends Panel {
 			// data as plain text
 			Fragment f = new Fragment("editor", "text", this);
 			DropDownChoice mimeChoice = new DropDownChoice("mime",
-					new PropertyModel(getModel(), "mime"), mimeTypes);
+					new PropertyModel(getDefaultModel(), "mime"), mimeTypes);
 			f.add(mimeChoice);
 
 			f.add(new TextArea("textarea", valueModel));
@@ -104,7 +104,7 @@ public class BoundingBoxInputPanel extends Panel {
 				
 				@Override
 				protected void onUpdate(AjaxRequestTarget target) {
-					String name = layer.getModelObjectAsString();
+					String name = layer.getDefaultModelObjectAsString();
 					LayerInfo li = GeoServerApplication.get().getCatalog().getLayerByName(name);
 					ReferencedEnvelope spatialDomain = li.getResource().getNativeBoundingBox();
 					((RasterLayerConfiguration) valueModel.getObject()).setSpatialDomain(spatialDomain);

@@ -53,15 +53,15 @@ public class ComplexInputPanel extends Panel {
 	public ComplexInputPanel(String id, InputParameterValues pv, int valueIndex) {
 		super(id);
 		setOutputMarkupId(true);
-		setModel(new PropertyModel(pv, "values[" + valueIndex + "]"));
-		valueModel = new PropertyModel(getModel(), "value");
+		setDefaultModel(new PropertyModel(pv, "values[" + valueIndex + "]"));
+		valueModel = new PropertyModel(getDefaultModel(), "value");
 		mimeTypes = pv.getSupportedMime();
 
 		List<ParameterType> ptypes = new ArrayList<ParameterType>(Arrays
 				.asList(ParameterType.values()));
 		ptypes.remove(ParameterType.LITERAL);
 		typeChoice = new DropDownChoice("type", new PropertyModel(
-				getModelObject(), "type"), ptypes);
+				getDefaultModelObject(), "type"), ptypes);
 		add(typeChoice);
 
 		subprocesswindow = new ModalWindow("subprocessPopupWindow");
@@ -72,7 +72,7 @@ public class ComplexInputPanel extends Panel {
 
 			public Page createPage() {
 				return new SubProcessBuilder((ExecuteRequest) subprocesswindow
-						.getModelObject(), subprocesswindow);
+						.getDefaultModelObject(), subprocesswindow);
 			}
 		});
 
@@ -105,7 +105,7 @@ public class ComplexInputPanel extends Panel {
 			// data as plain text
 			Fragment f = new Fragment("editor", "text", this);
 			DropDownChoice mimeChoice = new DropDownChoice("mime",
-					new PropertyModel(getModel(), "mime"), mimeTypes);
+					new PropertyModel(getDefaultModel(), "mime"), mimeTypes);
 			f.add(mimeChoice);
 
 			f.add(new TextArea("textarea", valueModel));
@@ -140,7 +140,7 @@ public class ComplexInputPanel extends Panel {
 
 				@Override
 				protected void onUpdate(AjaxRequestTarget target) {
-					String name = layer.getModelObjectAsString();
+					String name = layer.getDefaultModelObjectAsString();
 					LayerInfo li = GeoServerApplication.get().getCatalog()
 							.getLayerByName(name);
 					ReferencedEnvelope spatialDomain = li.getResource()
@@ -201,7 +201,7 @@ public class ComplexInputPanel extends Panel {
 
 				@Override
 				public void onClick(AjaxRequestTarget target) {
-					subprocesswindow.setModel(valueModel);
+					subprocesswindow.setDefaultModel(valueModel);
 					subprocesswindow.show(target);
 				}
 			});
