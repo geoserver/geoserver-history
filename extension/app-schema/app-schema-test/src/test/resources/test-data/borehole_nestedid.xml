@@ -46,7 +46,7 @@
     <typeMappings>
         <FeatureTypeMapping>
             <sourceDataStore>datastore</sourceDataStore>
-            <sourceType>borehole</sourceType>
+            <sourceType>borehole_nestedid</sourceType>
             <targetElement>gsml:Borehole</targetElement>
             <groupBy />
             <attributeMappings>
