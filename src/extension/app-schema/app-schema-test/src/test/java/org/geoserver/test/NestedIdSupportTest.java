@@ -56,6 +56,7 @@ public class NestedIdSupportTest extends AbstractAppSchemaWfsTestSupport {
         Document doc = postAsDOM("wfs", xml);
 
         LOGGER.info("MappedFeature: WFS GetFeature response:\n" + prettyString(doc));
+        assertXpathCount(1, "//gsml:MappedFeature", doc); 
         assertXpathEvaluatesTo("mf4",
                 "wfs:FeatureCollection/gml:featureMember/gsml:MappedFeature/@gml:id", doc);
 
@@ -87,6 +88,7 @@ public class NestedIdSupportTest extends AbstractAppSchemaWfsTestSupport {
         Document doc = postAsDOM("wfs", xml);
 
         LOGGER.info("Borehole: WFS GetFeature response:\n" + prettyString(doc));
+        assertXpathCount(1, "//gsml:Borehole", doc); 
         assertXpathEvaluatesTo("22",
                 "wfs:FeatureCollection/gml:featureMember/gsml:Borehole/@gml:id", doc);
     }
