@@ -49,16 +49,17 @@ public class NestedIdSupportTest extends AbstractAppSchemaWfsTestSupport {
                 + "<wfs:Query typeName=\"gsml:MappedFeature\">"
                 + "<ogc:Filter>"
                 + "     <ogc:PropertyIsEqualTo>"
-                + "        <ogc:PropertyName>gsml:specification/gsml:GeologicUnit/gsml:composition/gsml:CompositionPart/gsml:lithology/gsml:ControlledConcept/@gsml:id</ogc:PropertyName>"
+                + "        <ogc:PropertyName>gsml:specification/gsml:GeologicUnit/gsml:composition/gsml:CompositionPart/gsml:lithology/gsml:ControlledConcept/@gml:id</ogc:PropertyName>"
                 + "        <ogc:Literal>cc.1</ogc:Literal>"
                 + "     </ogc:PropertyIsEqualTo>"
                 + " </ogc:Filter>" + "</wfs:Query>" + "</wfs:GetFeature>";
         Document doc = postAsDOM("wfs", xml);
 
         LOGGER.info("MappedFeature: WFS GetFeature response:\n" + prettyString(doc));
+        assertXpathCount(1, "//gsml:MappedFeature", doc); 
         assertXpathEvaluatesTo("mf4",
                 "wfs:FeatureCollection/gml:featureMember/gsml:MappedFeature/@gml:id", doc);
-
+        
     }
 
     /**
@@ -80,14 +81,15 @@ public class NestedIdSupportTest extends AbstractAppSchemaWfsTestSupport {
                 + "<wfs:Query typeName=\"gsml:Borehole\">"
                 + "<ogc:Filter>"
                 + "     <ogc:PropertyIsEqualTo>"
-                + "        <ogc:PropertyName>sa:surveyDetails/sa:SurveyProcedure/@gsml:id</ogc:PropertyName>"
+                + "        <ogc:PropertyName>sa:surveyDetails/sa:SurveyProcedure/@gml:id</ogc:PropertyName>"
                 + "        <ogc:Literal>bh.11.sp</ogc:Literal>"
                 + "     </ogc:PropertyIsEqualTo>"
                 + " </ogc:Filter>" + "</wfs:Query>" + "</wfs:GetFeature>";
         Document doc = postAsDOM("wfs", xml);
 
         LOGGER.info("Borehole: WFS GetFeature response:\n" + prettyString(doc));
-        assertXpathEvaluatesTo("22",
+        assertXpathCount(1, "//gsml:Borehole", doc); 
+        assertXpathEvaluatesTo("11",
                 "wfs:FeatureCollection/gml:featureMember/gsml:Borehole/@gml:id", doc);
     }
 
