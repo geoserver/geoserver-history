@@ -24,7 +24,7 @@ public class NestedIdSupportTestData extends AbstractAppSchemaMockData {
                 "CGITermValue.xml", "CGITermValue.properties", "exposureColor.properties",
                 "CompositionPart.xml", "CompositionPart.properties", "ControlledConcept.xml",
                 "ControlledConcept.properties");
-        addFeatureType(GSML_PREFIX, "Borehole", "borehole.xml", "borehole.properties");
+        addFeatureType(GSML_PREFIX, "Borehole", "borehole_nestedid.xml", "borehole_nestedid.properties");
 
     }
 
