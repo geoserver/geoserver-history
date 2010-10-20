@@ -7,7 +7,7 @@ package org.geoserver.test;
 
 /**
  * 
- * @author Niels Charlier, CSIRO Earth Science and Resource Engineering
+ * @author Niels Charlier, Curtin University Of Technology
  * 
  */
 
