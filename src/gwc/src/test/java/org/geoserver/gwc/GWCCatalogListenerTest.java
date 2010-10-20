@@ -77,10 +77,6 @@ public class GWCCatalogListenerTest extends GeoServerTestSupport {
             }
         }                    
         assertTrue(foundLakes); 
-        
-        layerList = gwcListener.getTileLayers(true);
-        
-        tlIter = layerList.iterator();
 
         // 2) Check sf:GenerictEntity is present and initialized
         boolean foudAGF = false;
