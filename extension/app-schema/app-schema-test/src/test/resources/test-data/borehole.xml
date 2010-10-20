@@ -154,19 +154,19 @@
                     </ClientProperty>
                 </AttributeMapping> 
                           
-            <AttributeMapping>
+          <!--  <AttributeMapping>
             <targetAttribute>sa:shape</targetAttribute>
             <idExpression>
             <OCQL>strConcat('gg', CSIRONR)</OCQL>
             </idExpression>  
-           <!--  <sourceExpression>
+             <sourceExpression>
             <OCQL>LOCATION</OCQL>
-            </sourceExpression>  -->         
+            </sourceExpression>        
             <ClientProperty>
             <name>xlink:href</name>
             <value>'xlinkvalue'</value>
             </ClientProperty>   
-            </AttributeMapping>  
+            </AttributeMapping> -->  
             
             </attributeMappings> 
         </FeatureTypeMapping>
