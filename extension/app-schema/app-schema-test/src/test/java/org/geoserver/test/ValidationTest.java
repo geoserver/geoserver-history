@@ -49,7 +49,7 @@ public class ValidationTest extends AbstractAppSchemaWfsTestSupport {
                 doc);
         assertXpathEvaluatesTo(
                 "myBody1",
-                "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.gu.1']/gsml:bodyMorphology/gsml:CGI_TermValue/gsml:value",
+                "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.gu.1']/gsml:bodyMorphology/gsml:CGI_TermValue/gsml:value[@codeSpace='myBodyCodespace1']",
                 doc);
         assertXpathEvaluatesTo(
                 "compositionName",
@@ -87,7 +87,7 @@ public class ValidationTest extends AbstractAppSchemaWfsTestSupport {
                 doc);
         assertXpathEvaluatesTo(
                 "myBody3",
-                "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.gu.3']/gsml:bodyMorphology/gsml:CGI_TermValue/gsml:value",
+                "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.gu.3']/gsml:bodyMorphology/gsml:CGI_TermValue/gsml:value[@codeSpace='myBodyCodespace3']",
                 doc);
         assertXpathEvaluatesTo(
                 "compositionName",
