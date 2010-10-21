@@ -49,7 +49,7 @@ public class ValidationTest extends AbstractAppSchemaWfsTestSupport {
                 doc);
         assertXpathEvaluatesTo(
                 "myBody1",
-                "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.gu.1']/gsml:bodyMorphology/gsml:CGI_TermValue/gsml:value[@codeSpace='myBodyCodespace1']",
+                "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.gu.1']/gsml:bodyMorphology/gsml:CGI_TermValue/gsml:value",
                 doc);
         assertXpathEvaluatesTo(
                 "compositionName",
@@ -76,7 +76,10 @@ public class ValidationTest extends AbstractAppSchemaWfsTestSupport {
                 0,
                 "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.gu.2']/gsml:composition/gsml:CompositionPart/gsml:lithology[2]/gsml:ControlledConcept/gml:name",
                 doc);
-        assertXpathCount(0, "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.gu.2']/gsml:rank", doc);
+        assertXpathCount(
+                0,
+                "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.gu.2']/gsml:rank[@codeSpace='myBodyCodespace2']",
+                doc);
 
         assertXpathCount(
                 1,
@@ -84,7 +87,7 @@ public class ValidationTest extends AbstractAppSchemaWfsTestSupport {
                 doc);
         assertXpathEvaluatesTo(
                 "myBody3",
-                "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.gu.3']/gsml:bodyMorphology/gsml:CGI_TermValue/gsml:value[@codeSpace='myBodyCodespace3']",
+                "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.gu.3']/gsml:bodyMorphology/gsml:CGI_TermValue/gsml:value",
                 doc);
         assertXpathEvaluatesTo(
                 "compositionName",
@@ -125,23 +128,36 @@ public class ValidationTest extends AbstractAppSchemaWfsTestSupport {
                 doc);
     }
 
+    /**
+     * Test minOccur=1 and the attribute should always be encoded even when empty.
+     */
     public void testAttributeMinOccur1() {
-        Document doc = null;
-        try {
-            doc = getAsDOM("wfs?request=GetFeature&typename=gsml:MappedFeature");
-            LOGGER.info("WFS GetFeature&typename=gsml:gsml:MappedFeature response:\n"
-                    + prettyString(doc));
-        } catch (Exception e) {
-            LOGGER
-                    .info("WFS GetFeature&typename=gsml:MappedFeature response, exception expected:\n"
-                            + prettyString(doc));
-            assertEquals("ows:ExceptionReport", doc.getDocumentElement().getNodeName());
-        }
-        assertXpathCount(0, "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.gu.1']/gml:name", doc);
-        assertXpathCount(0, "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.gu.2']/gml:name", doc);
-        assertXpathCount(0, "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.gu.3']/gml:name", doc);
-        String exceptionRpt = evaluate("//ows:ExceptionText", doc);
-        assertTrue(exceptionRpt.contains("observationMethod requires a non null value"));
-    }
+        Document doc = getAsDOM("wfs?request=GetFeature&typename=gsml:MappedFeature");
+        LOGGER.info("WFS GetFeature&typename=gsml:gsml:MappedFeature response:\n"
+                + prettyString(doc));
+        assertXpathCount(3, "//gsml:MappedFeature", doc);
 
+        // with minOccur = 1 and null value, an empty tag would be encoded
+        assertXpathCount(1, "//gsml:MappedFeature[@gml:id='gsml.mappedfeature.gu.1']", doc);
+        assertXpathCount(1,
+                "//gsml:MappedFeature[@gml:id='gsml.mappedfeature.gu.1']/gsml:observationMethod",
+                doc);
+        assertXpathCount(
+                0,
+                "//gsml:MappedFeature[@gml:id='gsml.mappedfeature.gu.1']/gsml:observationMethod/gsml:CGI_TermValue",
+                doc);
+
+        // the rest should be encoded as normal
+        assertXpathCount(1, "//gsml:MappedFeature[@gml:id='gsml.mappedfeature.gu.2']", doc);
+        assertXpathEvaluatesTo(
+                "observation2",
+                "//gsml:MappedFeature[@gml:id='gsml.mappedfeature.gu.2']/gsml:observationMethod/gsml:CGI_TermValue/gsml:value",
+                doc);
+
+        assertXpathCount(1, "//gsml:MappedFeature[@gml:id='gsml.mappedfeature.gu.3']", doc);
+        assertXpathEvaluatesTo(
+                "observation3",
+                "//gsml:MappedFeature[@gml:id='gsml.mappedfeature.gu.3']/gsml:observationMethod/gsml:CGI_TermValue/gsml:value",
+                doc);
+    }
 }
