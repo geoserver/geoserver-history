@@ -69,10 +69,6 @@
                     <sourceExpression>
                         <OCQL>body_value</OCQL>
                     </sourceExpression>
-                    <ClientProperty>
-                        <name>codeSpace</name>
-                        <value>body_codespace</value>
-                    </ClientProperty>
                 </AttributeMapping>
                 <AttributeMapping>
                     <targetAttribute>
