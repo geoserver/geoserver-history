@@ -70,28 +70,7 @@ public class Monitor {
     }
     
     public void query(MonitorQuery q, RequestDataVisitor visitor) {
-        Long pageSize = q.getCount();
-        if (pageSize == null || pageSize < 1) {
-            pageSize = PAGE_SIZE;
-        }
-        
-        Long offset = q.getOffset() != null ? q.getOffset() : 0;
-        while(true) {
-            q.page(offset, pageSize);
-            List<RequestData> requests = dao.getRequests(q);
-            if (requests.isEmpty()) {
-                break;
-            }
-            
-            for (RequestData r : requests) {
-                visitor.visit(r);
-            }
-            
-            if (requests.size() < pageSize) {
-                break;
-            }
-            offset += pageSize;
-        }
+        dao.getRequests(q, visitor);
     }
 
 }

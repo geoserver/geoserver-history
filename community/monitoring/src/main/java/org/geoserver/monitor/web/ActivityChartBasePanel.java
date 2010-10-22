@@ -83,7 +83,7 @@ public abstract class ActivityChartBasePanel extends Panel {
     
     BufferedDynamicImageResource queryAndRenderChart(Monitor monitor, Date[] range) {
         MonitorQuery q = new MonitorQuery();
-        q.between(range[0], range[1]);
+        q.properties("startTime").between(range[0], range[1]);
         
         DataGatherer gatherer = new DataGatherer();
         monitor.query(q, gatherer);

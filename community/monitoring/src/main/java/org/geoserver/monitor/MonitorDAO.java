@@ -16,6 +16,8 @@ public interface MonitorDAO {
     
     List<RequestData> getRequests(MonitorQuery query);
     
+    void getRequests(MonitorQuery query, RequestDataVisitor visitor);
+    
     List<RequestData> getOwsRequests();
     
     List<RequestData> getOwsRequests(String service, String operation, String version);

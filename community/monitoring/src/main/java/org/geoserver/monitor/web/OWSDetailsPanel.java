@@ -23,7 +23,8 @@ public class OWSDetailsPanel extends OWSSummaryChartBasePanel {
     @Override
     protected Map<String, Integer> gatherData(Monitor monitor) {
         DataGatherer g = new DataGatherer();
-        monitor.query(new MonitorQuery().filter("owsService", owsService, Comparison.EQ), g);
+        monitor.query(new MonitorQuery().properties("owsOperation")
+            .filter("owsService", owsService, Comparison.EQ), g);
         
         return g.getData();
     }
