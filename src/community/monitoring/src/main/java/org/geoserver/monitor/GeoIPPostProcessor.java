@@ -53,7 +53,7 @@ public class GeoIPPostProcessor implements RequestPostProcessor {
         
         Location loc = geoIPLookup.getLocation(data.getRemoteAddr());
         if (loc == null) {
-            LOGGER.warning("Unable to obtain location for " + data.getRemoteAddr());
+            LOGGER.fine("Unable to obtain location for " + data.getRemoteAddr());
             return;
         }
         
