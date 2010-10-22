@@ -4,6 +4,13 @@
 </head>
 <body>
 <wicket:panel>
+     <form wicket:id="form" style="float: right; padding-bottom: 0.2em;">
+        <!--label for="start">Start Time</label-->
+        <div wicket:id="from" id="start"></div>
+        <!--label for="start">End Time</label-->
+        <div wicket:id="to" id="end"></div>
+        <input type="button" wicket:id="refresh" value="Refresh" style="float:right;"/>
+    </form>
     <img wicket:id="chart"></img>
 </wicket:panel>
 </body>
