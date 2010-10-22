@@ -126,4 +126,7 @@
         <property name="order" value="20"/>
    </bean>
   
+    <bean id="monitorSessionFilter" class="org.springframework.orm.hibernate3.support.OpenSessionInViewFilter">
+      <property name="sessionFactoryBeanName" value="hibSessionFactory"/>
+    </bean>
 </beans>

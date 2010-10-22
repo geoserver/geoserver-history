@@ -5,6 +5,7 @@ import java.util.Date;
 
 import org.geoserver.monitor.Monitor;
 import org.jfree.data.time.Day;
+import org.jfree.data.time.Hour;
 import org.jfree.data.time.RegularTimePeriod;
 
 public class WeeklyActivityPanel extends ActivityChartBasePanel {
@@ -26,7 +27,7 @@ public class WeeklyActivityPanel extends ActivityChartBasePanel {
 
     @Override
     protected RegularTimePeriod getTimePeriod(Date time) {
-        return new Day(time);
+        return new Hour(time);
     }
 
 }

@@ -5,7 +5,9 @@ import java.util.Date;
 
 import org.geoserver.monitor.Monitor;
 import org.jfree.data.time.Hour;
+import org.jfree.data.time.Minute;
 import org.jfree.data.time.RegularTimePeriod;
+import org.jfree.data.time.Second;
 
 
 public class DailyActivityPanel extends ActivityChartBasePanel {
@@ -29,7 +31,9 @@ public class DailyActivityPanel extends ActivityChartBasePanel {
     
     @Override
     protected RegularTimePeriod getTimePeriod(Date time) {
-        return new Hour(time);
+        return new Second(time);
+        //return new Minute(time);
+        //return new Hour(time);
     }
     
     @Override
