@@ -2,11 +2,12 @@ package org.geoserver.monitor;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.InetAddress;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.geoserver.platform.GeoServerResourceLoader;
 import org.geotools.util.logging.Logging;
@@ -14,7 +15,7 @@ import org.geotools.util.logging.Logging;
 import com.maxmind.geoip.Location;
 import com.maxmind.geoip.LookupService;
 
-public class GeoIPPostProcessor implements Runnable {
+public class GeoIPPostProcessor implements RequestPostProcessor {
 
     static Logger LOGGER = Logging.getLogger("org.geoserver.montior");
     
@@ -26,25 +27,20 @@ public class GeoIPPostProcessor implements Runnable {
     //TODO: cache by IP address
     
     GeoServerResourceLoader loader;
-    HttpServletRequest request;
-    RequestData data;
+    AtomicBoolean warned = new AtomicBoolean(false);
     
-    public GeoIPPostProcessor(GeoServerResourceLoader loader, HttpServletRequest request, 
-        RequestData data) {
-        
+    public GeoIPPostProcessor(GeoServerResourceLoader loader) {
         this.loader = loader;
-        this.request = request;
-        this.data = data;
     }
     
-    public void run() {
+    public void run(RequestData data, HttpServletRequest request, HttpServletResponse response) {
         if (data.getRemoteAddr() == null) {
             LOGGER.info("Request data did not contain ip address. Unable to perform GeoIP lookup.");
             return;
         }
         
         if (geoIPLookup == null) {
-            synchronized (geoIPLookup) {
+            synchronized (this) {
                 if (geoIPLookup == null) {
                     geoIPLookup = lookupGeoIPDatabase();
                 }
@@ -70,7 +66,9 @@ public class GeoIPPostProcessor implements Runnable {
     LookupService lookupGeoIPDatabase() {
         try {
             File f = loader.find("monitoring", "GeoLiteCity.dat");
-            if (f == null) {
+            if (f == null && !warned.get()) {
+                warned.set(false);
+                
                 String path = 
                     new File(loader.getBaseDirectory(), "monitoring/GeoLiteCity.dat").getAbsolutePath(); 
                 LOGGER.warning("GeoIP database " + path  + " is not available. " +

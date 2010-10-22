@@ -1,7 +1,9 @@
 package org.geoserver.monitor;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
@@ -20,6 +22,7 @@ import org.acegisecurity.Authentication;
 import org.acegisecurity.context.SecurityContextHolder;
 import org.acegisecurity.userdetails.User;
 import org.geoserver.monitor.RequestData.Status;
+import org.geoserver.platform.GeoServerExtensions;
 import org.geotools.util.logging.Logging;
 
 public class MonitorFilter implements Filter {
@@ -36,6 +39,8 @@ public class MonitorFilter implements Filter {
         this.requestFilter = requestFilter;
         
         postProcessExecutor = Executors.newFixedThreadPool(2);
+        
+        LOGGER.info("Monitor extension enabled");
     }
     
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -124,19 +129,18 @@ public class MonitorFilter implements Filter {
         data = monitor.current();
         
         monitor.complete();
-        //resp.getOutputStream().close();
         
         //post processing
-//        postProcessExecutor.execute(new PostProcessTask(monitor, data));
-//        
-//        if (error != null) {
-//            if (error instanceof RuntimeException) {
-//                throw (RuntimeException)error;
-//            }
-//            else {
-//                throw new RuntimeException(error);
-//            }
-//        }
+        postProcessExecutor.execute(new PostProcessTask(monitor, data, req, resp));
+        
+        if (error != null) {
+            if (error instanceof RuntimeException) {
+                throw (RuntimeException)error;
+            }
+            else {
+                throw new RuntimeException(error);
+            }
+        }
     }
 
     public void destroy() {
@@ -158,23 +162,40 @@ public class MonitorFilter implements Filter {
 
         Monitor monitor;
         RequestData data;
+        HttpServletRequest request;
+        HttpServletResponse response;
         
-        PostProcessTask(Monitor monitor, RequestData data) {
+        PostProcessTask(Monitor monitor, RequestData data, HttpServletRequest request, HttpServletResponse response) {
             this.monitor = monitor;
             this.data = data;
+            this.request = request;
+            this.response = response;
         }
         
         public void run() {
             try {
-                new ReverseDNSPostProcessor(data).run();
+                List<RequestPostProcessor> pp = new ArrayList();
+                pp.add(new ReverseDNSPostProcessor());
+                pp.addAll(GeoServerExtensions.extensions(RequestPostProcessor.class));
+                
+                for (RequestPostProcessor p : pp) {
+                    try {
+                        p.run(data, request, response);
+                    }
+                    catch(Exception e) {
+                        LOGGER.log(Level.WARNING, "Post process task failed", e);
+                    }
+                }
+
+                monitor.getDAO().save(data);
             }
-            catch(Exception e) {
-                LOGGER.log(Level.WARNING, "Post process tasks failed", e);
+            finally {
+                monitor = null;
+                data = null;
+                request = null;
+                response = null;
             }
-            
-            monitor.getDAO().save(data);
         }
-        
     }
 
 }
