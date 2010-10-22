@@ -67,7 +67,21 @@ public class ReprojectionTest extends WFSTestSupport {
 //        print(dom1);
 //        print(dom2);
         
-        runTest(dom1,dom2);
+        runTest(dom1,dom2, tx);
+    }
+    
+    public void testGetFeatureGetAutoCRS() throws Exception {
+        
+        Document dom1 = getAsDOM("wfs?request=getfeature&service=wfs&version=1.0.0&typename=" + 
+            MockData.POLYGONS.getLocalPart());
+        Document dom2 = getAsDOM("wfs?request=getfeature&service=wfs&version=1.0.0&typename=" + 
+            MockData.POLYGONS.getLocalPart() + "&srsName=AUTO:42001,9001,-93,0");
+        
+//        print(dom1);
+//        print(dom2);
+        
+        MathTransform tx = CRS.findMathTransform(CRS.decode("EPSG:32615"), CRS.decode("AUTO:42001,9001,-93,0"));
+        runTest(dom1,dom2, tx);
     }
     
     public void testGetFeatureReprojectedFeatureType() throws Exception {
@@ -102,7 +116,7 @@ public class ReprojectionTest extends WFSTestSupport {
         + "</wfs:Query> " + "</wfs:GetFeature>";
         Document dom2 = postAsDOM("wfs", xml);
         
-        runTest(dom1, dom2);
+        runTest(dom1, dom2, tx);
     }
     
     public void testReprojectNullGeometries() throws Exception {
@@ -227,7 +241,7 @@ public class ReprojectionTest extends WFSTestSupport {
         return cr;
     }
     
-    private void runTest( Document dom1, Document dom2 ) throws Exception {
+    private void runTest( Document dom1, Document dom2, MathTransform tx ) throws Exception {
         Element box = getFirstElementByTagName(dom1.getDocumentElement(), "gml:Box");
         Element coordinates = getFirstElementByTagName(box, "gml:coordinates");
         double[] d1 = coordinates(coordinates.getFirstChild().getNodeValue());
