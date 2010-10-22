@@ -4,6 +4,7 @@
  */
 package org.geoserver.wfs.kvp;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -237,7 +238,7 @@ public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
 
         //srsName
         if (kvp.containsKey("srsName")) {
-            querySet(eObject, "srsName",(List)kvp.get("srsName"));
+            querySet(eObject, "srsName",Collections.singletonList((URI)kvp.get("srsName")));
         }
 
         //featureversion
