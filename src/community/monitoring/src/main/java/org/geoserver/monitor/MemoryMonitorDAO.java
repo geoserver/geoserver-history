@@ -99,6 +99,12 @@ O:      for (Iterator<RequestData> it = requests.iterator(); it.hasNext();) {
         return requests;
     }
     
+    public void getRequests(MonitorQuery query, RequestDataVisitor visitor) {
+        for (RequestData r : getRequests(query)) {
+            visitor.visit(r);
+        }
+    }
+    
     public List<RequestData> getOwsRequests() {
         return null;
     }

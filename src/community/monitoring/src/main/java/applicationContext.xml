@@ -19,12 +19,6 @@
     <!-- monitor daos -->
     <import resource="applicationContext-hib2.xml"/>
     <bean id="memMonitorDAO" class="org.geoserver.monitor.MemoryMonitorDAO"/>
-    <!--bean id="jdbcMonitorDAO" class="org.geoserver.monitor.JDBCMonitorDAO">
-      <constructor-arg ref="monitorDataSource"/>
-      <property name="asynchronous" value="true"/>
-    </bean-->
-    
-    <alias name="hibMonitorDAO" alias="monitorDAO"/>
     
     <bean id="monitorRequestFilter" class="org.geoserver.monitor.MonitorRequestFilter">
       <constructor-arg ref="resourceLoader"/>

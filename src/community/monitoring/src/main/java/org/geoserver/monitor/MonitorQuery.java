@@ -1,6 +1,8 @@
 package org.geoserver.monitor;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class MonitorQuery {
 
@@ -54,6 +56,9 @@ public class MonitorQuery {
             }
         }
     }
+    
+    List<String> properties = new ArrayList();
+    
     String sortBy;
     SortOrder sortOrder;
     
@@ -68,6 +73,13 @@ public class MonitorQuery {
     String filterProperty;
     Object filterValue;
     Comparison filterCompare;
+    
+    public MonitorQuery properties(String... props) {
+        for (String p : props) {
+            properties.add(p);
+        }
+        return this;
+    }
     
     public MonitorQuery sort(String property, SortOrder order) {
         sortBy = property;
@@ -92,6 +104,10 @@ public class MonitorQuery {
         this.offset = offset;
         this.count = count;
         return this;
+    }
+    
+    public List<String> getProperties() {
+        return properties;
     }
     
     public Date getFromDate() {

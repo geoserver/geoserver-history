@@ -6,6 +6,7 @@ import static org.geoserver.monitor.MonitorTestData.assertCovered;
 import static org.geoserver.monitor.MonitorTestData.assertCoveredInOrder;
 import static org.geoserver.monitor.MonitorTestData.toDate;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -37,6 +38,20 @@ public abstract class MonitorDAOTestSupport{
         List<RequestData> requests = dao.getRequests();
         assertEquals(10, requests.size());
         assertCovered(requests, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+    }
+    
+    
+    public void testGetRequestsVisitor() throws Exception {
+        final List<RequestData> datas = new ArrayList();
+        dao.getRequests(new MonitorQuery().filter("path", "/seven", Comparison.EQ), 
+            new RequestDataVisitor() {
+                
+                public void visit(RequestData data) {
+                    datas.add(data);
+                }
+            });
+        
+        assertCoveredInOrder(datas, 7);
     }
     
     @Test
