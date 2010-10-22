@@ -61,6 +61,11 @@
    <version>1.0.1</version>
   </dependency>
   <dependency>
+   <groupId>org.apache.wicket</groupId>
+   <artifactId>wicket-datetime</artifactId>
+   <version>${wicket.version}</version>
+  </dependency>
+  <dependency>
    <groupId>junit</groupId>
    <artifactId>junit</artifactId>
    <version>4.7</version>

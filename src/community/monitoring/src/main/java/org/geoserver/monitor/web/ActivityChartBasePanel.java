@@ -13,10 +13,13 @@ import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.extensions.yui.calendar.DateTimeField;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.image.NonCachingImage;
 import org.apache.wicket.markup.html.image.resource.BufferedDynamicImageResource;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 import org.geoserver.monitor.Monitor;
 import org.geoserver.monitor.MonitorQuery;
 import org.geoserver.monitor.RequestData;
@@ -46,8 +49,8 @@ public abstract class ActivityChartBasePanel extends Panel {
     protected static long PAGE_OFFSET = 1000;
     protected static SimpleDateFormat FORMAT = new SimpleDateFormat("yyyy-MM-dd");
     
-    Calendar from;
-    Calendar to;
+    Date from;
+    Date to;
     NonCachingImage chartImage;
     
     public ActivityChartBasePanel(String id, Monitor monitor) {
@@ -62,18 +65,29 @@ public abstract class ActivityChartBasePanel extends Panel {
         Form form = new Form("form");
         add(form);
         
-        from = Calendar.getInstance(); from.setTime(range[0]);
-        to = Calendar.getInstance(); to.setTime(range[1]);
+        from = new Date(range[0].getTime());
+        to = new Date(range[1].getTime());
         
-        form.add(new DateField("from", from));
-        form.add(new DateField("to", to));
+        form.add(new DateTimeField("from", new PropertyModel<Date>(this,"from")) {
+            @Override
+            protected boolean use12HourFormat() {
+                return false;
+            }
+        });
+        form.add(new DateTimeField("to", new PropertyModel<Date>(this, "to")) {
+            @Override
+            protected boolean use12HourFormat() {
+                return false;
+            }
+        });
+        
         form.add(new AjaxButton("refresh") {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form form) {
                 Monitor monitor = 
                     ((GeoServerApplication)getApplication()).getBeanOfType(Monitor.class);
                 
-                Date[] range = new Date[]{ from.getTime(), to.getTime() };
+                Date[] range = new Date[]{ from, to };
                 
                 chartImage.setImageResource(queryAndRenderChart(monitor, range));
                 target.addComponent(chartImage);
@@ -102,7 +116,7 @@ public abstract class ActivityChartBasePanel extends Panel {
             "Time ("+timeUnitClass.getSimpleName()+")", "Requests", dataset);
         
         BufferedDynamicImageResource resource = new BufferedDynamicImageResource();
-        resource.setImage(chart.createBufferedImage(650,500));
+        resource.setImage(chart.createBufferedImage(700,500));
         return resource;
     }
     
@@ -122,10 +136,10 @@ public abstract class ActivityChartBasePanel extends Panel {
         
         JFreeChart chart = new JFreeChart(plot);
         
-        TextTitle t = new TextTitle(title);
-        t.setTextAlignment(HorizontalAlignment.LEFT);
+        //TextTitle t = new TextTitle(title);
+        //t.setTextAlignment(HorizontalAlignment.LEFT);
         
-        chart.setTitle(t);
+        //chart.setTitle(t);
         chart.setBackgroundPaint(Color.WHITE);
         chart.setAntiAlias(true);
         chart.clearSubtitles();
