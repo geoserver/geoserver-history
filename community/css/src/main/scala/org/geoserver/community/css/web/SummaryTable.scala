@@ -38,7 +38,7 @@ object Summary {
       }
     var maxima = new LinkedHashMap[AttributeDescriptor,Comparable[AnyRef]]
     var minima = new LinkedHashMap[AttributeDescriptor,Comparable[AnyRef]]
-    var it = data.iterator
+    var it = data.features
     try {
       while (it.hasNext) {
         val feature = it.next
@@ -54,7 +54,7 @@ object Summary {
         }
       }
     } finally {
-      data.close(it)
+      it.close()
     }
 
     val comparableTable = comparable map { prop =>
@@ -78,7 +78,7 @@ extends GeoServerDataProvider[Summary] {
   def this(data: FeatureCollection[SimpleFeatureType, SimpleFeature])
     = this(Summary.summarize(data))
 
-  override def newModel(a: Any): IModel = new Model(a.asInstanceOf[Serializable])
+  // override def newModel(a: Serializable): IModel[Serializable] = new Model(a)
 
   override def getProperties(): java.util.List[Property[Summary]] = {
     val list = new java.util.ArrayList[Property[Summary]]
@@ -114,10 +114,8 @@ class SummaryTable(id: String, summary: SummaryProvider)
 extends GeoServerTablePanel[Summary](id, summary) {
   override def getComponentForProperty(
     id: String,
-    value: IModel,
+    value: IModel[_],
     property: Property[Summary]): Component = {
-    new Label(id, new Model(property.getPropertyValue(
-      value.getObject.asInstanceOf[Summary]
-    ).toString))
+    new Label(id, new Model(property.getPropertyValue(value.getObject.asInstanceOf[Summary]).toString))
   }
 }
