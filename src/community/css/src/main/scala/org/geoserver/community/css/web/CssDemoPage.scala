@@ -71,8 +71,8 @@ trait CssDemoConstants {
 
 }
 
-class CssValidator extends IValidator {
-  override def validate(text: IValidatable) = {
+class CssValidator extends IValidator[String] {
+  override def validate(text: IValidatable[String]) = {
     text.getValue() match {
       case css: String =>
         parse(css) match {
@@ -101,7 +101,7 @@ class CssValidator extends IValidator {
 class CssDemoPage(params: PageParameters) extends GeoServerSecuredPage
 with CssDemoConstants {
 
-  class UpdatingTextArea(id: String, m: IModel) extends TextArea(id, m) {
+  class UpdatingTextArea(id: String, m: IModel[String]) extends TextArea(id, m) {
     add(new AjaxFormComponentUpdatingBehavior("onblur") {
       override def onUpdate(target: AjaxRequestTarget) = {
         target.addComponent(getFeedbackPanel())
@@ -118,7 +118,7 @@ with CssDemoConstants {
     file map { file => Source.fromFile(file).mkString }
   }
 
-  class StylePanel(id: String, model: IModel, map: OpenLayersMapPanel) extends Panel(id, model) {
+  class StylePanel(id: String, model: IModel[CssDemoPage], map: OpenLayersMapPanel) extends Panel(id, model) {
     var styleBody = {
       val file = GeoserverDataDirectory.findStyleFile(cssSource)
       if (file != null && file.exists) {
@@ -133,8 +133,8 @@ existing SLD.
       }
     }
 
-    val sldModel: IModel = 
-      new org.apache.wicket.model.AbstractReadOnlyModel {
+    val sldModel: IModel[String] = 
+      new org.apache.wicket.model.AbstractReadOnlyModel[String] {
         override def getObject() = sldText getOrElse ("""
 No SLD file found for this style.  One will be generated automatically if you
 submit a CSS file.
@@ -153,7 +153,7 @@ submit a CSS file.
     textArea.add(new CssValidator)
     styleEditor.add(textArea)
     styleEditor.add(new AjaxButton("submit", styleEditor) {
-      override def onSubmit(target: AjaxRequestTarget, form: Form) = {
+      override def onSubmit(target: AjaxRequestTarget, form: Form[_]) = {
         try {
           val file = GeoserverDataDirectory.findStyleFile(cssSource, true)
 
@@ -185,7 +185,7 @@ submit a CSS file.
     add(styleEditor)
   }
 
-  class DataPanel(id: String, model: IModel) extends Panel(id, model) {
+  class DataPanel(id: String, model: IModel[CssDemoPage]) extends Panel(id, model) {
     add(new Label(
       "summary-message",
       "For reference, here is a listing of the attributes in this data set."
@@ -263,7 +263,7 @@ submit a CSS file.
   }
 
   if (layerInfo != null && styleInfo != null) {
-    val mainContent = new Fragment("main-content", "normal") {
+    val mainContent = new Fragment("main-content", "normal", this) {
       val layerSelectionForm = new Form("layer-selection")
       val layerResources = catalog.getResources(classOf[FeatureTypeInfo])
       java.util.Collections.sort(
@@ -277,21 +277,19 @@ submit a CSS file.
       layerSelectionForm.add(
         new DropDownChoice(
           "layername",
-          new PropertyModel(CssDemoPage.this, "layerInfo"),
+          new PropertyModel[ResourceInfo](CssDemoPage.this, "layerInfo"),
           layerResources,
-          new IChoiceRenderer {
-            override def getDisplayValue(choice: AnyRef) = {
-              val resource = choice.asInstanceOf[ResourceInfo]
+          new IChoiceRenderer[ResourceInfo] {
+            override def getDisplayValue(resource: ResourceInfo) = {
               val layers = getCatalog.getLayers(resource)
               if (layers != null && layers.size > 0) {
                 "%s [%s]".format(layers.get(0).getName, resource.getPrefixedName)
               } else {
-                choice.asInstanceOf[ResourceInfo].getPrefixedName
+                resource.getPrefixedName
               }
             }
 
-            override def getIdValue(choice: AnyRef, index: Int) =
-              choice.asInstanceOf[ResourceInfo].getId
+            override def getIdValue(choice: ResourceInfo, index: Int) = choice.getId
           }
         )
       )
@@ -309,14 +307,12 @@ submit a CSS file.
       layerSelectionForm.add(
         new DropDownChoice(
           "stylename",
-          new PropertyModel(CssDemoPage.this, "styleInfo"),
+          new PropertyModel[StyleInfo](CssDemoPage.this, "styleInfo"),
           styleResources,
-          new IChoiceRenderer {
-            override def getDisplayValue(choice: AnyRef) = 
-              choice.asInstanceOf[StyleInfo].getName()
+          new IChoiceRenderer[StyleInfo] {
+            override def getDisplayValue(choice: StyleInfo) = choice.getName()
 
-            override def getIdValue(choice: AnyRef, index: Int) =
-              choice.asInstanceOf[StyleInfo].getId
+            override def getIdValue(choice: StyleInfo, index: Int) = choice.getId
           }
         )
       )
@@ -384,7 +380,7 @@ submit a CSS file.
       add(feedback2)
 
       val tabs = new java.util.ArrayList[ITab]
-      val model = new CompoundPropertyModel(CssDemoPage.this)
+      val model = new CompoundPropertyModel[CssDemoPage](CssDemoPage.this)
       tabs.add(new PanelCachingTab(new AbstractTab(new Model("Style")) {
         override def getPanel(id: String): Panel = new StylePanel(id, model, map)
       }))
@@ -397,6 +393,6 @@ submit a CSS file.
 
     add(mainContent) 
   } else {
-    add(new Fragment("main-content", "loading-failure"))
+    add(new Fragment("main-content", "loading-failure", this))
   }
 }
