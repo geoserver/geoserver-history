@@ -8,12 +8,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
 import java.util.zip.ZipOutputStream;
 
 import javax.xml.namespace.QName;
@@ -29,41 +26,12 @@ import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wfs.WFSException;
 import org.geoserver.wfs.WFSGetFeatureOutputFormat;
-import org.geotools.data.DataStore;
-import org.geotools.data.shapefile.ShapefileDataStore;
 import org.geotools.data.simple.SimpleFeatureCollection;
-import org.geotools.data.simple.SimpleFeatureStore;
 import org.geotools.gml.producer.FeatureTransformer;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.feature.type.AttributeDescriptor;
-import org.opengis.feature.type.GeometryDescriptor;
-import org.opengis.feature.type.GeometryType;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.LinearRing;
-import com.vividsolutions.jts.geom.MultiLineString;
-import com.vividsolutions.jts.geom.MultiPoint;
-import com.vividsolutions.jts.geom.MultiPolygon;
-import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.geom.Polygon;
-
 public class Ogr2OgrOutputFormat extends WFSGetFeatureOutputFormat {
-    
-    /**
-     * The types of geometries a shapefile can handle
-     */
-    private static final Set<Class> SHAPEFILE_GEOM_TYPES = new HashSet<Class>() {
-        {
-            add(Point.class);
-            add(LineString.class);
-            add(LinearRing.class);
-            add(Polygon.class);
-            add(MultiPoint.class);
-            add(MultiLineString.class);
-            add(MultiPolygon.class);
-        }
-    };
     
     /**
      * The fs path to ogr2ogr. If null, we'll assume ogr2ogr is in the PATH and
@@ -216,6 +184,7 @@ public class Ogr2OgrOutputFormat extends WFSGetFeatureOutputFormat {
             // delete the input and output directories
             IOUtils.delete(tempGS);
             IOUtils.delete(tempOGR);
+            zipOut.flush();
         } catch (Exception e) {
             throw new ServiceException("Exception occurred during output generation", e);
         }
@@ -228,61 +197,6 @@ public class Ogr2OgrOutputFormat extends WFSGetFeatureOutputFormat {
      * @return
      */
     private File writeToDisk(File tempDir,
-            SimpleFeatureCollection curCollection) throws Exception {
-        if(isShapefileCompatible(curCollection.getSchema())) 
-            return writeShapefile(tempDir, curCollection);
-        else
-            return writeGML(tempDir, curCollection);
-    }
-
-    private File writeShapefile(File tempDir,
-            SimpleFeatureCollection collection) {
-        SimpleFeatureType schema = collection.getSchema();
-
-        SimpleFeatureStore fstore = null;
-        DataStore dstore = null;
-        File file = null;
-        try {
-            file = new File(tempDir, schema.getTypeName() + ".shp");
-            dstore = new ShapefileDataStore(file.toURL());
-            dstore.createSchema(schema);
-            
-            fstore = (SimpleFeatureStore) dstore.getFeatureSource(schema.getTypeName());
-            fstore.addFeatures(collection);
-        } catch (IOException ioe) {
-            LOGGER.log(Level.WARNING,
-                "Error while writing featuretype '" + schema.getTypeName() + "' to shapefile.", ioe);
-            throw new ServiceException(ioe);
-        } finally {
-            if(dstore != null) {
-                dstore.dispose();
-            }
-        }
-        
-        return file; 
-    }
-
-    /**
-     * Returns true if the schema has just one geometry and the geom type is known
-     * @param schema
-     * @return
-     */
-    private boolean isShapefileCompatible(SimpleFeatureType schema) {
-        GeometryType gt = null;
-        for (AttributeDescriptor at : schema.getAttributeDescriptors()) {
-            if(at instanceof GeometryDescriptor) {
-                if(gt == null)
-                    gt = ((GeometryDescriptor) at).getType();
-                else
-                    // more than one geometry 
-                    return false;
-            }
-        } 
-        
-        return gt != null && SHAPEFILE_GEOM_TYPES.contains(gt.getBinding()); 
-    }
-
-    private File writeGML(File tempDir,
             SimpleFeatureCollection curCollection) throws Exception {
         // create the temp file for this output
         File outFile = new File(tempDir, curCollection.getSchema().getTypeName() + ".gml");

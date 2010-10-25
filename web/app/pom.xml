@@ -587,6 +587,16 @@
         </dependency>
       </dependencies>
     </profile>
+    <profile>
+      <id>ogr</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.geoserver.extension</groupId>
+          <artifactId>ogr</artifactId>
+          <version>${project.version}</version>
+        </dependency>
+      </dependencies>
+    </profile>
 
  </profiles>
 </project>
