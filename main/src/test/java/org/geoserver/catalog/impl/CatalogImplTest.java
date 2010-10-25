@@ -6,9 +6,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.geoserver.catalog.Catalog;
 import junit.framework.TestCase;
 
+import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogException;
 import org.geoserver.catalog.CatalogFactory;
 import org.geoserver.catalog.CoverageInfo;
@@ -31,7 +31,7 @@ import org.geoserver.catalog.event.CatalogRemoveEvent;
 
 public class CatalogImplTest extends TestCase {
 
-    CatalogImpl catalog;
+    protected Catalog catalog;
     WorkspaceInfo ws;
     NamespaceInfo ns;
     DataStoreInfo ds;
@@ -44,7 +44,8 @@ public class CatalogImplTest extends TestCase {
     StyleInfo s;
     
     protected void setUp() throws Exception {
-        catalog = new CatalogImpl();
+        catalog = createCatalog();
+       
         CatalogFactory factory = catalog.getFactory();
         
         ns = factory.createNamespace();
@@ -99,6 +100,61 @@ public class CatalogImplTest extends TestCase {
         l.setDefaultStyle( s );
     }
 
+    protected Catalog createCatalog() {
+        return new CatalogImpl();
+    }
+    
+    protected void addWorkspace() {
+        catalog.add(ws);
+    }
+    
+    protected void addNamespace() {
+        catalog.add(ns);
+    }
+    
+    protected void addDataStore() {
+        addWorkspace();
+        catalog.add(ds);
+    }
+    
+    protected void addCoverageStore() {
+        addWorkspace();
+        catalog.add(cs);
+    }
+    
+    protected void addWMSStore() {
+        addWorkspace();
+        catalog.add(wms);
+    }
+    
+    protected void addFeatureType() {
+        addDataStore();
+        addNamespace();
+        catalog.add(ft);
+    }
+    
+    protected void addCoverage() {
+        addCoverageStore();
+        addNamespace();
+        catalog.add(cv);
+    }
+    
+    protected void addWMSLayer() {
+        addWMSStore();
+        addNamespace();
+        catalog.add(wl);
+    }
+    
+    protected void addStyle() {
+        catalog.add(s);
+    }
+    
+    protected void addLayer() {
+        addFeatureType();
+        addStyle();
+        catalog.add(l);
+    }
+    
     public void testAddNamespace() {
         assertTrue( catalog.getNamespaces().isEmpty() );
         catalog.add( ns );
@@ -222,7 +278,8 @@ public class CatalogImplTest extends TestCase {
         assertEquals( "nsURI", ns3.getURI() );
         
         catalog.save( ns2 );
-        ns3 = catalog.getNamespaceByPrefix(ns.getPrefix());
+        //ns3 = catalog.getNamespaceByPrefix(ns.getPrefix());
+        ns3 = catalog.getNamespaceByPrefix("ns2Prefix");
         assertEquals(ns2, ns3);
         assertEquals( "ns2Prefix", ns3.getPrefix() );
         assertEquals( "ns2URI", ns3.getURI() );
@@ -250,7 +307,8 @@ public class CatalogImplTest extends TestCase {
         catalog.save( ns );
         
         assertEquals( 2, l.modified.size() );
-        assertTrue(l.modified.get(1).getPropertyNames().contains( "uRI" ));
+        assertEquals( 1, l.modified.get(1).getPropertyNames().size());
+        assertTrue(l.modified.get(1).getPropertyNames().get(0).equalsIgnoreCase("uri" ));
         assertTrue(l.modified.get(1).getOldValues().contains( "ns2URI" ));
         assertTrue(l.modified.get(1).getNewValues().contains( "changed" ));
         
@@ -268,7 +326,7 @@ public class CatalogImplTest extends TestCase {
         WorkspaceInfo ws2 = catalog.getFactory().createWorkspace();
         
         try {
-            catalog.getNamespaces().add( ws2 );
+            catalog.getWorkspaces().add( ws2 );
             fail( "adding directly should throw an exception" );
         }
         catch( Exception e ) {
@@ -307,7 +365,8 @@ public class CatalogImplTest extends TestCase {
     }
     
     public void testRemoveDefaultWorkspace() {
-        catalog.add( ws );        
+        catalog.add( ws );
+        assertNotNull(catalog.getDefaultWorkspace());
         catalog.remove( ws );
         assertNull(catalog.getDefaultWorkspace());
     }
@@ -421,7 +480,18 @@ public class CatalogImplTest extends TestCase {
     
     public void testAddDataStore() {
         assertTrue( catalog.getDataStores().isEmpty() );
-        catalog.add( ds );
+        
+        ds.setWorkspace(null);
+        try {
+            catalog.add( ds );
+            fail( "adding with no workspace should throw exception" );
+        }
+        catch( Exception e ) {}
+        
+        ds.setWorkspace(ws);
+        catalog.add(ws);
+        catalog.add(ds);
+        
         assertEquals( 1, catalog.getDataStores().size() );
         
         DataStoreInfo retrieved = catalog.getDataStore(ds.getId());
@@ -442,12 +512,6 @@ public class CatalogImplTest extends TestCase {
         catch( Exception e ) {
         }
         
-        try {
-            catalog.add( ds2 );
-            fail( "adding with no workspace should throw exception" );
-        }
-        catch( Exception e ) {
-        }
         ds2.setWorkspace( ws );
         
         catalog.add( ds2 );
@@ -465,7 +529,7 @@ public class CatalogImplTest extends TestCase {
     }
     
     public void testRemoveDataStore() {
-        catalog.add( ds );
+        addDataStore();
         assertEquals( 1, catalog.getDataStores().size() );
         
         try {
@@ -480,7 +544,7 @@ public class CatalogImplTest extends TestCase {
     }
     
     public void testGetDataStoreById() {
-        catalog.add( ds );
+        addDataStore();
         
         DataStoreInfo ds2 = catalog.getDataStore(ds.getId());
         assertNotNull(ds2);
@@ -489,8 +553,7 @@ public class CatalogImplTest extends TestCase {
     }
     
     public void testGetDataStoreByName() {
-        catalog.add( ws );
-        catalog.add( ds );
+        addDataStore();
         
         DataStoreInfo ds2 = catalog.getDataStoreByName(ds.getName());
         assertNotNull(ds2);
@@ -514,7 +577,7 @@ public class CatalogImplTest extends TestCase {
     }
     
     public void testModifyDataStore() {
-        catalog.add( ds );
+        addDataStore();
         
         DataStoreInfo ds2 = catalog.getDataStoreByName(ds.getName());
         ds2.setName( "dsName2" );
@@ -525,14 +588,14 @@ public class CatalogImplTest extends TestCase {
         assertEquals( "dsDescription", ds3.getDescription() );
         
         catalog.save( ds2 );
-        ds3 = catalog.getDataStoreByName(ds.getName());
+        ds3 = catalog.getDataStoreByName("dsName2");
         assertEquals(ds2, ds3);
         assertEquals( "dsName2", ds3.getName() );
         assertEquals( "dsDescription2", ds3.getDescription() );
     }
     
     public void testChangeDataStoreWorkspace() throws Exception {
-        catalog.add( ds );
+        addDataStore();
         
         WorkspaceInfo ws2 = catalog.getFactory().createWorkspace();
         ws2.setName( "newWorkspace");
@@ -549,6 +612,8 @@ public class CatalogImplTest extends TestCase {
     }
     
     public void testDataStoreEvents() {
+        addWorkspace();
+        
         TestListener l = new TestListener();
         catalog.addListener( l );
         
@@ -585,12 +650,9 @@ public class CatalogImplTest extends TestCase {
     }
     
     public void testAddFeatureType() {
-        //set a default namespace
-        catalog.add( ns );
-        
         assertTrue( catalog.getFeatureTypes().isEmpty() );
         
-        catalog.add( ft );
+        addFeatureType();
         assertEquals( 1, catalog.getFeatureTypes().size() );
         
         FeatureTypeInfo ft2 = catalog.getFactory().createFeatureType();
@@ -601,6 +663,7 @@ public class CatalogImplTest extends TestCase {
         catch( Exception e ) {}
         
         ft2.setName("ft2Name");
+        
         try {
             catalog.add(ft2);
             fail( "adding with no store should throw exception");
@@ -621,12 +684,10 @@ public class CatalogImplTest extends TestCase {
     
     public void testAddCoverage() {
         //set a default namespace
-        catalog.add( ns );
-        
         assertNotNull(catalog.getCoverages());
         assertTrue( catalog.getCoverages().isEmpty() );
         
-        catalog.add( cv );
+        addCoverage();
         assertEquals( 1, catalog.getCoverages().size() );
         
         CoverageInfo cv2 = catalog.getFactory().createCoverage();
@@ -663,16 +724,13 @@ public class CatalogImplTest extends TestCase {
     
     public void testAddWMSLayer() {
         //set a default namespace
-        catalog.add( ns );
-        
         assertTrue( catalog.getResources(WMSLayerInfo.class).isEmpty() );
-        
-        catalog.add( wl );
+        addWMSLayer();
         assertEquals( 1, catalog.getResources(WMSLayerInfo.class).size() );
     }
 
     public void testRemoveFeatureType() {
-        catalog.add( ft );
+        addFeatureType();
         assertFalse( catalog.getFeatureTypes().isEmpty() );
         
         try {
@@ -686,7 +744,7 @@ public class CatalogImplTest extends TestCase {
     }
     
     public void testRemoveWMSLayer() {
-        catalog.add( wl );
+        addWMSLayer();
         assertFalse( catalog.getResources(WMSLayerInfo.class).isEmpty() );
         
         catalog.remove( wl );
@@ -694,7 +752,7 @@ public class CatalogImplTest extends TestCase {
     }
     
     public void testGetFeatureTypeById() {
-        catalog.add( ft );
+        addFeatureType();
         FeatureTypeInfo  ft2 = catalog.getFeatureType(ft.getId());
         
         assertNotNull(ft2);
@@ -703,7 +761,7 @@ public class CatalogImplTest extends TestCase {
     }
 
     public void testGetFeatureTypeByName() {
-        catalog.add( ft );
+        addFeatureType();
         FeatureTypeInfo  ft2 = catalog.getFeatureTypeByName(ft.getName());
         
         assertNotNull(ft2);
@@ -741,7 +799,7 @@ public class CatalogImplTest extends TestCase {
         
         DataStoreInfo ds1 = catalog.getFactory().createDataStore();
         ds1.setName( "ds1" );
-        catalog.add( ds );
+        catalog.add( ds1 );
         
         FeatureTypeInfo ft1 = catalog.getFactory().createFeatureType();
         ft1.setName( "ft1" );
@@ -775,7 +833,7 @@ public class CatalogImplTest extends TestCase {
     }
     
     public void testModifyFeatureType() {
-        catalog.add( ft );
+        addFeatureType();
         
         FeatureTypeInfo ft2 = catalog.getFeatureTypeByName(ft.getName());
         ft2.setDescription( "ft2Description" );
@@ -796,7 +854,8 @@ public class CatalogImplTest extends TestCase {
     
     public void testFeatureTypeEvents() {
         //set default namespace
-        catalog.add( ns );
+        addNamespace();
+        addDataStore();
         
         TestListener l = new TestListener();
         catalog.addListener( l );
@@ -830,7 +889,8 @@ public class CatalogImplTest extends TestCase {
     
     public void testModifyMetadata() {
       //set default namespace
-        catalog.add( ns );
+        addNamespace();
+        addDataStore();
         
         TestListener l = new TestListener();
         catalog.addListener( l );
@@ -859,7 +919,7 @@ public class CatalogImplTest extends TestCase {
     
     public void testAddLayer() {
         assertTrue( catalog.getLayers().isEmpty() );
-        catalog.add( l );
+        addLayer();
         
         assertEquals( 1, catalog.getLayers().size() );
         
@@ -891,7 +951,7 @@ public class CatalogImplTest extends TestCase {
     }
     
     public void testGetLayerById() {
-        catalog.add( l );
+        addLayer();
             
         LayerInfo l2 = catalog.getLayer( l.getId() );
         assertNotNull(l2);
@@ -900,7 +960,7 @@ public class CatalogImplTest extends TestCase {
     }
     
     public void testGetLayerByName() {
-        catalog.add( l );
+        addLayer();
             
         LayerInfo l2 = catalog.getLayerByName( l.getName() );
         assertNotNull(l2);
@@ -909,7 +969,7 @@ public class CatalogImplTest extends TestCase {
     }
     
     public void testGetLayerByResource() {
-        catalog.add(l);
+        addLayer();
         
         List<LayerInfo> layers = catalog.getLayers(ft);
         assertEquals( 1, layers.size() );
@@ -920,7 +980,7 @@ public class CatalogImplTest extends TestCase {
     }
     
     public void testRemoveLayer() {
-        catalog.add(l);
+        addLayer();
         assertEquals( 1, catalog.getLayers().size() );
         
         catalog.remove(l);
@@ -928,7 +988,7 @@ public class CatalogImplTest extends TestCase {
     }
     
     public void testModifyLayer() {
-        catalog.add(l);
+        addLayer();
         
         LayerInfo l2 = catalog.getLayerByName( l.getName() );
 //        l2.setName( null );
@@ -960,7 +1020,7 @@ public class CatalogImplTest extends TestCase {
     }
     
     public void testEnableLayer() {
-        catalog.add(l);
+        addLayer();
         
         LayerInfo l2 = catalog.getLayerByName(l.getName());
         assertTrue(l2.isEnabled());
@@ -977,6 +1037,8 @@ public class CatalogImplTest extends TestCase {
     }
     
     public void testLayerEvents() {
+        addFeatureType();
+        
         TestListener tl = new TestListener();
         catalog.addListener( tl );
         
@@ -1004,7 +1066,8 @@ public class CatalogImplTest extends TestCase {
     
     public void testAddStyle() {
         assertTrue( catalog.getStyles().isEmpty() );
-        catalog.add( s );
+        
+        addStyle();
         assertEquals( 1, catalog.getStyles().size() );
         
         StyleInfo s2 = catalog.getFactory().createStyle();
@@ -1033,7 +1096,7 @@ public class CatalogImplTest extends TestCase {
     }
     
     public void testGetStyleById() {
-        catalog.add( s );
+        addStyle();
         
         StyleInfo s2 = catalog.getStyle( s.getId() );
         assertNotNull( s2 );
@@ -1042,7 +1105,7 @@ public class CatalogImplTest extends TestCase {
     }
     
     public void testGetStyleByName() {
-        catalog.add( s );
+        addStyle();
         
         StyleInfo s2 = catalog.getStyleByName( s.getName() );
         assertNotNull( s2 );
@@ -1051,7 +1114,7 @@ public class CatalogImplTest extends TestCase {
     }
     
     public void testModifyStyle() {
-        catalog.add(s);
+        addStyle();
         
         StyleInfo s2 = catalog.getStyleByName( s.getName() );
         s2.setName( null );
@@ -1084,7 +1147,7 @@ public class CatalogImplTest extends TestCase {
     }
     
     public void testRemoveStyle() {
-        catalog.add(s);
+        addStyle();
         assertEquals( 1, catalog.getStyles().size());
         
         catalog.remove(s);
@@ -1189,7 +1252,7 @@ public class CatalogImplTest extends TestCase {
     
     public void testAddWMSStore() {
         assertTrue( catalog.getStores(WMSStoreInfo.class).isEmpty() );
-        catalog.add( wms );
+        addWMSStore();
         assertEquals( 1, catalog.getStores(WMSStoreInfo.class).size() );
         
         WMSStoreInfo retrieved = catalog.getStore(wms.getId(), WMSStoreInfo.class);

@@ -1,12 +1,14 @@
 package org.geoserver.wfs;
 
+import java.io.Serializable;
+
 /**
  * Configuration for gml encoding.
  * 
  * @author Justin Deoliveira, The Open Planning Project
  *
  */
-public interface GMLInfo {
+public interface GMLInfo extends Serializable {
 
     /**
      * Enumeration for srsName style.

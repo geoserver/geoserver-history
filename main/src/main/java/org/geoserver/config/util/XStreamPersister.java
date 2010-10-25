@@ -47,6 +47,7 @@ import org.geoserver.catalog.impl.CoverageDimensionImpl;
 import org.geoserver.catalog.impl.CoverageInfoImpl;
 import org.geoserver.catalog.impl.CoverageStoreInfoImpl;
 import org.geoserver.catalog.impl.DataStoreInfoImpl;
+import org.geoserver.catalog.impl.DefaultCatalogFacade;
 import org.geoserver.catalog.impl.FeatureTypeInfoImpl;
 import org.geoserver.catalog.impl.LayerGroupInfoImpl;
 import org.geoserver.catalog.impl.LayerInfoImpl;
@@ -216,9 +217,9 @@ public class XStreamPersister {
         
         //control the order in which fields are sorted
         SortableFieldKeySorter sorter = new SortableFieldKeySorter();
-        sorter.registerFieldOrder( CatalogImpl.class, new String[]{ "workspaces", "namespaces", "stores", "styles", 
+        //sorter.registerFieldOrder( DefaultCatalogDAO.class, new String[]{ "workspaces", "namespaces", "stores", "styles", 
             /* these we actually omit, but the sorter needs them specified */
-            "layerGroups", "resources", "maps", "defaultStores", "listeners", "layers",  "resourcePool", "resourceLoader", "LOGGER" } ); 
+        //    "layerGroups", "resources", "maps", "defaultStores", "listeners", "layers",  "resourcePool", "resourceLoader", "LOGGER" } ); 
         
         ReflectionProvider reflectionProvider = new CustomReflectionProvider( new FieldDictionary( sorter ) ); 
             //new Sun14ReflectionProvider( new FieldDictionary( sorter  ) ); 
@@ -275,17 +276,20 @@ public class XStreamPersister {
         // Catalog
         xs.omitField(impl(Catalog.class), "resourcePool");
         xs.omitField(impl(Catalog.class), "resourceLoader");
-        xs.omitField(impl(Catalog.class), "resources");
         xs.omitField(impl(Catalog.class), "listeners");
-        xs.omitField(impl(Catalog.class), "layers");
-        xs.omitField(impl(Catalog.class), "maps");
-        xs.omitField(impl(Catalog.class), "layerGroups");
         xs.omitField(impl(Catalog.class), "LOGGER");
-        xs.registerLocalConverter(impl(Catalog.class), "stores",
+        
+        xs.omitField(impl(DefaultCatalogFacade.class), "catalog");
+        xs.omitField(impl(DefaultCatalogFacade.class), "resources");
+        xs.omitField(impl(DefaultCatalogFacade.class), "layers");
+        xs.omitField(impl(DefaultCatalogFacade.class), "maps");
+        xs.omitField(impl(DefaultCatalogFacade.class), "layerGroups");
+        
+        xs.registerLocalConverter(DefaultCatalogFacade.class, "stores",
                 new StoreMultiHashMapConverter());
-        xs.registerLocalConverter(impl(Catalog.class), "namespaces",
+        xs.registerLocalConverter(DefaultCatalogFacade.class, "namespaces",
                 new SpaceMapConverter("namespace"));
-        xs.registerLocalConverter(impl(Catalog.class), "workspaces",
+        xs.registerLocalConverter(DefaultCatalogFacade.class, "workspaces",
                 new SpaceMapConverter("workspace"));
         
         
@@ -317,11 +321,18 @@ public class XStreamPersister {
         xs.registerLocalConverter( impl(ResourceInfo.class), "store", new ReferenceConverter(StoreInfo.class));
         xs.registerLocalConverter( impl(ResourceInfo.class), "namespace", new ReferenceConverter(NamespaceInfo.class));
         xs.registerLocalConverter( impl(ResourceInfo.class), "metadata", new MetadataMapConverter() );
+        xs.registerLocalConverter( impl(ResourceInfo.class), "keywords", new LaxCollectionConverter(xs.getMapper()));
         
         // FeatureTypeInfo
         
         // CoverageInfo
-
+        xs.registerLocalConverter( impl(CoverageInfo.class), "supportedFormats", new LaxCollectionConverter(xs.getMapper()));
+        xs.registerLocalConverter( impl(CoverageInfo.class), "requestSRS", new LaxCollectionConverter(xs.getMapper()));
+        xs.registerLocalConverter( impl(CoverageInfo.class), "responseSRS", new LaxCollectionConverter(xs.getMapper()));
+        xs.registerLocalConverter( impl(CoverageInfo.class), "interpolationMethods", new LaxCollectionConverter(xs.getMapper()));
+        xs.registerLocalConverter( impl(CoverageInfo.class), "dimensions", new LaxCollectionConverter(xs.getMapper()));
+        
+        
         // CoverageDimensionInfo
         xs.registerLocalConverter( impl(CoverageDimensionInfo.class), "range", new NumberRangeConverter());
         
@@ -601,6 +612,11 @@ public class XStreamPersister {
         }
         
         @Override
+        public boolean canConvert(Class type) {
+            //handle all types of maps
+            return Map.class.isAssignableFrom(type);
+        }
+        @Override
         public void marshal(Object source, HierarchicalStreamWriter writer,
                 MarshallingContext context) {
         
@@ -790,6 +806,7 @@ public class XStreamPersister {
             return map;
         }
     }
+    
     /**
      * Converters which encodes an object by a reference, or its id.
      */
@@ -855,13 +872,13 @@ public class XStreamPersister {
             return CatalogImpl.unwrap( resolved );
         }
     }
-    class ReferenceCollectionConverter extends CollectionConverter {
+    class ReferenceCollectionConverter extends LaxCollectionConverter {
         Class clazz;
         public ReferenceCollectionConverter(Class clazz) {
             super( getXStream().getMapper() );
             this.clazz = clazz;
         }
-        
+
         @Override
         protected void writeItem(Object item, MarshallingContext context,
                 HierarchicalStreamWriter writer) {

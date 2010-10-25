@@ -43,6 +43,8 @@ public abstract class StoreInfoImpl implements StoreInfo {
     
     protected Throwable error;
 
+    protected boolean _default;
+    
     protected StoreInfoImpl() {
     }
 
@@ -151,6 +153,13 @@ public abstract class StoreInfoImpl implements StoreInfo {
         this.error = error;
     }
     
+    public boolean isDefault() {
+        return _default;
+    }
+
+    public void setDefault(boolean _default) {
+        this._default = _default;
+    }
     public int hashCode() {
         final int prime = 31;
         int result = 1;

@@ -15,6 +15,10 @@ import org.opengis.util.ProgressListener;
 @SuppressWarnings("serial")
 public class WMSLayerInfoImpl extends ResourceInfoImpl implements WMSLayerInfo {
 
+    
+    protected WMSLayerInfoImpl() {
+    }
+    
     public WMSLayerInfoImpl(CatalogImpl catalog) {
         super(catalog);
     }

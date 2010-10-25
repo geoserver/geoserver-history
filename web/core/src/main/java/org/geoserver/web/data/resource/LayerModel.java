@@ -16,7 +16,7 @@ public class LayerModel implements IModel {
     LayerInfo layerInfo;
     
     public LayerModel(LayerInfo layerInfo) {
-        this.layerInfo = layerInfo;
+        setObject(layerInfo);
     }
 
     public Object getObject() {
@@ -26,7 +26,9 @@ public class LayerModel implements IModel {
     }
 
     public void setObject(Object object) {
-        this.layerInfo = (LayerInfo) object;
+        //workaround for dbconfig, by "dettaching" we force hibernate to reload the object
+        // fully initialized with no lazy lists or proxies
+        this.layerInfo = GeoServerApplication.get().getCatalog().detach((LayerInfo) object);
     }
 
     public void detach() {

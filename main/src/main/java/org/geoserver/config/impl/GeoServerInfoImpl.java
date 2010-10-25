@@ -54,7 +54,7 @@ public class GeoServerInfoImpl implements GeoServerInfo {
 
     protected Boolean globalServices = true;
     
-    protected GeoServer geoServer;
+    protected transient GeoServer geoServer;
 
     public GeoServerInfoImpl(GeoServer geoServer) {
         this.geoServer = geoServer;

@@ -56,6 +56,9 @@ public class LayerInfoImpl implements LayerInfo {
     }
     
     public String getName() {
+        if (resource == null) {
+            throw new NullPointerException("Unable to get Layer name without an underlying resource");
+        }
         return resource.getName();
         // TODO: uncomment back when resource/publish split is complete
         // return name;
@@ -65,6 +68,10 @@ public class LayerInfoImpl implements LayerInfo {
         // TODO: remove this log and reinstate field assignment when resource/publish split is complete
         LOGGER.log(Level.FINE, "Warning, some code is setting the LayerInfo name, but that will be ignored");
         this.name = name;
+        
+        if (resource == null) {
+            throw new NullPointerException("Layer name must not be set without an underlying resource");
+        }
         resource.setName(name);
     }
 

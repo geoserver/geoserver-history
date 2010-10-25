@@ -4,7 +4,6 @@
  */
 package org.geoserver.config.impl;
 
-import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -12,9 +11,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.geoserver.catalog.Catalog;
-import org.geoserver.catalog.impl.ModificationProxy;
 import org.geoserver.config.ConfigurationListener;
 import org.geoserver.config.GeoServer;
+import org.geoserver.config.GeoServerFacade;
 import org.geoserver.config.GeoServerFactory;
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.config.GeoServerLoader;
@@ -28,14 +27,39 @@ public class GeoServerImpl implements GeoServer {
     
     private static final Logger LOGGER = Logging.getLogger(GeoServerImpl.class);
 
+    /**
+     * factory for creating objects
+     */
     GeoServerFactory factory = new GeoServerFactoryImpl(this);
-    GeoServerInfo global = factory.createGlobal();
-    LoggingInfo logging = factory.createLogging();
+    
+    /**
+     * the catalog
+     */
     Catalog catalog;
     
-    List<ServiceInfo> services = new ArrayList<ServiceInfo>();
+    /**
+     * data access object
+     */
+    GeoServerFacade facade;
+    
+    /**
+     * listeners
+     */
     List<ConfigurationListener> listeners = new ArrayList<ConfigurationListener>();
 
+    public GeoServerImpl() {
+        this.facade = new DefaultGeoServerFacade(this);
+    }
+    
+    public GeoServerFacade getFacade() {
+        return facade;
+    }
+    
+    public void setFacade(GeoServerFacade facade) {
+        this.facade = facade;
+        facade.setGeoServer(this);
+    }
+    
     public GeoServerFactory getFactory() {
         return factory;
     }
@@ -53,31 +77,22 @@ public class GeoServerImpl implements GeoServer {
     }
     
     public GeoServerInfo getGlobal() {
-        if ( global == null ) {
-            return null;
-        }
-        
-        return ModificationProxy.create( global, GeoServerInfo.class );
+        return facade.getGlobal();
     }
     
     public void setGlobal(GeoServerInfo global) {
-        this.global = global;
+        facade.setGlobal(global);
         
         //fire the modification event
         fireGlobalPostModified();
     }
     
     public LoggingInfo getLogging() {
-        if ( logging == null ) {
-            return null;
-        }
-        
-        return ModificationProxy.create( logging, LoggingInfo.class );
+        return facade.getLogging();
     }
     
     public void setLogging(LoggingInfo logging) {
-        this.logging = logging;
-        
+        facade.setLogging(logging);
         fireLoggingPostModified();
     }
     
@@ -85,112 +100,70 @@ public class GeoServerImpl implements GeoServer {
         if ( service.getId() == null ) {
             throw new NullPointerException( "service id must not be null" );
         }
-        for ( ServiceInfo s : services ) {
-            if ( s.getId().equals( service.getId() ) ) {
-                throw new IllegalArgumentException( "service with id '" + s.getId() + "' already exists" );
-            }
+        if ( facade.getService(service.getId(), ServiceInfo.class) != null) {
+            throw new IllegalArgumentException( "service with id '" + service.getId() + "' already exists" );
         }
-        
-        //may be adding a proxy, need to unwrap
-        service = unwrap(service);
-        service.setGeoServer(this);
-        services.add( service );
+        facade.add(service);
         
         //fire post modification event
         firePostServiceModified(service);
     }
 
     public static <T> T unwrap(T obj) {
-        return ModificationProxy.unwrap(obj);
+        return DefaultGeoServerFacade.unwrap(obj);
     }
     
     public <T extends ServiceInfo> T getService(Class<T> clazz) {
-        for ( ServiceInfo si : services ) {
-           if( clazz.isAssignableFrom( si.getClass() ) ) {
-               return ModificationProxy.create( (T) si, clazz );
-           }
-        }
-        
-        return null;
+        return facade.getService(clazz);
     }
 
     public <T extends ServiceInfo> T getService(String id, Class<T> clazz) {
-        for ( ServiceInfo si : services ) {
-            if( id.equals( si.getId() ) ) {
-                return ModificationProxy.create( (T) si, clazz );
-            }
-         }
-         
-         return null;
+        return facade.getService(id, clazz);
     }
 
     public <T extends ServiceInfo> T getServiceByName(String name, Class<T> clazz) {
-        for ( ServiceInfo si : services ) {
-            if( name.equals( si.getName() ) ) {
-                return ModificationProxy.create( (T) si, clazz );
-            }
-         }
-         
-         return null;
+        return facade.getServiceByName(name, clazz);
     }
 
     public Collection<? extends ServiceInfo> getServices() {
-        return ModificationProxy.createList( services, ServiceInfo.class );
+        return facade.getServices();
     }
     
     public void remove(ServiceInfo service) {
-        services.remove( service );
+        facade.remove(service);
     }
 
     public void save(GeoServerInfo geoServer) {
-        ModificationProxy proxy = 
-            (ModificationProxy) Proxy.getInvocationHandler( geoServer );
-        
-        List propertyNames = proxy.getPropertyNames();
-        List oldValues = proxy.getOldValues();
-        List newValues = proxy.getNewValues();
-        
-        for ( ConfigurationListener l : listeners ) {
-            try {
-                l.handleGlobalChange( geoServer, propertyNames, oldValues, newValues);
-            }
-            catch( Exception e ) {
-                //log this
-            }
-        }
-        
-        proxy.commit();
+        facade.save(geoServer);
         
         //fire post modification event
         fireGlobalPostModified();
     }
 
     public void save(LoggingInfo logging) {
-        ModificationProxy proxy = 
-            (ModificationProxy) Proxy.getInvocationHandler( logging );
+        facade.save(logging);
         
-        List propertyNames = proxy.getPropertyNames();
-        List oldValues = proxy.getOldValues();
-        List newValues = proxy.getNewValues();
-        
+        //fire post modification event
+        fireLoggingPostModified();
+    } 
+    
+    void fireGlobalPostModified() {
         for ( ConfigurationListener l : listeners ) {
             try {
-                l.handleLoggingChange( logging, propertyNames, oldValues, newValues);
+                l.handlePostGlobalChange( facade.getGlobal() );
             }
             catch( Exception e ) {
                 //log this
             }
         }
+    }
+    
+    public void fireGlobalModified(GeoServerInfo global, List<String> changed, List oldValues, 
+        List newValues) {
         
-        proxy.commit();
-        
-        //fire post modification event
-        fireLoggingPostModified();
-    } 
-    void fireGlobalPostModified() {
-        for ( ConfigurationListener l : listeners ) {
+        for ( ConfigurationListener l : getListeners() ) {
             try {
-                l.handlePostGlobalChange( global );
+                l.handleGlobalChange( global, changed, oldValues, newValues);
             }
             catch( Exception e ) {
                 //log this
@@ -198,10 +171,23 @@ public class GeoServerImpl implements GeoServer {
         }
     }
 
+    public void fireLoggingModified(LoggingInfo logging, List<String> changed, List oldValues, 
+            List newValues) {
+            
+        for ( ConfigurationListener l : getListeners() ) {
+            try {
+                l.handleLoggingChange( logging, changed, oldValues, newValues);
+            }
+            catch( Exception e ) {
+                //log this
+            }
+        }
+    }
+    
     void fireLoggingPostModified() {
         for ( ConfigurationListener l : listeners ) {
             try {
-                l.handlePostLoggingChange( logging );
+                l.handlePostLoggingChange( facade.getLogging() );
             }
             catch( Exception e ) {
                 //log this
@@ -210,28 +196,25 @@ public class GeoServerImpl implements GeoServer {
     }
     
     public void save(ServiceInfo service) {
-        ModificationProxy proxy = 
-            (ModificationProxy) Proxy.getInvocationHandler( service );
-        
-        List propertyNames = proxy.getPropertyNames();
-        List oldValues = proxy.getOldValues();
-        List newValues = proxy.getNewValues();
-        
-        for ( ConfigurationListener l : listeners ) {
-            try {
-                l.handleServiceChange( service, propertyNames, oldValues, newValues);
-            }
-            catch( Exception e ) {
-                //log this
-            }
-        }
-        
-        proxy.commit();
+        facade.save(service);
         
         //fire post modification event
         firePostServiceModified(service);
     }
 
+    public void fireServiceModified(ServiceInfo service, List<String> changed, List oldValues, 
+            List newValues) {
+            
+        for ( ConfigurationListener l : getListeners() ) {
+            try {
+                l.handleServiceChange( service, changed, oldValues, newValues);
+            }
+            catch( Exception e ) {
+                //log this
+            }
+        }
+    }
+    
     void firePostServiceModified(ServiceInfo service) {
         for ( ConfigurationListener l : listeners ) {
             try {
@@ -266,9 +249,9 @@ public class GeoServerImpl implements GeoServer {
         }
 
         // internal cleanup
-        if ( global != null ) global.dispose();
+        
         if ( catalog != null ) catalog.dispose();
-        if ( services != null ) services.clear();
+        if ( facade != null ) facade.dispose();
         if ( listeners != null ) listeners.clear();
     }
 

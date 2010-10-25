@@ -59,6 +59,7 @@ public class GeoServerPropertyConfigurer extends PropertyPlaceholderConfigurer {
     GeoServerDataDirectory data;
     Resource location;
     boolean copyOutTemplate = true;
+    String comments;
     
     public GeoServerPropertyConfigurer(GeoServerDataDirectory data) {
         this.data = data;
@@ -66,6 +67,10 @@ public class GeoServerPropertyConfigurer extends PropertyPlaceholderConfigurer {
 
     public void setCopyOutTemplate(boolean copyOutTemplate) {
         this.copyOutTemplate = copyOutTemplate;
+    }
+    
+    public void setComments(String comments) {
+        this.comments = comments;
     }
     
     @Override
@@ -103,7 +108,7 @@ public class GeoServerPropertyConfigurer extends PropertyPlaceholderConfigurer {
                 f.getParentFile().mkdirs();
                 f.createNewFile();
                 FileOutputStream fout = new FileOutputStream(f);
-                props.store(fout, null);
+                props.store(fout, comments);
                 fout.flush();
                 fout.close();
             }

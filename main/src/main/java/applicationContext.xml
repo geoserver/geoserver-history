@@ -39,7 +39,7 @@
     <bean id="geoServer" class="org.geoserver.config.impl.GeoServerImpl">
       <property name="catalog" ref="catalog"/>
     </bean>
-    <bean id="geoServerLoader" class="org.geoserver.config.GeoServerLoader">
+    <bean id="geoServerLoader" class="org.geoserver.config.GeoServerLoaderProxy">
       <constructor-arg ref="resourceLoader"/>
     </bean>
     

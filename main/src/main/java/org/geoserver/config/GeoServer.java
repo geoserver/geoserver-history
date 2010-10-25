@@ -5,6 +5,7 @@
 package org.geoserver.config;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.geoserver.catalog.Catalog;
 
@@ -40,6 +41,11 @@ public interface GeoServer {
      */
     public static final Object CONFIGURATION_LOCK = new Object(); 
 
+    /**
+     * The configuration data access facade object.
+     */
+    GeoServerFacade getFacade();
+    
     /**
      * The global geoserver configuration.
      * 
@@ -174,6 +180,33 @@ public interface GeoServer {
      */
     Collection<ConfigurationListener> getListeners();
     
+    /**
+     * Fires the event for the global configuration being modified.
+     * <p> 
+     * This method should not be called by client code. It is meant to be called
+     * internally by the configuration subsystem.
+     * </p>
+     */
+    void fireGlobalModified(GeoServerInfo global, List<String> propertyNames, List oldValues, List newValues);
+    
+    /**
+     * Fires the event for the logging configuration being modified.
+     * <p> 
+     * This method should not be called by client code. It is meant to be called
+     * internally by the configuration subsystem.
+     * </p>
+     */
+    void fireLoggingModified(LoggingInfo logging, List<String> propertyNames, List oldValues, List newValues);
+    
+    /**
+     * Fires the event for a service configuration being modified.
+     * <p> 
+     * This method should not be called by client code. It is meant to be called
+     * internally by the configuration subsystem.
+     * </p>
+     */
+    void fireServiceModified(ServiceInfo service, List<String> propertyNames, List oldValues, List newValues);
+
     /**
      * Disposes the configuration. 
      */

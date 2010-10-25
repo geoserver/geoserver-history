@@ -8,7 +8,7 @@ import org.geoserver.config.ContactInfo;
 
 public class ContactInfoImpl implements ContactInfo {
 
-    String id;
+    String id = "contact";
 
     String address;
 

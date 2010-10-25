@@ -39,6 +39,7 @@ public class WMSStoreTest extends CatalogRESTTestSupport {
 
     public void testGetAllAsXML() throws Exception {
         Document dom = getAsDOM( "/rest/workspaces/sf/wmsstores.xml");
+        assertEquals("wmsStores", dom.getDocumentElement().getNodeName());
         assertEquals( catalog.getStoresByWorkspace( "sf", WMSStoreInfo.class ).size(), 
             dom.getElementsByTagName( "wmsStore").getLength() );
     }
@@ -128,7 +129,6 @@ public class WMSStoreTest extends CatalogRESTTestSupport {
     
     public void testGetAsJSON() throws Exception {
         JSON json = getAsJSON( "/rest/workspaces/sf/wmsstores/demo.json" );
-        print(json);
         
         JSONObject store = ((JSONObject)json).getJSONObject("wmsStore");
         assertNotNull(store);

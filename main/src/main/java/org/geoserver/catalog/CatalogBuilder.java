@@ -252,64 +252,7 @@ public class CatalogBuilder {
      * </p>
      */
     <T> void update(T original, T update, Class<T> clazz) {
-        ClassProperties properties = OwsUtils.getClassProperties(clazz);
-        for (String p : properties.properties()) {
-            Method getter = properties.getter(p, null);
-            if (getter == null) {
-                continue; // should not really happen
-            }
-
-            Class type = getter.getReturnType();
-            Method setter = properties.setter(p, type);
-
-            // do a check for read only before calling the getter to avoid an uneccesary call
-            if (setter == null
-                    && !(Collection.class.isAssignableFrom(type) || Map.class
-                            .isAssignableFrom(type))) {
-                // read only
-                continue;
-            }
-
-            try {
-                Object newValue = getter.invoke(update, null);
-                if (newValue == null) {
-                    continue;
-                    // TODO: make this a flag whether to overwrite with null values
-                }
-                if (setter == null) {
-                    if (Collection.class.isAssignableFrom(type)) {
-                        updateCollectionProperty(original, (Collection) newValue, getter);
-                    } else if (Map.class.isAssignableFrom(type)) {
-                        updateMapProperty(original, (Map) newValue, getter);
-                    }
-                    continue;
-                }
-
-                setter.invoke(original, newValue);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-    }
-
-    /**
-     * Helper method for updating a collection based property.
-     */
-    void updateCollectionProperty(Object object, Collection newValue, Method getter)
-            throws Exception {
-        Collection oldValue = (Collection) getter.invoke(object, null);
-        oldValue.clear();
-        oldValue.addAll(newValue);
-    }
-
-    /**
-     * Helper method for updating a map based property.
-     */
-
-    void updateMapProperty(Object object, Map newValue, Method getter) throws Exception {
-        Map oldValue = (Map) getter.invoke(object, null);
-        oldValue.clear();
-        oldValue.putAll(newValue);
+        OwsUtils.copy(update, original, clazz);
     }
 
     /**

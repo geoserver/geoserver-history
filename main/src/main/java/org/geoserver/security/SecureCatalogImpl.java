@@ -14,7 +14,9 @@ import org.acegisecurity.Authentication;
 import org.acegisecurity.InsufficientAuthenticationException;
 import org.acegisecurity.context.SecurityContextHolder;
 import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.CatalogFacade;
 import org.geoserver.catalog.CatalogFactory;
+import org.geoserver.catalog.CatalogInfo;
 import org.geoserver.catalog.CatalogVisitor;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.CoverageStoreInfo;
@@ -848,36 +850,66 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
         delegate.add(unwrap(layerGroup));
     }
 
+    public LayerGroupInfo detach(LayerGroupInfo layerGroup) {
+        return delegate.detach(layerGroup);
+    }
     
-
     public void add(LayerInfo layer) {
         delegate.add(unwrap(layer));
     }
 
+    public LayerInfo detach(LayerInfo layer) {
+        return delegate.detach(layer);
+    }
+    
     public void add(MapInfo map) {
         delegate.add(map);
+    }
+    
+    public MapInfo detach(MapInfo map) {
+        return delegate.detach(map);
     }
 
     public void add(NamespaceInfo namespace) {
         delegate.add(namespace);
     }
 
+    public NamespaceInfo detach(NamespaceInfo namespace) {
+        return delegate.detach(namespace);
+    }
+
     public void add(ResourceInfo resource) {
         delegate.add(unwrap(resource));
     }
 
+    public <T extends ResourceInfo> T detach(T resource) {
+        return delegate.detach(resource);
+    }
+    
     public void add(StoreInfo store) {
         delegate.add(unwrap(store));
+    }
+    
+    public <T extends StoreInfo> T detach(T store) {
+        return delegate.detach(store);
     }
 
     public void add(StyleInfo style) {
         delegate.add(style);
     }
 
+    public StyleInfo detach(StyleInfo style) {
+        return delegate.detach(style);
+    }
+
     public void add(WorkspaceInfo workspace) {
         delegate.add(workspace);
     }
 
+    public WorkspaceInfo detach(WorkspaceInfo workspace) {
+        return delegate.detach(workspace);
+    }
+    
     public void addListener(CatalogListener listener) {
         delegate.addListener(listener);
     }
@@ -886,6 +918,10 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
         delegate.dispose();
     }
 
+    public CatalogFacade getFacade() {
+        return delegate.getFacade();
+    }
+    
     public CatalogFactory getFactory() {
         return delegate.getFactory();
     }
@@ -894,6 +930,23 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
         return delegate.getListeners();
     }
 
+    public void fireAdded(CatalogInfo object) {
+        delegate.fireAdded(object);
+    }
+    
+    public void fireModified(CatalogInfo object, List<String> propertyNames, List oldValues,
+            List newValues) {
+        delegate.fireModified(object, propertyNames, oldValues, newValues);
+    }
+    
+    public void firePostModified(CatalogInfo object) {
+        delegate.firePostModified(object);
+    }
+    
+    public void fireRemoved(CatalogInfo object) {
+        delegate.fireRemoved(object);
+    }
+    
     // TODO: why is resource pool being exposed???
     public ResourcePool getResourcePool() {
         return delegate.getResourcePool();

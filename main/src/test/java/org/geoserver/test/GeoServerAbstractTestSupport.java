@@ -52,6 +52,7 @@ import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerDataDirectory;
 import org.geoserver.config.GeoServerLoader;
+import org.geoserver.config.GeoServerLoaderProxy;
 import org.geoserver.data.test.TestData;
 import org.geoserver.logging.LoggingUtils;
 import org.geoserver.ows.util.KvpUtils;
@@ -280,7 +281,7 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
      * </p>
      */
     protected void reloadCatalogAndConfiguration() throws Exception {
-        GeoServerLoader loader = GeoServerExtensions.bean( GeoServerLoader.class , applicationContext );
+        GeoServerLoaderProxy loader = GeoServerExtensions.bean( GeoServerLoaderProxy.class , applicationContext );
         loader.reload();
     }
     
