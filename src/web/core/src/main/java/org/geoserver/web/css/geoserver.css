@@ -715,6 +715,7 @@ background-position: 0 -2px;
 .page-header {
 background: #fff url(../img/page-header-bg.png) repeat-x;
 margin-bottom: 1em;
+padding-top: 18px;
 }
 
 * html .page-header { /* IE6 */
