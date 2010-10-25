@@ -8,12 +8,22 @@ import org.geoserver.config.LoggingInfo;
  */
 public class LoggingInfoImpl implements LoggingInfo {
 
+    String id;
+    
     String level;
 
     String location;
 
     boolean stdOutLogging;
 
+    public String getId() {
+        return id;
+    }
+    
+    public void setId(String id) {
+        this.id = id;
+    }
+    
     public String getLevel() {
         return level;
     }

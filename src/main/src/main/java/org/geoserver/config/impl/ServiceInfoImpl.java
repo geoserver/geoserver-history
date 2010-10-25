@@ -18,7 +18,7 @@ public class ServiceInfoImpl implements ServiceInfo {
 
     protected String id;
 
-    protected GeoServer geoServer;
+    protected transient GeoServer geoServer;
 
     protected boolean enabled = true;
 

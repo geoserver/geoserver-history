@@ -16,6 +16,9 @@ public class WMSStoreInfoImpl extends StoreInfoImpl implements WMSStoreInfo {
 
     String capabilitiesURL;
 
+    protected WMSStoreInfoImpl() {
+    }
+    
     public WMSStoreInfoImpl(CatalogImpl catalog) {
         super(catalog);
     }

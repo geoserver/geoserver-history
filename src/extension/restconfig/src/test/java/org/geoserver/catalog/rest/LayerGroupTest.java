@@ -40,6 +40,7 @@ public class LayerGroupTest extends CatalogRESTTestSupport {
     }
     
     public void testGetAsXML() throws Exception {
+        print(get("/rest/layergroups/sfLayerGroup.xml"));
         Document dom = getAsDOM( "/rest/layergroups/sfLayerGroup.xml");
         assertEquals( "layerGroup", dom.getDocumentElement().getNodeName() );
         assertXpathEvaluatesTo("sfLayerGroup", "/layerGroup/name", dom );

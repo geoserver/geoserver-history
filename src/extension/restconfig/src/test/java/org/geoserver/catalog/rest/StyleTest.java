@@ -33,6 +33,7 @@ public class StyleTest extends CatalogRESTTestSupport {
     
     public void testGetAllASJSON() throws Exception {
         JSON json = getAsJSON("/rest/styles.json");
+        
         List<StyleInfo> styles = catalog.getStyles();
         assertEquals( styles.size(), 
             ((JSONObject) json).getJSONObject("styles").getJSONArray("style").size());
@@ -244,7 +245,7 @@ public class StyleTest extends CatalogRESTTestSupport {
         
         LayerInfo l2 = catalog.getLayerByName( "cite:BasicPolygons" );
         assertEquals( nstyles+1, l2.getStyles().size() );
-        assertEquals( catalog.getStyleByName( "Ponds"), l.getDefaultStyle() );
+        assertEquals( catalog.getStyleByName( "Ponds"), l2.getDefaultStyle() );
     }
     
     public void testPostByLayerExistingWithDefault() throws Exception {
@@ -263,6 +264,6 @@ public class StyleTest extends CatalogRESTTestSupport {
         
         LayerInfo l2 = catalog.getLayerByName("cite:BasicPolygons");
         assertEquals( nstyles, l2.getStyles().size() );
-        assertEquals( catalog.getStyleByName( "Ponds"), l.getDefaultStyle() );
+        assertEquals( catalog.getStyleByName( "Ponds"), l2.getDefaultStyle() );
     }
 }

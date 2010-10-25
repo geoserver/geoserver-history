@@ -4,12 +4,18 @@
  */
 package org.geoserver.catalog.rest;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.config.util.XStreamPersister;
 import org.geoserver.ows.util.OwsUtils;
+import org.geoserver.rest.format.ReflectiveJSONFormat;
+import org.geoserver.rest.format.ReflectiveXMLFormat;
 import org.restlet.Context;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
@@ -36,16 +42,54 @@ public abstract class AbstractCatalogListResource extends CatalogResourceBase {
     
     protected abstract Collection handleListGet() throws Exception;
     
+    //JD: we create custom formats here because we need to set up the collection aliases
+    // correctly, basically whatever collection we get back we ant to alias to layers, featureTypes,
+    // coverages, styles, etc...
+    @Override
+    protected ReflectiveJSONFormat createJSONFormat(Request request, Response response) {
+        final ReflectiveJSONFormat f = super.createJSONFormat(request, response);
+        return new ReflectiveJSONFormat() {
+            @Override
+            public XStream getXStream() {
+                return f.getXStream();
+            }
+            
+            @Override
+            protected void write(Object data, OutputStream output) throws IOException {
+                aliasCollection(data, f.getXStream());
+                f.getXStream().toXML(data, output);
+            }
+        };
+    }
+    
+    @Override
+    protected ReflectiveXMLFormat createXMLFormat(Request request, Response response) {
+        final ReflectiveXMLFormat f = super.createXMLFormat(request, response);
+        return new ReflectiveXMLFormat() {
+            @Override
+            public XStream getXStream() {
+                return f.getXStream();
+            }
+            
+            @Override
+            protected void write(Object data, OutputStream output) throws IOException {
+                aliasCollection(data, f.getXStream());
+                f.getXStream().toXML(data, output);
+            }
+        };
+    }
+    
     @Override
     protected void configureXStream(XStream xstream) {
         XStreamPersister xp = xpf.createXMLPersister();
         final String name = xp.getClassAliasingMapper().serializedClass( clazz );
-        
         xstream.alias( name, clazz );
-        aliasCollection( name + "s", xstream );
         
         xstream.registerConverter( 
             new CollectionConverter(xstream.getMapper()) {
+                public boolean canConvert(Class type) {
+                    return Collection.class.isAssignableFrom(type);
+                };
                 @Override
                 protected void writeItem(Object item,
                         MarshallingContext context,
@@ -100,7 +144,9 @@ public abstract class AbstractCatalogListResource extends CatalogResourceBase {
      * to work with a Set.
      * </p>
      */
-    protected void aliasCollection( String alias, XStream xstream ) {
-        xstream.alias( alias, Collection.class, ArrayList.class);
+    protected void aliasCollection( Object data, XStream xstream ) {
+        XStreamPersister xp = xpf.createXMLPersister();
+        final String alias = xp.getClassAliasingMapper().serializedClass( clazz );
+        xstream.alias(alias + "s", Collection.class, data.getClass());
     }
 }

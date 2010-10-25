@@ -127,14 +127,20 @@ public class CatalogConfigurationTest extends GeoServerTestSupport {
 
         // 5) Introducing new LayerInfo
         ResourceInfo resInfo = li.getResource();
+        
+        //JD: not sure what this next line is really doing, disabling it because it changes the 
+        // namespace and does not save it... and the catalog does not cascade changes
+        //resInfo.getNamespace().setPrefix("sf");
+        
         resInfo.setName("hithere");
-        resInfo.getNamespace().setPrefix("sf");
+        cat.save(resInfo);
+        
         LayerInfo layerInfo = cat.getFactory().createLayer();
         layerInfo.setResource(resInfo);
         layerInfo.setName(resInfo.getPrefixedName());
 
         cat.add(layerInfo);
-        String newLayerName = layerInfo.getName();
+        String newLayerName = layerInfo.getResource().getPrefixedName();
         TileLayer tl3 = tld.getTileLayer(newLayerName);
         assertEquals(newLayerName, tl3.getName());
 

@@ -13,8 +13,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -32,20 +30,16 @@ import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
-import org.geoserver.catalog.MetadataMap;
 import org.geoserver.catalog.NamespaceInfo;
-import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.catalog.WMSLayerInfo;
 import org.geoserver.catalog.WMSStoreInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.catalog.Wrapper;
-import org.geoserver.catalog.event.CatalogListener;
 import org.geoserver.catalog.impl.CatalogImpl;
 import org.geoserver.catalog.util.LegacyCatalogImporter;
 import org.geoserver.catalog.util.LegacyCatalogReader;
 import org.geoserver.catalog.util.LegacyFeatureTypeInfoReader;
-import org.geoserver.config.impl.CoverageAccessInfoImpl;
 import org.geoserver.config.impl.GeoServerInfoImpl;
 import org.geoserver.config.util.LegacyConfigurationImporter;
 import org.geoserver.config.util.XStreamPersister;
@@ -65,19 +59,17 @@ import org.vfny.geoserver.global.GeoserverDataDirectory;
 /**
  * Initializes GeoServer configuration and catalog on startup.
  * <p>
- * This class is registered in a spring context and post processes the 
- * singleton beans {@link Catalog} and {@link GeoServer}, populating them 
- * with data from the GeoServer data directory. 
+ * This class post processes the singleton beans {@link Catalog} and {@link GeoServer}, populating 
+ * them from stored configuration. 
  * </p>
  * @author Justin Deoliveira, The Open Planning Project
  *
  */
-public class GeoServerLoader implements BeanPostProcessor, DisposableBean, 
-    ApplicationContextAware {
+public abstract class GeoServerLoader {
 
     static Logger LOGGER = Logging.getLogger( "org.geoserver" );
     
-    GeoServerResourceLoader resourceLoader;
+    protected GeoServerResourceLoader resourceLoader;
     GeoServer geoserver;
     XStreamPersisterFactory xpf = new XStreamPersisterFactory();
     
@@ -122,6 +114,9 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
                 XStreamPersister xp = xpf.createXMLPersister();
                 xp.setCatalog( catalog );
                 loadCatalog( catalog, xp );
+                
+                //initialize styles
+                initializeStyles(catalog, xp);
             } 
             catch (Exception e) {
                 throw new RuntimeException( e );
@@ -132,6 +127,9 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
             geoserver = (GeoServer) bean;
             try {
                 loadGeoServer( geoserver, xpf.createXMLPersister() );
+                
+                //load initializers
+                loadInitializers(geoserver);
             } 
             catch (Exception e) {
                 throw new RuntimeException( e );
@@ -141,114 +139,12 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
         
         return bean;
     }
-    
-    protected void loadCatalog(Catalog catalog, XStreamPersister xp) throws Exception {
-        catalog.setResourceLoader(resourceLoader);
 
-        //look for catalog.xml, if it exists assume we are dealing with 
-        // an old data directory
-        File f = resourceLoader.find( "catalog.xml" );
-        if ( f == null ) {
-            //assume 2.x style data directory
-            CatalogImpl catalog2 = (CatalogImpl) readCatalog( xp );
-            ((CatalogImpl)catalog).sync( catalog2 );
-        } else {
-            // import old style catalog, register the persister now so that we start 
-            // with a new version of the catalog
-            CatalogImpl catalog2 = (CatalogImpl) readLegacyCatalog( f, xp );
-            ((CatalogImpl)catalog).sync( catalog2 );
-        }
-        
-        //initialize styles
-        initializeStyles(catalog, xp);
-        
-        if ( !legacy ) {
-            //add the listener which will persist changes
-            catalog.addListener( new GeoServerPersister( resourceLoader, xp ) );
-        }
-    }
-    
-    protected void loadGeoServer(final GeoServer geoServer, XStreamPersister xp) throws Exception {
-        //add event listener which persists services
-        final List<XStreamServiceLoader> loaders = 
-            GeoServerExtensions.extensions( XStreamServiceLoader.class );
-        geoServer.addListener( 
-            new ConfigurationListenerAdapter() {
-                @Override
-                public void handlePostServiceChange(ServiceInfo service) {
-                    for ( XStreamServiceLoader<ServiceInfo> l : loaders  ) {
-                        if ( l.getServiceClass().isInstance( service ) ) {
-                            try {
-                                l.save( service, geoServer );
-                            } catch (Throwable t) {
-                                //TODO: log this
-                                t.printStackTrace();
-                            }
-                        }
-                    }
-                }
-            }
-        );
-        
-        //look for services.xml, if it exists assume we are dealing with 
-        // an old data directory
-        File f = resourceLoader.find( "services.xml" );
-        if ( f == null ) {
-            //assume 2.x style
-            f = resourceLoader.find( "global.xml");
-            if ( f != null ) {
-                BufferedInputStream in = new BufferedInputStream( new FileInputStream( f ) );
-                GeoServerInfoImpl global = (GeoServerInfoImpl) xpf.createXMLPersister().load( in, GeoServerInfo.class );
-                // fill in default collection values if needed
-                //JD: this should not be here, it should be moved to a resolve() method
-                // on GeoServer, like the way the catalog does it
-                if(global.getMetadata() == null)
-                    global.setMetadata(new MetadataMap());
-                if(global.getClientProperties() == null)
-                    global.setClientProperties(new HashMap<Object, Object>());
-                if (global.getCoverageAccess() == null){
-                    global.setCoverageAccess(new CoverageAccessInfoImpl());
-                }
-                geoServer.setGlobal( global );    
-                
-                
-            }
-            
-            //load logging
-            f = resourceLoader.find( "logging.xml" );
-            if ( f != null ) {
-                BufferedInputStream in = new BufferedInputStream( new FileInputStream( f ) );
-                LoggingInfo logging = xpf.createXMLPersister().load( in, LoggingInfo.class );
-                geoServer.setLogging( logging );
-            }
-            //load services
-            for ( XStreamServiceLoader<ServiceInfo> l : loaders ) {
-                try {
-                    ServiceInfo s = l.load( geoServer );
-                    geoServer.add( s );
-                    
-                    LOGGER.info( "Loaded service '" +  s.getId() + "', " + (s.isEnabled()?"enabled":"disabled") );
-                }
-                catch( Throwable t ) {
-                    //TODO: log this
-                    t.printStackTrace();
-                }
-            }
-        } else {
-            //add listener now as a converter which will convert from the old style 
-            // data directory to the new
-            GeoServerPersister p = new GeoServerPersister( resourceLoader, xp );
-            geoServer.addListener( p );
-            
-            //import old style services.xml
-            new LegacyConfigurationImporter(geoServer).imprt(resourceLoader.getBaseDirectory());
-            
-            geoServer.removeListener( p );
-            
-            //rename the services.xml file
-            f.renameTo( new File( f.getParentFile(), "services.xml.old" ) );
-        }
-        
+    protected abstract void loadCatalog(Catalog catalog, XStreamPersister xp) throws Exception;
+
+    protected abstract void loadGeoServer(final GeoServer geoServer, XStreamPersister xp) throws Exception;
+
+    protected void loadInitializers(GeoServer geoServer) throws Exception {
         //load initializer extensions
         List<GeoServerInitializer> initializers = GeoServerExtensions.extensions( GeoServerInitializer.class );
         for ( GeoServerInitializer initer : initializers ) {
@@ -260,72 +156,13 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
                 t.printStackTrace();
             }
         }
-        
-        geoServer.addListener( new GeoServerPersister( resourceLoader, xp ) );
-    }
-    
-    //JD: NOTE! This method is no longer used on trunk
-    protected void initialize() {
-        //load catalog
-        LegacyCatalogImporter catalogImporter = new LegacyCatalogImporter();
-        catalogImporter.setResourceLoader(resourceLoader);
-        Catalog catalog = geoserver.getCatalog();
-        if(catalog instanceof Wrapper && ((Wrapper) catalog).isWrapperFor(Catalog.class)) {
-            catalog = ((Wrapper) catalog).unwrap(Catalog.class);
-        }
-        catalogImporter.setCatalog(catalog);
-        
-        try {
-            catalogImporter.imprt( resourceLoader.getBaseDirectory() );
-        }
-        catch(Exception e) {
-            throw new RuntimeException( e );
-        }
-        
-        //load configuration
-        LegacyConfigurationImporter importer = new LegacyConfigurationImporter();
-        importer.setConfiguration(geoserver);
-        
-        try {
-            importer.imprt( resourceLoader.getBaseDirectory() );
-        } 
-        catch (Exception e) {
-            throw new RuntimeException( e );
-        }
-        
-        //load initializer extensions
-        List<GeoServerInitializer> initializers = GeoServerExtensions.extensions( GeoServerInitializer.class );
-        for ( GeoServerInitializer initer : initializers ) {
-            try {
-                initer.initialize( geoserver );
-            }
-            catch( Throwable t ) {
-                //TODO: log this
-                t.printStackTrace();
-            }
-        }
-        
-        //load listeners
-        List<CatalogListener> catalogListeners = GeoServerExtensions.extensions( CatalogListener.class );
-        for ( CatalogListener l : catalogListeners ) {
-            catalog.addListener( l );
-        }
-        List<ConfigurationListener> configListeners = GeoServerExtensions.extensions( ConfigurationListener.class );
-        for ( ConfigurationListener l : configListeners ) {
-            geoserver.addListener( l );
-        }
     }
     
     /**
      * Does some post processing on the catalog to ensure that the "well-known" styles
      * are always around.
      */
-    void initializeStyles( Catalog catalog, XStreamPersister xp) throws IOException {
-        
-        //add a persister temporarily in case the styles don't exist on disk
-        GeoServerPersister p = new GeoServerPersister(resourceLoader, xp);
-        catalog.addListener(p);
-        
+    protected void initializeStyles( Catalog catalog, XStreamPersister xp) throws IOException {
         if ( catalog.getStyleByName( StyleInfo.DEFAULT_POINT ) == null ) {
             initializeStyle( catalog, StyleInfo.DEFAULT_POINT, "default_point.sld" );
         }
@@ -338,8 +175,6 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
         if ( catalog.getStyleByName( StyleInfo.DEFAULT_RASTER ) == null ) {
             initializeStyle( catalog, StyleInfo.DEFAULT_RASTER, "default_raster.sld" );
         }
-        
-        catalog.removeListener(p);
     }
     
     /**
@@ -349,7 +184,7 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
         
         //copy the file out to the data directory if necessary
         if ( resourceLoader.find( "styles", sld ) == null ) {
-            FileUtils.copyURLToFile(getClass().getResource(sld), 
+            FileUtils.copyURLToFile(GeoServerLoader.class.getResource(sld), 
                 new File( resourceLoader.findOrCreateDirectory("styles" ), sld) );
         }
         
@@ -375,87 +210,20 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
         loadCatalog( catalog, xp );
         loadGeoServer( geoserver, xp);
     }
-    
-    //TODO: kill this method, it is not longer needed since persistance is event based
-    public void persist() throws Exception {
-        //TODO: make the configuration backend pluggable... or loadable
-        // from application context, or web.xml, or env variable, etc...
-        XStreamPersister p = xpf.createXMLPersister();
-        BufferedOutputStream out = new BufferedOutputStream( 
-            new FileOutputStream( resourceLoader.createFile( "catalog2.xml" ) )
-        );
-        
-        //persist catalog
-        Catalog catalog = geoserver.getCatalog();
-        if( catalog instanceof Wrapper ) {
-            catalog = ((Wrapper)catalog).unwrap( Catalog.class );
-        }
-        p.save( catalog, out );
-        out.flush();
-        out.close();
-     
-        //persist resources
-        File workspaces = resourceLoader.findOrCreateDirectory( "workspaces" );
-        for ( ResourceInfo r : catalog.getResources( ResourceInfo.class ) ) {
-            WorkspaceInfo ws = r.getStore().getWorkspace();
-            File workspace = new File( workspaces, ws.getName() );
-            if ( !workspace.exists() ) {
-                workspace.mkdir();
-            }
-            
-            String dirName = r.getStore().getName() + "_" + r.getNativeName();
-            //dirName = URLEncoder.encode( dirName, "UTF-8" );
-            
-            File dir = new File( workspace, dirName );
-            if ( !dir.exists() ) {
-                dir.mkdir();
-            }
-            
-            File info = new File( dir, "resource.xml" );
-            try {
-                persist( p, r, info );
-            }
-            catch( Exception e ) {
-                LOGGER.log( Level.WARNING, "Error persisting '" + r.getName() + "'", e );
-            }
-            
-            //persist layers publishing the resource
-            LayerInfo l = catalog.getLayers( r ).get( 0 );
-            try {
-                persist( p, l, new File( dir, "layer.xml" ) );
-            }
-            catch( Exception e ) {
-                LOGGER.log( Level.WARNING, "Error persisting layer '" + l.getName() + "'", e );
-            }
-        }
-        
-        
-        //persist global
-        try {
-            persist( p, geoserver.getGlobal(), resourceLoader.createFile( "global.xml" ) );
-        }
-        catch( Exception e ) {
-            LOGGER.log( Level.WARNING, "Error persisting global configuration.", e );
-        }
-        
-        //persist services
-        Collection services = geoserver.getServices();
-        List<ServiceLoader> loaders = GeoServerExtensions.extensions( ServiceLoader.class );
-        
-        for ( Iterator s = services.iterator(); s.hasNext(); ) {
-            ServiceInfo service = (ServiceInfo) s.next();
-            for ( ServiceLoader loader : loaders ) {
-                if (loader.getServiceClass().isInstance( service ) ) {
-                    try {
-                        loader.save( service, geoserver );
-                        break;
-                    }
-                    catch( Throwable t ) {
-                        LOGGER.warning( "Error persisting service: " + service.getId() );
-                        LOGGER.log( Level.INFO, "", t );
-                    }
-                }
-            }
+
+    protected void readCatalog(Catalog catalog, XStreamPersister xp) throws Exception {
+        //look for catalog.xml, if it exists assume we are dealing with 
+        // an old data directory
+        File f = resourceLoader.find( "catalog.xml" );
+        if ( f == null ) {
+            //assume 2.x style data directory
+            CatalogImpl catalog2 = (CatalogImpl) readCatalog( xp );
+            ((CatalogImpl)catalog).sync( catalog2 );
+        } else {
+            // import old style catalog, register the persister now so that we start 
+            // with a new version of the catalog
+            CatalogImpl catalog2 = (CatalogImpl) readLegacyCatalog( f, xp );
+            ((CatalogImpl)catalog).sync( catalog2 );
         }
     }
     
@@ -833,6 +601,58 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
         }
         
         return catalog2;
+    }
+    
+    protected void readConfiguration(GeoServer geoServer, XStreamPersister xp) throws Exception {
+        //look for services.xml, if it exists assume we are dealing with 
+        // an old data directory
+        File f = resourceLoader.find( "services.xml" );
+        if ( f == null ) {
+            //assume 2.x style
+            f = resourceLoader.find( "global.xml");
+            if ( f != null ) {
+                BufferedInputStream in = new BufferedInputStream( new FileInputStream( f ) );
+                GeoServerInfoImpl global = (GeoServerInfoImpl) xpf.createXMLPersister().load( in, GeoServerInfo.class );
+                geoServer.setGlobal( global );
+            }
+            
+            //load logging
+            f = resourceLoader.find( "logging.xml" );
+            if ( f != null ) {
+                BufferedInputStream in = new BufferedInputStream( new FileInputStream( f ) );
+                LoggingInfo logging = xpf.createXMLPersister().load( in, LoggingInfo.class );
+                geoServer.setLogging( logging );
+            }
+            //load services
+            final List<XStreamServiceLoader> loaders = 
+                GeoServerExtensions.extensions( XStreamServiceLoader.class );
+            for ( XStreamServiceLoader<ServiceInfo> l : loaders ) {
+                try {
+                    ServiceInfo s = l.load( geoServer );
+                    geoServer.add( s );
+                    
+                    LOGGER.info( "Loaded service '" +  s.getId() + "', " + (s.isEnabled()?"enabled":"disabled") );
+                }
+                catch( Throwable t ) {
+                    //TODO: log this
+                    t.printStackTrace();
+                }
+            }
+        } else {
+            //add listener now as a converter which will convert from the old style 
+            // data directory to the new
+            GeoServerPersister p = new GeoServerPersister( resourceLoader, xp );
+            geoServer.addListener( p );
+            
+            //import old style services.xml
+            new LegacyConfigurationImporter(geoServer).imprt(resourceLoader.getBaseDirectory());
+            
+            geoServer.removeListener( p );
+            
+            //rename the services.xml file
+            f.renameTo( new File( f.getParentFile(), "services.xml.old" ) );
+        }
+        
     }
     
     /**

@@ -8,6 +8,9 @@ import java.util.Collection;
 import java.util.List;
 
 import org.geoserver.catalog.event.CatalogListener;
+import org.geoserver.catalog.event.impl.CatalogAddEventImpl;
+import org.geoserver.catalog.event.impl.CatalogModifyEventImpl;
+import org.geoserver.catalog.event.impl.CatalogPostModifyEventImpl;
 import org.geoserver.platform.GeoServerResourceLoader;
 import org.opengis.feature.type.Name;
 
@@ -132,6 +135,11 @@ public interface Catalog extends CatalogInfo {
     public static String DEFAULT = "default";
 
     /**
+     * The data access facade.
+     */
+    CatalogFacade getFacade();
+    
+    /**
      * The factory used to create catalog objects.
      * 
      */
@@ -152,6 +160,19 @@ public interface Catalog extends CatalogInfo {
      */
     void save(StoreInfo store);
 
+    /**
+     * Detaches the store from the catalog.
+     * <p>
+     * This method does not remove the object from the catalog, it "unnattaches" the object 
+     * resolving any proxies.
+     * </p>
+     * <p>
+     * In the even the specified object does not exist in the catalog it itself should be returned,
+     * this method should never return null.
+     * </p>
+     */
+    <T extends StoreInfo> T detach(T store);
+        
     /**
      * Returns the store with the specified id.
      * <p>
@@ -595,6 +616,19 @@ public interface Catalog extends CatalogInfo {
     void save(ResourceInfo resource);
 
     /**
+     * Detatches the resource from the catalog.
+     * <p>
+     * This method does not remove the object from the catalog, it "unnattaches" the object 
+     * resolving any proxies.
+     * </p>
+     * <p>
+     * In the even the specified object does not exist in the catalog it itself should be returned,
+     * this method should never return null.
+     * </p>
+     */
+    <T extends ResourceInfo> T detach(T resource);
+    
+    /**
      * All resources in the catalog of the specified type.
      * <p>
      * The <tt>clazz</tt> parameter is used to filter the types of resources
@@ -1009,6 +1043,19 @@ public interface Catalog extends CatalogInfo {
     void save(LayerInfo layer);
     
     /**
+     * Detatches the layer from the catalog.
+     * <p>
+     * This method does not remove the object from the catalog, it "unnattaches" the object 
+     * resolving any proxies.
+     * </p>
+     * <p>
+     * In the even the specified object does not exist in the catalog it itself should be returned,
+     * this method should never return null.
+     * </p>
+     */
+    LayerInfo detach(LayerInfo layer);
+    
+    /**
      * All coverages which are part of the specified store.
      */
     List<CoverageInfo> getCoveragesByStore(CoverageStoreInfo store);
@@ -1073,6 +1120,19 @@ public interface Catalog extends CatalogInfo {
      * Saves a map which has been modified.
      */
     void save( MapInfo map);
+    
+    /**
+     * Detatches the map from the catalog.
+     * <p>
+     * This method does not remove the object from the catalog, it "unnattaches" the object 
+     * resolving any proxies.
+     * </p>
+     * <p>
+     * In the even the specified object does not exist in the catalog it itself should be returned,
+     * this method should never return null.
+     * </p>
+     */
+    MapInfo detach(MapInfo map);
 
     /**
      * All maps in the catalog.
@@ -1112,6 +1172,19 @@ public interface Catalog extends CatalogInfo {
     void save(LayerGroupInfo layerGroup);
     
     /**
+     * Detatches the layer group from the catalog.
+     * <p>
+     * This method does not remove the object from the catalog, it "unnattaches" the object 
+     * resolving any proxies.
+     * </p>
+     * <p>
+     * In the even the specified object does not exist in the catalog it itself should be returned,
+     * this method should never return null.
+     * </p>
+     */
+    LayerGroupInfo detach(LayerGroupInfo layerGroup);
+    
+    /**
      * All layer groups in the catalog.
      */
     List<LayerGroupInfo> getLayerGroups();
@@ -1143,6 +1216,19 @@ public interface Catalog extends CatalogInfo {
      * Saves a style which has been modified.
      */
     void save(StyleInfo style);
+    
+    /**
+     * Detatches the style from the catalog.
+     * <p>
+     * This method does not remove the object from the catalog, it "unnattaches" the object 
+     * resolving any proxies.
+     * </p>
+     * <p>
+     * In the even the specified object does not exist in the catalog it itself should be returned,
+     * this method should never return null.
+     * </p>
+     */
+    StyleInfo detach(StyleInfo style);
     
     /**
      * Returns the style matching a particular id, or <code>null</code> if no
@@ -1183,6 +1269,19 @@ public interface Catalog extends CatalogInfo {
      * Saves a namespace which has been modified.
      */
     void save(NamespaceInfo namespace);
+    
+    /**
+     * Detatches the namespace from the catalog.
+     * <p>
+     * This method does not remove the object from the catalog, it "unnattaches" the object 
+     * resolving any proxies.
+     * </p>
+     * <p>
+     * In the even the specified object does not exist in the catalog it itself should be returned,
+     * this method should never return null.
+     * </p>
+     */
+    NamespaceInfo detach(NamespaceInfo namespace);
     
     /**
      * Returns the namespace matching the specified id.
@@ -1246,6 +1345,19 @@ public interface Catalog extends CatalogInfo {
     void save(WorkspaceInfo workspace);
     
     /**
+     * Detatches the workspace from the catalog.
+     * <p>
+     * This method does not remove the object from the catalog, it "unnattaches" the object 
+     * resolving any proxies.
+     * </p>
+     * <p>
+     * In the even the specified object does not exist in the catalog it itself should be returned,
+     * this method should never return null.
+     * </p>
+     */
+    WorkspaceInfo detach(WorkspaceInfo workspace);
+    
+    /**
      * The default workspace for the catalog.
      */
     WorkspaceInfo getDefaultWorkspace();
@@ -1277,7 +1389,7 @@ public interface Catalog extends CatalogInfo {
      * @param The name of the store, or null or {@link #DEFAULT} to get the default workspace
      */
     WorkspaceInfo getWorkspaceByName( String name );
-    
+
     /**
      * catalog listeners.
      * 
@@ -1294,6 +1406,43 @@ public interface Catalog extends CatalogInfo {
      */
     void removeListener(CatalogListener listener);
 
+    /**
+     * Fires the event for an object being added to the catalog.
+     * <p>
+     * This method should not be called by client code. It is meant to be called
+     * interally by the catalog subsystem.
+     * </p>
+     */
+    void fireAdded(CatalogInfo object);
+    
+    /**
+     * Fires the event for an object being modified in the catalog.
+     * <p>
+     * This method should not be called by client code. It is meant to be called
+     * interally by the catalog subsystem.
+     * </p>
+     */
+    void fireModified(CatalogInfo object, List<String> propertyNames, List oldValues,
+            List newValues);
+
+    /**
+     * Fires the event for an object that was modified in the catalog.
+     * <p>
+     * This method should not be called by client code. It is meant to be called
+     * interally by the catalog subsystem.
+     * </p>
+     */
+    void firePostModified(CatalogInfo object);
+    
+    /**
+     * Fires the event for an object being removed from the catalog.
+     * <p>
+     * This method should not be called by client code. It is meant to be called
+     * interally by the catalog subsystem.
+     * </p>
+     */
+    void fireRemoved(CatalogInfo object);
+    
     /**
      * Returns the pool or cache for resources.
      * <p>

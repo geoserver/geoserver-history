@@ -174,12 +174,65 @@ public class JAIInfoImpl implements Serializable, JAIInfo {
         this.tileCache = tileCache;
     }
 
-	public boolean isAllowNativeMosaic() {
-		return allowNativeMosaic;
-	}
+    public boolean isAllowNativeMosaic() {
+        return allowNativeMosaic;
+    }
 
-	public void setAllowNativeMosaic(boolean allowNativeMosaic) {
-		this.allowNativeMosaic = allowNativeMosaic;
-	}
+    public void setAllowNativeMosaic(boolean allowNativeMosaic) {
+        this.allowNativeMosaic = allowNativeMosaic;
+    }
     
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (allowInterpolation ? 1231 : 1237);
+        result = prime * result + (allowNativeMosaic ? 1231 : 1237);
+        result = prime * result + (imageIOCache ? 1231 : 1237);
+        result = prime * result + (jpegAcceleration ? 1231 : 1237);
+        long temp;
+        temp = Double.doubleToLongBits(memoryCapacity);
+        result = prime * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(memoryThreshold);
+        result = prime * result + (int) (temp ^ (temp >>> 32));
+        result = prime * result + (pngAcceleration ? 1231 : 1237);
+        result = prime * result + (recycling ? 1231 : 1237);
+        result = prime * result + tilePriority;
+        result = prime * result + tileThreads;
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        JAIInfoImpl other = (JAIInfoImpl) obj;
+        if (allowInterpolation != other.allowInterpolation)
+            return false;
+        if (allowNativeMosaic != other.allowNativeMosaic)
+            return false;
+        if (imageIOCache != other.imageIOCache)
+            return false;
+        if (jpegAcceleration != other.jpegAcceleration)
+            return false;
+        if (Double.doubleToLongBits(memoryCapacity) != Double
+                .doubleToLongBits(other.memoryCapacity))
+            return false;
+        if (Double.doubleToLongBits(memoryThreshold) != Double
+                .doubleToLongBits(other.memoryThreshold))
+            return false;
+        if (pngAcceleration != other.pngAcceleration)
+            return false;
+        if (recycling != other.recycling)
+            return false;
+        if (tilePriority != other.tilePriority)
+            return false;
+        if (tileThreads != other.tileThreads)
+            return false;
+        return true;
+    }
 }

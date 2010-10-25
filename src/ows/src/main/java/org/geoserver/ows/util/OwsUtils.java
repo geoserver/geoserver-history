@@ -5,6 +5,7 @@
 package org.geoserver.ows.util;
 
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -89,6 +90,18 @@ public class OwsUtils {
         return classProperties(clazz).setter(property, type);
     }
 
+    /**
+     * Reflectively determines if an object has a specified property.
+
+     * @param object The target object. 
+     * @param property The property to lookup.
+     * 
+     * @return True if the property exists, otherwise false.
+     */
+    public static boolean has(Object object, String property) {
+        return getter(object.getClass(), property, null) != null;
+    }
+    
     /**
      * Reflectively gets a property from an object.
      * <p>
@@ -227,4 +240,72 @@ public class OwsUtils {
                 ex = cause;
         } while(true);
     }
+    
+    /**
+     * Copies properties from one object to another.
+     * 
+     * @param source The source object. 
+     * @param target The target object.
+     * @param clazz The class of source and target.
+     */
+    public static <T> void copy(T source, T target, Class<T> clazz) {
+        ClassProperties properties = getClassProperties(clazz);
+        for (String p : properties.properties()) {
+            Method getter = properties.getter(p, null);
+            if (getter == null) {
+                continue; // should not really happen
+            }
+
+            Class type = getter.getReturnType();
+            Method setter = properties.setter(p, type);
+
+            // do a check for read only before calling the getter to avoid an uneccesary call
+            if (setter == null
+                    && !(Collection.class.isAssignableFrom(type) || Map.class
+                            .isAssignableFrom(type))) {
+                // read only
+                continue;
+            }
+
+            try {
+                Object newValue = getter.invoke(source, null);
+                if (newValue == null) {
+                    continue;
+                    // TODO: make this a flag whether to overwrite with null values
+                }
+                if (setter == null) {
+                    if (Collection.class.isAssignableFrom(type)) {
+                        updateCollectionProperty(target, (Collection) newValue, getter);
+                    } else if (Map.class.isAssignableFrom(type)) {
+                        updateMapProperty(target, (Map) newValue, getter);
+                    }
+                    continue;
+                }
+
+                setter.invoke(target, newValue);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+   
+    /**
+     * Helper method for updating a collection based property.
+     */
+    static void updateCollectionProperty(Object object, Collection newValue, Method getter)
+            throws Exception {
+        Collection oldValue = (Collection) getter.invoke(object, null);
+        oldValue.clear();
+        oldValue.addAll(newValue);
+    }
+
+    /**
+     * Helper method for updating a map based property.
+     */
+    static void updateMapProperty(Object object, Map newValue, Method getter) throws Exception {
+        Map oldValue = (Map) getter.invoke(object, null);
+        oldValue.clear();
+        oldValue.putAll(newValue);
+    }
+
 }

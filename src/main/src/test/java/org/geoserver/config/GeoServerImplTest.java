@@ -13,12 +13,16 @@ import org.geoserver.config.impl.ServiceInfoImpl;
 
 public class GeoServerImplTest extends TestCase {
 
-    GeoServerImpl geoServer;
+    protected GeoServerImpl geoServer;
     
     protected void setUp() throws Exception {
         super.setUp();
         
-        geoServer = new GeoServerImpl();
+        geoServer = createGeoServer();
+    }
+    
+    protected GeoServerImpl createGeoServer() {
+        return new GeoServerImpl();
     }
     
     public void testGlobal() throws Exception {
@@ -85,6 +89,7 @@ public class GeoServerImplTest extends TestCase {
         assertEquals( "bar", s2.getTitle() );
         
         geoServer.save( s1 );
+        s2 = geoServer.getServiceByName( "foo", ServiceInfo.class );
         assertEquals( "changed", s2.getTitle() );
     }
     
