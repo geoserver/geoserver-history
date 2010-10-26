@@ -542,8 +542,12 @@ public class GetFeatureInfo {
         WebMapServer wms = info.getStore().getWebMapServer(null);
         Layer layer = info.getWMSLayer(null);
 
-        ReferencedEnvelope bbox = new ReferencedEnvelope(request.getGetMapRequest().getBbox(),
-                request.getGetMapRequest().getCrs());
+        CoordinateReferenceSystem crs = request.getGetMapRequest().getCrs(); 
+        if(crs == null)  {
+            // use the native one
+            crs = info.getCRS();
+        }
+        ReferencedEnvelope bbox = new ReferencedEnvelope(request.getGetMapRequest().getBbox(), crs);
         int width = request.getGetMapRequest().getWidth();
         int height = request.getGetMapRequest().getHeight();
 
