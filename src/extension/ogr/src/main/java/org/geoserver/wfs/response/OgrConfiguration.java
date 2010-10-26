@@ -16,10 +16,10 @@ class OgrConfiguration {
         DEFAULT.ogr2ogrLocation = "ogr2ogr";
         // add some default formats
         DEFAULT.formats = new OgrFormat[] {
-                new OgrFormat("MapInfo File", "OGR-TAB", ".tab"),
-                new OgrFormat("MapInfo File", "OGR-MIF", ".mif",  "-dsco", "FORMAT=MIF"),
-                new OgrFormat("CSV", "OGR-CSV", ".csv"),
-                new OgrFormat("KML", "OGR-KML", ".kml"),
+                new OgrFormat("MapInfo File", "OGR-TAB", ".tab", false, null),
+                new OgrFormat("MapInfo File", "OGR-MIF", ".mif", false, null, "-dsco", "FORMAT=MIF"),
+                new OgrFormat("CSV", "OGR-CSV", ".csv", true, "text/csv"),
+                new OgrFormat("KML", "OGR-KML", ".kml", true, "application/vnd.google-earth.kml"),
         };
     }
     

@@ -67,10 +67,11 @@ public class Ogr2OgrFormatTest extends TestCase {
 
         // the output format (and let's add a few output formats to play with
         ogr = new Ogr2OgrOutputFormat(new GeoServerImpl());
-        ogr.addFormat(new OgrFormat("KML", "OGR-KML", ".kml"));
-        ogr.addFormat(new OgrFormat("CSV", "OGR-CSV", ".csv"));
-        ogr.addFormat(new OgrFormat("SHP", "OGR-SHP", ".shp"));
-        ogr.addFormat(new OgrFormat("MapInfo File", "OGR-MIF", ".mif", "-dsco", "FORMAT=MIF"));
+        ogr.addFormat(new OgrFormat("KML", "OGR-KML", ".kml", true, "application/vnd.google-earth.kml"));
+        ogr.addFormat(new OgrFormat("CSV", "OGR-CSV", ".csv", true, "text/csv"));
+        ogr.addFormat(new OgrFormat("SHP", "OGR-SHP", ".shp", false, null));
+        ogr.addFormat(new OgrFormat("MapInfo File", "OGR-MIF", ".mif", false, null, "-dsco", "FORMAT=MIF"));
+        
         ogr.setOgrExecutable(Ogr2OgrTestUtil.getOgr2Ogr());
         ogr.setGdalData(Ogr2OgrTestUtil.getGdalData());
 
@@ -90,8 +91,14 @@ public class Ogr2OgrFormatTest extends TestCase {
         assertTrue(ogr.canHandle(op));
     }
 
-    public void testContentType() {
+    public void testContentTypeZip() {
+        gft.setOutputFormat("OGR-SHP");
         assertEquals("application/zip", ogr.getMimeType(null, op));
+    }
+    
+    public void testContentTypeKml() {
+        gft.setOutputFormat("OGR-KML");
+        assertEquals("application/vnd.google-earth.kml", ogr.getMimeType(null, op));
     }
 
     public void testSimpleKML() throws Exception {
@@ -104,14 +111,8 @@ public class Ogr2OgrFormatTest extends TestCase {
         gft.setOutputFormat("OGR-KML");
         ogr.write(fct, bos, op);
 
-        // read back
-        ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(bos.toByteArray()));
-        ZipEntry entry = zis.getNextEntry();
-        assertNotNull(entry);
-        assertEquals("Buildings.kml", entry.getName());
-
         // parse the kml to check it's really xml... 
-        Document dom = dom(zis);
+        Document dom = dom(new ByteArrayInputStream(bos.toByteArray()));
         // print(dom);
 
         // some very light assumptions on the contents, since we
@@ -132,12 +133,7 @@ public class Ogr2OgrFormatTest extends TestCase {
         ogr.write(fct, bos, op);
 
         // read back
-        ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(bos.toByteArray()));
-        ZipEntry entry = zis.getNextEntry();
-        assertNotNull(entry);
-        // ogr will create a folder with a file in it...
-        assertEquals("Buildings.csv/Buildings.csv", entry.getName());
-        String csv = read(zis);
+        String csv = read(new ByteArrayInputStream(bos.toByteArray()));
         
         // couple simple checks
         String[] lines = csv.split("\n");
@@ -180,12 +176,7 @@ public class Ogr2OgrFormatTest extends TestCase {
         ogr.write(fct, bos, op);
 
         // read back
-        ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(bos.toByteArray()));
-        ZipEntry entry = zis.getNextEntry();
-        assertNotNull(entry);
-        // ogr will create a folder with a file in it...
-        assertEquals("Geometryless.csv/Geometryless.csv", entry.getName());
-        String csv = read(zis);
+        String csv = read(new ByteArrayInputStream(bos.toByteArray()));
         
         // couple simple checks
         String[] lines = csv.split("\n");
@@ -206,13 +197,7 @@ public class Ogr2OgrFormatTest extends TestCase {
         ogr.write(fct, bos, op);
 
         // read back
-        ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(bos.toByteArray()));
-        ZipEntry entry = zis.getNextEntry();
-        assertNotNull(entry);
-        assertEquals("AllTypes.kml", entry.getName());
-        
-        // parse the kml to check it's really xml... 
-        Document dom = dom(zis);
+        Document dom = dom(new ByteArrayInputStream(bos.toByteArray()));
         // print(dom);
 
         // some very light assumptions on the contents, since we
