@@ -37,7 +37,10 @@ public class OGRWrapper {
         this.gdalData = gdalData;
     }
 
-    public void convert(File inputData, File outputDirectory, String typeName,
+    /**
+     * Performs the conversion, returns the name of the (main) output file 
+     */
+    public File convert(File inputData, File outputDirectory, String typeName,
             OgrFormat format, CoordinateReferenceSystem crs) throws IOException, InterruptedException {
         // build the command line
         List<String> cmd = new ArrayList<String>();
@@ -70,6 +73,13 @@ public class OGRWrapper {
         if (exitCode != 0)
             throw new IOException("ogr2ogr did not terminate successfully, exit code " + exitCode
                     + ". Was trying to run: " + cmd + "\nResulted in:\n" + sb);
+        
+        // csv output is a directory, handle that case gracefully
+        File output = new File(outputDirectory, outFileName);
+        if(output.isDirectory()) {
+            output = new File(output, outFileName);
+        }
+        return output;
     }
 
     /**

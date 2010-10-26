@@ -10,7 +10,7 @@ import java.util.List;
 
 /**
  * Parameters defining an output format generated using ogr2ogr from
- * either a GML or shapefile dump 
+ * either a GML dump 
  * @author Andrea Aime - OpenGeo
  *
  */
@@ -34,12 +34,25 @@ public class OgrFormat {
      * The options that will be added to the command line
      */
     public List<String> options;
+    
+    /**
+     * If the output is a single file that can be streamed back. In that case we also need
+     * to know the mime type
+     */
+    public boolean singleFile;
+    
+    /**
+     * The mime type of the single file output
+     */
+    public String mimeType;
 
-    public OgrFormat(String ogrFormat, String formatName, String fileExtension, String... options) {
-        super();
+    public OgrFormat(String ogrFormat, String formatName, String fileExtension, boolean singleFile, 
+            String mimeType, String... options) {
         this.ogrFormat = ogrFormat;
         this.formatName = formatName;
         this.fileExtension = fileExtension;
+        this.singleFile = singleFile;
+        this.mimeType = mimeType;
         if(options != null) {
             this.options = new ArrayList<String>(Arrays.asList(options));
         }
