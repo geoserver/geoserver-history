@@ -32,16 +32,16 @@ import org.geoserver.catalog.event.CatalogRemoveEvent;
 public class CatalogImplTest extends TestCase {
 
     protected Catalog catalog;
-    WorkspaceInfo ws;
-    NamespaceInfo ns;
-    DataStoreInfo ds;
-    CoverageStoreInfo cs;
-    WMSStoreInfo wms;
-    FeatureTypeInfo ft;
-    CoverageInfo cv;
-    WMSLayerInfo wl;
-    LayerInfo l;
-    StyleInfo s;
+    protected WorkspaceInfo ws;
+    protected NamespaceInfo ns;
+    protected DataStoreInfo ds;
+    protected CoverageStoreInfo cs;
+    protected WMSStoreInfo wms;
+    protected FeatureTypeInfo ft;
+    protected CoverageInfo cv;
+    protected WMSLayerInfo wl;
+    protected LayerInfo l;
+    protected StyleInfo s;
     
     protected void setUp() throws Exception {
         catalog = createCatalog();
