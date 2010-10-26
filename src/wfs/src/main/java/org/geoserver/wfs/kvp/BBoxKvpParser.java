@@ -5,6 +5,7 @@
 package org.geoserver.wfs.kvp;
 
 import com.vividsolutions.jts.geom.Envelope;
+import org.apache.commons.lang.StringUtils;
 import org.geoserver.ows.KvpParser;
 import org.geoserver.ows.util.KvpUtils;
 import org.geoserver.platform.ServiceException;
@@ -61,7 +62,15 @@ public class BBoxKvpParser extends KvpParser {
         CoordinateReferenceSystem crs = null;
 
         if (unparsed.size() > 4) {
-            crs = CRS.decode((String) unparsed.get(4));
+            // merge back the CRS definition, in case it is an AUTO one
+            StringBuilder sb = new StringBuilder();
+            for (int i = 4; i < unparsed.size(); i++) {
+                sb.append(unparsed.get(i));
+                if(i < (unparsed.size() - 1)) {
+                    sb.append(",");
+                }
+            }
+            crs = CRS.decode(sb.toString());
         } else {
             //TODO: use the default crs of the system
         }
