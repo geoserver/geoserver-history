@@ -5,6 +5,7 @@
 package org.geoserver.wfs.response;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -105,18 +106,40 @@ public class Ogr2OgrOutputFormat extends WFSGetFeatureOutputFormat {
      * @see WFSGetFeatureOutputFormat#getMimeType(Object, Operation)
      */
     public String getMimeType(Object value, Operation operation) throws ServiceException {
-        return "application/zip";
+        GetFeatureType request = (GetFeatureType) OwsUtils.parameter(operation.getParameters(),
+                GetFeatureType.class);
+
+        OgrFormat format = formats.get(request.getOutputFormat());
+        if (format == null) {
+            throw new WFSException("Unknown output format " + request.getOutputFormat());
+        } else if (format.singleFile && request.getQuery().size() <= 1) {
+            if(format.mimeType != null) {
+                return format.mimeType;
+            } else {
+                // use a default binary blob
+                return "application/octet-stream";
+            }
+        } else {
+            return "application/zip";
+        }
     }
     
     @Override
     public String[][] getHeaders(Object value, Operation operation) throws ServiceException {
         GetFeatureType request = (GetFeatureType) OwsUtils.parameter(operation.getParameters(),
                 GetFeatureType.class);
-        String outputFileName = ((QName) ((QueryType) request.getQuery().get(0)).getTypeName().get(0))
-            .getLocalPart();
-        return (String[][]) new String[][] {
-                { "Content-Disposition", "attachment; filename=" + outputFileName + ".zip" }
-            };
+
+        OgrFormat format = formats.get(request.getOutputFormat());
+        if (format == null) {
+            throw new WFSException("Unknown output format " + request.getOutputFormat());
+        } else if (!format.singleFile || request.getQuery().size() > 1) {
+            String outputFileName = ((QName) ((QueryType) request.getQuery().get(0)).getTypeName()
+                    .get(0)).getLocalPart();
+            return (String[][]) new String[][] { { "Content-Disposition",
+                    "attachment; filename=" + outputFileName + ".zip" } };
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -165,6 +188,7 @@ public class Ogr2OgrOutputFormat extends WFSGetFeatureOutputFormat {
             Iterator outputFeatureCollections = featureCollection.getFeature().iterator();
             FeatureCollection<SimpleFeatureType, SimpleFeature> curCollection;
 
+            File outputFile = null;
             while (outputFeatureCollections.hasNext()) {
                 curCollection = (FeatureCollection<SimpleFeatureType, SimpleFeature>) outputFeatureCollections
                         .next();
@@ -176,20 +200,33 @@ public class Ogr2OgrOutputFormat extends WFSGetFeatureOutputFormat {
                 String epsgCode = null;
                 final SimpleFeatureType schema = curCollection.getSchema();
                 final CoordinateReferenceSystem crs = schema.getCoordinateReferenceSystem();
-                wrapper.convert(intermediate, tempOGR, schema.getTypeName(), format, crs);
+                outputFile = wrapper.convert(intermediate, tempOGR, schema.getTypeName(), format, crs);
 
                 // wipe out the input dir contents
                 IOUtils.emptyDirectory(tempGS);
             }
-
-            // scan the output directory and zip it all
-            ZipOutputStream zipOut = new ZipOutputStream(output);
-            IOUtils.zipDirectory(tempOGR, zipOut, null);
+            
+            // was is a single file output?
+            if(format.singleFile && featureCollection.getFeature().size() == 1) {
+                FileInputStream fis = null;
+                try {
+                    fis = new FileInputStream(outputFile);
+                    org.apache.commons.io.IOUtils.copy(fis, output);
+                } finally {
+                    if(fis != null) {
+                        fis.close();
+                    }
+                }
+            } else {
+                // scan the output directory and zip it all
+                ZipOutputStream zipOut = new ZipOutputStream(output);
+                IOUtils.zipDirectory(tempOGR, zipOut, null);
+                zipOut.flush();
+            }
 
             // delete the input and output directories
             IOUtils.delete(tempGS);
             IOUtils.delete(tempOGR);
-            zipOut.flush();
         } catch (Exception e) {
             throw new ServiceException("Exception occurred during output generation", e);
         }

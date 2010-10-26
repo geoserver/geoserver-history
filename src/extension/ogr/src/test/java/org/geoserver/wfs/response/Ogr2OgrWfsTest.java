@@ -39,6 +39,25 @@ public class Ogr2OgrWfsTest extends GeoServerTestSupport {
         MockHttpServletResponse resp = getAsServletResponse(request);
         
         // check content type
+        assertEquals("application/vnd.google-earth.kml", resp.getContentType());
+        
+        // read back
+        Document dom = dom(getBinaryInputStream(resp));
+        // print(dom);
+
+        // some very light assumptions on the contents, since we
+        // cannot control how ogr encodes the kml... let's just assess
+        // it's kml with the proper number of features
+        assertEquals("kml", dom.getDocumentElement().getTagName());
+        assertEquals(2, dom.getElementsByTagName("Placemark").getLength());
+    }
+    
+    public void testDoubleRequest() throws Exception {
+        String request = "wfs?request=GetFeature&typename=" + getLayerId(MockData.BUILDINGS) 
+            + "," + getLayerId(MockData.BRIDGES) + "&version=1.0.0&service=wfs&outputFormat=OGR-KML";
+        MockHttpServletResponse resp = getAsServletResponse(request);
+        
+        // check content type
         assertEquals("application/zip", resp.getContentType());
         
         // check content disposition
