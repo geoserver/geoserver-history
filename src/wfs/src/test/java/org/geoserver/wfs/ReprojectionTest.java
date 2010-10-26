@@ -1,6 +1,6 @@
 package org.geoserver.wfs;
 
-import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
+import static org.custommonkey.xmlunit.XMLAssert.*;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -11,8 +11,10 @@ import javax.xml.namespace.QName;
 
 import junit.framework.Test;
 
+import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.ProjectionPolicy;
 import org.geoserver.data.test.MockData;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
@@ -82,6 +84,27 @@ public class ReprojectionTest extends WFSTestSupport {
         
         MathTransform tx = CRS.findMathTransform(CRS.decode("EPSG:32615"), CRS.decode("AUTO:42001,9001,-93,0"));
         runTest(dom1,dom2, tx);
+    }
+    
+    public void testGetFeatureAutoCRSBBox() throws Exception {
+        CoordinateReferenceSystem auto = CRS.decode("AUTO:42001,9001,-93,0");
+        FeatureTypeInfo ftInfo = getCatalog().getFeatureTypeByName(getLayerId(MockData.POLYGONS));
+        ReferencedEnvelope nativeEnv = ftInfo.getFeatureSource(null, null).getBounds();
+        ReferencedEnvelope reprojectedEnv = nativeEnv.transform(auto, true);
+        
+        Document dom1 = getAsDOM("wfs?request=getfeature&service=wfs&version=1.0.0&typename=" + 
+                MockData.POLYGONS.getLocalPart());
+            Document dom2 = getAsDOM("wfs?request=getfeature&service=wfs&version=1.0.0&typename=" + 
+                MockData.POLYGONS.getLocalPart() + "&srsName=AUTO:42001,9001,-93,00&bbox=" + 
+                reprojectedEnv.getMinX() + "," + reprojectedEnv.getMinY() + "," 
+                + reprojectedEnv.getMaxX() + "," + reprojectedEnv.getMaxY() 
+                + ",AUTO:42001,9001,-93,0");
+            
+//            print(dom1);
+//            print(dom2);
+            
+            MathTransform tx = CRS.findMathTransform(CRS.decode("EPSG:32615"), auto);
+            runTest(dom1,dom2, tx);
     }
     
     public void testGetFeatureReprojectedFeatureType() throws Exception {
