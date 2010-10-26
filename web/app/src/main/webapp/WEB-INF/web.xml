@@ -151,10 +151,16 @@
    </filter>
    
    <filter>
-     <filter-name>Spring Delegating Filter</filter-name>
-     <filter-class>org.geoserver.filters.SpringDelegatingFilter</filter-class>
+    <filter-name>Spring Delegating Filter</filter-name>
+    <filter-class>org.geoserver.filters.SpringDelegatingFilter</filter-class>
+    <!--
+    This filter allows for filters to be loaded via spring rather than 
+    registered here in web.xml.  One thing to note is that for such filters 
+    init() is not called. INstead any initialization is performed via spring 
+    ioc.
+    -->
    </filter>
-
+   
    <filter>
      <filter-name>Thread locals cleanup filter</filter-name>
      <filter-class>org.geoserver.filters.ThreadLocalsCleanupFilter</filter-class>
