@@ -22,6 +22,7 @@ import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.WfsFactory;
 
+import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.data.test.MockData;
 import org.geoserver.platform.Operation;
 import org.geoserver.wfs.WFSTestSupport;
@@ -164,7 +165,7 @@ public class ShapeZipTest extends WFSTestSupport {
         checkShapefileIntegrity(new String[] {"BasicPolygons"}, new ByteArrayInputStream(zip));
     }
     
-    public void testEmptyResulMultiGeom() throws Exception {
+    public void testEmptyResultMultiGeom() throws Exception {
         byte[] zip = writeOut(getFeatureSource(ALL_DOTS).getFeatures(Filter.EXCLUDE));
         
         final String[] expectedTypes = new String[] {"All_Types_Dots"};
@@ -176,6 +177,81 @@ public class ShapeZipTest extends WFSTestSupport {
         while((entry = zis.getNextEntry()) != null) {
             foundReadme |= entry.getName().equals("README.TXT");
         }
+    }
+    
+    public void testTemplateSingleType() throws Exception {
+        // copy the new template to the data dir
+        WorkspaceInfo ws = getCatalog().getWorkspaceByName(MockData.BASIC_POLYGONS.getPrefix());
+        getDataDirectory().copyToWorkspaceDir(ws, getClass().getResourceAsStream("shapeziptest.ftl"), 
+                "shapezip.ftl");
+        
+        // setup the request params
+        SimpleFeatureCollection fc = getFeatureSource(MockData.BASIC_POLYGONS).getFeatures(Filter.INCLUDE);
+        ShapeZipOutputFormat zip = new ShapeZipOutputFormat();
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        FeatureCollectionType fct = WfsFactory.eINSTANCE.createFeatureCollectionType();
+        fct.getFeature().add(fc);
+        
+        // get the file name
+        String[][] headers = zip.getHeaders(fct, op);
+        assertEquals(1, headers.length);
+        assertEquals("Content-Disposition", headers[0][0]);
+        assertEquals("attachment; filename=shapezip_BasicPolygons.zip", headers[0][1]);
+        
+        // check the contents
+        zip.write(fct, bos, op);
+        byte[] zipBytes = bos.toByteArray();
+        checkShapefileIntegrity(new String[] {"theshape_BasicPolygons"}, new ByteArrayInputStream(zipBytes));
+    }
+    
+    public void testTemplateMultiType() throws Exception {
+        // copy the new template to the data dir
+        WorkspaceInfo ws = getCatalog().getWorkspaceByName(MockData.BASIC_POLYGONS.getPrefix());
+        getDataDirectory().copyToWorkspaceDir(ws, getClass().getResourceAsStream("shapeziptest.ftl"), 
+                "shapezip.ftl");
+        
+        // setup the request params
+        ShapeZipOutputFormat zip = new ShapeZipOutputFormat();
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        FeatureCollectionType fct = WfsFactory.eINSTANCE.createFeatureCollectionType();
+        fct.getFeature().add(getFeatureSource(MockData.BASIC_POLYGONS).getFeatures(Filter.INCLUDE));
+        fct.getFeature().add(getFeatureSource(MockData.BRIDGES).getFeatures(Filter.INCLUDE));
+        
+        // get the file name
+        String[][] headers = zip.getHeaders(fct, op);
+        assertEquals(1, headers.length);
+        assertEquals("Content-Disposition", headers[0][0]);
+        assertEquals("attachment; filename=shapezip_BasicPolygons.zip", headers[0][1]);
+        
+        // check the contents
+        zip.write(fct, bos, op);
+        byte[] zipBytes = bos.toByteArray();
+        checkShapefileIntegrity(new String[] {"theshape_BasicPolygons", "theshape_Bridges"}, new ByteArrayInputStream(zipBytes));
+    }
+    
+    public void testTemplateMultiGeomType() throws Exception {
+        // copy the new template to the data dir
+        WorkspaceInfo ws = getCatalog().getWorkspaceByName(ALL_DOTS.getPrefix());
+        getDataDirectory().copyToWorkspaceDir(ws, getClass().getResourceAsStream("shapeziptest.ftl"), 
+                "shapezip.ftl");
+        
+        // setup the request params
+        ShapeZipOutputFormat zip = new ShapeZipOutputFormat();
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        FeatureCollectionType fct = WfsFactory.eINSTANCE.createFeatureCollectionType();
+        fct.getFeature().add(getFeatureSource(ALL_DOTS).getFeatures(Filter.INCLUDE));
+        
+        // get the file name
+        String[][] headers = zip.getHeaders(fct, op);
+        assertEquals(1, headers.length);
+        assertEquals("Content-Disposition", headers[0][0]);
+        assertEquals("attachment; filename=shapezip_All_Types_Dots.zip", headers[0][1]);
+        
+        // check the contents
+        zip.write(fct, bos, op);
+        byte[] zipBytes = bos.toByteArray();
+        checkShapefileIntegrity(new String[] {"theshape_All_Types_DotsPoint", "theshape_All_Types_DotsMPoint", 
+                "theshape_All_Types_DotsPolygon", "theshape_All_Types_DotsLine"  }, new ByteArrayInputStream(zipBytes));
     }
     
     /**
