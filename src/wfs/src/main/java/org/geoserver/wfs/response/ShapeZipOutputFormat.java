@@ -4,36 +4,48 @@
  */
 package org.geoserver.wfs.response;
  
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.nio.charset.Charset;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
+import java.util.SimpleTimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipOutputStream;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.xml.namespace.QName;
 
 import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.GetFeatureType;
-import net.opengis.wfs.QueryType;
 
 import org.apache.commons.io.FileUtils;
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.data.util.IOUtils;
 import org.geoserver.feature.RetypingFeatureCollection;
-import org.geoserver.ows.util.OwsUtils;
+import org.geoserver.ows.Dispatcher;
+import org.geoserver.ows.Request;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
+import org.geoserver.template.GeoServerTemplateLoader;
 import org.geoserver.wfs.WFSException;
 import org.geoserver.wfs.WFSGetFeatureOutputFormat;
 import org.geotools.data.DataStore;
@@ -45,6 +57,9 @@ import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.util.logging.Logging;
+import org.geotools.wfs.v1_1.WFS;
+import org.geotools.wfs.v1_1.WFSConfiguration;
+import org.geotools.xml.Encoder;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
@@ -62,6 +77,9 @@ import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+
 
 /**
  *
@@ -75,8 +93,10 @@ import com.vividsolutions.jts.geom.Polygon;
  */
 public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat implements ApplicationContextAware {
     private static final Logger LOGGER = Logging.getLogger(ShapeZipOutputFormat.class);
-    private String outputFileName;
+    private static final Configuration templateConfig = new Configuration();
+    
     private ApplicationContext applicationContext;
+    private Catalog catalog;
     
     /**
      * Tuple used when fanning out a collection with generic geometry types to multiple outputs 
@@ -89,7 +109,12 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat implements A
     }
 
     public ShapeZipOutputFormat() {
+        this((Catalog) GeoServerExtensions.bean("catalog"));
+    }
+    
+    public ShapeZipOutputFormat(Catalog catalog) {
         super("SHAPE-ZIP");
+        this.catalog = catalog;
     }
 
     /**
@@ -109,19 +134,21 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat implements A
      * content-disposition header.
      */
     protected boolean canHandleInternal(Operation operation) {
-        GetFeatureType request = (GetFeatureType) OwsUtils.parameter(operation.getParameters(),
-                GetFeatureType.class);
-        outputFileName = ((QName) ((QueryType) request.getQuery().get(0)).getTypeName().get(0))
-            .getLocalPart();
-
         return true;
     }
 
     public String[][] getHeaders(Object value, Operation operation)
         throws ServiceException {
-        return (String[][]) new String[][] {
-            { "Content-Disposition", "attachment; filename=" + outputFileName + ".zip" }
-        };
+        FeatureCollection fc = (FeatureCollection) ((FeatureCollectionType) value).getFeature().get(0);
+        FeatureTypeInfo ftInfo = catalog.getFeatureTypeByName(fc.getSchema().getName());
+        
+        String filename = new FileNameSource(getClass()).getZipName(ftInfo);
+        if (filename == null) {
+            filename = ftInfo.getName();
+        }
+
+        return (String[][]) new String[][] { { "Content-Disposition",
+                "attachment; filename=" + filename + ".zip" } };
     }
 
     /**
@@ -172,12 +199,16 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat implements A
                 createEmptyZipWarning(tempDir);
             }
             
+            // dump the request
+            GetFeatureType gft = (GetFeatureType) getFeature.getParameters()[0];
+            createRequestDump(tempDir, gft, (FeatureCollection) featureCollection.getFeature().get(0));
+            
             // zip all the files produced
             final FilenameFilter filter = new FilenameFilter() {
             
                 public boolean accept(File dir, String name) {
                     return name.endsWith(".shp") || name.endsWith(".shx") || name.endsWith(".dbf")
-                           || name.endsWith(".prj") || name.endsWith(".cst");
+                           || name.endsWith(".prj") || name.endsWith(".cst") || name.endsWith(".txt");
                 }
             };
             ZipOutputStream zipOut = new ZipOutputStream(output);
@@ -197,6 +228,55 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat implements A
         }
     }
 
+    /**
+     * Dumps the request
+     * @param simpleFeatureCollection
+     */
+    private void createRequestDump(File tempDir, GetFeatureType gft, FeatureCollection fc) {
+        final Request request = Dispatcher.REQUEST.get();
+        if(request == null) {
+            // we're probably running in a unit test
+            return;
+        }
+        
+        // build the target file
+        FeatureTypeInfo ftInfo = catalog.getFeatureTypeByName(fc.getSchema().getName());
+        String fileName = new FileNameSource(getClass()).getRequestDumpName(ftInfo) + ".txt";
+        File target = new File(tempDir, fileName);
+        
+        try {
+            if(request.isGet()) {
+                final HttpServletRequest httpRequest = request.getHttpRequest();
+                String url = httpRequest.getRequestURL().append("?").append(httpRequest.getQueryString()).toString();
+                FileUtils.writeStringToFile(target, url);
+            } else {
+                org.geotools.xml.Configuration cfg = null;
+                QName elementName = null;
+                if(gft.getVersion().equals("1.1.0")) {
+                    cfg = new WFSConfiguration();
+                    elementName = WFS.GetFeature;
+                } else {
+                    cfg = new org.geotools.wfs.v1_0.WFSConfiguration();
+                    elementName = org.geotools.wfs.v1_0.WFS.GetFeature;
+                }
+                FileOutputStream fos = null;
+                try {
+                    fos = new FileOutputStream(target);
+                    Encoder encoder = new Encoder(cfg);
+                    encoder.setIndenting(true);
+                    encoder.setIndentSize(2);
+                    encoder.encode(gft, elementName, fos);
+                } finally {
+                    if(fos != null)
+                        fos.close();
+                }
+            }
+        } catch(IOException e) {
+            throw new WFSException("Failed to dump the WFS request");
+        }
+        
+    }
+
     private void createEmptyZipWarning(File tempDir) throws IOException {
         PrintWriter pw = null;
         try {
@@ -214,14 +294,16 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat implements A
      * @param tempDir the temp directory into which it should be written
      */
     private void writeCollectionToShapefile(FeatureCollection<SimpleFeatureType, SimpleFeature> c, File tempDir, Charset charset) {
+        FeatureTypeInfo ftInfo = catalog.getFeatureTypeByName(c.getSchema().getName());
         c = remapCollectionSchema(c, null);
         
         SimpleFeatureType schema = c.getSchema();
-        if(schema.getTypeName().contains(".")) {
-        	// having dots in the name prevents various programs to recognize the file as a shapefile
+        String fileName = new FileNameSource(getClass()).getShapeName(ftInfo, null);
+        if(!fileName.equals(schema.getTypeName())) {
+        	// rename the schema to have the proper output file name
         	SimpleFeatureTypeBuilder tb = new SimpleFeatureTypeBuilder();
         	tb.init(c.getSchema());
-        	tb.setName(c.getSchema().getTypeName().replace('.', '_'));
+        	tb.setName(fileName);
         	SimpleFeatureType renamed = tb.buildFeatureType();
         	c = new RetypingFeatureCollection(c, renamed);
         }
@@ -265,30 +347,26 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat implements A
     FeatureCollection<SimpleFeatureType, SimpleFeature> remapCollectionSchema(FeatureCollection<SimpleFeatureType, SimpleFeature> fc, Class targetGeometry) {
         SimpleFeatureType schema = fc.getSchema();
         
-        // having dots in the name prevents various programs to recognize the file as a shapefile
-        if(schema.getTypeName().contains(".")) {
+        // force the proper output type if necessary
+        if(targetGeometry != null) {
             SimpleFeatureTypeBuilder tb = new SimpleFeatureTypeBuilder();
-            if(targetGeometry == null) {
-                tb.init(schema);
-            } else {
-                // force generic geometric attributes to the desired geometry type
-                for (AttributeDescriptor ad : schema.getAttributeDescriptors()) {
-                    if(!(ad instanceof GeometryDescriptor)) {
-                        tb.add(ad);
+            // force generic geometric attributes to the desired geometry type
+            for (AttributeDescriptor ad : schema.getAttributeDescriptors()) {
+                if(!(ad instanceof GeometryDescriptor)) {
+                    tb.add(ad);
+                } else {
+                    Class geomType = ad.getType().getBinding();
+                    if(geomType.equals(Geometry.class) || geomType.equals(GeometryCollection.class)) {
+                        tb.add(ad.getName().getLocalPart(), targetGeometry, 
+                                ((GeometryDescriptor) ad).getCoordinateReferenceSystem());
                     } else {
-                        Class geomType = ad.getType().getBinding();
-                        if(geomType.equals(Geometry.class) || geomType.equals(GeometryCollection.class)) {
-                            tb.add(ad.getName().getLocalPart(), targetGeometry, 
-                                    ((GeometryDescriptor) ad).getCoordinateReferenceSystem());
-                        } else {
-                            tb.add(ad);
-                        }
+                        tb.add(ad);
                     }
-                } 
-            }
-            tb.setName(fc.getSchema().getTypeName().replace('.', '_'));
-            SimpleFeatureType renamed = tb.buildFeatureType();
-            fc = new RetypingFeatureCollection(fc, renamed);
+                }
+            } 
+            tb.setName(fc.getSchema().getName());
+            SimpleFeatureType retyped = tb.buildFeatureType();
+            fc = new RetypingFeatureCollection(fc, retyped);
         }
         
         // create attribute name mappings, to be compatible 
@@ -357,6 +435,7 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat implements A
      * @return true if a shapefile has been created, false otherwise
      */
     private boolean writeCollectionToShapefiles(FeatureCollection<SimpleFeatureType, SimpleFeature> c, File tempDir, Charset charset) {
+        FeatureTypeInfo ftInfo = catalog.getFeatureTypeByName(c.getSchema().getName());
         c = remapCollectionSchema(c, null);
         SimpleFeatureType schema = c.getSchema();
         
@@ -374,7 +453,7 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat implements A
                     continue;
                 }
                 
-                FeatureWriter<SimpleFeatureType, SimpleFeature> writer = getFeatureWriter(f, writers, tempDir, charset);
+                FeatureWriter<SimpleFeatureType, SimpleFeature> writer = getFeatureWriter(ftInfo, f, writers, tempDir, charset);
                 SimpleFeature fw = writer.next();
                 
                 // we cannot trust attribute order, shapefile changes the location and name of the geometry
@@ -415,25 +494,25 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat implements A
      * Returns the feature writer for a specific geometry type, creates a new datastore
      * and a new writer if there are none so far
      */
-    private FeatureWriter<SimpleFeatureType, SimpleFeature> getFeatureWriter(SimpleFeature f, 
+    private FeatureWriter<SimpleFeatureType, SimpleFeature> getFeatureWriter(FeatureTypeInfo ftInfo, SimpleFeature f, 
             Map<Class, StoreWriter> writers, File tempDir, Charset charset) throws IOException {
         // get the target class
         Class<?> target;
         Geometry g = (Geometry) f.getDefaultGeometry();
-        String suffix = null;
+        String geometryType = null;
         
         if(g instanceof Point) {
             target = Point.class;
-            suffix = "Point";
+            geometryType = "Point";
         } else if(g instanceof MultiPoint) {
             target = MultiPoint.class;
-            suffix = "MPoint";
+            geometryType = "MPoint";
         } else if(g instanceof MultiPolygon || g instanceof Polygon) {
             target = MultiPolygon.class;
-            suffix = "Polygon";
+            geometryType = "Polygon";
         } else if(g instanceof LineString || g instanceof MultiLineString) {
             target = MultiLineString.class;
-            suffix = "Line";
+            geometryType = "Line";
         } else {
             throw new RuntimeException("This should never happen, " +
             		"there's a bug in the SHAPE-ZIP output format. I got a geometry of type " + g.getClass());
@@ -454,8 +533,9 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat implements A
                     builder.add(d);
                 }
             }
-            builder.setName(original.getTypeName().replace('.', '_') + suffix);
             builder.setNamespaceURI(original.getName().getURI());
+            String fileName = new FileNameSource(getClass()).getShapeName(ftInfo, geometryType);
+            builder.setName(fileName);
             SimpleFeatureType retyped = builder.buildFeatureType();
             
             // create the datastore for the current geom type
@@ -546,6 +626,95 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat implements A
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
     }
+    
+    
+    static class FileNameSource {
+        
+        private Class clazz;
+
+        public FileNameSource(Class clazz) {
+            this.clazz = clazz;
+        }
+        
+        private Properties processTemplate(FeatureTypeInfo ftInfo, String geometryType) {
+            try {
+                // setup template subsystem
+                GeoServerTemplateLoader templateLoader = new GeoServerTemplateLoader(clazz);
+                templateLoader.setFeatureType(ftInfo);
+    
+                // load the template
+                Template template = null;
+                synchronized (templateConfig) {
+                    templateConfig.setTemplateLoader(templateLoader);
+                    template = templateConfig.getTemplate("shapezip.ftl");
+                }
+    
+                // prepare the template context
+                Date timestamp;
+                if (Dispatcher.REQUEST.get() != null) {
+                    timestamp = Dispatcher.REQUEST.get().getTimestamp();
+                } else {
+                    timestamp = new Date();
+                }
+                Map<String, Object> context = new HashMap<String, Object>();
+                context.put("typename", getTypeName(ftInfo));
+                context.put("workspace", ftInfo.getNamespace().getPrefix());
+                context.put("geometryType", geometryType == null ? "" : geometryType);
+                context.put("timestamp", timestamp);
+                SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd_HHmmss");
+                java.util.Calendar cal = Calendar.getInstance(new SimpleTimeZone(0, "GMT"));
+                format.setCalendar(cal);
+                context.put("iso_timestamp", format.format(timestamp));
+                
+                // process the template, write out and turn it into a property map
+                StringWriter sw = new StringWriter();
+                template.process(context, sw);
+    
+                Properties props = new Properties();
+                props.load(new ByteArrayInputStream(sw.toString().getBytes()));
+                
+                return props;
+            } catch(Exception e) {
+                throw new WFSException("Failed to process the file name template", e);
+            }
+        }
+        
+        private String getTypeName(FeatureTypeInfo ftInfo) {
+            return ftInfo.getName().replace(".", "_");
+        }
+        
+        public String getZipName(FeatureTypeInfo ftInfo) {
+            Properties props = processTemplate(ftInfo, null);
+            String filename = props.getProperty("zip");
+            if (filename == null) {
+                filename = getTypeName(ftInfo);
+            }
+            
+            return filename;
+        }
+        
+        public String getShapeName(FeatureTypeInfo ftInfo, String geometryType) {
+            Properties props = processTemplate(ftInfo, geometryType);
+            String filename = props.getProperty("shp");
+            if (filename == null) {
+                filename = getTypeName(ftInfo) + geometryType; 
+            }
+            
+            return filename;
+        }
+        
+        public String getRequestDumpName(FeatureTypeInfo ftInfo) {
+            Properties props = processTemplate(ftInfo, null);
+            String filename = props.getProperty("txt");
+            if (filename == null) {
+                filename = getTypeName(ftInfo);
+            }
+            
+            return filename;
+        }
+        
+    }
+    
     
     
 }

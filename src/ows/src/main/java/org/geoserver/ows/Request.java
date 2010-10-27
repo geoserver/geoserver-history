@@ -5,6 +5,7 @@
 package org.geoserver.ows;
 
 import java.io.BufferedReader;
+import java.util.Date;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -62,9 +63,18 @@ public class Request {
     protected String outputFormat;
 
     /**
-     * Any errors that occur tryinng to determine the service
+     * Any errors that occur trying to determine the service
      */
     protected Throwable error;
+    
+    /**
+     * Time when the request hit the server
+     */
+    protected Date timestamp;
+    
+    public Request() {
+        timestamp = new Date(); 
+    }
 
     /**
      * Returns the raw http request being handled by the {@link Dispatcher}
@@ -242,5 +252,21 @@ public class Request {
      */
     public void setError(Throwable error) {
         this.error = error;
+    }
+    
+    /**
+     * The timestamp when the request hit the server
+     * @return
+     */
+    public Date getTimestamp() {
+        return timestamp;
+    }
+
+    /**
+     * Sets the request timestamp
+     * @param timestamp
+     */
+    public void setTimestamp(Date timestamp) {
+        this.timestamp = timestamp;
     }
 }
