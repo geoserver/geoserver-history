@@ -176,6 +176,7 @@
 	<!-- kvp parsers -->
 	<bean id="typeNameKvpParser" class="org.geoserver.wfs.kvp.TypeNameKvpParser">
     <constructor-arg value="typeName"/>
+    <constructor-arg ref="geoServer"/>
     <constructor-arg ref="catalog"/>
 	</bean>
   <bean id="getFeatureNamespaceKvpParser" class="org.geoserver.wfs.kvp.NamespaceKvpParser">

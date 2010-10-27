@@ -129,6 +129,15 @@ public class DescribeFeatureTypeTest extends WFSTestSupport {
         //print(doc);
         assertEquals("xsd:schema", doc.getDocumentElement().getNodeName());
     }
+    
+    public void testMissingNameNamespacePrefix() throws Exception {
+        final QName typeName = MockData.POLYGONS;
+        String path = "ows?service=WFS&version=1.1.0&request=DescribeFeatureType&typeName="
+                + typeName.getLocalPart();
+        Document doc = getAsDOM(path);
+        //print(doc);
+        assertEquals("xsd:schema", doc.getDocumentElement().getNodeName());
+    }
 
     /**
      * Under cite compliance mode, even if the requested typeName is not qualified and it does exist
