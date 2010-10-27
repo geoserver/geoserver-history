@@ -68,14 +68,13 @@ public class GetFeatureKvpRequestReaderTest extends KvpRequestReaderTestSupport 
         raw.put("request", "GetFeature");
         raw.put("typeName", "InvalidTypeName");
 
-        Map parsed = parseKvp(raw);
-
         try {
+            Map parsed = parseKvp(raw);
             reader.read(WfsFactory.eINSTANCE.createGetFeatureType(), parsed, raw);
         } catch (WFSException e) {
             assertEquals("InvalidParameterValue", e.getCode());
             assertEquals("typeName", e.getLocator());
-            System.out.println(e.getMessage());
+            //System.out.println(e.getMessage());
             assertTrue(e.getMessage().contains("InvalidTypeName"));
         }
     }

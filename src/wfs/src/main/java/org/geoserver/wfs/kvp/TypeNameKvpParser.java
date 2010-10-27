@@ -4,7 +4,14 @@
  */
 package org.geoserver.wfs.kvp;
 
+import javax.xml.namespace.QName;
+
 import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.config.GeoServer;
+import org.geoserver.wfs.WFSException;
+import org.geoserver.wfs.WFSInfo;
+import org.opengis.feature.type.Name;
 
 /**
  * Parses a {@code typeName} GetFeature parameter the form "([prefix:]local)+".
@@ -18,8 +25,29 @@ import org.geoserver.catalog.Catalog;
  */
 public class TypeNameKvpParser extends QNameKvpParser {
 
-    public TypeNameKvpParser(String key, Catalog catalog) {
+    GeoServer geoserver;
+
+    public TypeNameKvpParser(String key, GeoServer geoserver, Catalog catalog) {
         super(key, catalog, false);
+        this.geoserver = geoserver;
+    }
+    
+    protected Object parseToken(String token) throws Exception {
+        int i = token.indexOf(':');
+
+        if (i != -1 || geoserver.getService(WFSInfo.class).isCiteCompliant()) {
+            return super.parseToken(token);
+        } else {
+            // we don't have the namespace, use the catalog to lookup the feature type 
+            // mind, this is lenient behavior so we use it only if the server is not runnig in cite mode
+            FeatureTypeInfo ftInfo = catalog.getFeatureTypeByName(token);
+            if(ftInfo == null) {
+                throw new WFSException("Could not find type name " + token, "InvalidParameterValue", "typeName");
+            } else {
+                final Name name = ftInfo.getFeatureType().getName();
+                return new QName(name.getNamespaceURI(), name.getLocalPart());
+            }
+        }
     }
     
 }
