@@ -551,7 +551,7 @@ public class Dispatcher extends AbstractController {
                         req.setOutputFormat(lookupRequestBeanProperty(requestBean, "outputFormat",
                                 true));
                     }
-
+                    
                     parameters[i] = requestBean;
                 }
             }
