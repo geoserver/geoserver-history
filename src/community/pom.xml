@@ -140,7 +140,7 @@
     <profile>
       <id>communityRelease</id>
       <modules>
-        <!--module>css</module-->
+        <module>css</module>
         <module>printing</module>
         <module>release</module>
         <module>ftp</module>
