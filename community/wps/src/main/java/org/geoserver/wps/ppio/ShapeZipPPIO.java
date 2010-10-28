@@ -45,7 +45,7 @@ public class ShapeZipPPIO extends BinaryPPIO {
     public void encode(Object value, OutputStream os) throws Exception {
         SimpleFeatureCollection fc = (SimpleFeatureCollection) value;
         ShapeZipOutputFormat of = new ShapeZipOutputFormat();
-        of.write(Collections.singletonList(fc), getCharset(), os);
+        of.write(Collections.singletonList(fc), getCharset(), os, null);
     }
 
     private Charset getCharset() {
