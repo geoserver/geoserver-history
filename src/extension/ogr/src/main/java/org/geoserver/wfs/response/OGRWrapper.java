@@ -16,6 +16,8 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.geotools.util.logging.Logging;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
@@ -47,14 +49,19 @@ public class OGRWrapper {
         cmd.add(ogrExecutable);
         cmd.add("-f");
         cmd.add(format.ogrFormat);
+        File crsFile = null;
         if (crs != null) {
             // we don't use an EPSG code since there is no guarantee we'll be able to reverse
             // engineer one. Using WKT also ensures the EPSG params such as the TOWGS84 ones are
             // not lost in the conversion
+            // We also write to a file because some operating systems cannot take arguments with
+            // quotes and spaces inside (and/or ProcessBuilder is not good enough to escape them)
+            crsFile = File.createTempFile("gdal_srs", "wkt", inputData.getParentFile());
             cmd.add("-a_srs");
             String s = crs.toWKT();
-            s = s.replaceAll("\n", "").replaceAll("  ", "");
-            cmd.add(s);
+            s = s.replaceAll("\n\r", "").replaceAll("  ", "");
+            FileUtils.writeStringToFile(crsFile, s);
+            cmd.add(crsFile.getAbsolutePath());
         }
         if (format.options != null) {
             for (String option : format.options) {
@@ -69,6 +76,9 @@ public class OGRWrapper {
 
         StringBuilder sb = new StringBuilder();
         int exitCode = run(cmd, sb);
+        if(crsFile != null) {
+            crsFile.delete();
+        }
 
         if (exitCode != 0)
             throw new IOException("ogr2ogr did not terminate successfully, exit code " + exitCode
