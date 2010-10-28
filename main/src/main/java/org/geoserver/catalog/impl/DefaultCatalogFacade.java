@@ -150,12 +150,6 @@ public class DefaultCatalogFacade implements CatalogFacade {
     }
     
     public void save(StoreInfo store) {
-        if ( store.getId() == null ) {
-            //add it instead of saving
-            add( store );
-            return;
-        }
-        
         saved(store);
     }
     
