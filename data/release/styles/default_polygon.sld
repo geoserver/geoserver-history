@@ -1,15 +1,24 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<StyledLayerDescriptor version="1.0.0" xmlns="http://www.opengis.net/sld" xmlns:ogc="http://www.opengis.net/ogc"
-  xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.opengis.net/sld http://schemas.opengis.net/sld/1.0.0/StyledLayerDescriptor.xsd">
+<StyledLayerDescriptor version="1.0.0" 
+ xsi:schemaLocation="http://www.opengis.net/sld StyledLayerDescriptor.xsd" 
+ xmlns="http://www.opengis.net/sld" 
+ xmlns:ogc="http://www.opengis.net/ogc" 
+ xmlns:xlink="http://www.w3.org/1999/xlink" 
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- a Named Layer is the basic building block of an SLD document -->
   <NamedLayer>
-    <Name>Default Polygon</Name>
+    <Name>default_polygon</Name>
     <UserStyle>
-      <Title>Default polygon style</Title>
-      <Abstract>A sample style that just draws out a solid gray interior with a black 1px outline</Abstract>
+    <!-- Styles can have names, titles and abstracts -->
+      <Title>Default Polygon</Title>
+      <Abstract>A sample style that draws a polygon</Abstract>
+      <!-- FeatureTypeStyles describe how to render different features -->
+      <!-- A FeatureTypeStyle for rendering polygons -->
       <FeatureTypeStyle>
         <Rule>
-          <Title>Polygon</Title>
+          <Name>rule1</Name>
+          <Title>Gray Polygon with Black Outline</Title>
+          <Abstract>A polygon with a gray fill and a 1 pixel black outline</Abstract>
           <PolygonSymbolizer>
             <Fill>
               <CssParameter name="fill">#AAAAAA</CssParameter>
@@ -20,7 +29,6 @@
             </Stroke>
           </PolygonSymbolizer>
         </Rule>
-
       </FeatureTypeStyle>
     </UserStyle>
   </NamedLayer>
