@@ -359,6 +359,11 @@ public class PolymorphismWfsTest extends AbstractAppSchemaWfsTestSupport {
                 "0",
                 "//ex:PolymorphicFeature[@gml:id='f2']/ex:secondValue/gsml:CGI_TermValue/gsml:value",
                 doc);
+        // test GEOT-3304
+        assertXpathEvaluatesTo(
+                "approximate",
+                "//ex:PolymorphicFeature[@gml:id='f2']/ex:secondValue/gsml:CGI_TermValue/@gsml:qualifier",
+                doc);
 
         // f3: make sure only 1 gsml:CGI_NumericValue is encoded
         assertXpathCount(1, "//ex:PolymorphicFeature[@gml:id='f3']/ex:secondValue", doc);
@@ -388,6 +393,11 @@ public class PolymorphismWfsTest extends AbstractAppSchemaWfsTestSupport {
                 "0",
                 "//ex:PolymorphicFeature[@gml:id='f5']/ex:secondValue/gsml:CGI_TermValue/gsml:value",
                 doc);
+        // test GEOT-3304
+        assertXpathEvaluatesTo(
+                "approximate",
+                "//ex:PolymorphicFeature[@gml:id='f5']/ex:secondValue/gsml:CGI_TermValue/@gsml:qualifier",
+                doc);
 
         // f6: make sure only 1 gsml:CGI_TermValue is encoded
         assertXpathCount(1, "//ex:PolymorphicFeature[@gml:id='f6']/ex:secondValue", doc);
@@ -398,6 +408,11 @@ public class PolymorphismWfsTest extends AbstractAppSchemaWfsTestSupport {
         assertXpathEvaluatesTo(
                 "1000",
                 "//ex:PolymorphicFeature[@gml:id='f6']/ex:secondValue/gsml:CGI_TermValue/gsml:value",
+                doc);
+        // test GEOT-3304
+        assertXpathEvaluatesTo(
+                "approximate",
+                "//ex:PolymorphicFeature[@gml:id='f6']/ex:secondValue/gsml:CGI_TermValue/@gsml:qualifier",
                 doc);
     }
 
@@ -588,6 +603,10 @@ public class PolymorphismWfsTest extends AbstractAppSchemaWfsTestSupport {
         assertXpathEvaluatesTo("0",
                 "//ex:PolymorphicFeature[@gml:id='f2']/ex:anyValue/gsml:CGI_TermValue/gsml:value",
                 doc);
+        // test GEOT-3304
+        assertXpathEvaluatesTo("approximate",
+                "//ex:PolymorphicFeature[@gml:id='f2']/ex:anyValue/gsml:CGI_TermValue/@gsml:qualifier",
+                doc);
 
         // f3: make sure only 1 ex:anyValue is encoded
         assertXpathCount(1, "//ex:PolymorphicFeature[@gml:id='f3']/ex:anyValue", doc);
@@ -618,6 +637,10 @@ public class PolymorphismWfsTest extends AbstractAppSchemaWfsTestSupport {
                 "//ex:PolymorphicFeature[@gml:id='f5']/ex:anyValue/gsml:CGI_NumericValue", doc);
         assertXpathEvaluatesTo("0",
                 "//ex:PolymorphicFeature[@gml:id='f5']/ex:anyValue/gsml:CGI_TermValue/gsml:value",
+                doc);
+        // test GEOT-3304
+        assertXpathEvaluatesTo("approximate",
+                "//ex:PolymorphicFeature[@gml:id='f5']/ex:anyValue/gsml:CGI_TermValue/@gsml:qualifier",
                 doc);
 
         // f6: make sure nothing is encoded
