@@ -109,6 +109,11 @@
                 <AttributeMapping>
                     <targetAttribute>gsml:CGI_TermValue</targetAttribute>
                     <idExpression><OCQL>strConcat('termvalue_', getID())</OCQL></idExpression>
+                    <!-- GEOT-3304: Test client property with polymorphism -->
+                    <ClientProperty>
+                        <name>gsml:qualifier</name>
+                        <value>'approximate'</value>
+                    </ClientProperty>
                 </AttributeMapping>
                 <AttributeMapping>
                     <targetAttribute>gsml:value</targetAttribute>
