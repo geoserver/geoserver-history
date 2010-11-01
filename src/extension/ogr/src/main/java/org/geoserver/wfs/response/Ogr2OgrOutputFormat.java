@@ -120,6 +120,16 @@ public class Ogr2OgrOutputFormat extends WFSGetFeatureOutputFormat {
     }
     
     @Override
+    public boolean canHandle(Operation operation) {
+        // we can't handle anything if the ogr2ogr configuration failed
+        if(formats.size() == 0) {
+            return false;
+        } else {
+            return super.canHandle(operation);
+        }
+    }
+    
+    @Override
     public String[][] getHeaders(Object value, Operation operation) throws ServiceException {
         GetFeatureType request = (GetFeatureType) OwsUtils.parameter(operation.getParameters(),
                 GetFeatureType.class);
