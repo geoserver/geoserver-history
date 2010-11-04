@@ -49,7 +49,7 @@ public class NestedIdSupportTest extends AbstractAppSchemaWfsTestSupport {
                 + "<wfs:Query typeName=\"gsml:MappedFeature\">"
                 + "<ogc:Filter>"
                 + "     <ogc:PropertyIsEqualTo>"
-                + "        <ogc:PropertyName>gsml:specification/gsml:GeologicUnit/gsml:composition/gsml:CompositionPart/gsml:lithology/gsml:ControlledConcept/@gsml:id</ogc:PropertyName>"
+                + "        <ogc:PropertyName>gsml:specification/gsml:GeologicUnit/gsml:composition/gsml:CompositionPart/gsml:lithology/gsml:ControlledConcept/@gml:id</ogc:PropertyName>"
                 + "        <ogc:Literal>cc.1</ogc:Literal>"
                 + "     </ogc:PropertyIsEqualTo>"
                 + " </ogc:Filter>" + "</wfs:Query>" + "</wfs:GetFeature>";
@@ -81,7 +81,7 @@ public class NestedIdSupportTest extends AbstractAppSchemaWfsTestSupport {
                 + "<wfs:Query typeName=\"gsml:Borehole\">"
                 + "<ogc:Filter>"
                 + "     <ogc:PropertyIsEqualTo>"
-                + "        <ogc:PropertyName>sa:surveyDetails/sa:SurveyProcedure/@gsml:id</ogc:PropertyName>"
+                + "        <ogc:PropertyName>sa:surveyDetails/sa:SurveyProcedure/@gml:id</ogc:PropertyName>"
                 + "        <ogc:Literal>bh.11.sp</ogc:Literal>"
                 + "     </ogc:PropertyIsEqualTo>"
                 + " </ogc:Filter>" + "</wfs:Query>" + "</wfs:GetFeature>";
