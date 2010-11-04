@@ -204,10 +204,7 @@ public class DefaultDataStoreEditPanel extends StoreEditPanel {
         return parameterPanel;
     }
 
-    private Catalog getCatalog() {
-        GeoServerApplication application = (GeoServerApplication) getApplication();
-        return application.getCatalog();
-    }
+    
 
     /**
      * Model to wrap and unwrap a {@link NamespaceInfo} to and from a String for the Datastore's

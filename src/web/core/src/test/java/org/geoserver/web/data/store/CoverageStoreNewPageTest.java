@@ -7,6 +7,7 @@ package org.geoserver.web.data.store;
 import org.geoserver.web.GeoServerWicketTestSupport;
 import org.geoserver.web.data.store.panel.WorkspacePanel;
 import org.geotools.gce.arcgrid.ArcGridFormatFactory;
+import org.geotools.gce.gtopo30.GTopo30FormatFactory;
 import org.opengis.coverage.grid.Format;
 
 public class CoverageStoreNewPageTest extends GeoServerWicketTestSupport {
@@ -23,7 +24,7 @@ public class CoverageStoreNewPageTest extends GeoServerWicketTestSupport {
     @Override
     @SuppressWarnings("deprecation")
     public void setUpInternal() {
-        Format format = new ArcGridFormatFactory().createFormat();
+        Format format = new GTopo30FormatFactory().createFormat();
         formatType = format.getName();
         formatDescription = format.getDescription();
     }

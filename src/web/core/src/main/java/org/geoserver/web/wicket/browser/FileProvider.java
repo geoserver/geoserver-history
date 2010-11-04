@@ -108,9 +108,9 @@ public class FileProvider extends SortableDataProvider {
         // return a filtered view of the contents
         File[] files;
         if (fileFilter != null)
-            files = d.listFiles((FileFilter) fileFilter.getObject());
+            files = d.listFiles(new HiddenFileFilter((FileFilter) fileFilter.getObject()));
         else
-            files = d.listFiles();
+            files = d.listFiles(new HiddenFileFilter());
         
         if(files != null)
             return Arrays.asList(files);
@@ -202,6 +202,29 @@ public class FileProvider extends SortableDataProvider {
         public int compare(File o1, File o2) {
             return comparator.compare(o2, o1);
         }
+    }
+    
+    private static class HiddenFileFilter implements FileFilter {
+        FileFilter delegate;
+        
+        public HiddenFileFilter() {
+            // no delegate, just skip the hidden ones
+        }
+        
+        public HiddenFileFilter(FileFilter delegate) {
+            this.delegate = delegate;
+        }
 
+        public boolean accept(File pathname) {
+            if(pathname.isHidden()) {
+                return false;
+            }
+            
+            if(delegate != null) {
+                return delegate.accept(pathname);
+            } else {
+                return true;
+            }
+        }
     }
 }

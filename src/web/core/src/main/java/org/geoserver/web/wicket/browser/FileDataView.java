@@ -15,6 +15,7 @@ import org.apache.wicket.ajax.markup.html.AjaxFallbackLink;
 import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxFallbackLink;
 import org.apache.wicket.extensions.markup.html.repeater.data.sort.OrderByBorder;
+import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -88,6 +89,10 @@ public abstract class FileDataView extends Panel {
     
     
     FileProvider provider;
+
+    WebMarkupContainer fileContent;
+    
+    String tableHeight = "25em";
     
     public FileDataView(String id, FileProvider fileProvider) {
         super(id);
@@ -144,12 +149,22 @@ public abstract class FileDataView extends Panel {
             
         };
 
-        table.add(fileTable);
+        fileContent = new WebMarkupContainer("fileContent") {
+            @Override
+            protected void onComponentTag(ComponentTag tag) {
+                if(tableHeight != null) {
+                    tag.getAttributes().put("style", "overflow:auto; height:" + tableHeight);
+                }
+            }
+        };
         
+        fileContent.add(fileTable);
+        
+        table.add(fileContent);
         table.add(new OrderByBorder("nameHeader", FileProvider.NAME, fileProvider));
         table.add(new OrderByBorder("lastModifiedHeader", FileProvider.LAST_MODIFIED, fileProvider));
         table.add(new OrderByBorder("sizeHeader", FileProvider.SIZE, fileProvider));
-    }
+    }    
     
     protected abstract void linkNameClicked(File file, AjaxRequestTarget target);
     
@@ -163,5 +178,10 @@ public abstract class FileDataView extends Panel {
     public FileProvider getProvider() {
     	return provider;
     }
+    
+    public void setTableHeight(String tableHeight) {
+        this.tableHeight = tableHeight;
+    }
+
 
 }

@@ -14,24 +14,35 @@ import java.io.Serializable;
  */
 @SuppressWarnings("serial")
 public class ExtensionFileFilter implements FileFilter, Serializable {
-    String extension;
+    String[] extensions;
 
     /**
      * Builds a file filter for the specified extension
      * @param extension an extension, e.g., ".txt"
      */
-    public ExtensionFileFilter(String extension) {
-        this.extension = extension.toUpperCase();
+    public ExtensionFileFilter(String... extensions) {
+        this.extensions = new String[extensions.length];
+        for (int i = 0; i < extensions.length; i++) {
+            this.extensions[i] = extensions[i].toUpperCase();
+        }
     }
 
     public boolean accept(File pathname) {
         if(pathname.isFile()) {
-            return pathname.getName().toUpperCase().endsWith(extension);
+            String name = pathname.getName().toUpperCase();
+            for (String extension : extensions) {
+                if(name.endsWith(extension)) {
+                    return true;
+                }
+            }
+            return false;
         }
-        if(!pathname.isDirectory())
+        if(!pathname.isDirectory()) {
             return false;
-        if(pathname.isHidden())
+        }
+        if(pathname.isHidden()) {
             return false;
+        }
         return true;
     }
     

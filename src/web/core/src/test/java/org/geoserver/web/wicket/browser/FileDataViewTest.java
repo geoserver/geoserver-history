@@ -12,6 +12,7 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.util.tester.WicketTester;
 import org.geoserver.web.ComponentBuilder;
 import org.geoserver.web.FormTestPage;
+import org.geoserver.web.wicket.WicketHierarchyPrinter;
 
 import static org.geoserver.web.GeoServerWicketTestSupport.initResourceSettings;
 
@@ -28,7 +29,7 @@ public class FileDataViewTest extends TestCase {
     private File lastClicked;
 
     FileProvider fileProvider;
-
+    
     @Override
     protected void setUp() throws Exception {
         tester = new WicketTester();
@@ -66,13 +67,13 @@ public class FileDataViewTest extends TestCase {
         tester.assertRenderedPage(FormTestPage.class);
         tester.assertNoErrorMessage();
         
-        tester.assertLabel("form:panel:fileTable:files:1:nameLink:name", "one.txt");
-        tester.assertLabel("form:panel:fileTable:files:2:nameLink:name", "two.sld");
-        assertEquals(2, ((DataView) tester.getComponentFromLastRenderedPage("form:panel:fileTable:files")).size());
+        tester.assertLabel("form:panel:fileTable:fileContent:files:1:nameLink:name", "one.txt");
+        tester.assertLabel("form:panel:fileTable:fileContent:files:2:nameLink:name", "two.sld");
+        assertEquals(2, ((DataView) tester.getComponentFromLastRenderedPage("form:panel:fileTable:fileContent:files")).size());
     }
     
     public void testClick() throws Exception {
-        tester.clickLink("form:panel:fileTable:files:1:nameLink");
+        tester.clickLink("form:panel:fileTable:fileContent:files:1:nameLink");
         tester.assertRenderedPage(FormTestPage.class);
         tester.assertNoErrorMessage();
         assertEquals(one, lastClicked);
@@ -81,17 +82,19 @@ public class FileDataViewTest extends TestCase {
     public void testFilter() throws Exception {
         fileProvider.setFileFilter(new Model(new ExtensionFileFilter(".txt")));
         tester.startPage(tester.getLastRenderedPage());
-        tester.assertLabel("form:panel:fileTable:files:3:nameLink:name", "one.txt");
-        assertEquals(1, ((DataView) tester.getComponentFromLastRenderedPage("form:panel:fileTable:files")).size());
+        tester.assertLabel("form:panel:fileTable:fileContent:files:3:nameLink:name", "one.txt");
+        assertEquals(1, ((DataView) tester.getComponentFromLastRenderedPage("form:panel:fileTable:fileContent:files")).size());
     }
     
     public void testSortByName() throws Exception {
+        
+        
         // order by inverse name
         tester.clickLink("form:panel:fileTable:nameHeader:orderByLink", true);
         tester.clickLink("form:panel:fileTable:nameHeader:orderByLink", true);
         tester.assertRenderedPage(FormTestPage.class);
          
-        tester.assertLabel("form:panel:fileTable:files:5:nameLink:name", "two.sld");
-        tester.assertLabel("form:panel:fileTable:files:6:nameLink:name", "one.txt");
+        tester.assertLabel("form:panel:fileTable:fileContent:files:5:nameLink:name", "two.sld");
+        tester.assertLabel("form:panel:fileTable:fileContent:files:6:nameLink:name", "one.txt");
     }
 }
