@@ -204,7 +204,8 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                     XSI_URI);
 
                 String locationAtt = XSI_PREFIX + ":schemaLocation";
-                String locationDef = WFS_URI + " " + buildSchemaURL(request.getBaseUrl(), "wfs/1.0.0/WFS-capabilities.xsd");
+                String locationDef = WFS_URI + " " + (wfs.isCanonicalSchemaLocation()?org.geoserver.wfs.xml.v1_0_0.WFS.CANONICAL_SCHEMA_LOCATION_CAPABILITIES:
+                    buildSchemaURL(request.getBaseUrl(), "wfs/1.0.0/WFS-capabilities.xsd"));
                 attributes.addAttribute("", locationAtt, locationAtt, "", locationDef);
 
                 start("WFS_Capabilities", attributes);
@@ -790,7 +791,9 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                             "xmlns:ogc", OGC.NAMESPACE, "xmlns:xlink", XLINK.NAMESPACE,
                             "xsi:schemaLocation",
                             org.geoserver.wfs.xml.v1_1_0.WFS.NAMESPACE + " " +
-                            buildSchemaURL(request.getBaseUrl(), "wfs/1.1.0/wfs.xsd")
+                            (wfs.isCanonicalSchemaLocation()?
+                                    org.geoserver.wfs.xml.v1_1_0.WFS.CANONICAL_SCHEMA_LOCATION:
+                                        (buildSchemaURL(request.getBaseUrl(), "wfs/1.1.0/wfs.xsd")))
                             });
 
                 List<NamespaceInfo> namespaces = catalog.getNamespaces();

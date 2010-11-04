@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import junit.framework.Test;
 
 import org.geoserver.wfs.WFSInfo;
+import org.geoserver.wfs.xml.v1_1_0.WFS;
 import org.geotools.data.complex.AppSchemaDataAccess;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -61,6 +62,11 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
         Document doc = getAsDOM("wfs?request=GetCapabilities");
         LOGGER.info("WFS GetCapabilities response:\n" + prettyString(doc));
         assertEquals("wfs:WFS_Capabilities", doc.getDocumentElement().getNodeName());
+        
+        // check wfs schema location is canonical
+        String schemaLocation = evaluate("wfs:WFS_Capabilities/@xsi:schemaLocation", doc);                
+        String location = "http://www.opengis.net/wfs " + WFS.CANONICAL_SCHEMA_LOCATION;
+        assertEquals(location , schemaLocation);
 
         // make sure non-feature types don't appear in FeatureTypeList
         assertXpathCount(5, "//wfs:FeatureType", doc);
