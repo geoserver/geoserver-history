@@ -32,6 +32,8 @@ public final class WFS extends XSD {
     public static final String NAMESPACE = "http://www.opengis.net/wfs";
 
     public static final String CANONICAL_SCHEMA_LOCATION_BASIC = "http://schemas.opengis.net/wfs/1.0.0/WFS-basic.xsd";
+    
+    public static final String CANONICAL_SCHEMA_LOCATION_CAPABILITIES = "http://schemas.opengis.net/wfs/1.0.0/WFS-capabilities.xsd";
 
     /* Type Definitions */
     /** @generated */
