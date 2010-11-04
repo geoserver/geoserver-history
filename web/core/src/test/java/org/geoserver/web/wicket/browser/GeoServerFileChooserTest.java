@@ -9,6 +9,7 @@ import org.apache.wicket.model.Model;
 import org.geoserver.web.ComponentBuilder;
 import org.geoserver.web.FormTestPage;
 import org.geoserver.web.GeoServerWicketTestSupport;
+import org.geoserver.web.wicket.WicketHierarchyPrinter;
 
 public class GeoServerFileChooserTest extends GeoServerWicketTestSupport {
 
@@ -40,7 +41,7 @@ public class GeoServerFileChooserTest extends GeoServerWicketTestSupport {
             }
         }));
         
-        // WicketHierarchyPrinter.print(tester.getLastRenderedPage(), true, true);
+        //WicketHierarchyPrinter.print(tester.getLastRenderedPage(), true, true);
     }
     
     public void testLoad() {
@@ -49,8 +50,8 @@ public class GeoServerFileChooserTest extends GeoServerWicketTestSupport {
         tester.assertRenderedPage(FormTestPage.class);
         tester.assertNoErrorMessage();
         
-        tester.assertLabel("form:panel:fileTable:fileTable:files:1:nameLink:name", "child/");
-        assertEquals(1, ((DataView) tester.getComponentFromLastRenderedPage("form:panel:fileTable:fileTable:files")).size());
+        tester.assertLabel("form:panel:fileTable:fileTable:fileContent:files:1:nameLink:name", "child/");
+        assertEquals(1, ((DataView) tester.getComponentFromLastRenderedPage("form:panel:fileTable:fileTable:fileContent:files")).size());
     }
     
     public void testNullRoot() {
