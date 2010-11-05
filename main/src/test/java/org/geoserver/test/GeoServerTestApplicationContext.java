@@ -27,6 +27,8 @@ public class GeoServerTestApplicationContext extends ClassPathXmlApplicationCont
     implements WebApplicationContext {
     ServletContext servletContext;
 
+    boolean useLegacyGeoServerLoader = true;
+    
     public GeoServerTestApplicationContext(String configLocation, ServletContext servletContext)
         throws BeansException {
         this(new String[] { configLocation }, servletContext);
@@ -54,6 +56,10 @@ public class GeoServerTestApplicationContext extends ClassPathXmlApplicationCont
         return null;
     }
     
+    public void setUseLegacyGeoServerLoader(boolean useLegacyGeoServerLoader) {
+        this.useLegacyGeoServerLoader = useLegacyGeoServerLoader;
+    }
+    
     /*
      * JD: Overriding manually and playing with bean definitions. We do this
      * because we have not ported all the mock test data to a 2.x style configuration
@@ -63,14 +69,17 @@ public class GeoServerTestApplicationContext extends ClassPathXmlApplicationCont
             throws BeansException, IOException {
         super.loadBeanDefinitions(reader);
         
-        BeanDefinition def = reader.getBeanFactory().getBeanDefinition("geoServerLoader");
-        def.setBeanClassName( "org.geoserver.test.TestGeoServerLoaderProxy");
-
+        if (useLegacyGeoServerLoader) {
+            BeanDefinition def = reader.getBeanFactory().getBeanDefinition("geoServerLoader");
+            def.setBeanClassName( "org.geoserver.test.TestGeoServerLoaderProxy");
+        }
+        
         try {
-            def = reader.getBeanFactory().getBeanDefinition("wcsLoader");
+            BeanDefinition def = reader.getBeanFactory().getBeanDefinition("wcsLoader");
             def.getConstructorArgumentValues().clear();
             def.setBeanClassName( "org.geoserver.wcs.WCSLoader");
         }
         catch( NoSuchBeanDefinitionException e ) {}
+
     }
 }

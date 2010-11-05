@@ -176,6 +176,7 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
 
             applicationContext = new GeoServerTestApplicationContext(getSpringContextLocations(),
                     servletContext);
+            applicationContext.setUseLegacyGeoServerLoader(useLegacyDataDirectory());
             applicationContext.refresh();
 
             // set the parameter after a refresh because it appears a refresh
