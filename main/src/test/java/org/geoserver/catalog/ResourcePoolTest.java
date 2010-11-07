@@ -109,4 +109,23 @@ public class ResourcePoolTest extends GeoServerTestSupport {
         pool.dispose();
         assertTrue(disposeCalled);
     }
+    
+    public void testLRU() throws IOException {
+        Catalog catalog = getCatalog();
+        ResourcePool pool = new ResourcePool(catalog);
+        pool.setFeatureTypeCacheSize(2);
+        catalog.setResourcePool(pool);
+        FeatureTypeInfo lakes = catalog.getFeatureTypeByName(MockData.LAKES.getNamespaceURI(),
+                MockData.LAKES.getLocalPart());
+        FeatureTypeInfo lines = catalog.getFeatureTypeByName(MockData.LINES.getNamespaceURI(),
+                MockData.LINES.getLocalPart());
+        FeatureTypeInfo locks = catalog.getFeatureTypeByName(MockData.LOCKS.getNamespaceURI(),
+                MockData.LOCKS.getLocalPart());
+        pool.getFeatureType(lakes);
+        pool.getFeatureType(lines);
+        pool.getFeatureType(locks);
+        assertEquals("LRU cache size should never exceed set limit", 2, pool.featureTypeCache
+                .size());
+    }
+
 }
