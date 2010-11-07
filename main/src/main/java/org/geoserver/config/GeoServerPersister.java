@@ -32,7 +32,6 @@ import org.geoserver.catalog.event.CatalogListener;
 import org.geoserver.catalog.event.CatalogModifyEvent;
 import org.geoserver.catalog.event.CatalogPostModifyEvent;
 import org.geoserver.catalog.event.CatalogRemoveEvent;
-import org.geoserver.catalog.impl.WMSLayerInfoImpl;
 import org.geoserver.config.util.XStreamPersister;
 import org.geoserver.platform.GeoServerResourceLoader;
 import org.geotools.util.logging.Logging;
@@ -135,8 +134,11 @@ public class GeoServerPersister implements CatalogListener, ConfigurationListene
                 i = event.getPropertyNames().indexOf("defaultWorkspace");
                 if ( i > -1 ) {
                     WorkspaceInfo defWorkspace = (WorkspaceInfo) event.getNewValues().get( i );
-                    File d = rl.createDirectory( "workspaces");
-                    persist(defWorkspace, new File(d, "default.xml"));
+                    // SG don't bother with a default workspace if we do not have one
+                    if (defWorkspace != null) {
+                        File d = rl.createDirectory("workspaces");
+                        persist(defWorkspace, new File(d, "default.xml"));
+                    }
                 }
             }
             
@@ -650,6 +652,11 @@ public class GeoServerPersister implements CatalogListener, ConfigurationListene
     }
     
     void rename( File source, File dest ) throws IOException {
+        // same path? Do nothing
+        if (source.getCanonicalPath().equalsIgnoreCase(dest.getCanonicalPath()))
+            return;
+
+        // different path
         boolean win = System.getProperty("os.name").startsWith("Windows");
         if ( win && dest.exists() ) {
             //windows does not do atomic renames, and can not rename a file if the dest file
@@ -677,11 +684,15 @@ public class GeoServerPersister implements CatalogListener, ConfigurationListene
                     temp.delete();
                 }
                 
-                BufferedOutputStream out = 
-                    new BufferedOutputStream( new FileOutputStream( temp ) );
-                xp.save( o, out );
-                out.flush();
-                out.close();
+                BufferedOutputStream out = null;
+                try{
+                    out=new BufferedOutputStream( new FileOutputStream( temp ) );
+                    xp.save( o, out );
+                    out.flush();
+                } finally {
+                    if (out != null)
+                        org.apache.commons.io.IOUtils.closeQuietly(out);
+                }
                 
                 //no errors, overwrite the original file
                 rename(temp,f);

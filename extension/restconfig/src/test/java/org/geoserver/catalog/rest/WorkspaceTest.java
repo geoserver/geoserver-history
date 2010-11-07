@@ -12,6 +12,7 @@ import net.sf.json.JSON;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import org.geoserver.catalog.CascadeDeleteVisitor;
 import org.geoserver.catalog.StoreInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.w3c.dom.Document;
@@ -158,6 +159,25 @@ public class WorkspaceTest extends CatalogRESTTestSupport {
     
     public void testDeleteDefaultNotAllowed() throws Exception {
         assertEquals( 405, deleteAsServletResponse("/rest/workspaces/default").getStatusCode() );
+    }
+    
+    public void testDeleteAllOneByOne() throws Exception {
+        for(WorkspaceInfo ws : getCatalog().getWorkspaces()) {
+            // empty the workspace otherwise we can't remove it
+            CascadeDeleteVisitor visitor = new CascadeDeleteVisitor(getCatalog());
+            for(StoreInfo store : getCatalog().getStoresByWorkspace(ws, StoreInfo.class)) {
+                store.accept(visitor);
+            }
+
+            // actually go and remove the store
+            String resource = "/rest/workspaces/" + ws.getName();
+            System.out.println(resource);
+            assertEquals( 200, deleteAsServletResponse(resource).getStatusCode() );
+            assertEquals( 404, getAsServletResponse(resource).getStatusCode() );
+        }
+        Document dom = getAsDOM( "/rest/workspaces.xml");
+        print(dom);
+        assertEquals(0, dom.getElementsByTagName( "workspace").getLength() );
     }
     
     public void testPut() throws Exception {
