@@ -148,7 +148,7 @@ public class KMLRasterTransformer extends KMLMapTransformer {
                             .loadFeatureCollection(
                                     (SimpleFeatureSource) mapLayer
                                             .getFeatureSource(), mapLayer,
-                                    mapContext, wms);
+                                    mapContext, wms, scaleDenominator);
                 } catch (Exception ex) {
                     String msg = "Error getting features.";
                     LOGGER.log(Level.WARNING, msg, ex);

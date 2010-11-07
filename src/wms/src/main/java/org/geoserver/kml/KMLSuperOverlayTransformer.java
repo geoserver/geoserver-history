@@ -18,10 +18,12 @@ import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSMapContext;
 import org.geoserver.wms.WMSRequests;
+import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
+import org.geotools.renderer.lite.RendererUtilities;
 import org.geotools.resources.coverage.FeatureUtilities;
 import org.geotools.xml.transform.Translator;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -304,9 +306,9 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
             int numFeatures = 0;
 
             try {
-                numFeatures = (KMLUtils.loadFeatureCollection(
-                        (SimpleFeatureSource) mapLayer.getFeatureSource(), mapLayer, mapContext, wms)
-                        .size()/* == 0 */);
+                final SimpleFeatureCollection fc = KMLUtils.loadFeatureCollection(
+                        (SimpleFeatureSource) mapLayer.getFeatureSource(), mapLayer, mapContext, wms, -1);
+                numFeatures = fc == null ? 0 : fc.size();
             } catch (ServiceException e) {
                 LOGGER.severe("Caught the WmsException!");
                 numFeatures = -1;

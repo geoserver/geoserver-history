@@ -6,6 +6,7 @@ package org.geoserver.kml;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
@@ -28,9 +29,11 @@ import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.FeatureTypes;
 import org.geotools.filter.IllegalFilterException;
+import org.geotools.filter.visitor.SimplifyingFilterVisitor;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
 import org.geotools.referencing.CRS;
+import org.geotools.renderer.lite.LiteFeatureTypeStyle;
 import org.geotools.styling.FeatureTypeStyle;
 import org.geotools.styling.Rule;
 import org.geotools.styling.Style;
@@ -416,9 +419,20 @@ public class KMLUtils {
                 .toArray(new FeatureTypeStyle[filtered.size()]);
     }
 
+    /**
+     * Loads the feature collection based on the current styling and the scale denominator.
+     * If no feature is going to be returned a null feature collection will be returned instead
+     * @param featureSource
+     * @param layer
+     * @param mapContext
+     * @param wms
+     * @param scaleDenominator
+     * @return
+     * @throws Exception
+     */
     public static SimpleFeatureCollection loadFeatureCollection(
             SimpleFeatureSource featureSource,
-            MapLayer layer, WMSMapContext mapContext, WMS wms) throws Exception {
+            MapLayer layer, WMSMapContext mapContext, WMS wms, double scaleDenominator) throws Exception {
         SimpleFeatureType schema = featureSource.getSchema();
 
         Envelope envelope = mapContext.getAreaOfInterest();
@@ -492,9 +506,13 @@ public class KMLUtils {
             regionatingFilter = regionatingStrategy.getFilter(mapContext, layer);
 
         Filter ruleFilter = summarizeRuleFilters(getLayerRules(featureSource
-                .getSchema(), layer.getStyle()));
-        Filter finalFilter = joinFilters(q.getFilter(), joinFilters(ruleFilter,
-                regionatingFilter));
+                .getSchema(), layer.getStyle()), scaleDenominator);
+        Filter finalFilter = joinFilters(q.getFilter(), ruleFilter,
+                regionatingFilter);
+        if(finalFilter == Filter.EXCLUDE) {
+            // if we don't have any feature to return
+            return null;
+        }
         q.setFilter(finalFilter);
 
         // make sure we output in 4326 since that's what KML mandates
@@ -593,18 +611,21 @@ public class KMLUtils {
         return result;
     }
 
-    private static Filter joinFilters(Filter first, Filter second) {
-        if (Filter.EXCLUDE.equals(first) || Filter.EXCLUDE.equals(second))
+    private static Filter joinFilters(Filter... filters) {
+        if(filters == null || filters.length == 0) {
             return Filter.EXCLUDE;
-
-        if (first == null || Filter.INCLUDE.equals(first))
-            return second;
-
-        if (second == null || Filter.INCLUDE.equals(second))
-            return first;
-
-        FilterFactory ff = CommonFactoryFinder.getFilterFactory(null);
-        return ff.and(first, second);
+        }
+        
+        Filter result = null;
+        if(filters.length > 0) {
+            FilterFactory ff = CommonFactoryFinder.getFilterFactory(null);
+            result = ff.and(Arrays.asList(filters));
+        } else if(filters.length == 1) {
+            result = filters[0];
+        }
+        
+        SimplifyingFilterVisitor visitor = new SimplifyingFilterVisitor();
+        return (Filter) result.accept(visitor, null);
     }
 
     /**
@@ -612,26 +633,34 @@ public class KMLUtils {
      * 
      * @param rules
      * @param originalFiter
+     * @param scaleDenominator The actual scale denominator, or a value <= 0 if no scale denominator 
+     *                         checks have to be performed
      * @return
      */
-    private static Filter summarizeRuleFilters(List[] rules) {
+    private static Filter summarizeRuleFilters(List[] rules, double scaleDenominator) {
         if (rules[RULES].size() == 0 || rules[ELSE_RULES].size() > 0)
             return Filter.INCLUDE;
 
         List filters = new ArrayList();
         for (Iterator it = rules[RULES].iterator(); it.hasNext();) {
             Rule rule = (Rule) it.next();
-            // if there is a single rule asking for all filters, we have to
-            // return everything that the original filter returned already
-            if (rule.getFilter() == null
-                    || Filter.INCLUDE.equals(rule.getFilter()))
-                return Filter.INCLUDE;
-            else
-                filters.add(rule.getFilter());
+            if(scaleDenominator <= 0 || isWithInScale(rule, scaleDenominator)) {
+                // if there is a single rule asking for all filters, we have to
+                // return everything that the original filter returned already
+                if (rule.getFilter() == null
+                        || Filter.INCLUDE.equals(rule.getFilter()))
+                    return Filter.INCLUDE;
+                else
+                    filters.add(rule.getFilter());
+            }
         }
 
-        FilterFactory ff = CommonFactoryFinder.getFilterFactory(null);
-        return ff.or(filters);
+        if(filters.size() > 0) {
+            FilterFactory ff = CommonFactoryFinder.getFilterFactory(null);
+            return ff.or(filters);
+        } else {
+            return Filter.EXCLUDE;
+        }
     }
     
     /**
@@ -781,6 +810,6 @@ public class KMLUtils {
         
         return false;
     }
-    
+
     
 }

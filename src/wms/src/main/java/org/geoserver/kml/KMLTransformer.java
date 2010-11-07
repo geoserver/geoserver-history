@@ -161,9 +161,11 @@ public class KMLTransformer extends TransformerBase {
             SimpleFeatureCollection features = null;
 
             try {
-                features = KMLUtils.loadFeatureCollection(featureSource, layer, mapContext, wms);
-                if(features == null)
-                	return;
+                features = KMLUtils.loadFeatureCollection(featureSource, layer, mapContext, wms, scaleDenominator);
+                if(features == null) {
+                    // it means no features need to be depicted with this style/scale denominator
+                    return;
+                }
             } catch (RuntimeException e) {
                 throw e;
             } catch (Exception e) {
