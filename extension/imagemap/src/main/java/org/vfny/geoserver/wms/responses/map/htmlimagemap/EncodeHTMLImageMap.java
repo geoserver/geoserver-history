@@ -342,7 +342,7 @@ public class EncodeHTMLImageMap extends WebMap{
                 	fColl=fSource.getFeatures(q);
                 
                 // encodes the current layer, using the defined style
-                writer.writeFeatures(fColl, layer.getStyle(),ftsList);
+                writer.writeFeatures(fColl, ftsList);
                 writer.write("</map>\n");
                 
             } catch (IOException ex) {
