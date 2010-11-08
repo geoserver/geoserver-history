@@ -25,6 +25,7 @@ import org.geotools.referencing.operation.DefaultMathTransformFactory;
 import org.geotools.referencing.operation.matrix.GeneralMatrix;
 import org.geotools.renderer.lite.RendererUtilities;
 import org.geotools.styling.FeatureTypeStyle;
+import org.geotools.styling.Graphic;
 import org.geotools.styling.LineSymbolizer;
 import org.geotools.styling.Mark;
 import org.geotools.styling.PointSymbolizer;
@@ -654,8 +655,11 @@ public class HTMLImageMapWriter extends OutputStreamWriter {
         	super.processSymbolizer(ft, rule,symbolizer);
         	if(symbolizer instanceof PointSymbolizer) {
         		Mark mark=SLD.mark((PointSymbolizer)symbolizer);
-        		if(mark!=null) {
-        			size=SLD.size(mark);
+        		Graphic graphic=SLD.graphic((PointSymbolizer)symbolizer);
+        		if(graphic!=null && mark!=null) {
+        			Object oSize=graphic.getSize().evaluate(null);
+        			if(oSize!=null)
+        			size=Double.parseDouble(oSize.toString());
         			asCircle=SLD.wellKnownName(mark).toLowerCase().equals("circle");
         			if(!asCircle)
         				symbol=SLD.wellKnownName(mark).toLowerCase();
