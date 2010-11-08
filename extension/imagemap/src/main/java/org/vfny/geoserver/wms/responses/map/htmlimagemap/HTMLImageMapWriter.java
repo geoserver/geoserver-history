@@ -161,7 +161,7 @@ public class HTMLImageMapWriter extends OutputStreamWriter {
      * @throws IOException if an error occurs during encoding
      * @throws AbortedException if the operation is aborted
      */
-    public void writeFeatures(SimpleFeatureCollection fColl, Style style,FeatureTypeStyle[] ftsList)
+    public void writeFeatures(SimpleFeatureCollection fColl, FeatureTypeStyle[] ftsList)
         throws IOException, AbortedException {
         SimpleFeature ft;
         SimpleFeatureIterator iter=null;
@@ -170,7 +170,7 @@ public class HTMLImageMapWriter extends OutputStreamWriter {
             Class<?> gtype = featureType.getGeometryDescriptor().getType().getBinding();
             
             // iterates through the single features
-            iter = fColl.features();
+            iter=fColl.features();
             while (iter.hasNext()) {
                 ft = iter.next();      
                 Geometry geo=(Geometry)ft.getDefaultGeometry();
@@ -186,7 +186,7 @@ public class HTMLImageMapWriter extends OutputStreamWriter {
                 // retrieves the right feature writer (based on the geometry type of the feature)
                 HTMLImageMapFeatureWriter featureWriter = (HTMLImageMapFeatureWriter) writers.get(ft.getDefaultGeometry().getClass());
                 // encodes a single feature, using the supplied style and the current featureWriter
-                featureWriter.writeFeature(ft,style,ftsList);    
+                featureWriter.writeFeature(ft,ftsList);    
                 ft = null;
             }
 
@@ -243,6 +243,7 @@ public class HTMLImageMapWriter extends OutputStreamWriter {
 
                 continue;
             }
+			/*
             double scaleDenominator;
 			try {
 				scaleDenominator = RendererUtilities.calculateScale(mapContext.getAreaOfInterest(), mapContext.getMapWidth(), mapContext.getMapHeight(),100);
@@ -257,7 +258,7 @@ public class HTMLImageMapWriter extends OutputStreamWriter {
 			} catch (FactoryException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
+			}*/
             
             //does this rule have a filter which applies to the feature
             Filter filter = rule.getFilter();
@@ -317,22 +318,23 @@ public class HTMLImageMapWriter extends OutputStreamWriter {
     	 * @param fts "cached" ftss matching the FeatureType of the feature
     	 * @throws IOException if an error occurs during encoding
     	 */
-    	protected void writeFeature(SimpleFeature ft,Style style,FeatureTypeStyle[] fts) throws IOException {
+    	protected void writeFeature(SimpleFeature ft,FeatureTypeStyle[] fts) throws IOException {
     		// a new feature begins, reset accumulated info, such as extraAttributes
     		reset(ft);
     		// process the supplied style and store rendering info for the following phases
     		// the style processing applies filters to the feature to decide if it has to be included
     		// in output
-    		if(processStyle(ft,style,fts)) {
+    		if(processStyle(ft,fts)) {
     			try {
 		    		// encodes starting element
 		            startElement(ft,"");        
+		            Geometry geo=(Geometry)ft.getDefaultGeometry();
 		            // pre geometry encoding phase
-		            startGeometry((Geometry)ft.getDefaultGeometry());
+		            startGeometry(geo);
 		            // actual geometry encoding phase
-		            writeGeometry((Geometry)ft.getDefaultGeometry(),buffer);
+		            writeGeometry(geo,buffer);
 		            // post geometry encoding phase
-		            endGeometry((Geometry)ft.getDefaultGeometry());
+		            endGeometry(geo);
 		            // encodes ending element
 		            endElement(ft);
 		            // if everything has been correctly encoded,
@@ -371,16 +373,17 @@ public class HTMLImageMapWriter extends OutputStreamWriter {
     	 * @param fts "cached" ftss matching the FeatureType of the feature
     	 * @throws IOException if an error occurs during encoding
     	 */
-    	protected void writeMultiFeature(SimpleFeature ft,Style style,FeatureTypeStyle[] fts) throws IOException {
+    	protected void writeMultiFeature(SimpleFeature ft,FeatureTypeStyle[] fts) throws IOException {
     		reset(ft);
-    		if(processStyle(ft,style,fts)) {
+    		if(processStyle(ft,fts)) {
 	    		GeometryCollection geomCollection = (GeometryCollection) ft.getDefaultGeometry();
 	    		for (int i = 0; i < geomCollection.getNumGeometries(); i++) {
 	    			try {
 			            startElement(ft,"."+i);        
-			            startGeometry(geomCollection.getGeometryN(i));
-			            writeGeometry(geomCollection.getGeometryN(i),buffer);
-			            endGeometry(geomCollection.getGeometryN(i));        
+			            Geometry geo=geomCollection.getGeometryN(i);
+			            startGeometry(geo);
+			            writeGeometry(geo,buffer);
+			            endGeometry(geo);        
 			            endElement(ft);
 			            commitBuffer();
 	    			} catch(IOException e) {
@@ -484,7 +487,7 @@ public class HTMLImageMapWriter extends OutputStreamWriter {
          * style filters.
          * @throws IOException if an error occurs during the process
          */
-        protected boolean processStyle(SimpleFeature ft,Style style,FeatureTypeStyle[] ftsList) 
+        protected boolean processStyle(SimpleFeature ft,FeatureTypeStyle[] ftsList) 
             throws IOException {
         	int total=0;
         	for(int i=0;i<ftsList.length;i++) {
@@ -661,8 +664,11 @@ public class HTMLImageMapWriter extends OutputStreamWriter {
         	super.processSymbolizer(ft, rule,symbolizer);
         	if(symbolizer instanceof PointSymbolizer) {
         		Mark mark=SLD.mark((PointSymbolizer)symbolizer);
-        		if(mark!=null) {
-        			size=SLD.size(mark);
+        		Graphic graphic=SLD.graphic((PointSymbolizer)symbolizer);
+        		if(graphic!=null && mark!=null) {
+        			Object oSize=graphic.getSize().evaluate(null);
+        			if(oSize!=null)
+        				size=Double.parseDouble(oSize.toString());
         			asCircle=SLD.wellKnownName(mark).toLowerCase().equals("circle");
         			if(!asCircle)
         				symbol=SLD.wellKnownName(mark).toLowerCase();
@@ -707,8 +713,8 @@ public class HTMLImageMapWriter extends OutputStreamWriter {
         /**
          * Uses writeMultiFeature.
          */
-        protected void writeFeature(SimpleFeature ft,Style style,FeatureTypeStyle[] fts) throws IOException {
-        	writeMultiFeature(ft, style, fts);
+        protected void writeFeature(SimpleFeature ft,FeatureTypeStyle[] fts) throws IOException {
+        	writeMultiFeature(ft,  fts);
         }
         
     }
@@ -797,8 +803,8 @@ public class HTMLImageMapWriter extends OutputStreamWriter {
         /**
          * Uses writeMultiFeature.
          */
-        protected void writeFeature(SimpleFeature ft,Style style,FeatureTypeStyle[] fts) throws IOException {
-        	writeMultiFeature(ft, style, fts);
+        protected void writeFeature(SimpleFeature ft,FeatureTypeStyle[] fts) throws IOException {
+        	writeMultiFeature(ft, fts);
         }
     }
 
@@ -861,8 +867,8 @@ public class HTMLImageMapWriter extends OutputStreamWriter {
         /**
          * Uses writeMultiFeature.
          */
-        protected void writeFeature(SimpleFeature ft,Style style,FeatureTypeStyle[] fts) throws IOException {
-        	writeMultiFeature(ft, style, fts);
+        protected void writeFeature(SimpleFeature ft,FeatureTypeStyle[] fts) throws IOException {
+        	writeMultiFeature(ft,  fts);
         }
         
         
@@ -900,7 +906,7 @@ public class HTMLImageMapWriter extends OutputStreamWriter {
     	 * @param fts "cached" ftss matching the FeatureType of the feature
     	 * @throws IOException if an error occurs during encoding
     	 */
-    	protected void writeFeature(SimpleFeature ft,Style style,FeatureTypeStyle[] fts) throws IOException {
+    	protected void writeFeature(SimpleFeature ft,FeatureTypeStyle[] fts) throws IOException {
     		reset(ft);
     		
     		GeometryCollection geomCollection = (GeometryCollection) ft.getDefaultGeometry();
@@ -912,7 +918,7 @@ public class HTMLImageMapWriter extends OutputStreamWriter {
 
                 // retrieves the right feature writer (based on the current geometry type)
                 delegateWriter = (HTMLImageMapFeatureWriter) writers.get(gtype);
-                if(processStyle(ft,style,fts)) {
+                if(processStyle(ft,fts)) {
                 	try {
 			            startElement(ft,"."+i);        
 			            startGeometry(geom);
@@ -944,9 +950,9 @@ public class HTMLImageMapWriter extends OutputStreamWriter {
          * @return true if the style filters "accept" the feature
          * @throws IOException if an error occurs during the process
          */
-        protected boolean processStyle(SimpleFeature ft,Style style,FeatureTypeStyle[] ftsList) 
+        protected boolean processStyle(SimpleFeature ft,FeatureTypeStyle[] ftsList) 
             throws IOException {
-        	if(delegateWriter.processStyle(ft, style, ftsList)) {
+        	if(delegateWriter.processStyle(ft,  ftsList)) {
 	        	Iterator<String> iter=delegateWriter.extraAttributes.keySet().iterator();
 	        	while(iter.hasNext()) {
 	        		String attrName=(String)iter.next();
