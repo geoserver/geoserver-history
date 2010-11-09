@@ -36,6 +36,7 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.protocol.http.WebRequest;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.web.GeoServerBasePage;
+import org.geoserver.web.wicket.CodeMirrorEditor;
 import org.geoserver.web.wicket.EditAreaBehavior;
 import org.geotools.util.logging.Logging;
 import org.vfny.geoserver.global.ConfigurationException;
@@ -56,7 +57,7 @@ public class DemoRequestsPage extends GeoServerBasePage {
 
     private TextField urlTextField;
 
-    private TextArea body;
+    private CodeMirrorEditor body;
 
     private TextField username;
 
@@ -196,11 +197,12 @@ public class DemoRequestsPage extends GeoServerBasePage {
         urlTextField.setOutputMarkupId(true);
         demoRequestsForm.add(urlTextField);
 
-        body = new TextArea("body", new PropertyModel(requestModel, "requestBody"));
+        body = new CodeMirrorEditor("body", new PropertyModel(requestModel, "requestBody"));
         // force the id otherwise this blasted thing won't be usable from other forms
-        body.setMarkupId("requestBody");
-        body.setOutputMarkupId(true);
-        body.add(new EditAreaBehavior());
+        // body.setMarkupId("requestBody");
+        // body.setOutputMarkupId(true);
+        body.setTextAreaMarkupId("requestBody");
+        //body.add(new EditAreaBehavior());
         demoRequestsForm.add(body);
 
         username = new TextField("username", new PropertyModel(requestModel, "userName"));
@@ -238,7 +240,7 @@ public class DemoRequestsPage extends GeoServerBasePage {
                 return new AjaxCallDecorator() {
                     @Override
                     public CharSequence decorateScript(CharSequence script) {
-                        return "document.getElementById('requestBody').value = editAreaLoader.getValue('requestBody');"
+                        return "document.getElementById('requestBody').value = document.gsEditors.requestBody.getCode();"
                                 + script;
                     }
                 };
