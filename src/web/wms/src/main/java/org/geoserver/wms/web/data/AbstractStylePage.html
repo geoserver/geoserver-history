@@ -13,7 +13,7 @@
             <a href="#" wicket:id="copy"><wicket:message key="copy">Copy</wicket:message></a>
         </li>
     </ul>
-    <textarea class="field textarea" wicket:id="editor" id="editor" rows="30" cols="80"> </textarea>
+    <div class="field textarea" wicket:id="editor"> </div>
     
     </form>
 
@@ -27,7 +27,7 @@
 
     <div class="button-group selfclear">
        <a href="#" wicket:id="validate"><wicket:message key="validate">Validate</wicket:message></a>
-       <a href="#" onclick="document.getElementById('editor').value = editAreaLoader.getValue('editor');document.forms['mainForm'].submit();"><wicket:message key="submit">Submit</wicket:message></a>
+       <a href="#" onclick="document.forms['mainForm'].submit();"><wicket:message key="submit">Submit</wicket:message></a>
        <a href="#" wicket:id="cancel"><wicket:message key="cancel">Cancel</wicket:message></a>
     </div>
 

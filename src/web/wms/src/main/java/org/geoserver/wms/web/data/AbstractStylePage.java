@@ -25,7 +25,6 @@ import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.form.upload.FileUploadField;
@@ -39,7 +38,7 @@ import org.geoserver.catalog.StyleInfo;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.data.style.StyleDetachableModel;
-import org.geoserver.web.wicket.EditAreaBehavior;
+import org.geoserver.web.wicket.CodeMirrorEditor;
 import org.geoserver.web.wicket.GeoServerAjaxFormLink;
 import org.geoserver.web.wicket.ParamResourceModel;
 import org.geoserver.wms.web.publish.StyleChoiceRenderer;
@@ -65,7 +64,7 @@ public abstract class AbstractStylePage extends GeoServerSecuredPage {
 
     protected Form styleForm;
 
-    private TextArea editor;
+    protected CodeMirrorEditor editor;
     
     String rawSLD;
 
@@ -89,11 +88,10 @@ public abstract class AbstractStylePage extends GeoServerSecuredPage {
         styleForm.add(nameTextField = new TextField("name"));
         nameTextField.setRequired(true);
         
-        styleForm.add( editor = new TextArea("editor", new PropertyModel(this, "rawSLD")) );
+        styleForm.add( editor = new CodeMirrorEditor("editor", new PropertyModel(this, "rawSLD")) );
         // force the id otherwise this blasted thing won't be usable from other forms
-        editor.setMarkupId("editor");
+        editor.setTextAreaMarkupId("editor");
         editor.setOutputMarkupId(true);
-        editor.add(new EditAreaBehavior());
         styleForm.add(editor);
 
         if (style != null) {
@@ -188,17 +186,17 @@ public abstract class AbstractStylePage extends GeoServerSecuredPage {
                 }        
             }
             
-            @Override
-            protected IAjaxCallDecorator getAjaxCallDecorator() {
-                // we need to force EditArea to update the textarea contents (which it hid)
-                // before submitting the form, otherwise the validation will go bye bye
-                return new AjaxCallDecorator() {
-                    @Override
-                    public CharSequence decorateScript(CharSequence script) {
-                        return "document.getElementById('editor').value = editAreaLoader.getValue('editor');" + script;
-                    }
-                };
-            }
+//            @Override
+//            protected IAjaxCallDecorator getAjaxCallDecorator() {
+//                // we need to force EditArea to update the textarea contents (which it hid)
+//                // before submitting the form, otherwise the validation will go bye bye
+//                return new AjaxCallDecorator() {
+//                    @Override
+//                    public CharSequence decorateScript(CharSequence script) {
+//                        return "document.getElementById('editor').value = editAreaLoader.getValue('editor');" + script;
+//                    }
+//                };
+//            }
         };
     }
     
@@ -225,8 +223,7 @@ public abstract class AbstractStylePage extends GeoServerSecuredPage {
                 if (style != null) {
                     try {
                         // same here, force validation or the field won't be udpated
-                        editor.validate();
-                        editor.clearInput();
+                        editor.reset();
                         setRawSLD(readFile(style));
                     } catch (Exception e) {
                         error("Errors occurred loading the '" + style.getName() + "' style");
@@ -241,9 +238,9 @@ public abstract class AbstractStylePage extends GeoServerSecuredPage {
 
                     @Override
                     public CharSequence preDecorateScript(CharSequence script) {
-                        return "if(editAreaLoader.getValue('"
-                                + editor.getMarkupId()
-                                + "') != '' &&"
+                        return "if(event.view.document.gsEditors."
+                                + editor.getTextAreaMarkupId()
+                                + ".getCode() != '' &&"
                                 + "!confirm('"
                                 + new ParamResourceModel("confirmOverwrite", AbstractStylePage.this)
                                         .getString() + "')) return false;" + script;

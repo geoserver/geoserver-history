@@ -524,6 +524,29 @@ background-image: url(../img/icons/silk/arrow_redo.png);
 padding-left: 25px;
 }
 
+.button-group .button-fullscreen span {
+background: url(../img/icons/silk/arrow_out.png) no-repeat;
+display: block;
+}
+
+.button-group .button-undo span {
+background: url(../img/icons/silk/arrow_undo.png) no-repeat;
+display: block;
+}
+.button-group .button-redo span {
+background: url(../img/icons/silk/arrow_redo.png) no-repeat;
+display: block;
+}
+.button-group .button-goto span {
+background: url(../img/icons/silk/xhtml_go.png) no-repeat;
+display: block;
+}
+.button-group .button-reformat span {
+background: url(../img/icons/silk/text_align_right.png) no-repeat;
+display: block;
+}
+
+
 .button-group a img,
 button img {
 vertical-align: middle;
