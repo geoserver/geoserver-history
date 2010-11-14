@@ -33,6 +33,7 @@
           <descriptor>release/ext-wps.xml</descriptor>
           <descriptor>release/ext-monitor.xml</descriptor>
           <descriptor>release/ext-python.xml</descriptor>
+          <descriptor>release/ext-spatialite.xml</descriptor>
         </descriptors>
       </configuration>
      </plugin>
@@ -147,6 +148,7 @@
         <module>wps</module>
         <module>monitoring</module>
         <module>python</module>
+        <module>spatialite</module>
       </modules>
     </profile>
     <profile>
@@ -183,6 +185,12 @@
       <id>monitoring</id>
       <modules>
         <module>monitoring</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>spatialite</id>
+      <modules>
+        <module>spatialite</module>
       </modules>
     </profile>
   </profiles>
