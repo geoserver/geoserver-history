@@ -43,6 +43,11 @@
      <artifactId>python</artifactId>
      <version>${project.version}</version>
    </dependency>
+   <dependency>
+     <groupId>org.geoserver.community</groupId>
+     <artifactId>spatialite</artifactId>
+     <version>${project.version}</version>
+   </dependency>
  </dependencies>
  <build>
   <plugins>
