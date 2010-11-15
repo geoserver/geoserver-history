@@ -197,6 +197,16 @@
    <artifactId>control-flow</artifactId>
    <version>${project.version}</version>
   </dependency>
+  <dependency>
+   <groupId>org.geoserver.extension</groupId>
+   <artifactId>wps-core</artifactId>
+   <version>${project.version}</version>
+  </dependency>
+  <dependency>
+   <groupId>org.geoserver.extension</groupId>
+   <artifactId>web-wps</artifactId>
+   <version>${project.version}</version>
+  </dependency>
  </dependencies>
  <build>
   <plugins>

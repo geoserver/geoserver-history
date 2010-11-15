@@ -9,8 +9,8 @@
       <directory>release/target/dependency</directory>
       <outputDirectory></outputDirectory>
       <includes>
-        <include>*sextante*</include>
         <include>wps*</include>
+        <include>web-wps*</include>
         <include>gt-process*</include>
         <include>gt-xsd-wps*</include>
         <include>net.opengis.wps*</include>
