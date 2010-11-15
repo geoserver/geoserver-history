@@ -153,12 +153,20 @@
       </modules>
     </profile>
 
-     <profile>
+    <profile>
       <id>control-flow</id>
       <modules>
         <module>control-flow</module>
       </modules>
     </profile>
+
+    <profile>
+      <id>wps</id>
+      <modules>
+        <module>wps</module>
+      </modules>
+    </profile>
+
 
     <!-- allExtensions profile, includes all modules -->
     <profile>
@@ -182,6 +190,7 @@
         <module>feature-pregeneralized</module>
         <module>imagemosaic-jdbc</module>
         <module>control-flow</module>
+        <module>wps</module>
       </modules>
     </profile>
 
@@ -208,6 +217,7 @@
         <module>feature-pregeneralized</module>
         <module>imagemosaic-jdbc</module>
         <module>control-flow</module>
+        <module>wps</module>
       </modules>
     </profile>
 
