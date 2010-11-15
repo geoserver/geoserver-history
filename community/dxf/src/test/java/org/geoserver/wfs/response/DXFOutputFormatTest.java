@@ -5,8 +5,6 @@
 package org.geoserver.wfs.response;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -75,7 +73,7 @@ public class DXFOutputFormatTest extends WFSTestSupport {
         String sResponse = testBasicResult(resp, "Points");
         int pos = getGeometrySearchStart(sResponse);
         assertTrue(pos != -1);
-        checkSequence(sResponse,new String[] {"POINT"},pos);
+        checkSequence(sResponse,new String[] {"POINT"},pos);        
         
     }
     /**

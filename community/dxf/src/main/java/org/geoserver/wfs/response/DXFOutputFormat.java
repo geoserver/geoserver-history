@@ -25,6 +25,7 @@ import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.QueryType;
 
 import org.apache.commons.lang.StringUtils;
+import org.geoserver.config.GeoServer;
 import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
@@ -79,7 +80,7 @@ public class DXFOutputFormat extends WFSGetFeatureOutputFormat {
 
     private static final Logger LOGGER = Logging.getLogger(DXFOutputFormat.class);
     
-    public static final Set formats = new HashSet();
+    public static final Set<String> formats = new HashSet<String>();
 
     static {
         // list of supported output formats
@@ -87,8 +88,8 @@ public class DXFOutputFormat extends WFSGetFeatureOutputFormat {
         formats.add("DXF-ZIP");
     }
 
-    public DXFOutputFormat() {
-        super(formats);        
+    public DXFOutputFormat(GeoServer gs) {
+        super(gs,formats);        
     }
 
     /**
