@@ -26,7 +26,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.geotools.feature.NameImpl;
-import org.geotools.process.Process;
 import org.opengis.feature.type.Name;
 import org.opengis.util.InternationalString;
 

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+    <bean id="wpsRequestBuilder" class="org.geoserver.web.DemoLinkInfo">
+      <property name="id" value="wpsRequestBuilder" />
+      <property name="titleKey" value="WPSRequestBuilder.title" />
+      <property name="descriptionKey" value="WPSRequestBuilder.shortDescription" />
+      <property name="componentClass" value="org.geoserver.web.wps.WPSRequestBuilder" />
+    </bean>
+    
+</beans>

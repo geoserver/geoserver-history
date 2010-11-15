@@ -1,4 +1,6 @@
-package org.geoserver.wps;
+package org.geoserver.wps.sextante;
+
+import org.geoserver.wps.WPSTestSupport;
 
 import com.mockrunner.mock.web.MockHttpServletResponse;
 
