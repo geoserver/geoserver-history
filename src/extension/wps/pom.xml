@@ -13,7 +13,6 @@
     <groupId>org.geoserver.extension</groupId>
     <artifactId>wps</artifactId>
     <packaging>pom</packaging>
-    <version>${gs.version}</version>
     <name>Web Processing Service parent</name>
 
     <modules>
