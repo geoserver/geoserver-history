@@ -541,12 +541,12 @@
       <id>wps</id>
       <dependencies>
         <dependency>
-          <groupId>org.geoserver.community</groupId>
+          <groupId>org.geoserver.extension</groupId>
           <artifactId>wps-core</artifactId>
           <version>${project.version}</version>
         </dependency>
         <dependency>
-          <groupId>org.geoserver.community</groupId>
+          <groupId>org.geoserver.extension</groupId>
           <artifactId>web-wps</artifactId>
           <version>${project.version}</version>
         </dependency>
@@ -618,6 +618,16 @@
         <dependency>
           <groupId>org.geoserver.community</groupId>
           <artifactId>spatialite</artifactId>
+          <version>${project.version}</version>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>sextante</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.geoserver.community</groupId>
+          <artifactId>wps-sextante</artifactId>
           <version>${project.version}</version>
         </dependency>
       </dependencies>
