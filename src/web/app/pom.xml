@@ -542,7 +542,12 @@
       <dependencies>
         <dependency>
           <groupId>org.geoserver.community</groupId>
-          <artifactId>wps</artifactId>
+          <artifactId>wps-core</artifactId>
+          <version>${project.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.geoserver.community</groupId>
+          <artifactId>wps-gui</artifactId>
           <version>${project.version}</version>
         </dependency>
       </dependencies>
