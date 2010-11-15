@@ -36,8 +36,6 @@ import org.opengis.feature.type.Name;
 import org.opengis.util.InternationalString;
 import org.opengis.util.ProgressListener;
 
-import es.unex.sextante.gui.core.ProgressMonitor;
-
 public abstract class AnnotationDrivenProcessFactory implements ProcessFactory {
 	String namespace;
 	InternationalString title;
