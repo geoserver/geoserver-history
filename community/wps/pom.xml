@@ -18,7 +18,7 @@
 
     <modules>
       <module>wps-core</module>
-      <module>wps-gui</module>
+      <module>web-wps</module>
       <module>wps-sextante</module>
     </modules>
 </project>
