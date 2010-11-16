@@ -133,6 +133,7 @@
     </id>
     <discriminator column="STORE_TYPE" type="string"/>
     <property column="NAME" name="name" not-null="true" unique="true"/>
+    <property column="TYPE" name="type"/>
     <property column="DESCRIPTION" name="description"/>
     <property column="ENABLED" name="enabled"/>
     <property column="IS_DEFAULT" name="default"/>
@@ -376,7 +377,7 @@
     </set>
 
     <!-- fixme: maybe these reosurces should be persisted by hand, avoiding dups. -->
-    <many-to-one cascade="persist" class="org.geoserver.catalog.impl.ResourceInfoImpl" column="RESOURCE" foreign-key="fk_layer_resource"  name="resource" not-null="true"/>
+    <many-to-one cascade="persist" class="org.geoserver.catalog.impl.ResourceInfoImpl" column="RESOURCE" foreign-key="fk_layer_resource"  name="resource" not-null="true" lazy="false"/>
     <many-to-one cascade="persist" class="org.geoserver.catalog.impl.LegendInfoImpl" column="LEGEND" foreign-key="fk_layer_legend"  name="legend"/>
     <many-to-one cascade="all" class="org.geoserver.catalog.MetadataMap" column="METADATA" foreign-key="fk_layer_metadata"  name="metadata"/>
     <many-to-one cascade="all" class="org.geoserver.catalog.impl.AttributionInfoImpl" column="ATTRIBUTION" foreign-key="fk_layer_attribution" name="attribution"/>
