@@ -50,7 +50,7 @@ public abstract class AbstractAppSchemaMockData implements NamespaceTestData {
      * Schema location URL for the the top-level gsml XSD.
      */
     public static final String GSML_SCHEMA_LOCATION_URL = "http://www.geosciml.org/geosciml/2.0/xsd/geosciml.xsd";
-    
+
     /**
      * Map of namespace prefix to namespace URI.
      */
@@ -159,7 +159,9 @@ public abstract class AbstractAppSchemaMockData implements NamespaceTestData {
     protected abstract void addContent();
 
     /**
-     * Copy a file from the test-data directory to a feature type directory.
+     * Copy a file from the test-data directory to a feature type directory. if fileName contains
+     * directory path eg, dir1/dir2/file.xml, the full path will be used to locate the resource.
+     * After which the directory will be ignored.
      * 
      * @param namespacePrefix
      *            namespace prefix of the WFS feature type
@@ -172,7 +174,8 @@ public abstract class AbstractAppSchemaMockData implements NamespaceTestData {
      */
     private void copyFileToFeatureTypeDir(String namespacePrefix, String typeName, String fileName) {
         copy(AppSchemaDataAccessTest.class.getResourceAsStream(TEST_DATA + fileName),
-                "featureTypes" + "/" + getDataStoreName(namespacePrefix, typeName) + "/" + fileName);
+                "featureTypes" + "/" + getDataStoreName(namespacePrefix, typeName) + "/"
+                        + fileName.substring(fileName.lastIndexOf("/") + 1, fileName.length()));
     }
 
     /**
@@ -371,8 +374,12 @@ public abstract class AbstractAppSchemaMockData implements NamespaceTestData {
         try {
             writeInfoFile(namespacePrefix, typeName, featureTypeDir, dataStoreName);
             copyMappingAndSupportFiles(namespacePrefix, typeName, mappingFileName, supportFileNames);
+            // if mappingFileName contains directory, eg, dir1/dir2/file.xml, we will ignore the
+            // directory from here on
             addDataStore(dataStoreName, namespacePrefix, buildAppSchemaDatastoreParams(
-                    namespacePrefix, typeName, mappingFileName, featureTypesBaseDir, dataStoreName));
+                    namespacePrefix, typeName, mappingFileName.substring(mappingFileName
+                            .lastIndexOf("/") + 1, mappingFileName.length()), featureTypesBaseDir,
+                    dataStoreName));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
