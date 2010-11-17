@@ -6,13 +6,21 @@
 
 package org.geoserver.catalog;
 
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import org.geoserver.catalog.util.ReaderUtils;
 import org.geoserver.data.test.MockData;
 import org.geoserver.test.GeoServerTestSupport;
 import org.geotools.data.DataAccess;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
+import org.w3c.dom.Element;
 
 /**
  * Tests for {@link ResourcePool}.
@@ -128,4 +136,25 @@ public class ResourcePoolTest extends GeoServerTestSupport {
                 .size());
     }
 
+    public void testGeoServerReload() throws Exception {
+        Catalog cat = getCatalog();
+        FeatureTypeInfo lakes = cat.getFeatureTypeByName(MockData.LAKES.getNamespaceURI(),
+                MockData.LAKES.getLocalPart());
+        assertFalse("foo".equals(lakes.getTitle()));
+        
+        File info = getResourceLoader().find("featureTypes", "cite_Lakes", "info.xml");
+        
+        FileReader in = new FileReader(info);
+        Element dom = ReaderUtils.parse(in); 
+        Element title = ReaderUtils.getChildElement(dom, "title");
+        title.getFirstChild().setNodeValue("foo");
+        
+        TransformerFactory.newInstance().newTransformer()
+            .transform(new DOMSource(dom), new StreamResult(info));
+        
+        getGeoServer().reload();
+        lakes = cat.getFeatureTypeByName(MockData.LAKES.getNamespaceURI(),
+                MockData.LAKES.getLocalPart());
+        assertEquals("foo", lakes.getTitle());
+    }
 }
