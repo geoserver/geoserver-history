@@ -17,6 +17,7 @@ import org.geoserver.config.GeoServerFacade;
 import org.geoserver.config.GeoServerFactory;
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.config.GeoServerLoader;
+import org.geoserver.config.GeoServerLoaderProxy;
 import org.geoserver.config.LoggingInfo;
 import org.geoserver.config.ServiceInfo;
 import org.geoserver.platform.GeoServerExtensions;
@@ -260,7 +261,7 @@ public class GeoServerImpl implements GeoServer {
         reset();
         
         // reload configuration
-        GeoServerLoader loader = GeoServerExtensions.bean(GeoServerLoader.class);
+        GeoServerLoaderProxy loader = GeoServerExtensions.bean(GeoServerLoaderProxy.class);
         synchronized (org.geoserver.config.GeoServer.CONFIGURATION_LOCK) {
             getCatalog().getResourcePool().dispose();
             loader.reload();
