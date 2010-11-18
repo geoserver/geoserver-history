@@ -7,8 +7,10 @@
 package org.geoserver.catalog;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.OutputStream;
 
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -149,8 +151,13 @@ public class ResourcePoolTest extends GeoServerTestSupport {
         Element title = ReaderUtils.getChildElement(dom, "title");
         title.getFirstChild().setNodeValue("foo");
         
-        TransformerFactory.newInstance().newTransformer()
-            .transform(new DOMSource(dom), new StreamResult(info));
+        OutputStream output = new FileOutputStream(info);
+        try {
+            TransformerFactory.newInstance().newTransformer()
+                    .transform(new DOMSource(dom), new StreamResult(output));
+        } finally {
+            output.close();
+        }
         
         getGeoServer().reload();
         lakes = cat.getFeatureTypeByName(MockData.LAKES.getNamespaceURI(),
