@@ -139,6 +139,7 @@
     </bean>
     <bean id="reprojectProcess" class="org.geoserver.wps.gs.ReprojectProcess"/>
     <bean id="aggregateProcess" class="org.geoserver.wps.gs.AggregateProcess"/>
+    <bean id="aggregateProcessResultPPIO" class="org.geoserver.wps.gs.AggregateProcessPPIO"/>
     <bean id="countProcess" class="org.geoserver.wps.gs.CountProcess"/>
     <bean id="uniqueProcess" class="org.geoserver.wps.gs.UniqueProcess"/>
     <bean id="simplifyProcess" class="org.geoserver.wps.gs.SimplifyProcess"/>
