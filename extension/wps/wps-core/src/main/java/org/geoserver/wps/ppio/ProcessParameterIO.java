@@ -77,13 +77,12 @@ public abstract class ProcessParameterIO {
         defaults.add(new GMLPPIO.GML2.GeometryAlternate());
 
         // features
-        defaults.add(new WFSPPIO.WFS10());  
+        defaults.add(new WFSPPIO.WFS10());
         defaults.add(new WFSPPIO.WFS11());
         defaults.add(new GeoJSONPPIO());
-        defaults.add(new WFSPPIO.WFS10Alternate());  
+        defaults.add(new WFSPPIO.WFS10Alternate());
         defaults.add(new WFSPPIO.WFS11Alternate());
 
-        
         // CRS
         defaults.add(new CoordinateReferenceSystemPPIO());
 
@@ -99,11 +98,11 @@ public abstract class ProcessParameterIO {
     }
 
     public static ProcessParameterIO find(Parameter<?> p, ApplicationContext context, String mime) {
-    	// enum special treatment
-    	if(p.type.isEnum()) {
-    		return new LiteralPPIO(p.type);
-    	}
-    	
+        // enum special treatment
+        if (p.type.isEnum()) {
+            return new LiteralPPIO(p.type);
+        }
+
         // TODO: come up with some way to flag one as "default"
         List<ProcessParameterIO> all = findAll(p, context);
         if (all.isEmpty()) {
@@ -117,8 +116,9 @@ public abstract class ProcessParameterIO {
                 }
             }
         }
-        
-        // if more than one sort by class hierarchy, pushing the most specific classes to the beginning
+
+        // if more than one sort by class hierarchy, pushing the most specific classes to the
+        // beginning
         if (all.size() > 0) {
             Collections.sort(all, new Comparator<ProcessParameterIO>() {
                 public int compare(ProcessParameterIO o1, ProcessParameterIO o2) {
@@ -137,19 +137,19 @@ public abstract class ProcessParameterIO {
                 }
             });
         }
-        
+
         // fall back on the first found
         return all.get(0);
     }
 
     public static List<ProcessParameterIO> findAll(Parameter<?> p, ApplicationContext context) {
-    	// enum special treatment
-    	if(p.type.isEnum()) {
-    		List<ProcessParameterIO> result = new ArrayList<ProcessParameterIO>();
-    		result.add(new LiteralPPIO(p.type));
-    		return result;
-    	}
-    	
+        // enum special treatment
+        if (p.type.isEnum()) {
+            List<ProcessParameterIO> result = new ArrayList<ProcessParameterIO>();
+            result.add(new LiteralPPIO(p.type));
+            return result;
+        }
+
         // load all extensions
         List<ProcessParameterIO> l = new ArrayList<ProcessParameterIO>(defaults);
         if (context != null) {

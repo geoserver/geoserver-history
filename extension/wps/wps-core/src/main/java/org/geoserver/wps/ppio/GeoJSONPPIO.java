@@ -19,28 +19,27 @@ import org.geotools.geojson.feature.FeatureJSON;
  */
 public class GeoJSONPPIO extends CDataPPIO {
 
-	protected GeoJSONPPIO() {
-		super(FeatureCollection.class, FeatureCollection.class,
-				"application/json");
-	}
+    protected GeoJSONPPIO() {
+        super(FeatureCollection.class, FeatureCollection.class, "application/json");
+    }
 
-	@Override
-	public void encode(Object value, OutputStream os) throws IOException {
-		FeatureJSON json = new FeatureJSON();
-		// commented out due to GEOT-3209
-		// json.setEncodeFeatureCRS(true);
-		// json.setEncodeFeatureCollectionCRS(true);
-		json.writeFeatureCollection((FeatureCollection) value, os);
-	}
+    @Override
+    public void encode(Object value, OutputStream os) throws IOException {
+        FeatureJSON json = new FeatureJSON();
+        // commented out due to GEOT-3209
+        // json.setEncodeFeatureCRS(true);
+        // json.setEncodeFeatureCollectionCRS(true);
+        json.writeFeatureCollection((FeatureCollection) value, os);
+    }
 
-	@Override
-	public Object decode(InputStream input) throws Exception {
-		return new FeatureJSON().readFeatureCollection(input);
-	}
+    @Override
+    public Object decode(InputStream input) throws Exception {
+        return new FeatureJSON().readFeatureCollection(input);
+    }
 
-	@Override
-	public Object decode(String input) throws Exception {
-		return new FeatureJSON().readFeatureCollection(input);
-	}
+    @Override
+    public Object decode(String input) throws Exception {
+        return new FeatureJSON().readFeatureCollection(input);
+    }
 
 }

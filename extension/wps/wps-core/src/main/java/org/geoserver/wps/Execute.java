@@ -5,7 +5,6 @@
 
 package org.geoserver.wps;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
@@ -19,12 +18,9 @@ import java.util.Map;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import net.opengis.ows11.BoundingBoxType;
-import net.opengis.wcs10.Wcs10Factory;
 import net.opengis.wcs11.GetCoverageType;
-import net.opengis.wcs11.Wcs11Factory;
 import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.GetFeatureType;
-import net.opengis.wfs.WfsFactory;
 import net.opengis.wps10.ComplexDataType;
 import net.opengis.wps10.DataType;
 import net.opengis.wps10.DocumentOutputDefinitionType;

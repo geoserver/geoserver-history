@@ -21,8 +21,8 @@ public class WPSConfiguration extends org.geotools.wps.WPSConfiguration {
     
     @Override
     protected void configureContext(MutablePicoContainer container) {
-    	super.configureContext(container);
+        super.configureContext(container);
 
-    	container.registerComponentInstance( new WCSParserDelegate() );
+        container.registerComponentInstance(new WCSParserDelegate());
     }
 }

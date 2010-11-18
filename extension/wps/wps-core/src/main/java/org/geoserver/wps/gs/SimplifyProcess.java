@@ -42,7 +42,8 @@ public class SimplifyProcess implements GeoServerProcess {
             throw new ProcessException("Invalid distance, it should be a positive number");
         }
 
-        return new SimplifyingFeatureCollection(features, distance, preserveTopology == null ? Boolean.FALSE: preserveTopology);
+        return new SimplifyingFeatureCollection(features, distance,
+                preserveTopology == null ? Boolean.FALSE : preserveTopology);
     }
 
     static class SimplifyingFeatureCollection extends DecoratingSimpleFeatureCollection {
@@ -62,20 +63,20 @@ public class SimplifyProcess implements GeoServerProcess {
             return new SimplifyingFeatureIterator(delegate.features(), distance, preserveTopology,
                     getSchema());
         }
-        
+
         @Override
         public Iterator<SimpleFeature> iterator() {
             return new WrappingIterator(features());
         }
-        
+
         @Override
         public void close(Iterator<SimpleFeature> close) {
-            if(close instanceof WrappingIterator) {
+            if (close instanceof WrappingIterator) {
                 ((WrappingIterator) close).close();
             }
         }
     }
-    
+
     static class SimplifyingFeatureIterator implements SimpleFeatureIterator {
         SimpleFeatureIterator delegate;
 

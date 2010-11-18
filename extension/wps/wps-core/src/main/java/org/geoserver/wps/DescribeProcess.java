@@ -62,23 +62,22 @@ public class DescribeProcess {
     Wps10Factory wpsf = Wps10Factory.eINSTANCE;
     Ows11Factory owsf = Ows11Factory.eINSTANCE; 
     
-	/**
-	 * Maps the primitive types that can still be used in process input/output descriptions 
-	 * to object wrappers that we can use in process descriptions
-	 */
-	static final Map<Class, Class> PRIMITIVE_TO_WRAPPER;
-	
-	static {
-		PRIMITIVE_TO_WRAPPER = new HashMap<Class, Class>();
-		PRIMITIVE_TO_WRAPPER.put(byte.class, Byte.class);
-		PRIMITIVE_TO_WRAPPER.put(short.class, Short.class);
-		PRIMITIVE_TO_WRAPPER.put(int.class, Integer.class);
-		PRIMITIVE_TO_WRAPPER.put(long.class, Long.class);
-		PRIMITIVE_TO_WRAPPER.put(float.class, Float.class);
-		PRIMITIVE_TO_WRAPPER.put(double.class, Double.class);
-		PRIMITIVE_TO_WRAPPER.put(boolean.class, Boolean.class);
-	}
+    /**
+     * Maps the primitive types that can still be used in process input/output descriptions to
+     * object wrappers that we can use in process descriptions
+     */
+    static final Map<Class, Class> PRIMITIVE_TO_WRAPPER;
 
+    static {
+        PRIMITIVE_TO_WRAPPER = new HashMap<Class, Class>();
+        PRIMITIVE_TO_WRAPPER.put(byte.class, Byte.class);
+        PRIMITIVE_TO_WRAPPER.put(short.class, Short.class);
+        PRIMITIVE_TO_WRAPPER.put(int.class, Integer.class);
+        PRIMITIVE_TO_WRAPPER.put(long.class, Long.class);
+        PRIMITIVE_TO_WRAPPER.put(float.class, Float.class);
+        PRIMITIVE_TO_WRAPPER.put(double.class, Double.class);
+        PRIMITIVE_TO_WRAPPER.put(boolean.class, Boolean.class);
+    }
     
     public DescribeProcess(WPSInfo wps, ApplicationContext context) {
         this.wps = wps;

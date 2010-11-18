@@ -18,10 +18,10 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
 @DescribeProcess(title = "bounds", description = "Computes the overlall bounds of the input features")
 public class BoundsProcess implements GeoServerProcess {
 
-	@DescribeResult(name = "bounds", description = "The feature collection bounds")
-	public ReferencedEnvelope execute(
-			@DescribeParameter(name = "features", description = "The feature collection whose bounds will be computed") FeatureCollection features) {
-		return features.getBounds();
-	}
+    @DescribeResult(name = "bounds", description = "The feature collection bounds")
+    public ReferencedEnvelope execute(
+            @DescribeParameter(name = "features", description = "The feature collection whose bounds will be computed") FeatureCollection features) {
+        return features.getBounds();
+    }
 
 }

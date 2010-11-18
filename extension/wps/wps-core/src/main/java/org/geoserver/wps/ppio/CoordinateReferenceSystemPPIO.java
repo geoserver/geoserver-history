@@ -8,37 +8,35 @@ import org.geotools.referencing.CRS;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 /**
- * Converts between CRS string representations and
- * {@link CoordinateReferenceSystem}
+ * Converts between CRS string representations and {@link CoordinateReferenceSystem}
  * 
  * @author Andrea Aime - OpenGeo
  * 
  */
 public class CoordinateReferenceSystemPPIO extends LiteralPPIO {
 
-	public CoordinateReferenceSystemPPIO() {
-		super(CoordinateReferenceSystem.class);
-	}
+    public CoordinateReferenceSystemPPIO() {
+        super(CoordinateReferenceSystem.class);
+    }
 
-	/**
-	 * Decodes the parameter (as a string) to its internal object
-	 * implementation.
-	 */
-	public Object decode(String value) throws Exception {
-		if (value == null) {
-			return null;
-		}
-		return CRS.decode(value);
-	}
+    /**
+     * Decodes the parameter (as a string) to its internal object implementation.
+     */
+    public Object decode(String value) throws Exception {
+        if (value == null) {
+            return null;
+        }
+        return CRS.decode(value);
+    }
 
-	/**
-	 * Encodes the internal object representation of a parameter as a string.
-	 */
-	public String encode(Object value) throws Exception {
-		if (value == null) {
-			return null;
-		}
-		return CRS.lookupIdentifier(((CoordinateReferenceSystem) value), true);
-	}
+    /**
+     * Encodes the internal object representation of a parameter as a string.
+     */
+    public String encode(Object value) throws Exception {
+        if (value == null) {
+            return null;
+        }
+        return CRS.lookupIdentifier(((CoordinateReferenceSystem) value), true);
+    }
 
 }

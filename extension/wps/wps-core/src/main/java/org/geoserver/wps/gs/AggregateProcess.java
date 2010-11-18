@@ -25,72 +25,73 @@ import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.util.ProgressListener;
 
 /**
- * Will reproject the features to another CRS. Can also be used to force a known
- * CRS onto a dataset that does not have ones
+ * Will reproject the features to another CRS. Can also be used to force a known CRS onto a dataset
+ * that does not have ones
  * 
  * @author Andrea Aime
  */
 @DescribeProcess(title = "reprojectFeatures", description = "Reprojects the specified features to another CRS, can also be used to force a known CRS onto a set of feaures that miss one (or that have a wrong one)")
 public class AggregateProcess implements GeoServerProcess {
-	// the functions this process can handle
-	public enum AggregationFunction {
-		Average, Max, Median, Min, StdDev, Sum;
-	}
+    // the functions this process can handle
+    public enum AggregationFunction {
+        Average, Max, Median, Min, StdDev, Sum;
+    }
 
-	@DescribeResult(name = "result", description = "The reprojected features")
-	public Number execute(
-			@DescribeParameter(name = "features", description = "The feature collection that will be aggregate") SimpleFeatureCollection features,
-			@DescribeParameter(name = "aggregationAttribute", min = 0, description = "The attribute used for aggregation") String aggAttribute,
-			@DescribeParameter(name = "function", description = "The aggregation function to be used") AggregationFunction function,
-			ProgressListener progressListener) throws Exception {
+    @DescribeResult(name = "result", description = "The reprojected features")
+    public Number execute(
+            @DescribeParameter(name = "features", description = "The feature collection that will be aggregate") SimpleFeatureCollection features,
+            @DescribeParameter(name = "aggregationAttribute", min = 0, description = "The attribute used for aggregation") String aggAttribute,
+            @DescribeParameter(name = "function", description = "The aggregation function to be used") AggregationFunction function,
+            ProgressListener progressListener) throws Exception {
 
-		int attIndex = -1;
-		List<AttributeDescriptor> atts = features.getSchema().getAttributeDescriptors();
-		for (int i = 0; i < atts.size(); i++) {
-			if(atts.get(i).getLocalName().equals(aggAttribute)) {
-				attIndex = i;
-				break;
-			}
-		}
-		
-		if(attIndex == -1) {
-			throw new ProcessException("Could not find attribute " + atts + " the valid values are " + attNames(atts));
-		}
-		
-		FeatureCalc calc;
-		if (function == AggregationFunction.Average) {
-			calc = new AverageVisitor(attIndex, features.getSchema());
-		} else if (function == AggregationFunction.Max) {
-			calc = new MaxVisitor(attIndex, features.getSchema());
-		} else if (function == AggregationFunction.Median) {
-			calc = new MedianVisitor(attIndex, features.getSchema());
-		} else if (function == AggregationFunction.Min) {
-			calc = new MinVisitor(attIndex, features.getSchema());
-		} else if (function == AggregationFunction.StdDev) {
-			// this approach is a tragedy, when you have time rewrite everything
-			// using the numerically stable std dev computation algorithm listed
-			// at http://www.johndcook.com/standard_deviation.html
-			calc = new AverageVisitor(attIndex, features.getSchema());
-			features.accepts(calc, null);
-			calc = new StandardDeviationVisitor(CommonFactoryFinder.getFilterFactory(null).property(aggAttribute), 
-					calc.getResult().toDouble());
-		} else if (function == AggregationFunction.Sum) {
-			calc = new SumVisitor(attIndex, features.getSchema());
-		} else {
-			throw new WPSException("Uknown method " + function);
-		}
+        int attIndex = -1;
+        List<AttributeDescriptor> atts = features.getSchema().getAttributeDescriptors();
+        for (int i = 0; i < atts.size(); i++) {
+            if (atts.get(i).getLocalName().equals(aggAttribute)) {
+                attIndex = i;
+                break;
+            }
+        }
 
-		features.accepts(calc, progressListener);
+        if (attIndex == -1) {
+            throw new ProcessException("Could not find attribute " + atts
+                    + " the valid values are " + attNames(atts));
+        }
 
-		return (Number) calc.getResult().getValue();
-	}
+        FeatureCalc calc;
+        if (function == AggregationFunction.Average) {
+            calc = new AverageVisitor(attIndex, features.getSchema());
+        } else if (function == AggregationFunction.Max) {
+            calc = new MaxVisitor(attIndex, features.getSchema());
+        } else if (function == AggregationFunction.Median) {
+            calc = new MedianVisitor(attIndex, features.getSchema());
+        } else if (function == AggregationFunction.Min) {
+            calc = new MinVisitor(attIndex, features.getSchema());
+        } else if (function == AggregationFunction.StdDev) {
+            // this approach is a tragedy, when you have time rewrite everything
+            // using the numerically stable std dev computation algorithm listed
+            // at http://www.johndcook.com/standard_deviation.html
+            calc = new AverageVisitor(attIndex, features.getSchema());
+            features.accepts(calc, null);
+            calc = new StandardDeviationVisitor(CommonFactoryFinder.getFilterFactory(null)
+                    .property(aggAttribute), calc.getResult().toDouble());
+        } else if (function == AggregationFunction.Sum) {
+            calc = new SumVisitor(attIndex, features.getSchema());
+        } else {
+            throw new WPSException("Uknown method " + function);
+        }
 
-	private List<String> attNames(List<AttributeDescriptor> atts) {
-		List<String> result = new ArrayList<String>();
-		for (AttributeDescriptor ad : atts) {
-			result.add(ad.getLocalName());
-		}
-		return result;
-	}
+        features.accepts(calc, progressListener);
+
+        return (Number) calc.getResult().getValue();
+    }
+
+    private List<String> attNames(List<AttributeDescriptor> atts) {
+        List<String> result = new ArrayList<String>();
+        for (AttributeDescriptor ad : atts) {
+            result.add(ad.getLocalName());
+        }
+        return result;
+    }
 
 }

@@ -73,10 +73,11 @@ public class RectangularClipProcess implements GeoServerProcess {
         boolean preserveTopology;
 
         SimpleFeatureBuilder fb;
-        
+
         SimpleFeature next;
 
-        public ClippingFeatureIterator(SimpleFeatureIterator delegate, ReferencedEnvelope clip, SimpleFeatureType schema) {
+        public ClippingFeatureIterator(SimpleFeatureIterator delegate, ReferencedEnvelope clip,
+                SimpleFeatureType schema) {
             this.delegate = delegate;
             this.clipper = new GeometryClipper(clip);
             fb = new SimpleFeatureBuilder(schema);
@@ -87,33 +88,33 @@ public class RectangularClipProcess implements GeoServerProcess {
         }
 
         public boolean hasNext() {
-            while(next == null && delegate.hasNext()) {
+            while (next == null && delegate.hasNext()) {
                 // a flag telling us if any geometry of the feature survived the clip
                 boolean clippedOut = true;
                 SimpleFeature f = delegate.next();
                 for (Object attribute : f.getAttributes()) {
                     if (attribute instanceof Geometry) {
                         attribute = clipper.clip((Geometry) attribute, true);
-                        if(attribute != null) {
+                        if (attribute != null) {
                             clippedOut = false;
                         }
                     }
                     fb.add(attribute);
                 }
-                if(!clippedOut) {
+                if (!clippedOut) {
                     next = fb.buildFeature(f.getID());
                 }
                 fb.reset();
             }
-            
+
             return next != null;
         }
 
         public SimpleFeature next() throws NoSuchElementException {
-            if(!hasNext()) {
+            if (!hasNext()) {
                 throw new NoSuchElementException("hasNext() returned false!");
             }
-            
+
             SimpleFeature result = next;
             next = null;
             return result;

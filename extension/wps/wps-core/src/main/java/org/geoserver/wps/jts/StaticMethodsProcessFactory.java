@@ -25,76 +25,71 @@ import org.opengis.feature.type.Name;
 import org.opengis.util.InternationalString;
 
 /**
- * Grabbed from Geotools and generalized a bit, should go back into GeoTools
- * once improved enough. ProcessFactory for classes exposing simple processes as
- * static methods
+ * Grabbed from Geotools and generalized a bit, should go back into GeoTools once improved enough.
+ * ProcessFactory for classes exposing simple processes as static methods
  * 
  * @since 2.7
  */
-public class StaticMethodsProcessFactory<T> extends
-		AnnotationDrivenProcessFactory {
-	Class<T> targetClass;
+public class StaticMethodsProcessFactory<T> extends AnnotationDrivenProcessFactory {
+    Class<T> targetClass;
 
-	public StaticMethodsProcessFactory(InternationalString title,
-			String namespace, Class<T> targetClass) {
-		super(title, namespace);
-		this.targetClass = targetClass;
-	}
+    public StaticMethodsProcessFactory(InternationalString title, String namespace,
+            Class<T> targetClass) {
+        super(title, namespace);
+        this.targetClass = targetClass;
+    }
 
-	/**
-	 * Finds the DescribeProcess description for the specified name
-	 * 
-	 * @param name
-	 * @return
-	 */
-	protected DescribeProcess getProcessDescription(Name name) {
-		Method method = method(name.getLocalPart());
-		if (method == null) {
-			return null;
-		}
-		DescribeProcess info = method.getAnnotation(DescribeProcess.class);
-		return info;
-	}
+    /**
+     * Finds the DescribeProcess description for the specified name
+     * 
+     * @param name
+     * @return
+     */
+    protected DescribeProcess getProcessDescription(Name name) {
+        Method method = method(name.getLocalPart());
+        if (method == null) {
+            return null;
+        }
+        DescribeProcess info = method.getAnnotation(DescribeProcess.class);
+        return info;
+    }
 
-	public Method method(String name) {
-		for (Method method : targetClass.getMethods()) {
-			if (name.equalsIgnoreCase(method.getName())) {
-				DescribeProcess dp = method
-						.getAnnotation(DescribeProcess.class);
-				if (dp != null) {
-					return method;
-				}
-			}
-		}
-		return null;
-	}
+    public Method method(String name) {
+        for (Method method : targetClass.getMethods()) {
+            if (name.equalsIgnoreCase(method.getName())) {
+                DescribeProcess dp = method.getAnnotation(DescribeProcess.class);
+                if (dp != null) {
+                    return method;
+                }
+            }
+        }
+        return null;
+    }
 
-	public Set<Name> getNames() {
-		// look for the methods that have the DescribeProcess annotation. use
-		// a linkedHashSet to make sure we don't report duplicate names
-		Set<Name> names = new LinkedHashSet<Name>();
-		for (Method method : targetClass.getMethods()) {
-			DescribeProcess dp = method.getAnnotation(DescribeProcess.class);
-			if (dp != null) {
-				Name name = new NameImpl(namespace, method.getName());
-				if (names.contains(name)) {
-					throw new IllegalStateException(
-							targetClass.getName()
-									+ " has two methods named "
-									+ method.getName()
-									+ ", both annotated with DescribeProcess, this is an ambiguity. "
-									+ "Please a different name");
-				}
-				names.add(name);
-			}
-		}
-		return names;
-	}
+    public Set<Name> getNames() {
+        // look for the methods that have the DescribeProcess annotation. use
+        // a linkedHashSet to make sure we don't report duplicate names
+        Set<Name> names = new LinkedHashSet<Name>();
+        for (Method method : targetClass.getMethods()) {
+            DescribeProcess dp = method.getAnnotation(DescribeProcess.class);
+            if (dp != null) {
+                Name name = new NameImpl(namespace, method.getName());
+                if (names.contains(name)) {
+                    throw new IllegalStateException(targetClass.getName()
+                            + " has two methods named " + method.getName()
+                            + ", both annotated with DescribeProcess, this is an ambiguity. "
+                            + "Please a different name");
+                }
+                names.add(name);
+            }
+        }
+        return names;
+    }
 
-	@Override
-	protected Object createProcessBean(Name name) {
-		// they are all static methods
-		return null;
-	}
+    @Override
+    protected Object createProcessBean(Name name) {
+        // they are all static methods
+        return null;
+    }
 
 }
