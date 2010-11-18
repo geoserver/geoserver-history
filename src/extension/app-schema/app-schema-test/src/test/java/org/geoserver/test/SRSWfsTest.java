@@ -52,16 +52,40 @@ public class SRSWfsTest extends AbstractAppSchemaWfsTestSupport {
         return new SRSMockData();
     }
 
-    public SRSWfsTest() {
+    /**
+     * @see org.geoserver.test.AbstractAppSchemaWfsTestSupport#oneTimeSetUp()
+     */
+    @Override
+    protected void oneTimeSetUp() throws Exception {
         // use the OGC standard for axis order
+        //
+        // must be done *before* super.oneTimeSetUp() to ensure CRS factories
+        // configured before data is loaded
+        //
+        // if this property is null, GeoServerAbstractTestSupport.oneTimeSetUp()
+        // will blow away our changes
+        System.setProperty("org.geotools.referencing.forceXY", "false");
+        // yes, we need this too
         Hints.putSystemDefault(Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, false);
+        // if this is set to anything but "http", GeoServerAbstractTestSupport.oneTimeSetUp()
+        // will blow away our changes
+        Hints.putSystemDefault(Hints.FORCE_AXIS_ORDER_HONORING, "http");
+        // apply changes
+        CRS.reset("all");
+        super.oneTimeSetUp();
     }
 
+    /**
+     * @see org.geoserver.test.AbstractAppSchemaWfsTestSupport#oneTimeTearDown()
+     */
     @Override
-    public void oneTimeTearDown() throws Exception {
-        // reset system default
-        Hints.removeSystemDefault(Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER);
+    protected void oneTimeTearDown() throws Exception {
         super.oneTimeTearDown();
+        // undo the changes made for this suite and reset
+        System.clearProperty("org.geotools.referencing.forceXY");
+        Hints.removeSystemDefault(Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER);
+        Hints.removeSystemDefault(Hints.FORCE_AXIS_ORDER_HONORING);
+        CRS.reset("all");
     }
 
     /**
