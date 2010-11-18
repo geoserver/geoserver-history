@@ -147,5 +147,59 @@
     <bean id="cropCoverageProcess" class="org.geoserver.wps.gs.CropCoverage" />
     <bean id="scaleCoverageProcess" class="org.geoserver.wps.gs.ScaleCoverage" />
     <bean id="styleCoverageProcess" class="org.geoserver.wps.gs.StyleCoverage" />
+    <bean id="storeCoverageProcess" class="org.geoserver.wps.gs.StoreCoverage" >
+      <constructor-arg index="0" ref="wpsStorageHandler"></constructor-arg>
+    </bean>
+    
+    <!-- 
+       ==================================================================
+       Deal with temporary files
+       ==================================================================
+    -->
+    
+    <!-- Map dispatcher in order to publish the wcsTempStorage directory -->
+    <bean id="wpsTempDirDispatcherMapping"
+      class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+      <property name="alwaysUseFullPath" value="true" />
+      <property name="mappings">
+        <props>
+          <prop key="/temp/**">filePublisher</prop>
+        </props>
+      </property>
+    </bean>
+  
+    <!-- Temp storage cleanup -->
+    <!-- The actual scheduled task -->
+    <bean id="wpsStorageHandler" class="org.geoserver.wps.WPSStorageHandler">
+      <constructor-arg index="0" ref="dataDirectory" />
+      <property name="expirationDelay" value="300" />
+      <!--
+        300 seconds, 5 minutes
+      -->
+    </bean>
+  
+    <!-- Definition of how often the scheduled task runs -->
+    <bean id="wpsStorageHandlerTask"
+      class="org.springframework.scheduling.timer.ScheduledTimerTask">
+      <!-- wait 10 seconds before starting repeated execution -->
+      <property name="delay" value="10000" />
+      <!-- run every 60 seconds -->
+      <property name="period" value="60000" />
+      <property name="timerTask" ref="wpsStorageHandler" />
+    </bean>
+  
+    <!--
+      And finally the class that instantiates the scheduled tasks and
+      makes them run
+    -->
+    <bean id="wpstimerFactory" class="org.springframework.scheduling.timer.TimerFactoryBean"
+      lazy-init="false">
+      <property name="scheduledTimerTasks">
+        <list>
+          <ref bean="wpsStorageHandlerTask" />
+        </list>
+      </property>
+      <property name="daemon" value="true" />
+    </bean>
 
 </beans>
