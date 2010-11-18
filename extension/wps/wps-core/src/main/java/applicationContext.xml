@@ -120,6 +120,10 @@
     <bean id="shapeZipPPIO" class="org.geoserver.wps.ppio.ShapeZipPPIO">
       <constructor-arg ref="wpsResourceManager"/>
     </bean>
+    <bean id="interpolationPPIO" class="org.geoserver.wps.ppio.InterpolationPPIO" />
+    <bean id="sldStylePPIO" class="org.geoserver.wps.ppio.SLDStylePPIO" />
+    <bean id="urlPPIO" class="org.geoserver.wps.ppio.URLPPIO" />
+    
     
     <!-- Register the GeoServer factory and processes -->
     <bean id="geoserverProcessFactory" class="org.geoserver.wps.jts.SpringBeanProcessFactory">
@@ -139,4 +143,9 @@
     <bean id="uniqueProcess" class="org.geoserver.wps.gs.UniqueProcess"/>
     <bean id="simplifyProcess" class="org.geoserver.wps.gs.SimplifyProcess"/>
     <bean id="rclipProcess" class="org.geoserver.wps.gs.RectangularClipProcess"/>
+    <bean id="collectGeometriesProcess" class="org.geoserver.wps.gs.CollectGeometries" />
+    <bean id="cropCoverageProcess" class="org.geoserver.wps.gs.CropCoverage" />
+    <bean id="scaleCoverageProcess" class="org.geoserver.wps.gs.ScaleCoverage" />
+    <bean id="styleCoverageProcess" class="org.geoserver.wps.gs.StyleCoverage" />
+
 </beans>
