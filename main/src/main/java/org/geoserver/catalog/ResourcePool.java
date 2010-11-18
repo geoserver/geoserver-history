@@ -444,10 +444,10 @@ public class ResourcePool {
         }
         
         //check the cache
-        List<AttributeTypeInfo> atts = (List<AttributeTypeInfo>) featureTypeAttributeCache.get(info);
+        List<AttributeTypeInfo> atts = (List<AttributeTypeInfo>) featureTypeAttributeCache.get(info.getId());
         if (atts == null) {
             synchronized (featureTypeAttributeCache) {
-                atts = (List<AttributeTypeInfo>) featureTypeAttributeCache.get(info);
+                atts = (List<AttributeTypeInfo>) featureTypeAttributeCache.get(info.getId());
                 if (atts == null) {
                     //load from feature type
                     atts = loadAttributes(info);
@@ -462,7 +462,7 @@ public class ResourcePool {
                     }
                     
                     //TODO: cache attributes
-                    featureTypeAttributeCache.put(info, atts);
+                    featureTypeAttributeCache.put(info.getId(), atts);
                 }
             }
         }
