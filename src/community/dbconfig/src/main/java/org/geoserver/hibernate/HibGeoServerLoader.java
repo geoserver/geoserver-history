@@ -101,6 +101,16 @@ public class HibGeoServerLoader extends GeoServerLoader {
             
             resourceLoader.createFile("hibernate.marker");
         }
+        
+        //do a post check to ensure things were loaded, for instance if we are starting from 
+        // an empty data directory all objects will be empty
+        // TODO: this should really be moved elsewhere
+        if (geoServer.getGlobal() == null) {
+            geoServer.setGlobal(geoServer.getFactory().createGlobal());
+        }
+        if (geoServer.getLogging() == null) {
+            geoServer.setLogging(geoServer.getFactory().createLogging());
+        }
     }
     
     @Override
