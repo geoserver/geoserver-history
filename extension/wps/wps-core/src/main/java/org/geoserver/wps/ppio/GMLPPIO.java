@@ -63,12 +63,12 @@ public class GMLPPIO extends XMLPPIO {
                 if ( object instanceof GeometryCollection ) {
                     if ( object instanceof MultiPoint ) {
                         new GML2(MultiPoint.class,GML.MultiPoint).encode(object, output);
-                    }
-                    else if ( object instanceof MultiLineString ) {
+                    } else if ( object instanceof MultiLineString ) {
                         new GML2(MultiLineString.class,GML.MultiLineString).encode(object, output);
-                    }
-                    else if ( object instanceof MultiPolygon ) {
+                    } else if ( object instanceof MultiPolygon ) {
                         new GML2(MultiPolygon.class,GML.MultiPolygon).encode(object, output); 
+                    } else {
+                        new GML2(GeometryCollection.class, GML._Geometry).encode(object, output);
                     }
                 }
                 else {
@@ -119,12 +119,12 @@ public class GMLPPIO extends XMLPPIO {
                 if ( object instanceof GeometryCollection ) {
                     if ( object instanceof MultiPoint ) {
                         new GML3(MultiPoint.class,GML.MultiPoint).encode(object, output);
-                    }
-                    else if ( object instanceof MultiLineString ) {
+                    } else if ( object instanceof MultiLineString ) {
                         new GML3(MultiLineString.class,GML.MultiLineString).encode(object, output);
-                    }
-                    else if ( object instanceof MultiPolygon ) {
+                    } else if ( object instanceof MultiPolygon ) {
                         new GML3(MultiPolygon.class,GML.MultiPolygon).encode(object, output); 
+                    } else {
+                        new GML3(GeometryCollection.class,GML._Geometry).encode(object, output);
                     }
                 }
                 else {
