@@ -22,6 +22,12 @@
     <include>GPL.txt</include>
    </includes>
   </fileSet>
+  <fileSet>
+   <directory>target</directory>
+   <includes>
+    <include>VERSION.txt</include>
+   </includes>
+  </fileSet>
  </fileSets>
  <moduleSets>
   <moduleSet>

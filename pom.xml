@@ -1197,6 +1197,27 @@
     </executions>
    </plugin>
 
+   <!-- initialize svn revision info -->
+   <plugin>
+     <groupId>com.google.code.maven-svn-revision-number-plugin</groupId>
+     <artifactId>maven-svn-revision-number-plugin</artifactId>
+     <version>1.5</version>
+     <executions>
+       <execution>
+         <goals>
+            <goal>revision</goal>
+         </goals>
+       </execution>
+     </executions>
+     <configuration>
+       <entries>
+         <entry>
+           <prefix>build</prefix>
+         </entry>
+       </entries>
+     </configuration>
+   </plugin>
+
   </plugins>
  </build>
 
@@ -1359,6 +1380,9 @@
   <jalopy.srcExcludesPattern>disabled</jalopy.srcExcludesPattern>
   <test.maxHeapSize>512M</test.maxHeapSize>
   <remoteOwsTests>false</remoteOwsTests>
+  <maven.build.timestamp.format>dd-MMM-yyyy HH:mm</maven.build.timestamp.format>
+  <build.timestamp>${maven.build.timestamp}</build.timestamp>
+  <build.hudsonId>-1</build.hudsonId>
  </properties>
 
  <profiles>
@@ -1416,6 +1440,59 @@
         <name>release</name>
       </property>
     </activation>
+    <build>
+    <plugins>
+
+      <!-- grab a geotools dependnecy to figure out its version -->
+      <plugin>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-dependencies</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <includeGroupIds>org.geotools</includeGroupIds>
+              <includeArtifactIds>gt-api</includeArtifactIds>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <inherited>false</inherited>
+        <executions>
+         <execution>
+          <id>read-manifest</id>
+          <phase>package</phase>
+          <configuration>
+            <tasks>
+               <loadproperties>
+                  <zipentry zipfile="target/dependency/gt-api-${gt.version}.jar" name="META-INF/MANIFEST.MF"/>
+               </loadproperties>
+               <copy file="release/VERSION.txt" todir="target" filtering="true">
+                <filterset begintoken="$${" endtoken="}">
+                  <filter token="project.version" value="${project.version}"/>
+                  <filter token="build.revision" value="${build.revision}"/>
+                  <filter token="build.timestamp" value="${build.timestamp}"/>
+                  <filter token="gt.version" value="${gt.version}"/>
+                  <filter token="gt.revision" value="${Svn-Revision}"/>
+                  <filter token="build.hudsonId" value="${build.hudsonId}"/>
+                </filterset>
+               </copy>
+            </tasks>
+          </configuration>
+          <goals>
+            <goal>run</goal>
+          </goals>
+         </execution>
+        </executions>
+      </plugin>
+    </plugins>
+    </build>
     <modules>
       <module>release</module>
     </modules>
