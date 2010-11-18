@@ -5,7 +5,9 @@
 package org.geoserver.wps.gs;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Set;
 
 import org.geoserver.wps.WPSException;
 import org.geoserver.wps.jts.DescribeParameter;
@@ -13,7 +15,9 @@ import org.geoserver.wps.jts.DescribeProcess;
 import org.geoserver.wps.jts.DescribeResult;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.feature.visitor.AbstractCalcResult;
 import org.geotools.feature.visitor.AverageVisitor;
+import org.geotools.feature.visitor.CalcResult;
 import org.geotools.feature.visitor.FeatureCalc;
 import org.geotools.feature.visitor.MaxVisitor;
 import org.geotools.feature.visitor.MedianVisitor;
@@ -21,6 +25,7 @@ import org.geotools.feature.visitor.MinVisitor;
 import org.geotools.feature.visitor.StandardDeviationVisitor;
 import org.geotools.feature.visitor.SumVisitor;
 import org.geotools.process.ProcessException;
+import org.opengis.feature.Feature;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.util.ProgressListener;
 
@@ -30,7 +35,7 @@ import org.opengis.util.ProgressListener;
  * 
  * @author Andrea Aime
  */
-@DescribeProcess(title = "reprojectFeatures", description = "Reprojects the specified features to another CRS, can also be used to force a known CRS onto a set of feaures that miss one (or that have a wrong one)")
+@DescribeProcess(title = "aggregateProcess", description = "Computes various attribute statistics over vector data sets")
 public class AggregateProcess implements GeoServerProcess {
     // the functions this process can handle
     public enum AggregationFunction {
@@ -38,10 +43,11 @@ public class AggregateProcess implements GeoServerProcess {
     }
 
     @DescribeResult(name = "result", description = "The reprojected features")
-    public Number execute(
+    public Results execute(
             @DescribeParameter(name = "features", description = "The feature collection that will be aggregate") SimpleFeatureCollection features,
             @DescribeParameter(name = "aggregationAttribute", min = 0, description = "The attribute used for aggregation") String aggAttribute,
-            @DescribeParameter(name = "function", description = "The aggregation function to be used") AggregationFunction function,
+            @DescribeParameter(name = "function", description = "The aggregation functions to be used", collectionType = AggregationFunction.class) Set<AggregationFunction> functions,
+            @DescribeParameter(name = "singlePass", description = "If all the results should be computed in a single pass (will break DBMS specific optimizations)", min = 0) Boolean singlePass,
             ProgressListener progressListener) throws Exception {
 
         int attIndex = -1;
@@ -58,32 +64,52 @@ public class AggregateProcess implements GeoServerProcess {
                     + " the valid values are " + attNames(atts));
         }
 
-        FeatureCalc calc;
-        if (function == AggregationFunction.Average) {
-            calc = new AverageVisitor(attIndex, features.getSchema());
-        } else if (function == AggregationFunction.Max) {
-            calc = new MaxVisitor(attIndex, features.getSchema());
-        } else if (function == AggregationFunction.Median) {
-            calc = new MedianVisitor(attIndex, features.getSchema());
-        } else if (function == AggregationFunction.Min) {
-            calc = new MinVisitor(attIndex, features.getSchema());
-        } else if (function == AggregationFunction.StdDev) {
-            // this approach is a tragedy, when you have time rewrite everything
-            // using the numerically stable std dev computation algorithm listed
-            // at http://www.johndcook.com/standard_deviation.html
-            calc = new AverageVisitor(attIndex, features.getSchema());
-            features.accepts(calc, null);
-            calc = new StandardDeviationVisitor(CommonFactoryFinder.getFilterFactory(null)
-                    .property(aggAttribute), calc.getResult().toDouble());
-        } else if (function == AggregationFunction.Sum) {
-            calc = new SumVisitor(attIndex, features.getSchema());
-        } else {
-            throw new WPSException("Uknown method " + function);
+        List<AggregationFunction> functionList = new ArrayList<AggregationFunction>(functions);
+        List<FeatureCalc> visitors = new ArrayList<FeatureCalc>();
+
+        for (AggregationFunction function : functionList) {
+            FeatureCalc calc;
+            if (function == AggregationFunction.Average) {
+                calc = new AverageVisitor(attIndex, features.getSchema());
+            } else if (function == AggregationFunction.Max) {
+                calc = new MaxVisitor(attIndex, features.getSchema());
+            } else if (function == AggregationFunction.Median) {
+                calc = new MedianVisitor(attIndex, features.getSchema());
+            } else if (function == AggregationFunction.Min) {
+                calc = new MinVisitor(attIndex, features.getSchema());
+            } else if (function == AggregationFunction.StdDev) {
+                // this approach is a tragedy, when you have time rewrite everything
+                // using the numerically stable std dev computation algorithm listed
+                // at http://www.johndcook.com/standard_deviation.html
+                calc = new AverageVisitor(attIndex, features.getSchema());
+                features.accepts(calc, null);
+                calc = new StandardDeviationVisitor(CommonFactoryFinder.getFilterFactory(null)
+                        .property(aggAttribute), calc.getResult().toDouble());
+            } else if (function == AggregationFunction.Sum) {
+                calc = new SumVisitor(attIndex, features.getSchema());
+            } else {
+                throw new WPSException("Uknown method " + function);
+            }
+            visitors.add(calc);
         }
 
-        features.accepts(calc, progressListener);
+        EnumMap<AggregationFunction, Number> results = new EnumMap<AggregationFunction, Number>(AggregationFunction.class);
+        if (singlePass != null && singlePass) {
+            AggregateFeatureCalc calc = new AggregateFeatureCalc(visitors);
+            features.accepts(calc, null);
+            List<CalcResult> resultList = (List<CalcResult>) calc.getResult().getValue();
+            for (int i = 0; i < functionList.size(); i++) {
+                results.put(functionList.get(i), (Number) resultList.get(i).getValue());
+            }
+        } else {
+            for (int i = 0; i < functionList.size(); i++) {
+                final FeatureCalc calc = visitors.get(i);
+                features.accepts(calc, null);
+                results.put(functionList.get(i), (Number) calc.getResult().getValue());
+            }
+        }
 
-        return (Number) calc.getResult().getValue();
+        return new Results(results);
     }
 
     private List<String> attNames(List<AttributeDescriptor> atts) {
@@ -92,6 +118,89 @@ public class AggregateProcess implements GeoServerProcess {
             result.add(ad.getLocalName());
         }
         return result;
+    }
+
+    /**
+     * Runs various {@link FeatureCalc} in a single pass
+     * 
+     * @author Andrea Aime - GeoSolutions
+     */
+    static class AggregateFeatureCalc implements FeatureCalc {
+        List<FeatureCalc> delegates;
+
+        public AggregateFeatureCalc(List<FeatureCalc> delegates) {
+            super();
+            this.delegates = delegates;
+        }
+
+        public CalcResult getResult() {
+            final List<CalcResult> results = new ArrayList<CalcResult>();
+            for (FeatureCalc delegate : delegates) {
+                results.add(delegate.getResult());
+            }
+
+            return new AbstractCalcResult() {
+                @Override
+                public Object getValue() {
+                    return results;
+                }
+            };
+        }
+
+        public void visit(Feature feature) {
+            for (FeatureCalc delegate : delegates) {
+                delegate.visit(feature);
+            }
+        }
+    }
+
+    /**
+     * The aggregate function results
+     */
+    public static final class Results {
+        Double min;
+        Double max;
+        Double median;
+        Double average;
+        Double standardDeviation;
+        Double sum;
+        
+        public Results(EnumMap<AggregationFunction, Number> results) {
+            min = toDouble(results.get(AggregationFunction.Min));
+            max = toDouble(results.get(AggregationFunction.Max));
+            median = toDouble(results.get(AggregationFunction.Median));
+            average = toDouble(results.get(AggregationFunction.Average));
+            standardDeviation = toDouble(results.get(AggregationFunction.StdDev));
+            sum = toDouble(results.get(AggregationFunction.Sum)); 
+        }
+        
+        Double toDouble(Number number) {
+            if(number == null) {
+                return null;
+            } else {
+                return number.doubleValue();
+            }
+        }
+        
+        public Number getMin() {
+            return min;
+        }
+        public Number getMax() {
+            return max;
+        }
+        public Number getMedian() {
+            return median;
+        }
+        public Number getAverage() {
+            return average;
+        }
+        public Number getStandardDeviation() {
+            return standardDeviation;
+        }
+        public Number getSum() {
+            return sum;
+        }
+
     }
 
 }

@@ -8,7 +8,9 @@ package org.geoserver.wps;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -380,7 +382,12 @@ public class Execute {
             
             // store the input
             if(p.maxOccurs > 1) {
-                inputs.put(p.key, Collections.singleton(decoded));
+                Collection values = (Collection) inputs.get(p.key);
+                if(values == null) {
+                    values = new ArrayList();
+                } 
+                values.add(decoded);
+                inputs.put(p.key, values);
             } else {
                 inputs.put(p.key, decoded);
             }

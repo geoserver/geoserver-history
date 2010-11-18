@@ -1,3 +1,7 @@
+/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
 package org.geoserver.wps.ppio;
 
 import java.io.InputStream;
@@ -9,6 +13,12 @@ import com.thoughtworks.xstream.io.xml.SaxWriter;
 import com.thoughtworks.xstream.mapper.Mapper;
 import com.thoughtworks.xstream.mapper.MapperWrapper;
 
+/**
+ * Turns beans into xml using XStream (one way). By default it strips package names and have tags
+ * start with a capital letter, subclasses can be created to override such behavior
+ * 
+ * @author Andrea Aime - GeoSolutions
+ */
 public class XStreamPPIO extends XMLPPIO {
 
     protected XStreamPPIO(Class type) {
