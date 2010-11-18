@@ -33,15 +33,6 @@ public class WcsGetCapabilitiesRequestReader extends EMFKvpRequestReader {
         }
         request = super.read(request, kvp, rawKvp);
 
-        // set the version attribute on the request
-        if (kvp.containsKey("version")) {
-            AcceptVersionsType acceptVersions = Ows11Factory.eINSTANCE.createAcceptVersionsType();
-            acceptVersions.getVersion().add(kvp.get("version"));
-
-            GetCapabilitiesType getCapabilities = (GetCapabilitiesType) request;
-            getCapabilities.setAcceptVersions(acceptVersions);
-        }
-
         return request;
     }
 }

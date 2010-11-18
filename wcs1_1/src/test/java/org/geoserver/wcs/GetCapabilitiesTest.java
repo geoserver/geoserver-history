@@ -41,12 +41,27 @@ public class GetCapabilitiesTest extends WCSTestSupport {
 
     public void testGetBasic() throws Exception {
         Document dom = getAsDOM(BASEPATH + "?request=GetCapabilities&service=WCS&acceptversions=1.1.1");
-         print(dom);
+        // print(dom);
         checkValidationErrors(dom, WCS11_SCHEMA);
         
         // make sure we provided the store values
         assertXpathEvaluatesTo("TrueFalse", "/wcs:Capabilities/ows:OperationsMetadata" +
         		"/ows:Operation[@name=\"GetCoverage\"]/ows:Parameter/ows:AllowedValues", dom);
+        
+        // make sure the disabled coverage store is really disabled
+        assertXpathEvaluatesTo("0", "count(//ows:Title[text()='World'])", dom);
+    }
+    
+    public void testIgnoreWCS10Version() throws Exception {
+        // ows 1.1 has no version param at all, it should be just ignored, that's for 
+        // wcs 1.0 negotiation 
+        Document dom = getAsDOM(BASEPATH + "?request=GetCapabilities&service=WCS&version=9.9.9");
+        // print(dom);
+        checkValidationErrors(dom, WCS11_SCHEMA);
+        
+        // make sure we provided the store values
+        assertXpathEvaluatesTo("TrueFalse", "/wcs:Capabilities/ows:OperationsMetadata" +
+                "/ows:Operation[@name=\"GetCoverage\"]/ows:Parameter/ows:AllowedValues", dom);
         
         // make sure the disabled coverage store is really disabled
         assertXpathEvaluatesTo("0", "count(//ows:Title[text()='World'])", dom);

@@ -327,15 +327,17 @@ public class WCSCapsTransformer extends TransformerBase {
          *             DOCUMENT ME!
          */
         private void handleKeywords(List kwords) {
-            start("ows:Keywords");
-
-            if (kwords != null) {
-                for (Iterator it = kwords.iterator(); it.hasNext();) {
-                    element("ows:Keyword", it.next().toString());
+            if(kwords != null && kwords.size() > 0) {
+                start("ows:Keywords");
+    
+                if (kwords != null) {
+                    for (Iterator it = kwords.iterator(); it.hasNext();) {
+                        element("ows:Keyword", it.next().toString());
+                    }
                 }
+    
+                end("ows:Keywords");
             }
-
-            end("ows:Keywords");
         }
 
         /**
