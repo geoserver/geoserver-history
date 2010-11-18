@@ -18,23 +18,24 @@ import com.vividsolutions.jts.io.WKTWriter;
 
 /**
  * Used to represent geometries in WKT format
+ * 
  * @author Andrea Aime - OpenGeo
  */
 public class WKTPPIO extends CDataPPIO {
 
-	protected WKTPPIO() {
-		super(Geometry.class, Geometry.class, "application/wkt");
-	}
+    protected WKTPPIO() {
+        super(Geometry.class, Geometry.class, "application/wkt");
+    }
 
-	@Override
-	public Object decode(InputStream input) throws Exception {
-		return new WKTReader().read(new InputStreamReader(input));
-	}
-	
-	@Override
-	public Object decode(String input) throws Exception {
-		return new WKTReader().read(new StringReader(input));
-	}
+    @Override
+    public Object decode(InputStream input) throws Exception {
+        return new WKTReader().read(new InputStreamReader(input));
+    }
+
+    @Override
+    public Object decode(String input) throws Exception {
+        return new WKTReader().read(new StringReader(input));
+    }
 
     @Override
     public void encode(Object value, OutputStream os) throws IOException {
@@ -46,6 +47,4 @@ public class WKTPPIO extends CDataPPIO {
         }
     }
 
-	
-	
 }

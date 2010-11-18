@@ -19,23 +19,24 @@ import org.xml.sax.ContentHandler;
  */
 public class BinaryEncoderDelegate implements EncoderDelegate {
 
-	BinaryPPIO ppio;
-	Object object;
+    BinaryPPIO ppio;
 
-	public BinaryEncoderDelegate(BinaryPPIO ppio, Object object) {
-		this.ppio = ppio;
-		this.object = object;
-	}
+    Object object;
 
-	public void encode(ContentHandler output) throws Exception {
-		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		ppio.encode(object, bos);
-		
-		char[] chars = new String(Base64.encodeBase64(bos.toByteArray())).toCharArray();
-		output.characters(chars, 0, chars.length);
-	}
+    public BinaryEncoderDelegate(BinaryPPIO ppio, Object object) {
+        this.ppio = ppio;
+        this.object = object;
+    }
 
-	public void encode(OutputStream os) throws Exception {
-		ppio.encode(object, os);
-	}
+    public void encode(ContentHandler output) throws Exception {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ppio.encode(object, bos);
+
+        char[] chars = new String(Base64.encodeBase64(bos.toByteArray())).toCharArray();
+        output.characters(chars, 0, chars.length);
+    }
+
+    public void encode(OutputStream os) throws Exception {
+        ppio.encode(object, os);
+    }
 }

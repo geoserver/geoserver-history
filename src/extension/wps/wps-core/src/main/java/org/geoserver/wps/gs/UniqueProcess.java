@@ -26,53 +26,50 @@ import org.opengis.util.ProgressListener;
  */
 @DescribeProcess(title = "Unique values", description = "Returns the unique values of a certain attribute")
 public class UniqueProcess implements GeoServerProcess {
-	// the functions this process can handle
-	public enum AggregationFunction {
-		Average, Max, Median, Min, StdDev, Sum;
-	}
+    // the functions this process can handle
+    public enum AggregationFunction {
+        Average, Max, Median, Min, StdDev, Sum;
+    }
 
-	@DescribeResult(name = "result", description = "The list of unique values extracted from the feature list")
-	public SimpleFeatureCollection execute(
-			@DescribeParameter(name = "features", description = "The feature collection that will be inspected") SimpleFeatureCollection features,
-			@DescribeParameter(name = "attribute", description = "The attribute whose unique values will be returned") String attribute,
-			ProgressListener progressListener) throws Exception {
+    @DescribeResult(name = "result", description = "The list of unique values extracted from the feature list")
+    public SimpleFeatureCollection execute(
+            @DescribeParameter(name = "features", description = "The feature collection that will be inspected") SimpleFeatureCollection features,
+            @DescribeParameter(name = "attribute", description = "The attribute whose unique values will be returned") String attribute,
+            ProgressListener progressListener) throws Exception {
 
-		int attIndex = -1;
-		List<AttributeDescriptor> atts = features.getSchema()
-				.getAttributeDescriptors();
-		for (int i = 0; i < atts.size(); i++) {
-			if (atts.get(i).getLocalName().equals(attribute)) {
-				attIndex = i;
-				break;
-			}
-		}
+        int attIndex = -1;
+        List<AttributeDescriptor> atts = features.getSchema().getAttributeDescriptors();
+        for (int i = 0; i < atts.size(); i++) {
+            if (atts.get(i).getLocalName().equals(attribute)) {
+                attIndex = i;
+                break;
+            }
+        }
 
-		UniqueVisitor visitor = new UniqueVisitor(attIndex, features
-				.getSchema());
-		features.accepts(visitor, progressListener);
-		List uniqueValues = visitor.getResult().toList();
+        UniqueVisitor visitor = new UniqueVisitor(attIndex, features.getSchema());
+        features.accepts(visitor, progressListener);
+        List uniqueValues = visitor.getResult().toList();
 
-		SimpleFeatureTypeBuilder tb = new SimpleFeatureTypeBuilder();
-		tb.add("value", features.getSchema().getDescriptor(attIndex)
-				.getType().getBinding());
-		tb.setName("UniqueValue");
-		SimpleFeatureType ft = tb.buildFeatureType();
-		SimpleFeatureBuilder fb = new SimpleFeatureBuilder(ft);
+        SimpleFeatureTypeBuilder tb = new SimpleFeatureTypeBuilder();
+        tb.add("value", features.getSchema().getDescriptor(attIndex).getType().getBinding());
+        tb.setName("UniqueValue");
+        SimpleFeatureType ft = tb.buildFeatureType();
+        SimpleFeatureBuilder fb = new SimpleFeatureBuilder(ft);
 
-		ListFeatureCollection result = new ListFeatureCollection(ft);
-		for (Object value : uniqueValues) {
-			fb.add(value);
-			result.add(fb.buildFeature(null));
-		}
-		return result;
-	}
+        ListFeatureCollection result = new ListFeatureCollection(ft);
+        for (Object value : uniqueValues) {
+            fb.add(value);
+            result.add(fb.buildFeature(null));
+        }
+        return result;
+    }
 
-	private List<String> attNames(List<AttributeDescriptor> atts) {
-		List<String> result = new ArrayList<String>();
-		for (AttributeDescriptor ad : atts) {
-			result.add(ad.getLocalName());
-		}
-		return result;
-	}
+    private List<String> attNames(List<AttributeDescriptor> atts) {
+        List<String> result = new ArrayList<String>();
+        for (AttributeDescriptor ad : atts) {
+            result.add(ad.getLocalName());
+        }
+        return result;
+    }
 
 }

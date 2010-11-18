@@ -16,17 +16,17 @@ import org.geotools.data.simple.SimpleFeatureCollection;
  */
 @DescribeProcess(title = "countFeatures", description = "Counts the number of features in the specified collection")
 public class CountProcess implements GeoServerProcess {
-	// the functions this process can handle
-	public enum AggregationFunction {
-		Average, Max, Median, Min, StdDev, Sum;
-	}
+    // the functions this process can handle
+    public enum AggregationFunction {
+        Average, Max, Median, Min, StdDev, Sum;
+    }
 
-	@DescribeResult(name = "result", description = "The reprojected features")
-	public Number execute(
-			@DescribeParameter(name = "features", description = "The feature collection that will be aggregate") SimpleFeatureCollection features)
-			throws Exception {
+    @DescribeResult(name = "result", description = "The reprojected features")
+    public Number execute(
+            @DescribeParameter(name = "features", description = "The feature collection that will be aggregate") SimpleFeatureCollection features)
+            throws Exception {
 
-		return features.size();
-	}
+        return features.size();
+    }
 
 }
