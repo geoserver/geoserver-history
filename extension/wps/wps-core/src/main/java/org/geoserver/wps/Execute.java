@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -378,7 +379,12 @@ public class Execute {
             }
             
             // store the input
-            inputs.put(p.key, decoded);
+            if(p.maxOccurs > 1) {
+                inputs.put(p.key, Collections.singleton(decoded));
+            } else {
+                inputs.put(p.key, decoded);
+            }
+            
         }
         
         return inputs;
