@@ -27,6 +27,7 @@ public class WFSXStreamLoader extends XStreamServiceLoader<WFSInfo> {
     protected WFSInfo createServiceFromScratch(GeoServer gs) {
         WFSInfoImpl wfs = new WFSInfoImpl();
         wfs.setId( "wfs" );
+        wfs.setName("WFS");
         
         //gml2
         GMLInfoImpl gml2 = new GMLInfoImpl();

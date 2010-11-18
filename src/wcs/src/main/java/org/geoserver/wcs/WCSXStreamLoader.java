@@ -29,6 +29,7 @@ public class WCSXStreamLoader extends XStreamServiceLoader<WCSInfo> {
 
         WCSInfoImpl wcs = new WCSInfoImpl();
         wcs.setId("wcs");
+        wcs.setName("WCS");
 
         return wcs;
     }
