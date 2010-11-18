@@ -124,4 +124,31 @@
   </dependency>
   </dependencies>
 
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>process-resources</id>
+            <phase>process-resources</phase>
+            <configuration>
+              <tasks>
+                <replace dir="${build.outputDirectory}">
+                  <include name="*.properties"/> 
+                  <replacefilter token="@project.version@" value="${project.version}"/>
+                  <replacefilter token="@build.revision@" value="${build.revision}"/>
+                  <replacefilter token="@build.timestamp@" value="${build.timestamp}"/>
+                </replace>
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
 </project>
