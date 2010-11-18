@@ -368,7 +368,7 @@ public class DescribeCoverageTransformer extends TransformerBase {
 
         private void handleSupportedFormats(CoverageInfo ci) throws Exception {
             // gather all the formats for this coverage 
-            Set<String> formats = new HashSet<String>();
+            Set<String> formats = new LinkedHashSet<String>();
             for (Iterator it = ci.getSupportedFormats().iterator(); it.hasNext();) {
                 String format = (String) it.next();
                 // wcs 1.1 requires mime types, not format names
@@ -385,9 +385,7 @@ public class DescribeCoverageTransformer extends TransformerBase {
                 }
             }
             // sort them
-            List<String> sortedFormats = new ArrayList<String>(formats);
-            Collections.sort(sortedFormats);
-            for (String format : sortedFormats) {
+            for (String format : formats) {
                 element("wcs:SupportedFormat", format);
             }
             
