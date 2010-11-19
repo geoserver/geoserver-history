@@ -142,6 +142,11 @@
     <constructor-arg index="0" ref="geoServer"/>
   </bean>
   
+  <!-- URL mangler for workspace/layers accessed through the /ows?service=... service end points -->
+  <bean id="owsDispatcherLocalWorkspaceURLManger" class="org.geoserver.ows.LocalWorkspaceURLMangler">
+    <constructor-arg value="ows"/>
+  </bean>
+  
   <!-- xstream persister factory -->
   <bean id="xstreamPersisterFactory" class="org.geoserver.config.util.XStreamPersisterFactory"/>
 
