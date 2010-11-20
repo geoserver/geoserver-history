@@ -17,9 +17,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.acegisecurity.Authentication;
-import org.acegisecurity.GrantedAuthority;
-import org.acegisecurity.userdetails.UserDetails;
+import org.springframework.security.Authentication;
+import org.springframework.security.GrantedAuthority;
+import org.springframework.security.userdetails.UserDetails;
 import org.geoserver.xacml.geoxacml.GeoXACMLConfig;
 import org.geoserver.xacml.geoxacml.XACMLConstants;
 import org.geoserver.xacml.geoxacml.XACMLUtil;
@@ -41,7 +41,7 @@ import com.sun.xacml.ctx.Result;
 import com.vividsolutions.jts.geom.Geometry;
 
 /**
- * Acegi implementation for {@link XACMLRoleAuthority}
+ * Spring Security implementation for {@link XACMLRoleAuthority}
  * 
  * 
  * @author Christian Mueller

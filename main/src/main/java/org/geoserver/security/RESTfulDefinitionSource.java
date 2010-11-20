@@ -4,14 +4,15 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import org.acegisecurity.ConfigAttributeDefinition;
-import org.acegisecurity.SecurityConfig;
-import org.acegisecurity.intercept.web.FilterInvocation;
-import org.acegisecurity.intercept.web.FilterInvocationDefinitionSource;
-import org.acegisecurity.util.StringSplitUtils;
+import org.springframework.security.ConfigAttributeDefinition;
+import org.springframework.security.SecurityConfig;
+import org.springframework.security.intercept.web.FilterInvocation;
+import org.springframework.security.intercept.web.FilterInvocationDefinitionSource;
+import org.springframework.security.util.StringSplitUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.util.StringUtils;
@@ -68,7 +69,7 @@ public class RESTfulDefinitionSource implements FilterInvocationDefinitionSource
         return delegate().lookupAttributes(cleanURL(url), method );
     }
 
-    public Iterator getConfigAttributeDefinitions() {
+    public Collection getConfigAttributeDefinitions() {
         return delegate().getConfigAttributeDefinitions();        
     }
 
@@ -237,18 +238,29 @@ public class RESTfulDefinitionSource implements FilterInvocationDefinitionSource
     }
 
     public void setMappings( List mappings ) {
+
         Iterator it = mappings.iterator();
         while (it.hasNext()) {
             RESTfulDefinitionSourceMapping mapping = (RESTfulDefinitionSourceMapping)it.next();
-            ConfigAttributeDefinition configDefinition = new ConfigAttributeDefinition();
-
-            Iterator configAttributesIt = mapping.getConfigAttributes().iterator();
-            while (configAttributesIt.hasNext()) {
-                String s = (String) configAttributesIt.next();
-                configDefinition.addConfigAttribute( new SecurityConfig(s) );
-            }
+            String[] stringArray = new String[mapping.getConfigAttributes().size()];
+            mapping.configAttributes.toArray(stringArray);
+            ConfigAttributeDefinition configDefinition = new ConfigAttributeDefinition(stringArray);
             delegate.addSecureUrl(mapping.getUrl(), mapping.getHttpMethods(), configDefinition);
         }
+
+        
+//        Iterator it = mappings.iterator();
+//        while (it.hasNext()) {
+//            RESTfulDefinitionSourceMapping mapping = (RESTfulDefinitionSourceMapping)it.next();
+//            ConfigAttributeDefinition configDefinition = new ConfigAttributeDefinition();
+//
+//            Iterator configAttributesIt = mapping.getConfigAttributes().iterator();
+//            while (configAttributesIt.hasNext()) {
+//                String s = (String) configAttributesIt.next();
+//                configDefinition.addConfigAttribute( new SecurityConfig(s) );
+//            }
+//            delegate.addSecureUrl(mapping.getUrl(), mapping.getHttpMethods(), configDefinition);
+//        }
     }
 
     /**

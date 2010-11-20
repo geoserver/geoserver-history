@@ -4,8 +4,8 @@
  */
 package org.geoserver.web.security.user;
 
-import org.acegisecurity.userdetails.User;
-import org.acegisecurity.userdetails.UserDetails;
+import org.springframework.security.userdetails.User;
+import org.springframework.security.userdetails.UserDetails;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;

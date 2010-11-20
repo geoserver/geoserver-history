@@ -6,7 +6,7 @@ package org.geoserver.web.security.user;
 
 import java.util.logging.Level;
 
-import org.acegisecurity.userdetails.UserDetails;
+import org.springframework.security.userdetails.UserDetails;
 import org.geoserver.security.GeoserverUserDao;
 import org.geoserver.web.wicket.ParamResourceModel;
 
@@ -25,7 +25,7 @@ public class EditUserPage extends AbstractUserPage {
         try {
             UserUIModel model = (UserUIModel) getDefaultModelObject();
             GeoserverUserDao dao = GeoserverUserDao.get();
-            dao.setUser(model.toAcegiUser());
+            dao.setUser(model.toSpringUser());
             dao.storeUsers();
             setResponsePage(UserPage.class);
         } catch (Exception e) {

@@ -4,8 +4,8 @@
  */
 package org.geoserver.web;
 
-import org.acegisecurity.Authentication;
-import org.acegisecurity.GrantedAuthority;
+import org.springframework.security.Authentication;
+import org.springframework.security.GrantedAuthority;
 
 /**
  * Authorizer that only allows access to the admin.

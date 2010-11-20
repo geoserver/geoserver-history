@@ -11,7 +11,7 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import junit.framework.Test;
 
-import org.acegisecurity.Authentication;
+import org.springframework.security.Authentication;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.ResourceInfo;

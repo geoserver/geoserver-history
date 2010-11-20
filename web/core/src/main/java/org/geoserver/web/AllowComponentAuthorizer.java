@@ -4,7 +4,7 @@
  */
 package org.geoserver.web;
 
-import org.acegisecurity.Authentication;
+import org.springframework.security.Authentication;;
 
 /**
  * Authorizer that allows allows access.

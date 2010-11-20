@@ -5,7 +5,7 @@
 
 package org.geoserver.xacml.geoxacml;
 
-import org.acegisecurity.providers.TestingAuthenticationToken;
+import org.springframework.security.providers.TestingAuthenticationToken;
 import org.geoserver.security.DataAccessManager;
 import org.geoserver.security.DefaultDataAccessManagerAuthTest;
 import org.geoserver.xacml.role.XACMLRole;

@@ -17,12 +17,12 @@
 
 package org.geotools.xacml.transport;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.ibm.jvm.util.ByteArrayOutputStream;
 import com.sun.xacml.Indenter;
 import com.sun.xacml.ctx.RequestCtx;
 import com.sun.xacml.ctx.ResponseCtx;

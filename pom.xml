@@ -732,9 +732,33 @@
     <version>${spring.version}</version>
    </dependency>
    <dependency>
-    <groupId>org.acegisecurity</groupId>
-    <artifactId>acegi-security</artifactId>
-    <version>1.0.7</version>
+    <groupId>org.springframework.security</groupId>
+    <artifactId>spring-security-core-tiger</artifactId>
+    <version>${spring.security.version}</version>
+   </dependency>
+   <dependency>
+    <groupId>org.springframework.security</groupId>
+    <artifactId>spring-security-core-tiger</artifactId>
+    <version>${spring.security.version}</version>
+    <classifier>tests</classifier>
+    <scope>test</scope>
+   </dependency>
+   <dependency>
+    <groupId>org.springframework.security</groupId>
+    <artifactId>spring-security-core</artifactId>
+    <version>${spring.security.version}</version>
+   </dependency>
+   <dependency>
+    <groupId>org.springframework.security</groupId>
+    <artifactId>spring-security-core</artifactId>
+    <version>${spring.security.version}</version>
+    <classifier>tests</classifier>
+    <scope>test</scope>
+   </dependency>
+   <dependency>
+    <groupId>org.springframework.security</groupId>
+    <artifactId>spring-security-taglibs</artifactId>
+    <version>${spring.security.version}</version>
    </dependency>
    <dependency>
      <groupId>org.apache.wicket</groupId>
@@ -1374,6 +1398,7 @@
   <gt.version>2.7-SNAPSHOT</gt.version>
   <gwc.version>1.2-SNAPSHOT</gwc.version>
   <spring.version>2.5.5</spring.version>
+  <spring.security.version>2.0.6.RELEASE</spring.security.version> 
   <wicket.version>1.4.12</wicket.version>
   <java.awt.headless>true</java.awt.headless>
   <jalopy.phase>disabled</jalopy.phase>

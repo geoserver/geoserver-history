@@ -1,15 +1,16 @@
 package org.geoserver.security;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 
-import org.acegisecurity.ConfigAttributeDefinition;
-import org.acegisecurity.intercept.web.AbstractFilterInvocationDefinitionSource;
-import org.acegisecurity.intercept.web.FilterInvocation;
-import org.acegisecurity.intercept.web.FilterInvocationDefinition;
+import org.springframework.security.ConfigAttributeDefinition;
+import org.springframework.security.intercept.web.DefaultFilterInvocationDefinitionSource;
+import org.springframework.security.intercept.web.FilterInvocation;
+import org.springframework.security.intercept.web.FilterInvocationDefinitionSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.util.AntPathMatcher;
@@ -23,8 +24,8 @@ import org.springframework.util.PathMatcher;
  */
 
 public class RESTfulPathBasedFilterInvocationDefinitionMap 
-    extends AbstractFilterInvocationDefinitionSource
-    implements FilterInvocationDefinition {
+    //extends DefaultFilterInvocationDefinitionSource
+    implements FilterInvocationDefinitionSource {
        
     static private Log log = LogFactory.getLog(RESTfulPathBasedFilterInvocationDefinitionMap.class);
 
@@ -35,7 +36,11 @@ public class RESTfulPathBasedFilterInvocationDefinitionMap
     private boolean convertUrlToLowercaseBeforeComparison = false;
 
     //~ Methods ========================================================================================================
+    public boolean supports(Class clazz) {
+        return FilterInvocation.class.isAssignableFrom(clazz);
+    }
 
+    
     public void addSecureUrl(String antPath, String[] httpMethods, ConfigAttributeDefinition attr) {
         requestMap.add( new EntryHolder(antPath, httpMethods, attr) );
 
@@ -52,7 +57,7 @@ public class RESTfulPathBasedFilterInvocationDefinitionMap
         throw new IllegalArgumentException( "addSecureUrl(String, ConfigAttributeDefinition) is INVALID for RESTfulDefinitionSource" );
     }
 
-    public Iterator getConfigAttributeDefinitions() {
+    public Collection getConfigAttributeDefinitions() {
         Set set = new HashSet();
         Iterator iter = requestMap.iterator();
 
@@ -60,7 +65,8 @@ public class RESTfulPathBasedFilterInvocationDefinitionMap
             EntryHolder entryHolder = (EntryHolder) iter.next();
             set.add( entryHolder.getConfigAttributeDefinition() );
         }
-        return set.iterator();
+        return set;
+        //return set.iterator();
     }
 
     public int getMapSize() {

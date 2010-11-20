@@ -1,6 +1,6 @@
 package org.geoserver.web;
 
-import org.acegisecurity.Authentication;
+import org.springframework.security.Authentication;;
 
 
 public class DefaultPageAuthorizer extends AdminComponentAuthorizer implements PageAuthorizer {

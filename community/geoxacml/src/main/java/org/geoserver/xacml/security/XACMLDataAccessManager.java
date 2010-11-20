@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import org.acegisecurity.Authentication;
-import org.acegisecurity.GrantedAuthority;
+import org.springframework.security.Authentication;
+import org.springframework.security.GrantedAuthority;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.WorkspaceInfo;

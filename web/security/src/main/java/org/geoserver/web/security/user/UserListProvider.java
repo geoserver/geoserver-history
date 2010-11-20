@@ -8,8 +8,8 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
-import org.acegisecurity.GrantedAuthority;
-import org.acegisecurity.userdetails.User;
+import org.springframework.security.GrantedAuthority;
+import org.springframework.security.userdetails.User;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.geoserver.security.GeoserverUserDao;

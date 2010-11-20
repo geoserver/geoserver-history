@@ -1,5 +1,5 @@
 package org.geoserver.security;
-import org.acegisecurity.Authentication;
+import org.springframework.security.Authentication;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.security.DataAccessManager.CatalogMode;
 

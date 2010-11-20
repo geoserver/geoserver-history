@@ -3,10 +3,10 @@
  * application directory.
  */
 
-package org.geoserver.xacml.acegi;
+package org.geoserver.xacml.spring.security;
 
-import org.acegisecurity.intercept.ObjectDefinitionSource;
-import org.acegisecurity.intercept.web.FilterSecurityInterceptor;
+import org.springframework.security.intercept.ObjectDefinitionSource;
+import org.springframework.security.intercept.web.FilterSecurityInterceptor;
 
 /**
  * Url based authorization

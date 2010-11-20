@@ -4,7 +4,7 @@
 <body>
   <wicket:extend>
     <div class="page-pane button-group">
-        <form method="post" action="j_acegi_security_check">
+        <form method="post" action="j_spring_security_check">
               <ul>
                 <li>
                   <label for="username"><wicket:message key="username">Username</wicket:message></label>
@@ -15,8 +15,8 @@
                   <input id="password" type="password" name="password" value="" title="password" />
                 </li>
                 <li>
-                  <label class="shown" for="_acegi_security_remember_me"><wicket:message key="rememberMe">Remember me</wicket:message></label>
-                  <input id="_acegi_security_remember_me" type="checkbox" name="_acegi_security_remember_me" />
+                  <label class="shown" for="_spring_security_remember_me"><wicket:message key="rememberMe">Remember me</wicket:message></label>
+                  <input id="_spring_security_remember_me" type="checkbox" name="_spring_security_remember_me" />
                 </li>
               </ul>
             <button class="button-login positive icon" type="submit"><div><wicket:message key="login">Login</wicket:message></div></button>

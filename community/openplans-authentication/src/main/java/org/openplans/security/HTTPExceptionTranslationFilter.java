@@ -15,10 +15,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 
-import org.acegisecurity.AuthenticationException;
-import org.acegisecurity.AccessDeniedException;
-import org.acegisecurity.context.SecurityContextHolder;
-import org.acegisecurity.providers.anonymous.AnonymousAuthenticationToken;
+import org.springframework.security.AuthenticationException;
+import org.springframework.security.AccessDeniedException;
+import org.springframework.security.context.SecurityContextHolder;
+import org.springframework.security.providers.anonymous.AnonymousAuthenticationToken;
 
 /**
  * Filter to do custom error handling for OpenPlans.org/NYMap application. 

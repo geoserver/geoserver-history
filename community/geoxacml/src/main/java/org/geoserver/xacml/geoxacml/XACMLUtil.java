@@ -12,10 +12,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import org.acegisecurity.Authentication;
-import org.acegisecurity.GrantedAuthority;
-import org.acegisecurity.context.SecurityContextHolder;
-import org.acegisecurity.userdetails.UserDetails;
+import org.springframework.security.Authentication;
+import org.springframework.security.GrantedAuthority;
+import org.springframework.security.context.SecurityContextHolder;
+import org.springframework.security.userdetails.UserDetails;
 import org.geotools.xacml.geoxacml.attr.GML3Support;
 
 import com.sun.xacml.Indenter;

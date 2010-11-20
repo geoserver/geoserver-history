@@ -4,7 +4,7 @@ import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 
-import org.acegisecurity.AcegiSecurityException;
+import org.springframework.security.SpringSecurityException;
 import org.geoserver.security.SecureCatalogImpl.WrapperPolicy;
 import org.geoserver.security.decorators.SecuredObjects;
 import org.geotools.data.DataUtilities;
@@ -49,7 +49,7 @@ public class ReadOnlyVersioningFeatureStoreTest extends SecuredVersioningTest {
         try {
             secured.removeFeatures(Filter.INCLUDE);
             fail("Should have thrown a security exception");
-        } catch(AcegiSecurityException e) {
+        } catch(SpringSecurityException e) {
             // fine
         }
     }
@@ -58,7 +58,7 @@ public class ReadOnlyVersioningFeatureStoreTest extends SecuredVersioningTest {
         try {
             secured.rollback("'", Filter.INCLUDE, null);
             fail("Should have thrown a security exception");
-        } catch(AcegiSecurityException e) {
+        } catch(SpringSecurityException e) {
             // fine
         }
     }

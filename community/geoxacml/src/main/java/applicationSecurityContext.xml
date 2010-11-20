@@ -44,14 +44,14 @@
     replace restFilterInvocationInterceptor  with filterInvocationInterceptor    
   -->			
 	<bean id="filterInvocationInterceptor"
-    class="org.geoserver.xacml.acegi.XACMLFilterSecurityInterceptor">
+    class="org.geoserver.xacml.spring.security.XACMLFilterSecurityInterceptor">
     <property name="authenticationManager" ref="authenticationManager" />
         <property name="accessDecisionManager">
-      <bean class="org.geoserver.xacml.acegi.XACMLFilterAccessDecisionManager">
+      <bean class="org.geoserver.xacml.spring.security.XACMLFilterAccessDecisionManager">
         <property name="allowIfAllAbstainDecisions" value="false" />
         <property name="decisionVoters">
           <list>
-            <bean class="org.geoserver.xacml.acegi.XACMLFilterDecisionVoter" />
+            <bean class="org.geoserver.xacml.spring.security.XACMLFilterDecisionVoter" />
           </list>
         </property>
       </bean>
@@ -59,10 +59,10 @@
   </bean> 
 	
    <!-- Need a special implementation for creating an Authentication object for anonynmous users. 
-   The purpose it to crate XACMLRole objects instead of acegi GrantedAuthorities, 
+   The purpose it to crate XACMLRole objects instead of Spring Security GrantedAuthorities, 
    disable this bean in the main applicationSecurityContext.xml  -->	
   <bean id="anonymousProcessingFilter"
-    class="org.geoserver.xacml.acegi.XACMLAnonymousProcessingFilter">
+    class="org.geoserver.xacml.spring.security.XACMLAnonymousProcessingFilter">
     <property name="key" value="geoserver" />
     <property name="userAttribute" value="anonymousUser,ROLE_ANONYMOUS" />
   </bean>
@@ -82,7 +82,7 @@
    -->
    
    <!-- Need a special implementation for the UserDetailsService to crate XACMLRole objects
-   instead of acegi GrantedAuthorities, disable this bean in the main applicationSecurityContext.xml  -->
+   instead of Spring Security GrantedAuthorities, disable this bean in the main applicationSecurityContext.xml  -->
   <bean id="userDetailsService" class="org.geoserver.xacml.security.XACMLGeoserverUserDao">
     <property name="geoServer" ref="geoServer" />
   </bean>

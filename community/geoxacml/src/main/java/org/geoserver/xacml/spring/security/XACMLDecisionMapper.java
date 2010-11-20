@@ -3,15 +3,15 @@
  * application directory.
  */
 
-package org.geoserver.xacml.acegi;
+package org.geoserver.xacml.spring.security;
 
-import org.acegisecurity.vote.AccessDecisionVoter;
+import org.springframework.security.vote.AccessDecisionVoter;
 
 import com.sun.xacml.ctx.Result;
 
 /**
  * 
- * Maps XACML Decisions to Acegi Descisons
+ * Maps XACML Decisions to Spring Security Descisons
  * 
  * @author Christian Mueller
  * 
@@ -32,7 +32,7 @@ public class XACMLDecisionMapper {
         this.mappingForNotApplicable = mappingForNotApplicable;
     }
 
-    int getAcegiDecisionFor(int xacmlDecision) {
+    int getSpringSecurityDecisionFor(int xacmlDecision) {
         switch (xacmlDecision) {
         case Result.DECISION_DENY:
             return AccessDecisionVoter.ACCESS_DENIED;
@@ -42,7 +42,7 @@ public class XACMLDecisionMapper {
             return mappingForNotApplicable;
         case Result.DECISION_INDETERMINATE:
             throw new RuntimeException(
-                    "Never should reach this point, no existing acegi mapping for xacml DECISION_INDETERMINATE");
+                    "Never should reach this point, no existing spring security mapping for xacml DECISION_INDETERMINATE");
         }
         throw new RuntimeException("Never should reach this point");
 

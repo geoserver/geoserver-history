@@ -7,7 +7,7 @@ package org.geoserver.web.security.user;
 import java.util.Collections;
 import java.util.logging.Level;
 
-import org.acegisecurity.userdetails.UsernameNotFoundException;
+import org.springframework.security.userdetails.UsernameNotFoundException;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
 import org.geoserver.security.GeoserverUserDao;
@@ -50,7 +50,7 @@ public class NewUserPage extends AbstractUserPage {
         try {
             UserUIModel user = (UserUIModel) NewUserPage.this.getDefaultModelObject();
             GeoserverUserDao dao = GeoserverUserDao.get();
-            dao.putUser(user.toAcegiUser());
+            dao.putUser(user.toSpringUser());
             dao.storeUsers();
             setResponsePage(UserPage.class);
         } catch(Exception e) {

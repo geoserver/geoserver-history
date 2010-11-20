@@ -48,11 +48,11 @@ Index: main/src/main/java/applicationSecurityContext.xml
    </bean>
  
 +  <bean id="openPlansAuthenticationManager"
-+      class="org.acegisecurity.providers.ProviderManager">
++      class="org.springframework.security.providers.ProviderManager">
 +      <property name="providers">
 +         <list>
 +            <bean class="org.openplans.security.OpenPlansAuthenticationProvider"/>
-+            <bean class="org.acegisecurity.providers.anonymous.AnonymousAuthenticationProvider">
++            <bean class="org.springframework.security.providers.anonymous.AnonymousAuthenticationProvider">
 +                <property name="key" value="geoserver"/>
 +            </bean>
 +         </list>

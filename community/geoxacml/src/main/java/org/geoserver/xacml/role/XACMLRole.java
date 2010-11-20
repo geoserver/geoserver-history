@@ -8,7 +8,7 @@ package org.geoserver.xacml.role;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.acegisecurity.GrantedAuthority;
+import org.springframework.security.GrantedAuthority;
 
 import com.sun.xacml.ctx.Attribute;
 
@@ -22,7 +22,7 @@ import com.sun.xacml.ctx.Attribute;
  * 
  *         An example for a role is "EMPLOYEE" with a role parameter PERSONAL_NUMBER
  * 
- *         For integration into acegi security framework, this class implements the acegi
+ *         For integration into spring security security framework, this class implements the 
  *         GrantedAuthority interface.
  * 
  * 
@@ -81,6 +81,11 @@ public class XACMLRole implements GrantedAuthority {
 
     public boolean hasAttributes() {
         return attributes != null && attributes.isEmpty() == false;
+    }
+
+    public int compareTo(Object o) {
+        XACMLRole other = (XACMLRole) o;
+        return getAuthority().compareTo(other.getAuthority());
     }
 
 }

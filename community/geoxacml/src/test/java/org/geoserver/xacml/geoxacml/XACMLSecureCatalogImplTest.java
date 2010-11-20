@@ -5,11 +5,11 @@
 
 package org.geoserver.xacml.geoxacml;
 
-import org.acegisecurity.providers.TestingAuthenticationToken;
 import org.geoserver.security.DataAccessManager;
 import org.geoserver.security.SecureCatalogImplTest;
 import org.geoserver.xacml.role.XACMLRole;
 import org.geoserver.xacml.security.XACMLDataAccessManager;
+import org.springframework.security.providers.TestingAuthenticationToken;
 
 public class XACMLSecureCatalogImplTest extends SecureCatalogImplTest {
 

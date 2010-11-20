@@ -13,7 +13,7 @@ import org.apache.wicket.MetaDataKey;
 import org.apache.wicket.Session;
 import org.geoserver.platform.GeoServerResourceLoader;
 import org.geoserver.web.GeoServerApplication;
-import org.geoserver.web.acegi.GeoServerSession;
+import org.geoserver.web.spring.security.GeoServerSession;
 import org.geoserver.web.translator.model.ResourceSet;
 import org.geoserver.web.translator.model.TranslationSession;
 

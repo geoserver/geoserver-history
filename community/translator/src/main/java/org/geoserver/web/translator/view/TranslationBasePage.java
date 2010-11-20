@@ -2,7 +2,7 @@ package org.geoserver.web.translator.view;
 
 import org.geoserver.web.GeoServerApplication;
 import org.geoserver.web.GeoServerBasePage;
-import org.geoserver.web.acegi.GeoServerSession;
+import org.geoserver.web.spring.security.GeoServerSession;
 import org.geoserver.web.translator.controller.TranslationController;
 import org.geoserver.web.translator.model.TranslationSession;
 

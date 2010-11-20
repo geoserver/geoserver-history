@@ -1,4 +1,4 @@
-/* Copyright 2004, 2005, 2006 Acegi Technology Pty Limited
+/* Copyright 2004, 2005, 2006 Spring Technology Pty Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,15 +27,15 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.acegisecurity.Authentication;
-import org.acegisecurity.AuthenticationException;
-import org.acegisecurity.AuthenticationManager;
-import org.acegisecurity.context.SecurityContextHolder;
-import org.acegisecurity.providers.UsernamePasswordAuthenticationToken;
-import org.acegisecurity.ui.AuthenticationDetailsSource;
-import org.acegisecurity.ui.AuthenticationDetailsSourceImpl;
-import org.acegisecurity.ui.AuthenticationEntryPoint;
-import org.acegisecurity.ui.rememberme.RememberMeServices;
+import org.springframework.security.Authentication;
+import org.springframework.security.AuthenticationException;
+import org.springframework.security.AuthenticationManager;
+import org.springframework.security.context.SecurityContextHolder;
+import org.springframework.security.providers.UsernamePasswordAuthenticationToken;
+import org.springframework.security.ui.AuthenticationDetailsSource;
+import org.springframework.security.ui.AuthenticationDetailsSourceImpl;
+import org.springframework.security.ui.AuthenticationEntryPoint;
+import org.springframework.security.ui.rememberme.RememberMeServices;
 
 import org.springframework.beans.factory.InitializingBean;
 
@@ -48,7 +48,7 @@ import sun.misc.BASE64Decoder;
  * __ac.
  * 
  * @author David Winslow - TOPP
- * @note This class is heavily based on the BasicProcessingFilter provided in the main Acegi Security code.
+ * @note This class is heavily based on the BasicProcessingFilter provided in the main Spring Security Security code.
  */
 public class OpenPlansProcessingFilter implements Filter, InitializingBean {
     //~ Static fields/initializers =====================================================================================

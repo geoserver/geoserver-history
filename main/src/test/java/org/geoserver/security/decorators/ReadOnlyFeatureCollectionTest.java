@@ -7,7 +7,7 @@ import static org.easymock.EasyMock.replay;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import org.acegisecurity.AcegiSecurityException;
+import org.springframework.security.SpringSecurityException;
 import org.geoserver.security.SecureObjectsTest;
 import org.geoserver.security.SecureCatalogImpl.WrapperPolicy;
 import org.geotools.feature.FeatureCollection;
@@ -117,38 +117,38 @@ public class ReadOnlyFeatureCollectionTest extends SecureObjectsTest {
         // collection
         try {
             ro.add(feature);
-            fail("Should have failed with an acegi security exception");
-        } catch (AcegiSecurityException e) {
+            fail("Should have failed with a spring security exception");
+        } catch (SpringSecurityException e) {
             // ok
         }
         try {
             ro.addAll(new ArrayList());
-            fail("Should have failed with an acegi security exception");
-        } catch (AcegiSecurityException e) {
+            fail("Should have failed with a spring security exception");
+        } catch (SpringSecurityException e) {
             // ok
         }
         try {
             ro.clear();
-            fail("Should have failed with an acegi security exception");
-        } catch (AcegiSecurityException e) {
+            fail("Should have failed with a spring security exception");
+        } catch (SpringSecurityException e) {
             // ok
         }
         try {
             ro.remove(feature);
-            fail("Should have failed with an acegi security exception");
-        } catch (AcegiSecurityException e) {
+            fail("Should have failed with a spring security exception");
+        } catch (SpringSecurityException e) {
             // ok
         }
         try {
             ro.removeAll(new ArrayList());
-            fail("Should have failed with an acegi security exception");
-        } catch (AcegiSecurityException e) {
+            fail("Should have failed with a spring security exception");
+        } catch (SpringSecurityException e) {
             // ok
         }
         try {
             ro.retainAll(new ArrayList());
-            fail("Should have failed with an acegi security exception");
-        } catch (AcegiSecurityException e) {
+            fail("Should have failed with a spring security exception");
+        } catch (SpringSecurityException e) {
             // ok
         }
 
@@ -158,8 +158,8 @@ public class ReadOnlyFeatureCollectionTest extends SecureObjectsTest {
         roit.next();
         try {
             roit.remove();
-            fail("Should have failed with an acegi security exception");
-        } catch (AcegiSecurityException e) {
+            fail("Should have failed with a spring security exception");
+        } catch (SpringSecurityException e) {
             // ok
         }
 

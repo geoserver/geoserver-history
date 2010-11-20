@@ -4,7 +4,7 @@ import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 
-import org.acegisecurity.AcegiSecurityException;
+import org.springframework.security.SpringSecurityException;
 import org.geoserver.security.SecureCatalogImpl.WrapperPolicy;
 import org.geoserver.security.decorators.SecuredObjects;
 import org.geotools.data.DataUtilities;
@@ -57,7 +57,7 @@ public class ReadOnlyVersioningDataStoreTest extends SecuredVersioningTest {
         try {
             secured.setVersioned(SCHEMA, true, null, null);
             fail("Should have thrown a security exception...");
-        } catch (AcegiSecurityException e) {
+        } catch (SpringSecurityException e) {
             // fine
         }
         // make sure we get a read only wrapper, a source instead of a store
@@ -67,7 +67,7 @@ public class ReadOnlyVersioningDataStoreTest extends SecuredVersioningTest {
         try {
             store.removeFeatures(Filter.INCLUDE);
             fail("Should have thrown a security exception");
-        } catch(AcegiSecurityException e) {
+        } catch(SpringSecurityException e) {
             // fine
         }
     }

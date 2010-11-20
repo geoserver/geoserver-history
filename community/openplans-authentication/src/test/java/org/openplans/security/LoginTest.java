@@ -14,10 +14,10 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.FilterChain;
 import javax.servlet.http.Cookie;
 
-import org.acegisecurity.context.SecurityContextHolder;
-import org.acegisecurity.context.SecurityContextImpl;
-import org.acegisecurity.providers.AuthenticationProvider;
-import org.acegisecurity.providers.ProviderManager;
+import org.springframework.security.context.SecurityContextHolder;
+import org.springframework.security.context.SecurityContextImpl;
+import org.springframework.security.providers.AuthenticationProvider;
+import org.springframework.security.providers.ProviderManager;
 import org.geoserver.test.GeoServerTestSupport;
 
 import sun.misc.BASE64Encoder;

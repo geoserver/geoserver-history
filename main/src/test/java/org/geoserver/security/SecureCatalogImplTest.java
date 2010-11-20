@@ -1,7 +1,7 @@
 package org.geoserver.security;
 
-import org.acegisecurity.AcegiSecurityException;
-import org.acegisecurity.context.SecurityContextHolder;
+import org.springframework.security.SpringSecurityException;
+import org.springframework.security.context.SecurityContextHolder;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.ows.Dispatcher;
@@ -82,44 +82,44 @@ public class SecureCatalogImplTest extends AbstractAuthorizationTest {
         try {
             sc.getFeatureTypeByName("topp:states").getFeatureSource(null, null);
             fail("Should have failed with a security exception");
-        } catch(AcegiSecurityException e) {
+        } catch(SpringSecurityException e) {
             //
         }
         try {
             sc.getCoverageByName("nurc:arcgrid").getGridCoverage(null, null);
             fail("Should have failed with a security exception");
-        } catch(AcegiSecurityException e) {
+        } catch(SpringSecurityException e) {
             //
         }
         try {
             sc.getResourceByName("topp:states", FeatureTypeInfo.class).getFeatureSource(null, null);
             fail("Should have failed with a security exception");
-        } catch(AcegiSecurityException e) {
+        } catch(SpringSecurityException e) {
             //
         }
         try {
             sc.getResourceByName("nurc:arcgrid", CoverageInfo.class).getGridCoverage(null, null);
             fail("Should have failed with a security exception");
-        } catch(AcegiSecurityException e) {
+        } catch(SpringSecurityException e) {
             //
         }
         sc.getWorkspaceByName("topp");
         try {
             sc.getDataStoreByName("states").getDataStore(null);
             fail("Should have failed with a security exception");
-        } catch(AcegiSecurityException e) {
+        } catch(SpringSecurityException e) {
             //
         }
         try {
             sc.getDataStoreByName("roads").getDataStore(null);
             fail("Should have failed with a security exception");
-        } catch(AcegiSecurityException e) {
+        } catch(SpringSecurityException e) {
             //
         }
         try {
             sc.getCoverageStoreByName("arcGrid").getFormat();
             fail("Should have failed with a security exception");
-        } catch(AcegiSecurityException e) {
+        } catch(SpringSecurityException e) {
             //
         }
         
@@ -159,49 +159,49 @@ public class SecureCatalogImplTest extends AbstractAuthorizationTest {
         try {
             sc.getFeatureTypeByName("topp:states");
             fail("Should have failed with a security exception");
-        } catch(AcegiSecurityException e) {
+        } catch(SpringSecurityException e) {
             //
         }
         try {
             sc.getCoverageByName("nurc:arcgrid");
             fail("Should have failed with a security exception");
-        } catch(AcegiSecurityException e) {
+        } catch(SpringSecurityException e) {
             //
         }
         try {
             sc.getResourceByName("topp:states", FeatureTypeInfo.class);
             fail("Should have failed with a security exception");
-        } catch(AcegiSecurityException e) {
+        } catch(SpringSecurityException e) {
             //
         }
         try {
             sc.getResourceByName("nurc:arcgrid", CoverageInfo.class);
             fail("Should have failed with a security exception");
-        } catch(AcegiSecurityException e) {
+        } catch(SpringSecurityException e) {
             //
         }
         try {
             sc.getWorkspaceByName("topp");
             fail("Should have failed with a security exception");
-        } catch(AcegiSecurityException e) {
+        } catch(SpringSecurityException e) {
             //
         }
         try {
             sc.getDataStoreByName("states");
             fail("Should have failed with a security exception");
-        } catch(AcegiSecurityException e) {
+        } catch(SpringSecurityException e) {
             //
         }
         try {
             sc.getDataStoreByName("roads");
             fail("Should have failed with a security exception");
-        } catch(AcegiSecurityException e) {
+        } catch(SpringSecurityException e) {
             //
         }
         try {
             sc.getCoverageStoreByName("arcGrid");
             fail("Should have failed with a security exception");
-        } catch(AcegiSecurityException e) {
+        } catch(SpringSecurityException e) {
             //
         }
         

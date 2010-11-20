@@ -8,11 +8,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.acegisecurity.AccessDeniedException;
-import org.acegisecurity.AcegiSecurityException;
-import org.acegisecurity.Authentication;
-import org.acegisecurity.InsufficientAuthenticationException;
-import org.acegisecurity.context.SecurityContextHolder;
+import org.springframework.security.AccessDeniedException;
+import org.springframework.security.SpringSecurityException;
+import org.springframework.security.Authentication;
+import org.springframework.security.InsufficientAuthenticationException;
+import org.springframework.security.context.SecurityContextHolder;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogFacade;
 import org.geoserver.catalog.CatalogFactory;
@@ -639,7 +639,7 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
         return WrapperPolicy.RW;
     }
 
-    public static AcegiSecurityException unauthorizedAccess(String resourceName) {
+    public static SpringSecurityException unauthorizedAccess(String resourceName) {
         // not hide, and not filtering out a list, this
         // is an unauthorized direct resource access, complain
         Authentication user = user();
@@ -651,7 +651,7 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
                     + resourceName + " with the current privileges");
     }
     
-    public static AcegiSecurityException unauthorizedAccess() {
+    public static SpringSecurityException unauthorizedAccess() {
         // not hide, and not filtering out a list, this
         // is an unauthorized direct resource access, complain
         Authentication user = user();
