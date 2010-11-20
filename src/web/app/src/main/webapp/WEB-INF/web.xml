@@ -61,11 +61,11 @@
     </context-param>
 
     <filter>
-     <filter-name>Acegi Filter Chain Proxy</filter-name>
-     <filter-class>org.acegisecurity.util.FilterToBeanProxy</filter-class>
+     <filter-name>Spring Security Filter Chain Proxy</filter-name>
+     <filter-class>org.springframework.security.util.FilterToBeanProxy</filter-class>
      <init-param>
        <param-name>targetClass</param-name>
-       <param-value>org.acegisecurity.util.FilterChainProxy</param-value>
+       <param-value>org.springframework.security.util.FilterChainProxy</param-value>
      </init-param>
     </filter>
     
@@ -189,7 +189,7 @@
       If you want to use your security system comment out this one too
     -->
     <filter-mapping>
-      <filter-name>Acegi Filter Chain Proxy</filter-name>
+      <filter-name>Spring Security Filter Chain Proxy</filter-name>
       <url-pattern>/*</url-pattern>
     </filter-mapping>
     

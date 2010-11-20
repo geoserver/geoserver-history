@@ -19,7 +19,7 @@ import org.opengis.filter.Filter;
  * Given a {@link FeatureSource} makes sure no write operations can be performed
  * through it or using a object that can be accessed thru it. Depending on the
  * challenge policy, the object and the related ones will simply act as read
- * only, or will throw Acegi security exceptions
+ * only, or will throw Spring security exceptions
  * 
  * @author Andrea Aime - TOPP
  * 

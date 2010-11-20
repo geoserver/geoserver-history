@@ -34,7 +34,7 @@ import org.geoserver.catalog.Catalog;
 import org.geoserver.config.GeoServer;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.GeoServerResourceLoader;
-import org.geoserver.web.acegi.GeoServerSession;
+import org.geoserver.web.spring.security.GeoServerSession;
 import org.geoserver.web.util.DataDirectoryConverterLocator;
 import org.geoserver.web.util.GeoToolsConverterAdapter;
 import org.geoserver.web.util.converters.StringBBoxConverter;

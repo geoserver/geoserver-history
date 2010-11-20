@@ -21,9 +21,9 @@ import java.util.zip.InflaterInputStream;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.acegisecurity.Authentication;
-import org.acegisecurity.context.SecurityContextHolder;
-import org.acegisecurity.providers.anonymous.AnonymousAuthenticationToken;
+import org.springframework.security.Authentication;
+import org.springframework.security.context.SecurityContextHolder;
+import org.springframework.security.providers.anonymous.AnonymousAuthenticationToken;
 import org.geoserver.config.GeoServer;
 
 

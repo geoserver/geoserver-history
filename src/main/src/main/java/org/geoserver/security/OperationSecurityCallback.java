@@ -7,11 +7,11 @@ package org.geoserver.security;
 import java.util.List;
 import java.util.Set;
 
-import org.acegisecurity.AccessDeniedException;
-import org.acegisecurity.Authentication;
-import org.acegisecurity.GrantedAuthority;
-import org.acegisecurity.InsufficientAuthenticationException;
-import org.acegisecurity.context.SecurityContextHolder;
+import org.springframework.security.AccessDeniedException;
+import org.springframework.security.Authentication;
+import org.springframework.security.GrantedAuthority;
+import org.springframework.security.InsufficientAuthenticationException;
+import org.springframework.security.context.SecurityContextHolder;
 import org.geoserver.ows.DispatcherCallback;
 import org.geoserver.ows.Request;
 import org.geoserver.ows.Response;

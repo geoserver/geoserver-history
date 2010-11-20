@@ -2,11 +2,11 @@ package org.geoserver.web;
 
 import java.util.Locale;
 
-import org.acegisecurity.GrantedAuthority;
-import org.acegisecurity.GrantedAuthorityImpl;
-import org.acegisecurity.context.SecurityContextHolder;
-import org.acegisecurity.context.SecurityContextImpl;
-import org.acegisecurity.providers.UsernamePasswordAuthenticationToken;
+import org.springframework.security.GrantedAuthority;
+import org.springframework.security.GrantedAuthorityImpl;
+import org.springframework.security.context.SecurityContextHolder;
+import org.springframework.security.context.SecurityContextImpl;
+import org.springframework.security.providers.UsernamePasswordAuthenticationToken;
 import org.apache.wicket.Component;
 import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.markup.html.form.Form;

@@ -12,8 +12,8 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.acegisecurity.Authentication;
-import org.acegisecurity.providers.anonymous.AnonymousAuthenticationToken;
+import org.springframework.security.Authentication;
+import org.springframework.security.providers.anonymous.AnonymousAuthenticationToken;
 import org.apache.wicket.Application;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
@@ -34,7 +34,7 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.protocol.http.WebResponse;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.config.GeoServer;
-import org.geoserver.web.acegi.GeoServerSession;
+import org.geoserver.web.spring.security.GeoServerSession;
 import org.geoserver.web.wicket.ParamResourceModel;
 import org.geotools.util.logging.Logging;
 

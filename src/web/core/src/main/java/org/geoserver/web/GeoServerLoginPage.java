@@ -6,7 +6,7 @@ package org.geoserver.web;
 
 import javax.servlet.http.HttpSession;
 
-import org.acegisecurity.ui.webapp.AuthenticationProcessingFilter;
+import org.springframework.security.ui.webapp.AuthenticationProcessingFilter;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.Model;
@@ -27,7 +27,7 @@ public class GeoServerLoginPage extends GeoServerBasePage {
         
         TextField field = new TextField("username");
         HttpSession session = ((WebRequest) getRequest()).getHttpServletRequest().getSession();
-        String lastUserName = (String) session.getAttribute(AuthenticationProcessingFilter.ACEGI_SECURITY_LAST_USERNAME_KEY);
+        String lastUserName = (String) session.getAttribute(AuthenticationProcessingFilter.SPRING_SECURITY_LAST_USERNAME_KEY);
         field.setModel(new Model(lastUserName));
         add(field);
         

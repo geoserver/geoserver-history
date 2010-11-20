@@ -7,11 +7,11 @@ package org.geoserver.web;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.acegisecurity.Authentication;
-import org.acegisecurity.providers.anonymous.AnonymousAuthenticationToken;
-import org.acegisecurity.ui.AbstractProcessingFilter;
-import org.acegisecurity.ui.ExceptionTranslationFilter;
-import org.acegisecurity.ui.savedrequest.SavedRequest;
+import org.springframework.security.Authentication;
+import org.springframework.security.providers.anonymous.AnonymousAuthenticationToken;
+import org.springframework.security.ui.AbstractProcessingFilter;
+import org.springframework.security.ui.ExceptionTranslationFilter;
+import org.springframework.security.ui.savedrequest.SavedRequest;
 import org.apache.wicket.protocol.http.WebRequest;
 
 
@@ -29,13 +29,13 @@ public class GeoServerSecuredPage extends GeoServerBasePage {
         super();
         Authentication auth = getSession().getAuthentication();
         if(auth == null || !auth.isAuthenticated() || auth instanceof AnonymousAuthenticationToken) {
-            // emulate what acegi url control would do so that we get a proper redirect after login
+            // emulate what spring security url control would do so that we get a proper redirect after login
             HttpServletRequest httpRequest = ((WebRequest) getRequest()).getHttpServletRequest();
             ExceptionTranslationFilter translator = (ExceptionTranslationFilter) getGeoServerApplication().getBean("consoleExceptionTranslationFilter");
             SavedRequest savedRequest = new SavedRequest(httpRequest, translator.getPortResolver());
             
             HttpSession session = httpRequest.getSession();
-            session.setAttribute(AbstractProcessingFilter.ACEGI_SAVED_REQUEST_KEY, savedRequest);
+            session.setAttribute(AbstractProcessingFilter.SPRING_SECURITY_SAVED_REQUEST_KEY, savedRequest);
             
             // then redirect to the login page
             setResponsePage(GeoServerLoginPage.class);

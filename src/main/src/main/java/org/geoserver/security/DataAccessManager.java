@@ -4,8 +4,8 @@
  */
 package org.geoserver.security;
 
-import org.acegisecurity.AcegiSecurityException;
-import org.acegisecurity.Authentication;
+import org.springframework.security.Authentication;
+import org.springframework.security.SpringSecurityException;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.WorkspaceInfo;
@@ -41,7 +41,7 @@ public interface DataAccessManager {
         /**
          * A mixed approach. The methods that do list the contents of the catalog do not
          * report the layers the current user cannot access to, but trying to access the
-         * layer directly generates an {@link AcegiSecurityException} that will challenge
+         * layer directly generates an {@link SpringSecurityException} that will challenge
          * the user for authentication. This approach assumes the capabilities requests
          * are using the listing methods, whilst any access by name is performed using
          * the direct access methods. This is reasonable, but cannot be guaranteed, so

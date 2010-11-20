@@ -95,7 +95,7 @@ public class ReadOnlyDataStore extends DecoratingDataStore {
     
     /**
      * Notifies the caller the requested operation is not supported, using a plain {@link UnsupportedOperationException}
-     * in case we have to conceal the fact the data is actually writable, using an Acegi security exception otherwise
+     * in case we have to conceal the fact the data is actually writable, using an Spring security exception otherwise
      * to force an authentication from the user
      */
     protected RuntimeException notifyUnsupportedOperation() {

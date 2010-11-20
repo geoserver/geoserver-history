@@ -1,6 +1,6 @@
 package org.geoserver.security.decorators;
 
-import org.acegisecurity.AcegiSecurityException;
+import org.springframework.security.SpringSecurityException;
 import org.geoserver.security.AbstractAuthorizationTest;
 import org.geoserver.security.SecureCatalogImpl.WrapperPolicy;
 
@@ -42,7 +42,7 @@ public class ReadOnlyDecoratorsTest extends AbstractAuthorizationTest {
         try {
             ro.getFeatureSource(null, null);
             fail("This should have failed with a security exception");
-        } catch (AcegiSecurityException e) {
+        } catch (SpringSecurityException e) {
             // ok
         }
         SecuredDataStoreInfo store = (SecuredDataStoreInfo) ro.getStore();
@@ -74,7 +74,7 @@ public class ReadOnlyDecoratorsTest extends AbstractAuthorizationTest {
         try {
             ReadOnlyDataStore dataStore = (ReadOnlyDataStore) ro.getDataStore(null);
             fail("This should have failed with a security exception");
-        } catch (AcegiSecurityException e) {
+        } catch (SpringSecurityException e) {
             // ok
         }
     }

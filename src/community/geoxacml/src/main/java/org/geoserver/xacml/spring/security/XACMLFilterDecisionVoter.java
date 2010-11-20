@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.geoserver.xacml.acegi;
+package org.geoserver.xacml.spring.security;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,12 +10,12 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.acegisecurity.Authentication;
-import org.acegisecurity.ConfigAttribute;
-import org.acegisecurity.ConfigAttributeDefinition;
-import org.acegisecurity.GrantedAuthority;
-import org.acegisecurity.intercept.web.FilterInvocation;
-import org.acegisecurity.vote.AccessDecisionVoter;
+import org.springframework.security.Authentication;
+import org.springframework.security.ConfigAttribute;
+import org.springframework.security.ConfigAttributeDefinition;
+import org.springframework.security.GrantedAuthority;
+import org.springframework.security.intercept.web.FilterInvocation;
+import org.springframework.security.vote.AccessDecisionVoter;
 import org.geoserver.xacml.geoxacml.GeoXACMLConfig;
 import org.geoserver.xacml.geoxacml.XACMLUtil;
 import org.geoserver.xacml.role.XACMLRole;
@@ -25,7 +25,7 @@ import com.sun.xacml.ctx.ResponseCtx;
 import com.sun.xacml.ctx.Result;
 
 /**
- * Acegi Decision Voter using XACML policies
+ * Spring Security Decision Voter using XACML policies
  * 
  * @author Christian Mueller
  * 
@@ -41,7 +41,7 @@ public class XACMLFilterDecisionVoter implements AccessDecisionVoter {
     }
 
     public int vote(Authentication auth, Object request, ConfigAttributeDefinition arg2) {
-
+        
         HttpServletRequest httpRequest = ((FilterInvocation) request).getHttpRequest();
         String urlPath = httpRequest.getServletPath().toLowerCase();
         // String urlPath = ((FilterInvocation) request).getRequestUrl().toLowerCase();
@@ -55,13 +55,13 @@ public class XACMLFilterDecisionVoter implements AccessDecisionVoter {
         List<RequestCtx> requestCtxts = buildRequestCtxListFromRoles(auth, urlPath, method,
                 httpParams, remoteIP,remoteHost);
         if (requestCtxts.isEmpty())
-            return XACMLDecisionMapper.Exact.getAcegiDecisionFor(Result.DECISION_DENY);
+            return XACMLDecisionMapper.Exact.getSpringSecurityDecisionFor(Result.DECISION_DENY);
 
         List<ResponseCtx> responseCtxts = GeoXACMLConfig.getXACMLTransport()
                 .evaluateRequestCtxList(requestCtxts);
 
         int xacmlDecision = XACMLUtil.getDecisionFromRoleResponses(responseCtxts);
-        return XACMLDecisionMapper.Exact.getAcegiDecisionFor(xacmlDecision);
+        return XACMLDecisionMapper.Exact.getSpringSecurityDecisionFor(xacmlDecision);
 
     }
 

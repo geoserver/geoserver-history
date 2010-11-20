@@ -2,7 +2,7 @@ package org.geoserver.security;
 
 import junit.framework.TestCase;
 
-import org.acegisecurity.providers.TestingAuthenticationToken;
+import org.springframework.security.providers.TestingAuthenticationToken;;
 
 public class SecureTreeNodeTest extends TestCase {
 
@@ -10,7 +10,7 @@ public class SecureTreeNodeTest extends TestCase {
 
     @Override
     protected void setUp() throws Exception {
-        anonymous = new TestingAuthenticationToken("anonymous", null, null);
+        anonymous = new TestingAuthenticationToken("anonymous", null);
     }
 
     public void testEmptyRoot() {

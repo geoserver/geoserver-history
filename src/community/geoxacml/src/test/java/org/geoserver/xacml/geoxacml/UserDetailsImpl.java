@@ -1,7 +1,7 @@
 package org.geoserver.xacml.geoxacml;
 
-import org.acegisecurity.GrantedAuthority;
-import org.acegisecurity.userdetails.UserDetails;
+import org.springframework.security.GrantedAuthority;
+import org.springframework.security.userdetails.UserDetails;
 
 import com.vividsolutions.jts.geom.Geometry;
 

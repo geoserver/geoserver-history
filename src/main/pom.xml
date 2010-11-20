@@ -184,7 +184,25 @@
    <artifactId>gt-wfs</artifactId>
    <scope>test</scope>
   </dependency>
-  
- </dependencies>
- 
+  <dependency>
+   <groupId>org.springframework.security</groupId>
+   <artifactId>spring-security-core</artifactId>
+  </dependency>  
+  <dependency>
+   <groupId>org.springframework.security</groupId>
+   <artifactId>spring-security-core-tiger</artifactId>
+  </dependency>  
+  <dependency>
+   <groupId>org.springframework.security</groupId>
+   <artifactId>spring-security-core</artifactId>
+   <classifier>tests</classifier>
+   <scope>test</scope>
+  </dependency>  
+  <dependency>
+   <groupId>org.springframework.security</groupId>
+   <artifactId>spring-security-core-tiger</artifactId>
+   <classifier>tests</classifier>
+   <scope>test</scope>
+  </dependency>  
+ </dependencies> 
 </project>

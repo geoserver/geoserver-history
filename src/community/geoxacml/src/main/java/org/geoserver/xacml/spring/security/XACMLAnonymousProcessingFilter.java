@@ -3,17 +3,17 @@
  * application directory.
  */
 
-package org.geoserver.xacml.acegi;
+package org.geoserver.xacml.spring.security;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 
-import org.acegisecurity.Authentication;
-import org.acegisecurity.GrantedAuthority;
-import org.acegisecurity.providers.anonymous.AnonymousAuthenticationToken;
-import org.acegisecurity.providers.anonymous.AnonymousProcessingFilter;
-import org.acegisecurity.ui.AuthenticationDetailsSource;
-import org.acegisecurity.ui.AuthenticationDetailsSourceImpl;
+import org.springframework.security.Authentication;
+import org.springframework.security.GrantedAuthority;
+import org.springframework.security.providers.anonymous.AnonymousAuthenticationToken;
+import org.springframework.security.providers.anonymous.AnonymousProcessingFilter;
+import org.springframework.security.ui.AuthenticationDetailsSource;
+import org.springframework.security.ui.AuthenticationDetailsSourceImpl;
 import org.geoserver.xacml.role.XACMLRole;
 
 /**
@@ -27,7 +27,7 @@ public class XACMLAnonymousProcessingFilter extends AnonymousProcessingFilter {
     private AuthenticationDetailsSource authenticationDetailsSource = new AuthenticationDetailsSourceImpl();
 
     @Override
-    protected Authentication createAuthentication(ServletRequest request) {
+    protected Authentication createAuthentication(HttpServletRequest request) {
         GrantedAuthority[] auths = getUserAttribute().getAuthorities();
         XACMLRole[] roles = new XACMLRole[auths.length];
         for (int i = 0; i < auths.length; i++) {

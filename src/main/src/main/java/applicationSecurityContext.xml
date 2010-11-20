@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 
-<beans>
 
   <!-- ========================================================================================= -->
-  <!-- The following is the Acegi configuration for form based authentication, with login/logout -->
-  <!-- handling, as well as remember-me cookie handling, and session integration so that user    -->
-  <!-- does not have to login for each page.                                                     -->
+  <!-- The following is the Spring Security configuration for form based authentication, with    -->
+  <!-- login/logout handling, as well as remember-me cookie handling, and session integration so -->
+  <!-- that user does not have to login for each page.                                           -->
   <!-- This also makes sure that when you request a secured resource you go first to the         -->
-  <!-- login page, but get redirected to the origally requested page once login is succefull     -->
+  <!-- login page, but get redirected to the originally requested page once login is successful  -->
   <!-- ========================================================================================= -->
 
   <!-- 
@@ -22,13 +21,14 @@
     about basic auth credentials it'll keep on using them, the only way to make it stop
     is to declare a different user in the location bar, such as in: http://user@host:port/...
     
-    For filters introduction, their meanining, the
+    For filters introduction, their meaning, the
     different setup between form and basic authentication accesses,
-    and importance of the order please see the Acegi reference guide, chapter 3.2,
-    (page 17 of the PDF version)
+    and importance of the order please see the Spring Security reference guide. 
+    
   -->
+<beans>
   <bean id="filterChainProxy"
-    class="org.acegisecurity.util.FilterChainProxy">
+    class="org.springframework.security.util.FilterChainProxy">
     <property name="filterInvocationDefinitionSource">
       <value>
         CONVERT_URL_TO_LOWERCASE_BEFORE_COMPARISON
@@ -50,15 +50,15 @@
   </bean>
 
   <bean id="restFilterInvocationInterceptor"
-      class="org.acegisecurity.intercept.web.FilterSecurityInterceptor">
+      class="org.springframework.security.intercept.web.FilterSecurityInterceptor">
       <property name="authenticationManager" ref="authenticationManager" />
-      <property name="accessDecisionManager">
-   <bean class="org.acegisecurity.vote.AffirmativeBased">
+      <property name="accessDecisionManager">        
+        <bean class="org.springframework.security.vote.AffirmativeBased">
           <property name="allowIfAllAbstainDecisions" value="false" />
           <property name="decisionVoters">
             <list>
-              <bean class="org.acegisecurity.vote.RoleVoter" />
-              <bean class="org.acegisecurity.vote.AuthenticatedVoter" />
+              <bean class="org.springframework.security.vote.RoleVoter" />
+              <bean class="org.springframework.security.vote.AuthenticatedVoter" />
             </list>
           </property>
         </bean>
@@ -84,15 +84,15 @@
     roles that the user must have in order to access the secured resource
   -->
   <bean id="filterInvocationInterceptor"
-    class="org.acegisecurity.intercept.web.FilterSecurityInterceptor">
+    class="org.springframework.security.intercept.web.FilterSecurityInterceptor">
     <property name="authenticationManager" ref="authenticationManager" />
     <property name="accessDecisionManager">
-      <bean class="org.acegisecurity.vote.AffirmativeBased">
+      <bean class="org.springframework.security.vote.AffirmativeBased">
         <property name="allowIfAllAbstainDecisions" value="false" />
         <property name="decisionVoters">
           <list>
-            <bean class="org.acegisecurity.vote.RoleVoter" />
-            <bean class="org.acegisecurity.vote.AuthenticatedVoter" />
+            <bean class="org.springframework.security.vote.RoleVoter" />
+            <bean class="org.springframework.security.vote.AuthenticatedVoter" />
           </list>
         </property>
       </bean>
@@ -117,7 +117,7 @@
     This version will create the user session if missing, it's meant for web console operation.
   -->
   <bean id="httpSessionContextIntegrationFilterWithASCTrue"
-    class="org.acegisecurity.context.HttpSessionContextIntegrationFilter">
+    class="org.springframework.security.context.HttpSessionContextIntegrationFilter">
     <property name="allowSessionCreation" value="true" />
   </bean>
 
@@ -128,7 +128,7 @@
     authentication when accessing services.
   -->
   <bean id="httpSessionContextIntegrationFilterWithASCFalse"
-    class="org.acegisecurity.context.HttpSessionContextIntegrationFilter">
+    class="org.springframework.security.context.HttpSessionContextIntegrationFilter">
     <property name="allowSessionCreation" value="false" />
   </bean>
 
@@ -137,14 +137,14 @@
     cookie from the browser
   -->
   <bean id="logoutFilter"
-    class="org.acegisecurity.ui.logout.LogoutFilter">
+    class="org.springframework.security.ui.logout.LogoutFilter">
     <constructor-arg value="/web/" />
     <!-- URL redirected to after logout -->
     <constructor-arg>
       <list>
         <ref bean="rememberMeServices" />
         <bean
-          class="org.acegisecurity.ui.logout.SecurityContextLogoutHandler" />
+          class="org.springframework.security.ui.logout.SecurityContextLogoutHandler" />
       </list>
     </constructor-arg>
   </bean>
@@ -162,7 +162,7 @@
     <property name="authenticationFailureUrl"
       value="/web/?wicket:bookmarkablePage=:org.geoserver.web.GeoServerLoginPage&amp;error=true" />
     <property name="defaultTargetUrl" value="/" />
-    <property name="filterProcessesUrl" value="/j_acegi_security_check" />
+    <property name="filterProcessesUrl" value="/j_spring_security_check" />
     <property name="rememberMeServices" ref="rememberMeServices" />
   </bean>
 
@@ -170,7 +170,7 @@
     Double check, this may not be necessary
   -->
   <bean id="securityContextHolderAwareRequestFilter"
-    class="org.acegisecurity.wrapper.SecurityContextHolderAwareRequestFilter" />
+    class="org.springframework.security.wrapper.SecurityContextHolderAwareRequestFilter" />
 
   <!-- 
     If authentication is missing from the SecurityContext, tries to put authentication
@@ -178,7 +178,7 @@
     the contents of the cookie against the authentication manager
   -->
   <bean id="rememberMeProcessingFilter"
-    class="org.acegisecurity.ui.rememberme.RememberMeProcessingFilter">
+    class="org.springframework.security.ui.rememberme.RememberMeProcessingFilter">
     <property name="authenticationManager" ref="authenticationManager" />
     <property name="rememberMeServices" ref="rememberMeServices" />
   </bean>
@@ -189,7 +189,7 @@
     attempts failed
   -->
   <bean id="anonymousProcessingFilter"
-    class="org.acegisecurity.providers.anonymous.AnonymousProcessingFilter">
+    class="org.springframework.security.providers.anonymous.AnonymousProcessingFilter">
     <property name="key" value="geoserver" />
     <property name="userAttribute" value="anonymousUser,ROLE_ANONYMOUS" />
   </bean>
@@ -199,7 +199,7 @@
     you'll have to provide username/password just once during interactive tests.
   -->
   <bean id="basicProcessingFilter"
-    class="org.acegisecurity.ui.basicauth.BasicProcessingFilter">
+    class="org.springframework.security.ui.basicauth.BasicProcessingFilter">
     <property name="authenticationManager">
       <ref local="authenticationManager" />
     </property>
@@ -217,7 +217,7 @@
     with the basic processing filter 
   -->
   <bean id="basicProcessingFilterEntryPoint"
-    class="org.acegisecurity.ui.basicauth.BasicProcessingFilterEntryPoint">
+    class="org.springframework.security.ui.basicauth.BasicProcessingFilterEntryPoint">
     <property name="realmName">
       <value>GeoServer Realm</value>
     </property>
@@ -230,16 +230,16 @@
     levels are not enough
   -->
   <bean id="consoleExceptionTranslationFilter"
-    class="org.acegisecurity.ui.ExceptionTranslationFilter">
+    class="org.springframework.security.ui.ExceptionTranslationFilter">
     <property name="authenticationEntryPoint">
       <bean
-        class="org.acegisecurity.ui.webapp.AuthenticationProcessingFilterEntryPoint">
+        class="org.springframework.security.ui.webapp.AuthenticationProcessingFilterEntryPoint">
         <property name="loginFormUrl" value="/admin/login.do" />
         <property name="forceHttps" value="false" />
       </bean>
     </property>
     <property name="accessDeniedHandler">
-      <bean class="org.acegisecurity.ui.AccessDeniedHandlerImpl">
+      <bean class="org.springframework.security.ui.AccessDeniedHandlerImpl">
         <property name="errorPage" value="/accessDenied.jsp" />
       </bean>
     </property>
@@ -252,12 +252,12 @@
     levels are not enough
   -->
   <bean id="owsExceptionTranslationFilter"
-    class="org.acegisecurity.ui.ExceptionTranslationFilter">
+    class="org.springframework.security.ui.ExceptionTranslationFilter">
     <property name="authenticationEntryPoint">
       <ref bean="basicProcessingFilterEntryPoint" />
     </property>
     <property name="accessDeniedHandler">
-      <bean class="org.acegisecurity.ui.AccessDeniedHandlerImpl">
+      <bean class="org.springframework.security.ui.AccessDeniedHandlerImpl">
         <property name="errorPage" value="/accessDenied.jsp" />
       </bean>
     </property>
@@ -267,7 +267,7 @@
     The actual remember-me cookie handler
   -->
   <bean id="rememberMeServices"
-    class="org.acegisecurity.ui.rememberme.TokenBasedRememberMeServices">
+    class="org.springframework.security.ui.rememberme.TokenBasedRememberMeServices">
     <property name="userDetailsService" ref="userDetailsService" />
     <property name="key" value="geoserver" />
   </bean>
@@ -277,16 +277,16 @@
     a number of child providers
   -->
   <bean id="authenticationManager"
-    class="org.acegisecurity.providers.ProviderManager">
+    class="org.springframework.security.providers.ProviderManager">
     <property name="providers">
       <list>
         <ref local="daoAuthenticationProvider" />
         <bean
-          class="org.acegisecurity.providers.anonymous.AnonymousAuthenticationProvider">
+          class="org.springframework.security.providers.anonymous.AnonymousAuthenticationProvider">
           <property name="key" value="geoserver" />
         </bean>
         <bean
-          class="org.acegisecurity.providers.rememberme.RememberMeAuthenticationProvider">
+          class="org.springframework.security.providers.rememberme.RememberMeAuthenticationProvider">
           <property name="key" value="geoserver" />
         </bean>
       </list>
@@ -299,7 +299,7 @@
     given just the user name
   -->
   <bean id="daoAuthenticationProvider"
-    class="org.acegisecurity.providers.dao.DaoAuthenticationProvider">
+    class="org.springframework.security.providers.dao.DaoAuthenticationProvider">
     <property name="userDetailsService" ref="userDetailsService" />
   </bean>
 

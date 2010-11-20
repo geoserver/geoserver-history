@@ -4,11 +4,11 @@
  */
 package org.geoserver.usermanagement;
 
-import org.acegisecurity.GrantedAuthority;
-import org.acegisecurity.userdetails.UserDetails;
-import org.acegisecurity.userdetails.UsernameNotFoundException;
-import org.acegisecurity.userdetails.memory.UserAttribute;
-import org.acegisecurity.userdetails.memory.UserAttributeEditor;
+import org.springframework.security.GrantedAuthority;
+import org.springframework.security.userdetails.UserDetails;
+import org.springframework.security.userdetails.UsernameNotFoundException;
+import org.springframework.security.userdetails.memory.UserAttribute;
+import org.springframework.security.userdetails.memory.UserAttributeEditor;
 import org.geoserver.security.EditableUserDAO;
 import org.restlet.Restlet;
 import org.restlet.data.MediaType;

@@ -8,10 +8,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.acegisecurity.GrantedAuthority;
-import org.acegisecurity.GrantedAuthorityImpl;
-import org.acegisecurity.userdetails.User;
-import org.acegisecurity.userdetails.UserDetails;
+import org.springframework.security.GrantedAuthority;
+import org.springframework.security.GrantedAuthorityImpl;
+import org.springframework.security.userdetails.User;
+import org.springframework.security.userdetails.UserDetails;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.SubmitLink;
@@ -73,7 +73,7 @@ public abstract class AbstractUserPage extends GeoServerSecuredPage {
     protected abstract void onFormSubmit();
     
     /**
-     * Mediates between the UI and the Acegi User class
+     * Mediates between the UI and the Spring User class
      */
     static class UserUIModel implements Serializable {
         String username;
@@ -95,15 +95,15 @@ public abstract class AbstractUserPage extends GeoServerSecuredPage {
         /**
          * Maps a {@link UserDetails} into something that maps 1-1 with the UI
          * 
-         * @param acegiUser
+         * @param springUser
          */
-        public UserUIModel(UserDetails acegiUser) {
-            this.username = acegiUser.getUsername();
-            this.originalPassword = acegiUser.getPassword();
+        public UserUIModel(UserDetails springUser) {
+            this.username = springUser.getUsername();
+            this.originalPassword = springUser.getPassword();
             this.password = this.originalPassword;
             this.confirmPassword = this.originalPassword;
-            this.authorities = toRoleList(acegiUser);
-            this.enabled = acegiUser.isEnabled();
+            this.authorities = toRoleList(springUser);
+            this.enabled = springUser.isEnabled();
         }
 
         /**
@@ -115,11 +115,11 @@ public abstract class AbstractUserPage extends GeoServerSecuredPage {
         }
 
         /**
-         * Converts this UI view back into an Acegi {@link User} object
+         * Converts this UI view back into an Spring {@link User} object
          * 
          * @return
          */
-        public User toAcegiUser() {
+        public User toSpringUser() {
             return new User(username, password, enabled, true, true, true,
                     toGrantedAuthorities(authorities));
         }
@@ -127,9 +127,9 @@ public abstract class AbstractUserPage extends GeoServerSecuredPage {
         /**
          * From {@link GrantedAuthority}[] to {@link List}<String>
          */
-        List<String> toRoleList(UserDetails acegiUser) {
-            List<String> result = new ArrayList<String>(acegiUser.getAuthorities().length);
-            for (GrantedAuthority ga : acegiUser.getAuthorities()) {
+        List<String> toRoleList(UserDetails springUser) {
+            List<String> result = new ArrayList<String>(springUser.getAuthorities().length);
+            for (GrantedAuthority ga : springUser.getAuthorities()) {
                 result.add(ga.getAuthority());
             }
             return result;

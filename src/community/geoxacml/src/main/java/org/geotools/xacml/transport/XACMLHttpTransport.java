@@ -17,6 +17,7 @@
 
 package org.geotools.xacml.transport;
 
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -30,7 +31,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.ibm.jvm.util.ByteArrayOutputStream;
 import com.sun.xacml.Indenter;
 import com.sun.xacml.ctx.RequestCtx;
 import com.sun.xacml.ctx.ResponseCtx;

@@ -18,9 +18,9 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.acegisecurity.Authentication;
-import org.acegisecurity.context.SecurityContextHolder;
-import org.acegisecurity.userdetails.User;
+import org.springframework.security.Authentication;
+import org.springframework.security.context.SecurityContextHolder;
+import org.springframework.security.userdetails.User;
 import org.geoserver.monitor.RequestData.Status;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geotools.util.logging.Logging;

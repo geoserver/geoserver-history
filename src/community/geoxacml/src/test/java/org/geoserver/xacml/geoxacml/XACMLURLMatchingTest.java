@@ -12,14 +12,15 @@ import javax.servlet.http.HttpServletRequest;
 
 import junit.framework.TestCase;
 
-import org.acegisecurity.Authentication;
-import org.acegisecurity.ConfigAttributeDefinition;
-import org.acegisecurity.intercept.web.FilterInvocation;
-import org.acegisecurity.providers.TestingAuthenticationToken;
-import org.acegisecurity.vote.AccessDecisionVoter;
+import org.springframework.security.Authentication;
+import org.springframework.security.ConfigAttribute;
+import org.springframework.security.ConfigAttributeDefinition;
+import org.springframework.security.intercept.web.FilterInvocation;
+import org.springframework.security.providers.TestingAuthenticationToken;
+import org.springframework.security.vote.AccessDecisionVoter;
 import org.easymock.EasyMock;
-import org.geoserver.xacml.acegi.XACMLFilterDecisionVoter;
 import org.geoserver.xacml.role.XACMLRole;
+import org.geoserver.xacml.spring.security.XACMLFilterDecisionVoter;
 
 import com.sun.xacml.attr.StringAttribute;
 import com.sun.xacml.ctx.Attribute;
@@ -126,7 +127,7 @@ public class XACMLURLMatchingTest extends TestCase {
         org.easymock.classextension.EasyMock.replay(filter);
 
         XACMLFilterDecisionVoter voter = new XACMLFilterDecisionVoter();
-        return voter.vote(aut, filter, new ConfigAttributeDefinition());
+        return voter.vote(aut, filter, new ConfigAttributeDefinition("xacml"));
 
     }
 

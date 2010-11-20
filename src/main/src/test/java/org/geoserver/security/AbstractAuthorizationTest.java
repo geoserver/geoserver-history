@@ -10,10 +10,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
-import org.acegisecurity.Authentication;
-import org.acegisecurity.GrantedAuthority;
-import org.acegisecurity.GrantedAuthorityImpl;
-import org.acegisecurity.providers.TestingAuthenticationToken;
+import org.springframework.security.Authentication;
+import org.springframework.security.GrantedAuthority;
+import org.springframework.security.GrantedAuthorityImpl;
+import org.springframework.security.providers.TestingAuthenticationToken;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.CoverageStoreInfo;
@@ -88,7 +88,7 @@ public abstract class AbstractAuthorizationTest extends SecureObjectsTest {
                 new GrantedAuthorityImpl("READER"), new GrantedAuthorityImpl("WRITER") });
         roUser = new TestingAuthenticationToken("ro", "supersecret",
                 new GrantedAuthority[] { new GrantedAuthorityImpl("READER") });
-        anonymous = new TestingAuthenticationToken("anonymous", null, null);
+        anonymous = new TestingAuthenticationToken("anonymous", null);
         milUser = new TestingAuthenticationToken("military", "supersecret",
                 new GrantedAuthority[] { new GrantedAuthorityImpl("MILITARY") });
         root = new TestingAuthenticationToken("admin", "geoserver", new GrantedAuthority[] { new GrantedAuthorityImpl(SecureTreeNode.ROOT_ROLE) });

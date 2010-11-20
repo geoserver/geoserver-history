@@ -2,17 +2,17 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.geoserver.xacml.acegi;
+package org.geoserver.xacml.spring.security;
 
-import org.acegisecurity.AccessDeniedException;
-import org.acegisecurity.Authentication;
-import org.acegisecurity.ConfigAttributeDefinition;
-import org.acegisecurity.InsufficientAuthenticationException;
-import org.acegisecurity.vote.AbstractAccessDecisionManager;
-import org.acegisecurity.vote.AccessDecisionVoter;
+import org.springframework.security.AccessDeniedException;
+import org.springframework.security.Authentication;
+import org.springframework.security.ConfigAttributeDefinition;
+import org.springframework.security.InsufficientAuthenticationException;
+import org.springframework.security.vote.AbstractAccessDecisionManager;
+import org.springframework.security.vote.AccessDecisionVoter;
 
 /**
- * Acegi AccessDecsionsManger implementation for Services
+ * Spring Security AccessDecsionsManger implementation for Services
  * 
  * @author Christian Mueller
  * 

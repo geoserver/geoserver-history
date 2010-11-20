@@ -4,7 +4,7 @@ import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 
-import org.acegisecurity.AcegiSecurityException;
+import org.springframework.security.SpringSecurityException;
 import org.geoserver.security.SecureObjectsTest;
 import org.geoserver.security.SecureCatalogImpl.WrapperPolicy;
 import org.geotools.data.DataAccess;
@@ -60,12 +60,12 @@ public class ReadOnlyDataAccessTest extends SecureObjectsTest {
         try {
             ro.createSchema(null);
             fail("Should have failed with a security exception");
-        } catch (AcegiSecurityException e) {
+        } catch (SpringSecurityException e) {
         }
         try {
             ro.updateSchema(null, null);
             fail("Should have failed with a security exception");
-        } catch (AcegiSecurityException e) {
+        } catch (SpringSecurityException e) {
         }
     }
 

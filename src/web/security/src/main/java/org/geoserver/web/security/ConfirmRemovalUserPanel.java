@@ -3,7 +3,7 @@ package org.geoserver.web.security;
 import java.util.Arrays;
 import java.util.List;
 
-import org.acegisecurity.userdetails.User;
+import org.springframework.security.userdetails.User;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;

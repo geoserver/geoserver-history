@@ -6,8 +6,8 @@ package org.geoserver.web;
 
 import java.util.HashMap;
 
-import org.acegisecurity.Authentication;
-import org.acegisecurity.GrantedAuthority;
+import org.springframework.security.Authentication;
+import org.springframework.security.GrantedAuthority;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.ExternalLink;

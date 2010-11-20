@@ -52,20 +52,20 @@
       <artifactId>rest</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.acegisecurity</groupId>
-      <artifactId>acegi-security</artifactId>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-core-tiger</artifactId>
       <scope>compile</scope>
-      <exclusions>
-       <exclusion>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-remoting</artifactId>
-       </exclusion>
-       <exclusion>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-support</artifactId>
-       </exclusion>
-     </exclusions>
     </dependency>
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-core</artifactId>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>            
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>main</artifactId>

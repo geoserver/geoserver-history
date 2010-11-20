@@ -32,7 +32,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
 
-import org.acegisecurity.AcegiSecurityException;
+import org.springframework.security.SpringSecurityException;
 import org.eclipse.emf.ecore.EObject;
 import org.geoserver.ows.util.EncodingInfo;
 import org.geoserver.ows.util.KvpMap;
@@ -232,8 +232,8 @@ public class Dispatcher extends AbstractController {
             if (result != null) {
                 response(result, request, operation);
             }
-        } catch (AcegiSecurityException e) {
-            // make Acegi exceptions flow so that exception transformer filter can handle them
+        } catch (SpringSecurityException e) {
+            // make Spring security exceptions flow so that exception transformer filter can handle them
             throw e;
         } catch (Throwable t) {
             exception(t, service, request);
@@ -1279,7 +1279,7 @@ public class Dispatcher extends AbstractController {
 
     void exception(Throwable t, Service service, Request request) {
         Throwable current = t;
-        while (current != null && !(current instanceof ClientStreamAbortedException) && !(current instanceof AcegiSecurityException)) {
+        while (current != null && !(current instanceof ClientStreamAbortedException) && !(current instanceof SpringSecurityException)) {
             if(current instanceof SAXException)
                 current = ((SAXException) current).getException();
             else
@@ -1289,8 +1289,8 @@ public class Dispatcher extends AbstractController {
             logger.log(Level.FINER, "Client has closed stream", t);
             return;
         }
-        if ( current instanceof AcegiSecurityException)
-            throw (AcegiSecurityException) current;
+        if ( current instanceof SpringSecurityException)
+            throw (SpringSecurityException) current;
         
         
         //unwind the exception stack until we find one we know about 
@@ -1302,7 +1302,7 @@ public class Dispatcher extends AbstractController {
             if ( cause instanceof HttpErrorCodeException ) {
                 break;
             }
-            if ( cause instanceof AcegiSecurityException ) {
+            if ( cause instanceof SpringSecurityException ) {
                 break;
             }
             

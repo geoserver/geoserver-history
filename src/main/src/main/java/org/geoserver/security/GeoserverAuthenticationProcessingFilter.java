@@ -6,7 +6,7 @@ package org.geoserver.security;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.acegisecurity.ui.webapp.AuthenticationProcessingFilter;
+import org.springframework.security.ui.webapp.AuthenticationProcessingFilter;
 
 
 /**

@@ -2,7 +2,7 @@ package org.geoserver.web.security.user;
 
 import java.util.Locale;
 
-import org.acegisecurity.userdetails.UserDetails;
+import org.springframework.security.userdetails.UserDetails;
 import org.apache.wicket.extensions.markup.html.form.palette.component.Recorder;
 import org.apache.wicket.util.tester.FormTester;
 import org.geoserver.security.GeoserverUserDao;

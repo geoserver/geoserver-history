@@ -2,7 +2,7 @@ package org.geoserver.security;
 
 import java.io.File;
 
-import org.acegisecurity.AcegiSecurityException;
+import org.springframework.security.SpringSecurityException;
 import org.geoserver.data.test.MockData;
 import org.geoserver.data.util.IOUtils;
 import org.geoserver.test.GeoServerTestSupport;
@@ -41,7 +41,7 @@ public class SecureCatalogIntegrationTest extends GeoServerTestSupport {
         try {
             getFeatureSource(MockData.BUILDINGS);
             fail("This should have failed with a security exception!");
-        } catch (AcegiSecurityException e) {
+        } catch (SpringSecurityException e) {
             // fine, we should not be able to get to the feature source
         }
     }
@@ -52,7 +52,7 @@ public class SecureCatalogIntegrationTest extends GeoServerTestSupport {
         try {
             fs.removeFeatures(Filter.INCLUDE);
             fail("This should have failed with a security exception!");
-        } catch (AcegiSecurityException e) {
+        } catch (SpringSecurityException e) {
             // fine, we should not be able to get to the feature source
         }
     }

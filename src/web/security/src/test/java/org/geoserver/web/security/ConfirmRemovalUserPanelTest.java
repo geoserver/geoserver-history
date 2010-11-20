@@ -1,8 +1,8 @@
 package org.geoserver.web.security;
 
-import org.acegisecurity.GrantedAuthority;
-import org.acegisecurity.GrantedAuthorityImpl;
-import org.acegisecurity.userdetails.User;
+import org.springframework.security.GrantedAuthority;
+import org.springframework.security.GrantedAuthorityImpl;
+import org.springframework.security.userdetails.User;
 import org.apache.wicket.Component;
 import org.geoserver.web.ComponentBuilder;
 import org.geoserver.web.FormTestPage;

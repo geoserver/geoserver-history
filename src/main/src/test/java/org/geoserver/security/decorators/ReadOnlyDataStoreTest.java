@@ -4,7 +4,7 @@ import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 
-import org.acegisecurity.AcegiSecurityException;
+import org.springframework.security.SpringSecurityException;
 import org.geoserver.security.SecureObjectsTest;
 import org.geoserver.security.SecureCatalogImpl.WrapperPolicy;
 import org.geotools.data.DataStore;
@@ -78,39 +78,39 @@ public class ReadOnlyDataStoreTest extends SecureObjectsTest {
         try {
             ro.createSchema(null);
             fail("Should have failed with a security exception");
-        } catch (AcegiSecurityException e) {
+        } catch (SpringSecurityException e) {
             //
         }
         try {
             ro.updateSchema((String) null, null);
             fail("Should have failed with a security exception");
-        } catch (AcegiSecurityException e) {
+        } catch (SpringSecurityException e) {
             //
         }
 
         try {
             ro.updateSchema((Name) null, null);
             fail("Should have failed with a security exception");
-        } catch (AcegiSecurityException e) {
+        } catch (SpringSecurityException e) {
             //
         }
         try {
             ro.getFeatureWriter("states", Transaction.AUTO_COMMIT);
             fail("Should have failed with a security exception");
-        } catch (AcegiSecurityException e) {
+        } catch (SpringSecurityException e) {
             //
         }
         try {
             ro.getFeatureWriter("states", Filter.INCLUDE,
                     Transaction.AUTO_COMMIT);
             fail("Should have failed with a security exception");
-        } catch (AcegiSecurityException e) {
+        } catch (SpringSecurityException e) {
             //
         }
         try {
             ro.getFeatureWriterAppend("states", Transaction.AUTO_COMMIT);
             fail("Should have failed with a security exception");
-        } catch (AcegiSecurityException e) {
+        } catch (SpringSecurityException e) {
             //
         }
     }

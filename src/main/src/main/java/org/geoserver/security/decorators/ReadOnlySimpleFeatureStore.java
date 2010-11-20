@@ -100,7 +100,7 @@ public class ReadOnlySimpleFeatureStore extends ReadOnlySimpleFeatureSource impl
     /**
      * Notifies the caller the requested operation is not supported, using a plain
      * {@link UnsupportedOperationException} in case we have to conceal the fact the data is
-     * actually writable, using an Acegi security exception otherwise to force an authentication
+     * actually writable, using an Spring security exception otherwise to force an authentication
      * from the user
      */
     protected RuntimeException unsupportedOperation() {
