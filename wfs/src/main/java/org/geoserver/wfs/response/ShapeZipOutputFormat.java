@@ -242,7 +242,7 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat implements A
      */
     private void createRequestDump(File tempDir, GetFeatureType gft, SimpleFeatureCollection fc) {
         final Request request = Dispatcher.REQUEST.get();
-        if(request == null) {
+        if(request == null || gft == null) {
             // we're probably running in a unit test
             return;
         }
