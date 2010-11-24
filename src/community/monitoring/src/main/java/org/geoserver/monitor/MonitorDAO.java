@@ -4,7 +4,9 @@ import java.util.List;
 
 public interface MonitorDAO {
 
-    RequestData add(RequestData data);
+    RequestData init(RequestData data);
+    
+    void add(RequestData data);
     
     void update(RequestData data);
     

@@ -18,6 +18,7 @@ public class MonitorFilterTest extends TestCase {
 
     public void testSimple() throws Exception {
         DummyMonitorDAO dao = new DummyMonitorDAO();
+        
         MonitorFilter filter = new MonitorFilter(new Monitor(dao), new MonitorRequestFilter());
         
         MockFilterChain chain = new MockFilterChain();

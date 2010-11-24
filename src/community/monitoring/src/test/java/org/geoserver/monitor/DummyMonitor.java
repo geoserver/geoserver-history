@@ -9,11 +9,14 @@ class DummyMonitorDAO implements MonitorDAO {
     RequestData request;
     RequestData last;
     
-    public RequestData add(RequestData data) {
+    public RequestData init(RequestData data) {
         request = data;
         return data;
     }
 
+    public void add(RequestData data) {
+    }
+    
     public void update(RequestData data) {
     }
     

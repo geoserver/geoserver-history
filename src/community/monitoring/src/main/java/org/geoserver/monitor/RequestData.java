@@ -30,7 +30,7 @@ public class RequestData implements Serializable {
     /**
      * request id
      */
-    private long id;
+    private long id = -1;
 
     /**
      * Request status / state
@@ -133,6 +133,11 @@ public class RequestData implements Serializable {
      */
     private String owsOperation;
 
+    /**
+     * The sub operation, example for WFS transaction being INSERT, UPDATE, etc... 
+     */
+    private String subOperation;
+    
     /**
      * The layers requested
      */
@@ -318,6 +323,14 @@ public class RequestData implements Serializable {
         this.owsOperation = owsOperation;
     }
 
+    public String getSubOperation() {
+        return subOperation;
+    }
+    
+    public void setSubOperation(String subOperation) {
+        this.subOperation = subOperation;
+    }
+    
     public List<String> getLayers() {
         return layers;
     }
@@ -375,6 +388,7 @@ public class RequestData implements Serializable {
         clone.setRemoteUser(remoteUser);
         clone.setOwsService(owsService);
         clone.setOwsOperation(owsOperation);
+        clone.setSubOperation(subOperation);
         clone.setOwsVersion(owsVersion);
         clone.setLayers(new ArrayList(layers));
         clone.setResponseLength(responseLength);

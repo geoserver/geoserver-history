@@ -34,6 +34,7 @@
     <property column="OWS_SERVICE" name="owsService" index="REQ_OWS_SERVICE_IDX"/>
     <property column="OWS_VERSION" name="owsVersion"/>
     <property column="OWS_OPERATION" name="owsOperation" index="REQ_OWS_OPERATION_IDX"/>
+    <property column="SUB_OPEARTION" name="subOperation" index="REQ_SUB_OPERATION_IDX"/>
     
     <property column="CONTENT_TYPE" name="responseContentType"/>
     <property column="RESPONSE_LENGTH" name="responseLength"/>

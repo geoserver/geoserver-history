@@ -78,7 +78,7 @@ public class MonitorCallback implements DispatcherCallback {
             Object reqObj = operation.getParameters()[0];
             for (RequestObjectHandler h : HANDLERS) {
                 if (h.canHandle(reqObj)) {
-                    data.setLayers(h.getLayers(reqObj));
+                    h.handle(reqObj, data);
                     break;
                 }
             }

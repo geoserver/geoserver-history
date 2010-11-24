@@ -11,6 +11,7 @@ import java.util.logging.Level;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.FileWatcher;
 import org.geoserver.platform.GeoServerResourceLoader;
 import org.springframework.util.AntPathMatcher;

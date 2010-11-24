@@ -31,6 +31,12 @@ public class MonitorConfig implements ApplicationContextAware {
     PropertyFileWatcher fw;
     ApplicationContext context;
     
+    public MonitorConfig() {
+        props = new Properties();
+        props.put("mode", "history");
+        props.put("sync", "async");
+    }
+    
     public MonitorConfig(GeoServerResourceLoader loader) throws IOException {
         File f = loader.find("monitoring", "monitor.properties");
         if (f == null) {
@@ -68,7 +74,7 @@ public class MonitorConfig implements ApplicationContextAware {
     }
     
     Properties props() {
-        if (fw.isModified()) {
+        if (fw != null && fw.isModified()) {
             synchronized (this) {
                 if (fw.isModified()) {
                     try {
