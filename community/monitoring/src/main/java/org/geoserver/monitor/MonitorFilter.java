@@ -22,6 +22,7 @@ import org.springframework.security.Authentication;
 import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.security.userdetails.User;
 import org.geoserver.monitor.RequestData.Status;
+import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geotools.util.logging.Logging;
 
@@ -187,7 +188,7 @@ public class MonitorFilter implements Filter {
                     }
                 }
 
-                monitor.getDAO().save(data);
+                monitor.getDAO().update(data);
             }
             finally {
                 monitor = null;

@@ -58,39 +58,32 @@ public class HibernateMonitorDAO2 implements MonitorDAO {
         hib.setFetchSize(1000);
     }
     
-    public RequestData add(final RequestData data) {
-        if (mode != Mode.HISTORY) {
-            if (sync == Sync.ASYNC_UPDATE) {
-                //async_update means don't run the initial insert asynchronously
-                new Insert(data).run();
-            }
-            else {
-                run(new Insert(data));
-            }
-        }
-        else {
-          //don't persist yet, we persist at the very end of request
-        }
-        
+    public RequestData init(final RequestData data) {
         return data;
     }
     
-    public void update(RequestData data) {
-        if (mode != Mode.HISTORY) {
-            save(data);
+    public void add(RequestData data) {
+        if (sync == Sync.ASYNC_UPDATE) {
+            //async_update means don't run the initial insert asynchronously
+            new Insert(data).run();
         }
         else {
-          //don't persist yet, we persist at the very end of request
+            run(new Insert(data));
         }
     }
     
-    public void save(final RequestData data) {
-        if(mode == Mode.HISTORY) {
-            run(new Insert(data));
-        }
-        else {
-            run(new Update(data));
-        }
+    public void update(RequestData data) {
+        save(data);
+    }
+    
+    public void save(RequestData data) {
+        run(new Save(data));
+//        if(data.getId() == -1) {
+//            run(new Insert(data));
+//        }
+//        else {
+//            run(new Update(data));
+//        }
     }
     
     public void clear() {
@@ -300,6 +293,25 @@ public class HibernateMonitorDAO2 implements MonitorDAO {
         }
     }
     
+    class Save extends Task {
+        RequestData data;
+        
+        Save(RequestData data) {
+            super(data);
+            this.data = data;
+        }
+        
+        public void run() {
+            if (data.getId() == -1) {
+                new Insert(data).run();
+            }
+            else {
+                new Update(data).run();
+            }
+            
+        }
+        
+    }
     class Insert extends Task {
         
         Insert(RequestData data) {
@@ -312,7 +324,7 @@ public class HibernateMonitorDAO2 implements MonitorDAO {
                 public Object doInHibernate(Session session) throws HibernateException,
                         SQLException {
                     Transaction tx = session.beginTransaction();
-                    session.save(data);
+                    data.setId((Long)session.save(data));
                     tx.commit();
                     return data;
                 }

@@ -2,6 +2,8 @@ package org.geoserver.monitor;
 
 import java.util.List;
 
+import org.geoserver.monitor.MonitorConfig.Mode;
+
 /**
  * The GeoServer request monitor and primary entry point into the monitor api.
  * <p>
@@ -30,20 +32,28 @@ public class Monitor {
      */
     static long PAGE_SIZE = 1000;
     
+    MonitorConfig config;
     MonitorDAO dao;
     
     public Monitor(MonitorConfig config) {
-        this(config.createDAO());
+        this.config = config;
+        this.dao = config.createDAO();
     }
     
     public Monitor(MonitorDAO dao) {
+        this.config = new MonitorConfig();
         this.dao = dao;
     }
     
     public RequestData start() {
         RequestData req = new RequestData();
-        req = dao.add(req);
+        req = dao.init(req);
         REQUEST.set(req);
+        
+        if (config.getMode() != Mode.HISTORY) {
+            dao.add(req);
+        }
+        
         return req;
     }
 
@@ -52,7 +62,9 @@ public class Monitor {
     }
 
     public void update() {
-        dao.update(REQUEST.get());
+        if (config.getMode() != Mode.HISTORY) {
+            dao.update(REQUEST.get());
+        }
     }
 
     public void complete() {

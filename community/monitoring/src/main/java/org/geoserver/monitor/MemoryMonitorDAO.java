@@ -22,10 +22,13 @@ public class MemoryMonitorDAO implements MonitorDAO {
     
     AtomicLong REQUEST_ID_GEN = new AtomicLong(1);
     
-    public RequestData add(RequestData data) {
+    public RequestData init(RequestData data) {
         data.setId(REQUEST_ID_GEN.getAndIncrement());
-        live.add(data);
         return data;
+    }
+    
+    public void add(RequestData data) {
+        live.add(data);
     }
 
     public void update(RequestData data) {

@@ -2,6 +2,8 @@ package org.geoserver.monitor.ows;
 
 import java.util.List;
 
+import org.geoserver.monitor.RequestData;
+
 /**
  * Class that extracts information from an ows request.
  * 
@@ -28,5 +30,9 @@ public abstract class RequestObjectHandler {
         return clazz.isInstance(request);
     }
     
-    public abstract List<String> getLayers(Object request);
+    public void handle(Object request, RequestData data) {
+        data.setLayers(getLayers(request));
+    }
+    
+    protected abstract List<String> getLayers(Object request);
 }
