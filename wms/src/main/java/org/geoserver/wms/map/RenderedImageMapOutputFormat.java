@@ -47,9 +47,9 @@ import org.geoserver.wms.GetMapOutputFormat;
 import org.geoserver.wms.GetMapRequest;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSInfo;
-import org.geoserver.wms.WMSInfo.WMSInterpolation;
 import org.geoserver.wms.WMSMapContext;
 import org.geoserver.wms.WatermarkInfo;
+import org.geoserver.wms.WMSInfo.WMSInterpolation;
 import org.geoserver.wms.decoration.MapDecoration;
 import org.geoserver.wms.decoration.MapDecorationLayout;
 import org.geoserver.wms.decoration.MetatiledMapDecorationLayout;
@@ -759,6 +759,7 @@ public class RenderedImageMapOutputFormat extends AbstractMapOutputFormat {
                 // that the coverage references to
                 if (coverage != null)
                     renderedCoverages.add(coverage);
+                
             }
         } catch (Throwable e) {
             throw new ServiceException(e);
@@ -768,39 +769,50 @@ public class RenderedImageMapOutputFormat extends AbstractMapOutputFormat {
         if (image == null) {
             return null;
         }
+        
+
+        ////
+        //
+        // Final Touch 
+        ////
+        //
+        // We need to prepare the background values for the finalcut on the image we have prepared. If
+        // we need to enlarge the image we go with Mosaic if we need to crop we use Crop. Notice that 
+        // if we need to mess up with the background color we need to go by Mosaic and we cannot use Crop 
+        // since it does not support changing the bkg color.
+        //
+        ////
+        
         // We need to find the background color expressed in terms of image color components
         // (which depends on the color model nature, the input and output transparency)
         // TODO: there must be a more general way to turn a color into the
         // required components for a certain color model... right???
         ColorModel cm = image.getColorModel();
-        double[] bgValues = null;
-
+        double[] bgValues = null; 
+        // collecting alpha channels as needed
         PlanarImage[] alphaChannels = null;
 
+        //
+        // IndexColorModel
+        //
+        
         // in case of index color model we try to preserve it, so that output
         // formats that can work with it can enjoy its extra compactness
         if (cm instanceof IndexColorModel) {
-            IndexColorModel icm = (IndexColorModel) cm;
-
+            final IndexColorModel icm = (IndexColorModel) cm;
             // try to find the index that matches the requested background color
-            int bgColorIndex = -1;
+            int bgColorIndex = ColorUtilities.findColorIndex(bgColor, icm);
+            
+            //collect alpha channels if we have them
             if (cm.hasAlpha()) {
-                if (transparent) {
-                    bgColorIndex = icm.getTransparentPixel();
-                } else {
-                    bgColorIndex = ColorUtilities.findColorIndex(bgColor, icm);
-                }
-
-                if (bgColorIndex != -1) {
-                    final ImageWorker worker = new ImageWorker(image);
-                    worker.forceComponentColorModel();
-                    final RenderedImage alpha = worker.retainLastBand().getRenderedImage();
-                    alphaChannels = new PlanarImage[] { PlanarImage.wrapRenderedImage(alpha) };
-                }
-            } else {
-                bgColorIndex = ColorUtilities.findColorIndex(bgColor, icm);
+                final ImageWorker worker = new ImageWorker(image);
+                worker.forceComponentColorModel();
+                final RenderedImage alpha = worker.retainLastBand().getRenderedImage();
+                alphaChannels = new PlanarImage[] { PlanarImage.wrapRenderedImage(alpha) };
             }
-
+            
+            //we did not find the background color, well we have to expand to RGB and then tell Mosaic to use the RGB(A) color as the
+            // background
             if (bgColorIndex == -1) {
                 // we need to expand the image to RGB
                 image = new ImageWorker(image).forceComponentColorModel().getRenderedImage();
@@ -808,10 +820,17 @@ public class RenderedImageMapOutputFormat extends AbstractMapOutputFormat {
                         transparent ? 0 : 255 };
                 cm = image.getColorModel();
             } else {
+            	// we found the background color in the original image palette therefore we set its index as the bkg value.
+            	// The final Mosaic will use the IndexColorModel of this image anywa, therefore all we need to do is to force
+            	// the background to point to the right color in the palettte
                 bgValues = new double[] { bgColorIndex };
             }
         }
-
+        
+        //
+        // ComponentColorModel
+        //
+        
         // in case of component color model
         if (cm instanceof ComponentColorModel) {
 
@@ -909,7 +928,6 @@ public class RenderedImageMapOutputFormat extends AbstractMapOutputFormat {
                     (float) mapContext.getMapHeight(), new RenderingHints(JAI.KEY_IMAGE_LAYOUT,
                             layout));
         }
-
         return image;
     }
 
