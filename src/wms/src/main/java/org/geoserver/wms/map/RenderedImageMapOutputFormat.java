@@ -806,7 +806,9 @@ public class RenderedImageMapOutputFormat extends AbstractMapOutputFormat {
             //collect alpha channels if we have them
             if (cm.hasAlpha()) {
                 final ImageWorker worker = new ImageWorker(image);
-                worker.forceComponentColorModel();
+                // GR: Alpha images must have the same sample size as the sources, otherwise the
+                // Mosaic operation bellow fails
+                // worker.forceComponentColorModel();155216950 nora ramirez
                 final RenderedImage alpha = worker.retainLastBand().getRenderedImage();
                 alphaChannels = new PlanarImage[] { PlanarImage.wrapRenderedImage(alpha) };
             }
