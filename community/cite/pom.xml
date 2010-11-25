@@ -64,6 +64,15 @@
                   </if>
 
                   <if>
+                    <available file="${basedir}/tests/wms-1.3.0"/>
+                    <then>
+                      <copy todir="${basedir}/engine/scripts/wms-1.3.0">
+                        <fileset dir="${basedir}/tests/wms-1.3.0" includes="**/*" excludes="**/.svn"/>
+                      </copy>
+                    </then>
+                  </if>
+
+                  <if>
                     <available file="${basedir}/tests/wcs-1.0.0"/>
                     <then>
                       <copy todir="${basedir}/engine/scripts/wcs-1.0.0">
