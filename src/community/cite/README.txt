@@ -10,9 +10,9 @@ Create a directory called 'engine', and check the out the teamengine sources
 into it.
 
   'mkdir engine'
-  'svn co -r 402 http://teamengine.svn.sourceforge.net/svnroot/teamengine/branches/team2 engine'
+  'svn co -r 433 http://teamengine.svn.sourceforge.net/svnroot/teamengine/branches/team2 engine'
   
-*Note*: Revision 402 is the last verified version of the engine.
+*Note*: Revision 443 is the last verified version of the engine.
 
 2. Checkout Test Sources
 
@@ -29,6 +29,7 @@ it.
   'svn co -r 2740 https://svn.opengeospatial.org:8443/ogc-projects/cite/scripts/wms/1.1.1/trunk tests/wms-1.1.1'
   'svn co -r 2740 https://svn.opengeospatial.org:8443/ogc-projects/cite/scripts/wcs/1.0.0/trunk tests/wcs-1.0.0'
   'svn co -r 2740 https://svn.opengeospatial.org:8443/ogc-projects/cite/scripts/wcs/1.1.1/trunk tests/wcs-1.1.1'
+  'svn co https://svn.opengeospatial.org:8443/ogc-projects/cite/scripts/wms/1.3.0/trunk tests/wms-1.3.0'
 
 *Note* : Revision 2740 is the last verified version of the tests.
 
