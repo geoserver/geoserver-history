@@ -770,7 +770,6 @@ public class RenderedImageMapOutputFormat extends AbstractMapOutputFormat {
             return null;
         }
         
-
         ////
         //
         // Final Touch 
@@ -806,9 +805,11 @@ public class RenderedImageMapOutputFormat extends AbstractMapOutputFormat {
             //collect alpha channels if we have them
             if (cm.hasAlpha()) {
                 final ImageWorker worker = new ImageWorker(image);
-                // GR: Alpha images must have the same sample size as the sources, otherwise the
-                // Mosaic operation bellow fails
-                // worker.forceComponentColorModel();155216950 nora ramirez
+                
+                // simone: I am not sure about this commit, commenting out for the moment.
+//                // GR: Alpha images must have the same sample size as the sources, otherwise the
+//                // Mosaic operation bellow fails
+//                worker.forceComponentColorModel();
                 final RenderedImage alpha = worker.retainLastBand().getRenderedImage();
                 alphaChannels = new PlanarImage[] { PlanarImage.wrapRenderedImage(alpha) };
             }
@@ -850,9 +851,7 @@ public class RenderedImageMapOutputFormat extends AbstractMapOutputFormat {
                 // simone: keep into account alpha band
                 final ImageWorker iw = new ImageWorker(image);
                 if (hasAlpha) {
-                    // get alpha
                     final RenderedImage alpha = iw.retainLastBand().getRenderedImage();
-                    alphaChannels = new PlanarImage[] { PlanarImage.wrapRenderedImage(alpha) };
                     // get first band
                     final RenderedImage gray = new ImageWorker(image).retainFirstBand()
                             .getRenderedImage();
@@ -867,6 +866,10 @@ public class RenderedImageMapOutputFormat extends AbstractMapOutputFormat {
             }
 
             if (hasAlpha) {
+                // get alpha
+	            final ImageWorker iw = new ImageWorker(image);
+                final RenderedImage alpha = iw.retainLastBand().getRenderedImage();
+                alphaChannels = new PlanarImage[] { PlanarImage.wrapRenderedImage(alpha) };
 
                 // TODO: are there cases other than RGBA here? I guess
                 // if the cm does not have 4 bands we should expand to RGB first?
@@ -914,7 +917,6 @@ public class RenderedImageMapOutputFormat extends AbstractMapOutputFormat {
             // build the transparency thresholds
             double[][] thresholds = new double[][] { { ColorUtilities.getThreshold(image
                     .getSampleModel().getDataType()) } };
-
             // apply the mosaic
             image = MosaicDescriptor.create(new RenderedImage[] { image },
                     MosaicDescriptor.MOSAIC_TYPE_OVERLAY,// alphaChannels != null ?
