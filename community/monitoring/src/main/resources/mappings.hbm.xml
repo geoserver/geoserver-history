@@ -16,7 +16,7 @@
     <property column="STATUS" name="status" type="Status" index="REQ_STATUS_IDX"/>
     <property column="PATH" name="path"/>
     <property column="BODY" name="body" length="1024"/>
-    <property column="QUERY_STRING" name="queryString" length="1024"/>
+    <property column="QUERY_STRING" name="queryString" length="4096"/>
     <property column="SERVER_HOST" name="host"/>
     <property column="HTTP_METHOD" name="httpMethod"/>
     <property column="START_TIME" name="startTime" index="REQ_START_TIME_IDX"/>
