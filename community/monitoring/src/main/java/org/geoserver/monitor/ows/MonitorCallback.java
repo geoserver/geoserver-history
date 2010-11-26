@@ -1,7 +1,9 @@
 package org.geoserver.monitor.ows;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.geoserver.monitor.Monitor;
 import org.geoserver.monitor.RequestData;
@@ -17,6 +19,7 @@ import org.geoserver.monitor.ows.wms.GetMapHandler;
 import org.geoserver.ows.DispatcherCallback;
 import org.geoserver.ows.Request;
 import org.geoserver.ows.Response;
+import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.Service;
 import org.geoserver.platform.ServiceException;
@@ -69,8 +72,8 @@ public class MonitorCallback implements DispatcherCallback {
             return operation;
         }
         
-        data.setOwsService(operation.getService().getId());
-        data.setOwsOperation(operation.getId());
+        data.setOwsService(operation.getService().getId().toUpperCase());
+        data.setOwsOperation(normalizedOpId(operation));
         data.setOwsVersion(operation.getService().getVersion().toString());
         
         if (operation.getParameters().length > 0) {
@@ -107,5 +110,35 @@ public class MonitorCallback implements DispatcherCallback {
             
             monitor.update();
         }
+    }
+    
+    Map<String,Map<String,String>> OPS;
+
+    String normalizedOpId(Operation op) {
+        if (OPS == null) {
+            synchronized (this) {
+                if (OPS == null) {
+                    OPS = new HashMap();
+                    for (Service s : GeoServerExtensions.extensions(Service.class)) {
+                        HashMap map = new HashMap();
+                        OPS.put(s.getId().toUpperCase(), map);
+                        
+                        for (String o : s.getOperations()) {
+                            map.put(o.toUpperCase(), o);
+                        }
+                    }
+                }
+            }
+        }
+
+        Map<String,String> map = OPS.get(op.getService().getId().toUpperCase());
+        if (map != null) {
+            String normalized = map.get(op.getId().toUpperCase());
+            if (normalized != null) {
+                return normalized;
+            }
+        }
+
+        return op.getId();
     }
 }
