@@ -44,7 +44,7 @@
     
     <list name="layers" table="REQUEST_LAYERS">
       <key column="REQUEST_ID" not-null="true"/>
-      <list-index column="INDEX"/>
+      <list-index column="IDX"/>
       <element column="LAYER" type="string"/>
     </list>
     
