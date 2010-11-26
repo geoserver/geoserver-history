@@ -1,6 +1,7 @@
 package org.geoserver.monitor;
 
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -75,7 +76,11 @@ public class MonitorFilter implements Filter {
         
         //fill in the initial data
         data.setPath(req.getServletPath() + req.getPathInfo());
-        data.setQueryString(req.getQueryString());
+        
+        if (req.getQueryString() != null) {
+            data.setQueryString(URLDecoder.decode(req.getQueryString(), "UTF-8"));
+        }
+        
         data.setHttpMethod(req.getMethod());
         
         String serverName = System.getProperty("http.serverName");
