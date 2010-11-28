@@ -267,7 +267,9 @@ public abstract class AnnotationDrivenProcessFactory implements ProcessFactory {
                                 + " is missing but has min multiplicity > 0");
                     } else if (p.maxOccurs > 1) {
                         int size = -1;
-                        if (paramTypes[i].isArray()) {
+                        if(args[i] == null) {
+                            size = 0;
+                        } else if (paramTypes[i].isArray()) {
                             size = Array.getLength(args[i]);
                         } else {
                             size = ((Collection) args[i]).size();
