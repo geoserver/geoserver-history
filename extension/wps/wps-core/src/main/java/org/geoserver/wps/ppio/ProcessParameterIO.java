@@ -14,7 +14,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-import org.geoserver.ows.Response;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geotools.data.Parameter;
 import org.geotools.geometry.jts.ReferencedEnvelope;
@@ -94,7 +93,11 @@ public abstract class ProcessParameterIO {
         defaults.add(new BoundingBoxPPIO(Envelope.class));
         defaults.add(new BoundingBoxPPIO(ReferencedEnvelope.class));
         defaults.add(new BoundingBoxPPIO(org.opengis.geometry.Envelope.class));
-
+        
+        // filters
+        defaults.add(new FilterPPIO.Filter10());
+        defaults.add(new FilterPPIO.Filter11());
+        defaults.add(new CQLFilterPPIO());
     }
 
     public static ProcessParameterIO find(Parameter<?> p, ApplicationContext context, String mime) {
