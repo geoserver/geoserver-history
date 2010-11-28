@@ -486,3 +486,28 @@ The default value is 0.5, but it can be modified using:
 .. code-block:: xml
 
   <VendorOption name="goodnessOfFit">0.3</VendorOption>
+  
+Polygon alignment
+````````````````````
+
+GeoServer normally tries to place horizontal labels within a polygon, and give up in case the label position is busy or if the label does not fit enough in the polygon. This options allows GeoServer to try alternate rotations for the labels.
+
+.. code-block:: xml
+
+  <VendorOption name="polygonAlign">mbr</VendorOption>
+
+
+.. list-table::
+   :widths: 30 70 
+
+   * - **Option** 
+     - **Description**
+   * - manual
+     - The default value, only the rotation manually specified in the ``<Rotation>`` tag will be used
+   * - ortho
+     - If the label does not fit horizontally and the polygon is taller than wider the vertical alignement will also be tried
+   * - mbr
+     - If the label does not fit horizontally the minimum bounding rectangle will be computed and a label aligned to it will be tried out as well
+     
+     
+     

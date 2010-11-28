@@ -23,17 +23,17 @@
   AUTHORITY[&quot;EPSG&quot;,&quot;4326&quot;]]</nativeCRS>
   <srs>EPSG:4326</srs>
   <nativeBoundingBox>
-    <minx>6.34617490847439</minx>
-    <maxx>20.8296831527815</maxx>
-    <miny>36.4917718219401</miny>
-    <maxy>46.5907669751351</maxy>
+    <minx>6.346</minx>
+    <maxx>20.83</maxx>
+    <miny>36.492</miny>
+    <maxy>46.591</maxy>
     <crs>EPSG:4326</crs>
   </nativeBoundingBox>
   <latLonBoundingBox>
-    <minx>6.34617490847439</minx>
-    <maxx>20.8296831527815</maxx>
-    <miny>36.4917718219401</miny>
-    <maxy>46.5907669751351</maxy>
+    <minx>6.346</minx>
+    <maxx>20.83</maxx>
+    <miny>36.492</miny>
+    <maxy>46.591</maxy>
     <crs>EPSG:4326</crs>
   </latLonBoundingBox>
   <enabled>true</enabled>
@@ -53,7 +53,7 @@
       <scaleX>0.057934032977228433</scaleX>
       <scaleY>-0.04039598061277999</scaleY>
       <shearX>0.0</shearX>
-      <shearX>0.0</shearX>
+      <shearY>0.0</shearY>
       <translateX>6.375141924963005</translateX>
       <translateY>46.570568984828704</translateY>
     </transform>
@@ -110,16 +110,16 @@
   </responseSRS>
   <parameters>
     <entry>
+      <string>InputTransparentColor</string>
+      <string></string>
+    </entry>
+    <entry>
       <string>OutputTransparentColor</string>
       <string>#000000</string>
     </entry>
     <entry>
       <string>InputImageThresholdValue</string>
       <string>NaN</string>
-    </entry>
-    <entry>
-      <string>InputTransparentColor</string>
-      <string></string>
     </entry>
   </parameters>
 </coverage>
