@@ -6,7 +6,10 @@ package org.geoserver.wps.web;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.geoserver.wps.ppio.BoundingBoxPPIO;
 import org.geoserver.wps.ppio.ComplexPPIO;
@@ -16,6 +19,7 @@ import org.geotools.data.Parameter;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.process.ProcessFactory;
 import org.geotools.process.Processors;
+import org.opengis.coverage.grid.GridCoverage;
 import org.opengis.feature.type.Name;
 
 /**
@@ -54,6 +58,25 @@ class InputParameterValues implements Serializable {
 		} else {
 			return ParameterType.TEXT;
 		}
+	}
+	
+	public List<ParameterType> getSupportedTypes() {
+	    if(!isComplex()) {
+	        return Collections.singletonList(ParameterType.LITERAL);
+	    } else {
+	        Set<ParameterType> result = new LinkedHashSet<ParameterType>();
+	        result.add(ParameterType.TEXT);
+	        result.add(ParameterType.REFERENCE);
+	        result.add(ParameterType.SUBPROCESS);
+	        for (ProcessParameterIO ppio : getProcessParameterIO()) {
+                if(FeatureCollection.class.isAssignableFrom(ppio.getType())) {
+                    result.add(ParameterType.VECTOR_LAYER);
+                } else if(GridCoverage.class.isAssignableFrom(ppio.getType())) {
+                    result.add(ParameterType.RASTER_LAYER);
+                }
+            }
+	        return new ArrayList<ParameterType>(result);
+	    }
 	}
 
 	String getDefaultMime() {

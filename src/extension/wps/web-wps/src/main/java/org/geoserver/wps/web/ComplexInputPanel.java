@@ -57,8 +57,7 @@ public class ComplexInputPanel extends Panel {
 		valueModel = new PropertyModel(getDefaultModel(), "value");
 		mimeTypes = pv.getSupportedMime();
 
-		List<ParameterType> ptypes = new ArrayList<ParameterType>(Arrays
-				.asList(ParameterType.values()));
+		List<ParameterType> ptypes = pv.getSupportedTypes();
 		ptypes.remove(ParameterType.LITERAL);
 		typeChoice = new DropDownChoice("type", new PropertyModel(
 				getDefaultModelObject(), "type"), ptypes);
