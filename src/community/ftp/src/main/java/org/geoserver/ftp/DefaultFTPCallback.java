@@ -8,8 +8,6 @@ import static org.geoserver.ftp.CallbackAction.CONTINUE;
 
 import java.io.File;
 
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter.DEFAULT;
-
 import org.acegisecurity.userdetails.UserDetails;
 
 /**
@@ -23,7 +21,7 @@ public class DefaultFTPCallback implements FTPCallback {
     /**
      * Empty implementation; override to take action
      * 
-     * @return {@link DEFAULT}
+     * @return {@link CallbackAction#CONTINUE}
      * @see org.geoserver.ftp.FTPCallback#onDeleteStart
      */
     public CallbackAction onDeleteStart(UserDetails user, File workingDir, String fileName) {
@@ -33,7 +31,7 @@ public class DefaultFTPCallback implements FTPCallback {
     /**
      * Empty implementation; override to take action
      * 
-     * @return {@link DEFAULT}
+     * @return {@link CallbackAction#CONTINUE}
      * @see org.geoserver.ftp.FTPCallback#onDeleteEnd
      */
     public CallbackAction onDeleteEnd(UserDetails user, File workingDir, String fileName) {
@@ -43,7 +41,7 @@ public class DefaultFTPCallback implements FTPCallback {
     /**
      * Empty implementation; override to take action
      * 
-     * @return {@link DEFAULT}
+     * @return {@link CallbackAction#CONTINUE}
      * @see org.geoserver.ftp.FTPCallback#onUploadStart
      */
     public CallbackAction onUploadStart(UserDetails user, File workingDir, String fileName) {
@@ -53,7 +51,7 @@ public class DefaultFTPCallback implements FTPCallback {
     /**
      * Empty implementation; override to take action
      * 
-     * @return {@link DEFAULT}
+     * @return {@link CallbackAction#CONTINUE}
      * @see org.geoserver.ftp.FTPCallback#onUploadEnd
      */
     public CallbackAction onUploadEnd(UserDetails user, File workingDir, String fileName) {
@@ -63,7 +61,7 @@ public class DefaultFTPCallback implements FTPCallback {
     /**
      * Empty implementation; override to take action
      * 
-     * @return {@link DEFAULT}
+     * @return {@link CallbackAction#CONTINUE}
      * @see org.geoserver.ftp.FTPCallback#onDownloadStart
      */
     public CallbackAction onDownloadStart(UserDetails user, File workingDir, String fileName) {
@@ -73,7 +71,7 @@ public class DefaultFTPCallback implements FTPCallback {
     /**
      * Empty implementation; override to take action
      * 
-     * @return {@link DEFAULT}
+     * @return {@link CallbackAction#CONTINUE}
      * @see org.geoserver.ftp.FTPCallback#onDownloadEnd
      */
     public CallbackAction onDownloadEnd(UserDetails user, File workingDir, String fileName) {
@@ -83,7 +81,7 @@ public class DefaultFTPCallback implements FTPCallback {
     /**
      * Empty implementation; override to take action
      * 
-     * @return {@link DEFAULT}
+     * @return {@link CallbackAction#CONTINUE}
      * @see org.geoserver.ftp.FTPCallback#onRemoveDirStart
      */
     public CallbackAction onRemoveDirStart(UserDetails user, File workingDir, String dirName) {
@@ -93,7 +91,7 @@ public class DefaultFTPCallback implements FTPCallback {
     /**
      * Empty implementation; override to take action
      * 
-     * @return {@link DEFAULT}
+     * @return {@link CallbackAction#CONTINUE}
      * @see org.geoserver.ftp.FTPCallback#onRemoveDirEnd
      */
     public CallbackAction onRemoveDirEnd(UserDetails user, File workingDir, String dirName) {
@@ -103,7 +101,7 @@ public class DefaultFTPCallback implements FTPCallback {
     /**
      * Empty implementation; override to take action
      * 
-     * @return {@link DEFAULT}
+     * @return {@link CallbackAction#CONTINUE}
      * @see org.geoserver.ftp.FTPCallback#onMakeDirStart
      */
     public CallbackAction onMakeDirStart(UserDetails user, File workingDir, String dirName) {
@@ -113,7 +111,7 @@ public class DefaultFTPCallback implements FTPCallback {
     /**
      * Empty implementation; override to take action
      * 
-     * @return {@link DEFAULT}
+     * @return {@link CallbackAction#CONTINUE}
      * @see org.geoserver.ftp.FTPCallback#onMakeDirEnd
      */
     public CallbackAction onMakeDirEnd(UserDetails user, File workingDir, String dirName) {
@@ -123,7 +121,7 @@ public class DefaultFTPCallback implements FTPCallback {
     /**
      * Empty implementation; override to take action
      * 
-     * @return {@link DEFAULT}
+     * @return {@link CallbackAction#CONTINUE}
      * @see org.geoserver.ftp.FTPCallback#onAppendStart
      */
     public CallbackAction onAppendStart(UserDetails user, File workingDir, String fileName) {
@@ -133,7 +131,7 @@ public class DefaultFTPCallback implements FTPCallback {
     /**
      * Empty implementation; override to take action
      * 
-     * @return {@link DEFAULT}
+     * @return {@link CallbackAction#CONTINUE}
      * @see org.geoserver.ftp.FTPCallback#onAppendEnd
      */
     public CallbackAction onAppendEnd(UserDetails user, File workingDir, String fileName) {
@@ -143,7 +141,7 @@ public class DefaultFTPCallback implements FTPCallback {
     /**
      * Empty implementation; override to take action
      * 
-     * @return {@link DEFAULT}
+     * @return {@link CallbackAction#CONTINUE}
      * @see org.geoserver.ftp.FTPCallback#onRenameStart
      */
     public CallbackAction onRenameStart(UserDetails user, File workingDir, File renameFrom,
@@ -154,7 +152,7 @@ public class DefaultFTPCallback implements FTPCallback {
     /**
      * Empty implementation; override to take action
      * 
-     * @return {@link DEFAULT}
+     * @return {@link CallbackAction#CONTINUE}
      * @see org.geoserver.ftp.FTPCallback#onRenameEnd
      */
     public CallbackAction onRenameEnd(UserDetails user, File workingDir, File renameFrom,
