@@ -368,6 +368,50 @@ public class HTMLImageMapTest extends TestCase {
         assertTestResult("BuildingCenters2", result);
 
     }
+	public void testMapProducePointsWithDifferenSizeInScale1() throws Exception {
+		
+        final FeatureSource<SimpleFeatureType,SimpleFeature> fs = testDS.getFeatureSource("BuildingCenters");
+        final ReferencedEnvelope env = new ReferencedEnvelope(fs.getBounds(),WGS84);
+
+        LOGGER.info("about to create map ctx for BuildingCenters with bounds " + env);
+
+        final WMSMapContext map = new WMSMapContext();
+        map.setAreaOfInterest(env);
+        map.setMapWidth(mapWidth);
+        map.setMapHeight(mapHeight);
+        
+        map.setTransparent(false);
+                
+        Style basicStyle = getTestStyle("BuildingCenters3.sld");
+        map.addLayer(fs, basicStyle);
+        EncodeHTMLImageMap result = mapProducer.produceMap(map);
+        
+        assertTestResult("BuildingCenters3", result);
+
+	}
+	public void testMapProducePointsWithDifferenSizeInScale2() throws Exception {
+		
+        final FeatureSource<SimpleFeatureType,SimpleFeature> fs = testDS.getFeatureSource("BuildingCenters");
+        ReferencedEnvelope tmp=fs.getBounds();
+        tmp.expandBy(5, 5);
+        final ReferencedEnvelope env = new ReferencedEnvelope(tmp,WGS84);
+        
+        LOGGER.info("about to create map ctx for BuildingCenters with bounds " + env);
+
+        final WMSMapContext map = new WMSMapContext();
+        map.setAreaOfInterest(env);
+        map.setMapWidth(mapWidth);
+        map.setMapHeight(mapHeight);
+        
+        map.setTransparent(false);
+                
+        Style basicStyle = getTestStyle("BuildingCenters3.sld");
+        map.addLayer(fs, basicStyle);
+        EncodeHTMLImageMap result = mapProducer.produceMap(map);
+        
+        assertTestResult("BuildingCenters4", result);
+
+	}
 
     public void testMapProduceMultiPoints() throws Exception {
 
