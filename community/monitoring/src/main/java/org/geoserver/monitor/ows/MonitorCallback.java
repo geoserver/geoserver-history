@@ -15,6 +15,7 @@ import org.geoserver.monitor.ows.wfs.GetFeatureHandler;
 import org.geoserver.monitor.ows.wfs.LockFeatureHandler;
 import org.geoserver.monitor.ows.wfs.TransactionHandler;
 import org.geoserver.monitor.ows.wms.GetFeatureInfoHandler;
+import org.geoserver.monitor.ows.wms.GetLegendGraphicHandler;
 import org.geoserver.monitor.ows.wms.GetMapHandler;
 import org.geoserver.ows.DispatcherCallback;
 import org.geoserver.ows.Request;
@@ -37,6 +38,7 @@ public class MonitorCallback implements DispatcherCallback {
         //wms
         HANDLERS.add(new GetFeatureInfoHandler());
         HANDLERS.add(new GetMapHandler());
+        HANDLERS.add(new GetLegendGraphicHandler());
         
         //wcs
         HANDLERS.add(new DescribeCoverageHandler());
