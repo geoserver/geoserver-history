@@ -4,6 +4,7 @@
  */
 package org.geoserver.ftp;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +20,6 @@ import org.apache.ftpserver.ftplet.AuthenticationFailedException;
 import org.apache.ftpserver.ftplet.Authority;
 import org.apache.ftpserver.ftplet.FtpException;
 import org.apache.ftpserver.ftplet.User;
-import org.apache.ftpserver.ftplet.UserManager;
 import org.apache.ftpserver.usermanager.UsernamePasswordAuthentication;
 import org.apache.ftpserver.usermanager.impl.BaseUser;
 import org.apache.ftpserver.usermanager.impl.ConcurrentLoginPermission;
@@ -28,30 +28,38 @@ import org.geoserver.config.GeoServerDataDirectory;
 import org.geotools.util.logging.Logging;
 
 /**
- * Maps GeoServer users to
+ * Maps GeoServer users to Apache's FTP Server {@link User}s.
+ * <p>
+ * <h2>User home directory</h2>
+ * If the logged in user has administrative privileges, the home directory is set to the geoserver
+ * data root directory (e.g {@code <gs data dir>/data}). For non admin users, the home directory is
+ * set to a subdirectory of the geoserver data root directory called the same than the user name
+ * (e.g. {@code <gs data dir>/data/incoming/<user name>}).
+ * </p>
  * 
  * @author aaime
- * 
+ * @author groldan
  */
-public class GSFTPUserManager implements UserManager {
-    static final Logger LOGGER = Logging.getLogger(GSFTPUserManager.class);
+public class GSFTPUserManager implements org.apache.ftpserver.ftplet.UserManager {
+
+    private static final Logger LOGGER = Logging.getLogger(GSFTPUserManager.class);
 
     /**
      * The role given to the administrators
      */
-    static final String ADMIN_ROLE = "ROLE_ADMINISTRATOR";
+    private static final String ADMIN_ROLE = "ROLE_ADMINISTRATOR";
 
     /**
      * The default user
      */
-    static final String DEFAULT_USER = "admin";
+    private static final String DEFAULT_USER = "admin";
 
     /**
      * The default password
      */
-    static final String DEFAULT_PASSWORD = "geoserver";
+    private static final String DEFAULT_PASSWORD = "geoserver";
 
-    UserDetailsService userService;
+    private UserDetailsService userService;
 
     GeoServerDataDirectory dataDir;
 
@@ -60,6 +68,14 @@ public class GSFTPUserManager implements UserManager {
         this.dataDir = dataDir;
     }
 
+    /**
+     * @param authentication
+     *            one of {@link org.apache.ftpserver.usermanager.AnonymousAuthentication} or
+     *            {@link org.apache.ftpserver.usermanager.UsernamePasswordAuthentication}
+     * @throws AuthenticationFailedException
+     *             if given an {@code AnonymousAuthentication}, or an invalid/disabled user
+     *             credentials
+     */
     public User authenticate(Authentication authentication) throws AuthenticationFailedException {
         if (authentication instanceof UsernamePasswordAuthentication) {
             UsernamePasswordAuthentication upa = (UsernamePasswordAuthentication) authentication;
@@ -74,8 +90,9 @@ public class GSFTPUserManager implements UserManager {
                 if (!user.getPassword().equals(upa.getPassword())) {
                     throw new AuthenticationFailedException();
                 }
-                
-                // scary message for admins if the username/password has not been changed 
+
+                // scary message for admins if the username/password has not
+                // been changed
                 if (DEFAULT_USER.equals(user.getName())
                         && DEFAULT_PASSWORD.equals(user.getPassword())) {
                     LOGGER.log(Level.SEVERE, "The default admin/password combination has not been "
@@ -86,6 +103,14 @@ public class GSFTPUserManager implements UserManager {
                 // is the user enabled?
                 if (!user.getEnabled()) {
                     throw new AuthenticationFailedException();
+                }
+
+                // user authenticated, lets make sure his home directory exists
+                File homeDirectory = new File(user.getHomeDirectory());
+                if (!homeDirectory.exists()) {
+                    LOGGER.fine("Creating FTP home directory for user " + user.getName() + " at "
+                            + homeDirectory.getAbsolutePath());
+                    homeDirectory.mkdirs();
                 }
 
                 return user;
@@ -100,10 +125,18 @@ public class GSFTPUserManager implements UserManager {
         }
     }
 
+    /**
+     * @throws FtpException
+     *             always, operation not supported.
+     * @see org.apache.ftpserver.ftplet.UserManager#delete(java.lang.String)
+     */
     public void delete(String username) throws FtpException {
         throw new FtpException("No custom user handling on this instance");
     }
 
+    /**
+     * @see org.apache.ftpserver.ftplet.UserManager#doesExist(java.lang.String)
+     */
     public boolean doesExist(String username) throws FtpException {
         try {
             userService.loadUserByUsername(username);
@@ -115,14 +148,29 @@ public class GSFTPUserManager implements UserManager {
         }
     }
 
+    /**
+     * @see org.apache.ftpserver.ftplet.UserManager#getAdminName()
+     */
     public String getAdminName() throws FtpException {
         throw new FtpException("No custom user handling on this instance");
     }
 
+    /**
+     * @see org.apache.ftpserver.ftplet.UserManager#getAllUserNames()
+     */
     public String[] getAllUserNames() throws FtpException {
         throw new FtpException("No custom user handling on this instance");
     }
 
+    /**
+     * Maps a GeoServer user to an ftp {@link User} by means of the provided Spring Security's
+     * {@link UserDetailsService}.
+     * <p>
+     * The user's home directory is set to the root geoserver data dir in the case of administrators
+     * or to {@code <data dir>/incoming/<user name>} in case of non administrators.
+     * 
+     * @see org.apache.ftpserver.ftplet.UserManager#getUserByName(java.lang.String)
+     */
     public User getUserByName(String username) throws FtpException {
         try {
             // check if we know the user
@@ -136,14 +184,28 @@ public class GSFTPUserManager implements UserManager {
             user.setName(ud.getUsername());
             user.setPassword(ud.getPassword());
             user.setEnabled(true);
-            user.setHomeDirectory(dataDir.findOrCreateDataRoot().getAbsolutePath());
+            final File dataRoot = dataDir.findOrCreateDataRoot();
 
-            // enable only admins
+            // enable only admins and non anonymous users
+            boolean isGSAdmin = false;
             for (GrantedAuthority authority : ud.getAuthorities()) {
                 final String userRole = authority.getAuthority();
                 if (ADMIN_ROLE.equals(userRole)) {
-                    user.setEnabled(true);
+                    isGSAdmin = true;
+                    break;
                 }
+            }
+
+            if (isGSAdmin) {
+                user.setHomeDirectory(dataRoot.getAbsolutePath());
+            } else {
+                /*
+                 * This resolves the user's home directory to data/incoming/<user name> but does not
+                 * create the directory if it does not already exist. That is left to when the user
+                 * is authenticated, check the authenticate() method above.
+                 */
+                File userDir = new File(new File(dataRoot, "incoming"), user.getName());
+                user.setHomeDirectory(userDir.getAbsolutePath());
             }
 
             // allow writing
@@ -158,10 +220,19 @@ public class GSFTPUserManager implements UserManager {
         }
     }
 
-    public boolean isAdmin(String username) throws FtpException {
+    /**
+     * @return {@code false}
+     * @see org.apache.ftpserver.ftplet.UserManager#isAdmin(java.lang.String)
+     */
+    public boolean isAdmin(final String username) throws FtpException {
         return false;
     }
 
+    /**
+     * @throws FtpException
+     *             always, operation not supported
+     * @see org.apache.ftpserver.ftplet.UserManager#save(org.apache.ftpserver.ftplet.User)
+     */
     public void save(User user) throws FtpException {
         throw new FtpException("No custom user handling on this instance");
     }
