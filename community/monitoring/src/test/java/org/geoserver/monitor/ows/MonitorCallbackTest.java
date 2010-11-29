@@ -73,7 +73,7 @@ public class MonitorCallbackTest {
     public void testBasic() throws Exception {
         callback.operationDispatched(new Request(), op("foo", "bar", "1.2.3", null));
         
-        assertEquals("bar", data.getOwsService());
+        assertEquals("BAR", data.getOwsService());
         assertEquals("foo", data.getOwsOperation());
         assertEquals("1.2.3", data.getOwsVersion());
     }
@@ -176,7 +176,7 @@ public class MonitorCallbackTest {
         glg.setLayer(type);
         callback.operationDispatched(new Request(), op("GetFeatureInfo", "WMS", "1.1.1", glg));
     
-        assertEquals("foo", data.getLayers().get(0));
+        assertEquals("http://acme.org:foo", data.getLayers().get(0));
     }
     
     @Test

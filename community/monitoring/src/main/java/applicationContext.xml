@@ -128,4 +128,10 @@
     <bean id="monitorSessionFilter" class="org.springframework.orm.hibernate3.support.OpenSessionInViewFilter">
       <property name="sessionFactoryBeanName" value="hibSessionFactory"/>
     </bean>
+    
+    <!-- post processors -->
+    <bean id="layerNameNormalizer" class="org.geoserver.monitor.LayerNameNormalizer">
+        <constructor-arg ref="catalog"/>
+    </bean>
+    
 </beans>

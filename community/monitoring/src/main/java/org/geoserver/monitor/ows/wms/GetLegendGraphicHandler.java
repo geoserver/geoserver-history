@@ -11,13 +11,13 @@ import org.opengis.feature.type.FeatureType;
 public class GetLegendGraphicHandler extends RequestObjectHandler {
 
     public GetLegendGraphicHandler() {
-        super("org.vfny.geoserver.wms.requests.GetLegendGraphicRequest");
+        super("org.geoserver.wms.GetLegendGraphicRequest");
     }
 
     @Override
     protected List<String> getLayers(Object request) {
         FeatureType type = (FeatureType) OwsUtils.get(request, "layer");
-        return Arrays.asList(type.getName().getLocalPart());
+        return Arrays.asList(type.getName().toString());
     }
 
 }
