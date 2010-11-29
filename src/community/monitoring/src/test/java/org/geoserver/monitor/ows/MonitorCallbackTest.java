@@ -35,13 +35,16 @@ import org.geoserver.ows.Request;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.Service;
 import org.geoserver.wms.GetFeatureInfoRequest;
+import org.geoserver.wms.GetLegendGraphicRequest;
 import org.geoserver.wms.GetMapRequest;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
+import org.geotools.feature.NameImpl;
 import org.geotools.util.Version;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.opengis.feature.type.FeatureType;
 
 public class MonitorCallbackTest {
 
@@ -159,6 +162,21 @@ public class MonitorCallbackTest {
         
         assertEquals("acme:foo", data.getLayers().get(0));
         assertEquals("acme:bar", data.getLayers().get(1));
+    }
+    
+    @Test
+    public void testWMSGetLegendGraphic() throws Exception {
+        WMS wms = new WMS(createMock(GeoServer.class));
+        GetLegendGraphicRequest glg = new GetLegendGraphicRequest();
+        
+        FeatureType type = createMock(FeatureType.class);
+        expect(type.getName()).andReturn(new NameImpl("http://acme.org", "foo")).anyTimes();
+        replay(type);
+        
+        glg.setLayer(type);
+        callback.operationDispatched(new Request(), op("GetFeatureInfo", "WMS", "1.1.1", glg));
+    
+        assertEquals("foo", data.getLayers().get(0));
     }
     
     @Test
