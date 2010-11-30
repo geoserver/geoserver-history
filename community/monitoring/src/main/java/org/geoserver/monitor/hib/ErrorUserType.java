@@ -1,6 +1,5 @@
 package org.geoserver.monitor.hib;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -12,13 +11,22 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 
+import org.geoserver.platform.GeoServerExtensions;
 import org.hibernate.HibernateException;
-import org.hibernate.cfg.annotations.SetBinder;
 import org.hibernate.lob.BlobImpl;
 import org.hibernate.usertype.UserType;
+import org.springframework.context.ApplicationContext;
 
 public class ErrorUserType implements UserType {
 
+    /**
+     * flag that determines if we should use the hibernate BlobImpl class when writing to the 
+     * database, since it does not work with oracle. 
+     * 
+     * http://opensource.atlassian.com/projects/hibernate/browse/EJB-24
+     */
+    public static String USE_HIBERNATE_BLOB = "USE_HIBERNATE_BLOB";
+    
     public Object assemble(Serializable cached, Object owner) throws HibernateException {
         return cached;
     }
@@ -83,8 +91,12 @@ public class ErrorUserType implements UserType {
                 out.writeObject(value);
                 out.flush();
                 
-                //st.setBytes(index, bytes.toByteArray());
-                st.setBlob(index, new BlobImpl(bytes.toByteArray()));
+                if (useHibernateBlob()) {
+                  st.setBlob(index, new BlobImpl(bytes.toByteArray()));
+                }
+                else {
+                    st.setBytes(index, bytes.toByteArray());    
+                }
                 
                 out.close();
             } 
@@ -110,4 +122,8 @@ public class ErrorUserType implements UserType {
         return new int[]{Types.BLOB};
     }
 
+    boolean useHibernateBlob() {
+        String prop = GeoServerExtensions.getProperty(USE_HIBERNATE_BLOB);
+        return !("no".equals(prop) || "false".equals(prop));
+    }
 }
