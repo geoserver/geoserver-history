@@ -9,10 +9,15 @@ import static org.junit.Assert.assertTrue;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintStream;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import org.geoserver.monitor.MemoryMonitorDAO;
 import org.geoserver.monitor.Monitor;
@@ -96,6 +101,71 @@ public class RequestResourceTest {
         }
         
         assertFalse(it.hasNext());
+    }
+    
+    @Test
+    public void testGetZIP() throws Exception {
+        RequestResource.CSVFormat csv = new RequestResource.CSVFormat(
+            new String[]{"id", "path", "startTime"});
+        RequestResource.ZIPFormat zip = new RequestResource.ZIPFormat(
+            Arrays.asList("id", "path", "startTime", "Error", "Body"), csv, monitor);
+        
+        Date startTime  = new Date();
+        Throwable throwable = new Throwable();
+        RequestData data = new RequestData();
+        data.setId(12345);
+        data.setPath("/foo");
+        data.setStartTime(startTime);
+        
+        data.setBody("<foo></foo>".getBytes());
+        data.setError(throwable);
+        
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        zip.toRepresentation(data).write(out);
+        
+        ZipInputStream zin = new ZipInputStream(new ByteArrayInputStream(out.toByteArray()));
+        ZipEntry entry = null;
+        
+        boolean requests = false;
+        boolean body = false;
+        boolean error = false;
+        
+        while((entry = zin.getNextEntry()) != null) {
+            if ("requests.csv".equals(entry.getName())) {
+                requests = true;
+                
+                String expected = "id,path,startTime\n12345,/foo," + DateUtil.serializeDateTime(startTime);
+                assertEquals(expected, readEntry(zin));
+            }
+            else if ("body.txt".equals(entry.getName())) {
+                body = true;
+                assertEquals("<foo></foo>", readEntry(zin));
+            }
+            else if ("error.txt".equals(entry.getName())) {
+                error = true;
+                ByteArrayOutputStream bout = new ByteArrayOutputStream();
+                PrintStream stream = new PrintStream(bout);
+                throwable.printStackTrace(stream);
+                stream.flush();
+                
+                assertEquals(new String(bout.toByteArray()).trim(), readEntry(zin));
+            }
+        }
+        
+        assertTrue(requests);
+        assertTrue(body);
+        assertTrue(error);
+    }
+    
+    String readEntry(ZipInputStream zin) throws IOException {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        byte[] buf = new byte[1024];
+        int n = -1;
+        while ((n = zin.read(buf)) != -1) {
+            out.write(buf, 0, n);
+        }
+        
+        return new String(out.toByteArray()).trim();
     }
     
     @Test
