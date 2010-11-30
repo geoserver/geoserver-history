@@ -5,18 +5,21 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.text.SimpleDateFormat;
+import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import org.geoserver.monitor.Monitor;
 import org.geoserver.monitor.MonitorQuery;
-import org.geoserver.monitor.RequestData;
 import org.geoserver.monitor.MonitorQuery.Comparison;
 import org.geoserver.monitor.MonitorQuery.SortOrder;
-import org.geoserver.ows.util.ClassProperties;
+import org.geoserver.monitor.RequestData;
+import org.geoserver.monitor.RequestDataVisitor;
 import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.rest.ReflectiveResource;
 import org.geoserver.rest.RestletException;
@@ -39,6 +42,7 @@ public class RequestResource extends ReflectiveResource {
     
     static {
         MediaTypes.registerExtension("csv", new MediaType("application/csv"));
+        MediaTypes.registerExtension("zip", MediaType.APPLICATION_ZIP);
     }
     
     Monitor monitor;
@@ -51,6 +55,7 @@ public class RequestResource extends ReflectiveResource {
     protected List<DataFormat> createSupportedFormats(Request request, Response response) {
         List<DataFormat> formats = super.createSupportedFormats(request, response);
         formats.add(createCSVFormat(request, response));
+        formats.add(createZIPFormat(request, response));
         return formats;
     }
     
@@ -59,23 +64,36 @@ public class RequestResource extends ReflectiveResource {
         return new HTMLFormat(request, response, this);
     }
 
-    DataFormat createCSVFormat(Request request, Response response) {
+    CSVFormat createCSVFormat(Request request, Response response) {
         String fields = getAttribute("fields");
+        List<String> props = null;
         if (fields != null) {
-            return new CSVFormat(fields.split(";"));
+            props = new ArrayList(Arrays.asList(fields.split(";")));
         }
         else {
-            List<String> props = 
-                OwsUtils.getClassProperties(RequestData.class).properties();
-            
-            props.remove("Class");
-            props.remove("Body");
-            props.remove("Error");
-            
-            return new CSVFormat(props.toArray(new String[props.size()]));
+            props = OwsUtils.getClassProperties(RequestData.class).properties();
         }
+        
+        props.remove("Class");
+        props.remove("Body");
+        props.remove("Error");
+        
+        return new CSVFormat(props.toArray(new String[props.size()]));
     }
     
+    ZIPFormat createZIPFormat(Request request, Response response) {
+         String fields = getAttribute("fields");
+         List<String> props;
+         if (fields == null) {
+             props = OwsUtils.getClassProperties(RequestData.class).properties();
+         }
+         else {
+             props = Arrays.asList(fields.split(";"));
+          }
+        
+         return new ZIPFormat(props, createCSVFormat(request, response), monitor);
+    }
+
     @Override
     public boolean allowGet() {
         return true;
@@ -249,5 +267,76 @@ public class RequestResource extends ReflectiveResource {
             return null;
         }
         
+    }
+    
+    static class ZIPFormat extends StreamDataFormat {
+
+        List<String> fields;
+        Monitor monitor;
+        CSVFormat csv;
+        
+        protected ZIPFormat(List<String> fields, CSVFormat csv, Monitor monitor) {
+            super(MediaType.APPLICATION_ZIP);
+            
+            this.fields = fields;
+            this.monitor = monitor;
+            this.csv = csv; 
+        }
+        
+        @Override
+        protected void write(Object object, OutputStream out) throws IOException {
+            final ZipOutputStream zout = new ZipOutputStream(out);
+            
+            //create the csv entry
+            zout.putNextEntry(new ZipEntry("requests.csv"));
+            csv.write(object, zout);
+            
+            final boolean body = fields.contains("Body");
+            final boolean error = fields.contains("Error");
+            
+            if (object instanceof MonitorQuery) {
+                monitor.query((MonitorQuery)object, new RequestDataVisitor() {
+                    public void visit(RequestData data) {
+                        try {
+                            writeBodyAndError(data, zout, body, error, true);
+                        } 
+                        catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                });
+            }
+            else if (object instanceof List) {
+                for (RequestData data : (List<RequestData>)object) {
+                    writeBodyAndError(data, zout, body, error, true);
+                }
+            }
+            else {
+                writeBodyAndError((RequestData) object, zout, body, error, false);
+            }
+            
+            zout.flush();
+            zout.close();
+        }
+        
+        @Override
+        protected Object read(InputStream in) throws IOException {
+            return null;
+        }
+        
+        void writeBodyAndError(RequestData data, ZipOutputStream zout,
+            boolean body, boolean error, boolean postfix) throws IOException {
+            
+            long id = data.getId();
+            if (body && data.getBody() != null) {
+                //TODO: figure out the proper extension for the body file
+                zout.putNextEntry(new ZipEntry(postfix ? "body_"+id+".txt" : "body.txt"));
+                zout.write(data.getBody());
+            }
+            if (error && data.getError() != null) {
+                zout.putNextEntry(new ZipEntry(postfix ? "error_"+id+".txt" : "error.txt"));
+                data.getError().printStackTrace(new PrintStream(zout));
+            }
+        }
     }
 }
