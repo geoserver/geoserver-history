@@ -5,21 +5,22 @@
 package org.geoserver.ftp;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.acegisecurity.AuthenticationManager;
 import org.acegisecurity.GrantedAuthority;
-import org.acegisecurity.userdetails.UserDetails;
+import org.acegisecurity.providers.UsernamePasswordAuthenticationToken;
 import org.acegisecurity.userdetails.UserDetailsService;
-import org.acegisecurity.userdetails.UsernameNotFoundException;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.ftpserver.ftplet.Authentication;
 import org.apache.ftpserver.ftplet.AuthenticationFailedException;
 import org.apache.ftpserver.ftplet.Authority;
 import org.apache.ftpserver.ftplet.FtpException;
 import org.apache.ftpserver.ftplet.User;
+import org.apache.ftpserver.ftplet.UserManager;
 import org.apache.ftpserver.usermanager.UsernamePasswordAuthentication;
 import org.apache.ftpserver.usermanager.impl.BaseUser;
 import org.apache.ftpserver.usermanager.impl.ConcurrentLoginPermission;
@@ -59,69 +60,97 @@ public class GSFTPUserManager implements org.apache.ftpserver.ftplet.UserManager
      */
     private static final String DEFAULT_PASSWORD = "geoserver";
 
-    private UserDetailsService userService;
+    private GeoServerDataDirectory dataDir;
 
-    GeoServerDataDirectory dataDir;
+    private AuthenticationManager authManager;
 
-    public GSFTPUserManager(UserDetailsService userService, GeoServerDataDirectory dataDir) {
-        this.userService = userService;
+    public GSFTPUserManager(GeoServerDataDirectory dataDir) {
         this.dataDir = dataDir;
     }
 
+    public void setAuthenticationManager(AuthenticationManager authManager) {
+        this.authManager = authManager;
+    }
+
     /**
-     * @param authentication
+     * @param ftpAuthRequest
      *            one of {@link org.apache.ftpserver.usermanager.AnonymousAuthentication} or
      *            {@link org.apache.ftpserver.usermanager.UsernamePasswordAuthentication}
      * @throws AuthenticationFailedException
      *             if given an {@code AnonymousAuthentication}, or an invalid/disabled user
      *             credentials
+     * @see UserManager#authenticate(Authentication)
      */
-    public User authenticate(Authentication authentication) throws AuthenticationFailedException {
-        if (authentication instanceof UsernamePasswordAuthentication) {
-            UsernamePasswordAuthentication upa = (UsernamePasswordAuthentication) authentication;
-            try {
-                // gather the user
-                User user = getUserByName(upa.getUsername());
-                if (user == null) {
-                    throw new AuthenticationFailedException();
-                }
-
-                // password checks
-                if (!user.getPassword().equals(upa.getPassword())) {
-                    throw new AuthenticationFailedException();
-                }
-
-                // scary message for admins if the username/password has not
-                // been changed
-                if (DEFAULT_USER.equals(user.getName())
-                        && DEFAULT_PASSWORD.equals(user.getPassword())) {
-                    LOGGER.log(Level.SEVERE, "The default admin/password combination has not been "
-                            + "modified, this makes the embedded FTP server an "
-                            + "open file host for everybody to use!!!");
-                }
-
-                // is the user enabled?
-                if (!user.getEnabled()) {
-                    throw new AuthenticationFailedException();
-                }
-
-                // user authenticated, lets make sure his home directory exists
-                File homeDirectory = new File(user.getHomeDirectory());
-                if (!homeDirectory.exists()) {
-                    LOGGER.fine("Creating FTP home directory for user " + user.getName() + " at "
-                            + homeDirectory.getAbsolutePath());
-                    homeDirectory.mkdirs();
-                }
-
-                return user;
-            } catch (AuthenticationFailedException e) {
-                throw e;
-            } catch (Exception e) {
-                LOGGER.log(Level.INFO, "FTP authentication failure", e);
-                throw new AuthenticationFailedException(e);
-            }
-        } else {
+    public User authenticate(final Authentication ftpAuthRequest)
+            throws AuthenticationFailedException {
+        if (!(ftpAuthRequest instanceof UsernamePasswordAuthentication)) {
             throw new AuthenticationFailedException();
+        }
+        final UsernamePasswordAuthentication upa = (UsernamePasswordAuthentication) ftpAuthRequest;
+        final String principal = upa.getUsername();
+        final String credentials = upa.getPassword();
+        org.acegisecurity.Authentication gsAuth = new UsernamePasswordAuthenticationToken(
+                principal, credentials);
+        try {
+            gsAuth = authManager.authenticate(gsAuth);
+        } catch (org.acegisecurity.AuthenticationException authEx) {
+            throw new AuthenticationFailedException(authEx);
+        }
+
+        try {
+            // gather the user
+            BaseUser user = getUserByName(principal);
+            // is the user enabled?
+            if (!user.getEnabled()) {
+                throw new AuthenticationFailedException();
+            }
+
+            // scary message for admins if the username/password has not
+            // been changed
+            if (DEFAULT_USER.equals(user.getName()) && DEFAULT_PASSWORD.equals(credentials)) {
+                LOGGER.log(Level.SEVERE, "The default admin/password combination has not been "
+                        + "modified, this makes the embedded FTP server an "
+                        + "open file host for everybody to use!!!");
+            }
+
+            final File dataRoot = dataDir.findOrCreateDataRoot();
+
+            // enable only admins and non anonymous users
+            boolean isGSAdmin = false;
+            for (GrantedAuthority authority : gsAuth.getAuthorities()) {
+                final String userRole = authority.getAuthority();
+                if (ADMIN_ROLE.equals(userRole)) {
+                    isGSAdmin = true;
+                    break;
+                }
+            }
+
+            final File homeDirectory;
+            if (isGSAdmin) {
+                homeDirectory = dataRoot;
+            } else {
+                /*
+                 * This resolves the user's home directory to data/incoming/<user name> but does not
+                 * create the directory if it does not already exist. That is left to when the user
+                 * is authenticated, check the authenticate() method above.
+                 */
+                homeDirectory = new File(new File(dataRoot, "incoming"), user.getName());
+            }
+            String normalizedPath = homeDirectory.getAbsolutePath();
+            normalizedPath = FilenameUtils.normalize(normalizedPath);
+            user.setHomeDirectory(normalizedPath);
+            if (!homeDirectory.exists()) {
+                LOGGER.fine("Creating FTP home directory for user " + user.getName() + " at "
+                        + normalizedPath);
+                homeDirectory.mkdirs();
+            }
+
+            return user;
+        } catch (AuthenticationFailedException e) {
+            throw e;
+        } catch (Exception e) {
+            LOGGER.log(Level.INFO, "FTP authentication failure", e);
+            throw new AuthenticationFailedException(e);
         }
     }
 
@@ -138,14 +167,7 @@ public class GSFTPUserManager implements org.apache.ftpserver.ftplet.UserManager
      * @see org.apache.ftpserver.ftplet.UserManager#doesExist(java.lang.String)
      */
     public boolean doesExist(String username) throws FtpException {
-        try {
-            userService.loadUserByUsername(username);
-            return true;
-        } catch (UsernameNotFoundException e) {
-            return false;
-        } catch (Throwable t) {
-            throw new FtpException("Internal error occurred", t);
-        }
+        return true;
     }
 
     /**
@@ -171,53 +193,19 @@ public class GSFTPUserManager implements org.apache.ftpserver.ftplet.UserManager
      * 
      * @see org.apache.ftpserver.ftplet.UserManager#getUserByName(java.lang.String)
      */
-    public User getUserByName(String username) throws FtpException {
-        try {
-            // check if we know the user
-            UserDetails ud = userService.loadUserByUsername(username);
-            if (ud == null) {
-                return null;
-            }
+    public BaseUser getUserByName(String username) throws FtpException {
+        // basic ftp user setup
+        BaseUser user = new BaseUser();
+        user.setName(username);
+        user.setPassword(null);
+        user.setEnabled(true);
+        // allow writing
+        List<Authority> authorities = new ArrayList<Authority>();
+        authorities.add(new WritePermission());
+        authorities.add(new ConcurrentLoginPermission(Integer.MAX_VALUE, Integer.MAX_VALUE));
+        user.setAuthorities(authorities);
 
-            // basic ftp user setup
-            BaseUser user = new BaseUser();
-            user.setName(ud.getUsername());
-            user.setPassword(ud.getPassword());
-            user.setEnabled(true);
-            final File dataRoot = dataDir.findOrCreateDataRoot();
-
-            // enable only admins and non anonymous users
-            boolean isGSAdmin = false;
-            for (GrantedAuthority authority : ud.getAuthorities()) {
-                final String userRole = authority.getAuthority();
-                if (ADMIN_ROLE.equals(userRole)) {
-                    isGSAdmin = true;
-                    break;
-                }
-            }
-
-            if (isGSAdmin) {
-                user.setHomeDirectory(dataRoot.getAbsolutePath());
-            } else {
-                /*
-                 * This resolves the user's home directory to data/incoming/<user name> but does not
-                 * create the directory if it does not already exist. That is left to when the user
-                 * is authenticated, check the authenticate() method above.
-                 */
-                File userDir = new File(new File(dataRoot, "incoming"), user.getName());
-                user.setHomeDirectory(userDir.getAbsolutePath());
-            }
-
-            // allow writing
-            List<Authority> authorities = new ArrayList<Authority>();
-            authorities.add(new WritePermission());
-            authorities.add(new ConcurrentLoginPermission(Integer.MAX_VALUE, Integer.MAX_VALUE));
-            user.setAuthorities(authorities);
-
-            return user;
-        } catch (IOException e) {
-            throw new FtpException(e);
-        }
+        return user;
     }
 
     /**
