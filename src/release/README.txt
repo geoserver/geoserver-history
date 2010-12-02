@@ -1,3 +1,14 @@
+GeoServer 2.1-beta2 (December 02, 2010)
+----------------------------------------
+
+The second beta release of GeoServer 2.1.
+
+The entire change log is available here:
+
+  http://jira.codehaus.org/secure/ReleaseNote.jspa?projectId=10311&version=15130
+
+This release is based on the GeoTools 2.7-M4 release.
+
 GeoServer 2.1-beta1 (September 02, 2010)
 ----------------------------------------
 
