@@ -7,8 +7,8 @@ package org.geoserver.ftp;
 import java.io.File;
 import java.io.IOException;
 
+import org.acegisecurity.GrantedAuthority;
 import org.acegisecurity.userdetails.UserDetails;
-import org.acegisecurity.userdetails.UserDetailsService;
 import org.apache.ftpserver.ftplet.DefaultFtplet;
 import org.apache.ftpserver.ftplet.FileSystemView;
 import org.apache.ftpserver.ftplet.FtpException;
@@ -30,16 +30,21 @@ class FtpLetCallBackAdapter extends DefaultFtplet {
 
     private final FTPCallback callback;
 
-    private final UserDetailsService userService;
-
-    public FtpLetCallBackAdapter(final UserDetailsService userService, final FTPCallback callback) {
-        this.userService = userService;
+    public FtpLetCallBackAdapter(final FTPCallback callback) {
         this.callback = callback;
     }
 
     private UserDetails user(User ftpUser) {
-        String name = ftpUser.getName();
-        UserDetails userDetails = userService.loadUserByUsername(name);
+        String username = ftpUser.getName();
+        String password = ftpUser.getPassword();
+        boolean isEnabled = ftpUser.getEnabled();
+        GrantedAuthority[] authorities = new GrantedAuthority[0];
+        boolean accountNonExpired = true;
+        boolean credentialsNonExpired = true;
+        boolean accountNonLocked = true;
+        UserDetails userDetails = new org.acegisecurity.userdetails.User(username, password,
+                isEnabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
+
         return userDetails;
     }
 
