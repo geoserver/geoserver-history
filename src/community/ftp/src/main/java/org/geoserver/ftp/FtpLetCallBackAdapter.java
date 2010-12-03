@@ -16,8 +16,8 @@ import org.apache.ftpserver.ftplet.FtpSession;
 import org.apache.ftpserver.ftplet.Ftplet;
 import org.apache.ftpserver.ftplet.FtpletResult;
 import org.apache.ftpserver.ftplet.User;
+import org.springframework.security.GrantedAuthority;
 import org.springframework.security.userdetails.UserDetails;
-import org.springframework.security.userdetails.UserDetailsService;
 
 /**
  * Adapts an {@link FTPCallback}s as an {@link Ftplet}
@@ -30,16 +30,22 @@ class FtpLetCallBackAdapter extends DefaultFtplet {
 
     private final FTPCallback callback;
 
-    private final UserDetailsService userService;
-
-    public FtpLetCallBackAdapter(final UserDetailsService userService, final FTPCallback callback) {
-        this.userService = userService;
+    public FtpLetCallBackAdapter(final FTPCallback callback) {
         this.callback = callback;
     }
 
     private UserDetails user(User ftpUser) {
-        String name = ftpUser.getName();
-        UserDetails userDetails = userService.loadUserByUsername(name);
+        String username = ftpUser.getName();
+        String password = ftpUser.getPassword();
+        boolean isEnabled = ftpUser.getEnabled();
+        GrantedAuthority[] authorities = new GrantedAuthority[0];
+        boolean accountNonExpired = true;
+        boolean credentialsNonExpired = true;
+        boolean accountNonLocked = true;
+        UserDetails userDetails = new org.springframework.security.userdetails.User(username,
+                password, isEnabled, accountNonExpired, credentialsNonExpired, accountNonLocked,
+                authorities);
+
         return userDetails;
     }
 

@@ -12,7 +12,6 @@ import java.util.Map;
 import org.apache.ftpserver.FtpServer;
 import org.apache.ftpserver.ftplet.Ftplet;
 import org.geoserver.platform.GeoServerExtensions;
-import org.springframework.security.userdetails.UserDetailsService;
 
 /**
  * Finds out the implementations of {@link FTPCallback} in the application context and adapts them
@@ -24,10 +23,8 @@ import org.springframework.security.userdetails.UserDetailsService;
  */
 class FtpLetFinder {
 
-    private UserDetailsService userService;
-
-    public FtpLetFinder(UserDetailsService userDetailsService) {
-        this.userService = userDetailsService;
+    public FtpLetFinder() {
+        //
     }
 
     /**
@@ -45,7 +42,7 @@ class FtpLetFinder {
          */
         Map<String, Integer> names = new HashMap<String, Integer>();
         for (FTPCallback callback : callbacks) {
-            FtpLetCallBackAdapter ftplet = new FtpLetCallBackAdapter(userService, callback);
+            FtpLetCallBackAdapter ftplet = new FtpLetCallBackAdapter(callback);
             String name = callback.getClass().getName();
             Integer index = names.containsKey(name) ? (names.get(name) + 1) : 1;
             names.put(name, index);

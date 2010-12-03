@@ -100,6 +100,7 @@ public class GSFTPUserManager implements org.apache.ftpserver.ftplet.UserManager
         try {
             // gather the user
             BaseUser user = getUserByName(principal);
+            user.setPassword(credentials);
             // is the user enabled?
             if (!user.getEnabled()) {
                 throw new AuthenticationFailedException();

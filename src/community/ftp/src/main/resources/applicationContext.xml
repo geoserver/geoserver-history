@@ -16,7 +16,6 @@
 	</bean>
 
 	<bean id="ftpCallbackFinder" class="org.geoserver.ftp.FtpLetFinder">
-		<constructor-arg ref="userDetailsService" index="0" />
 	</bean>
 
 	<bean id="gsFtpUserManager" class="org.geoserver.ftp.GSFTPUserManager"
