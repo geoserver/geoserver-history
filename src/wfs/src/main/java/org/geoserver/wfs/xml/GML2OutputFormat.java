@@ -4,9 +4,7 @@
  */
 package org.geoserver.wfs.xml;
 
-import static org.geoserver.ows.util.ResponseUtils.buildSchemaURL;
-import static org.geoserver.ows.util.ResponseUtils.buildURL;
-import static org.geoserver.ows.util.ResponseUtils.params;
+import static org.geoserver.ows.util.ResponseUtils.*;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -154,7 +152,7 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
 
             if (ftNamespaces.containsKey(uri)) {
                 String location = (String) ftNamespaces.get(uri);
-                ftNamespaces.put(uri, location + "," + meta.getName());
+                ftNamespaces.put(uri, location + "," + urlEncode(meta.getPrefixedName()));
             } else {
                 // don't blindly assume it's a feature type, this class is used also by WMS FeatureInfo
                 // meaning it might be a coverage or a remote wms layer

@@ -1,5 +1,6 @@
 package org.geoserver.wfs;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 import javax.xml.namespace.QName;
@@ -7,6 +8,8 @@ import javax.xml.namespace.QName;
 import junit.framework.Test;
 
 import org.custommonkey.xmlunit.XMLAssert;
+import org.custommonkey.xmlunit.XMLUnit;
+import org.custommonkey.xmlunit.XpathEngine;
 import org.geoserver.data.test.MockData;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -252,6 +255,28 @@ public class GetFeatureTest extends WFSTestSupport {
     
         Document doc = getAsDOM("sf/Fifteen/wfs?request=GetFeature&typename=cdf:Seven&version=1.0.0&service=wfs");
         XMLAssert.assertXpathEvaluatesTo("1", "count(//ogc:ServiceException)", doc);
+    }
+    
+    public void testMultiLayer() throws Exception {
+        Document doc = getAsDOM("/wfs?request=GetFeature&typename=" + getLayerId(MockData.BASIC_POLYGONS) 
+                + "," + getLayerId(MockData.BRIDGES) + "&version=1.0.0&service=wfs");
+        // print(doc);
+        
+        XpathEngine engine = XMLUnit.newXpathEngine();
+        String schemaLocation = engine.evaluate("wfs:FeatureCollection/@xsi:schemaLocation", doc);
+        assertNotNull(schemaLocation);
+        String[] parsedLocations = schemaLocation.split("\\s+");
+        // System.out.println(Arrays.toString(parsedLocations));
+        int i = 0;
+        for (; i < parsedLocations.length; i+=2) {
+            if(parsedLocations[i].equals("http://www.opengis.net/cite")) {
+                assertEquals("http://localhost:8080/geoserver/wfs?service=WFS&version=1.0.0&request=DescribeFeatureType&typeName=cite%3ABasicPolygons,cite%3ABridges", parsedLocations[i+1]);
+                break;
+            }
+        }
+        if(i >= parsedLocations.length) {
+            fail("Could not find the http://www.opengis.net/cite schema location!");
+        }
     }
 
 }
