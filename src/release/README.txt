@@ -5,7 +5,7 @@ The second beta release of GeoServer 2.1.
 
 The entire change log is available here:
 
-  http://jira.codehaus.org/secure/ReleaseNote.jspa?projectId=10311&version=15130
+  http://jira.codehaus.org/secure/ReleaseNote.jspa?projectId=10311&version=16728
 
 This release is based on the GeoTools 2.7-M4 release.
 
