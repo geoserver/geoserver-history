@@ -123,6 +123,7 @@
     <bean id="interpolationPPIO" class="org.geoserver.wps.ppio.InterpolationPPIO" />
     <bean id="sldStylePPIO" class="org.geoserver.wps.ppio.SLDStylePPIO" />
     <bean id="urlPPIO" class="org.geoserver.wps.ppio.URLPPIO" />
+    <bean id="jaitoolsRangePPIO" class="org.geoserver.wps.ppio.JAIToolsRangePPIO"/>
     
     
     <!-- Register the GeoServer factory and processes -->
@@ -152,6 +153,11 @@
     <bean id="storeCoverageProcess" class="org.geoserver.wps.gs.StoreCoverage" >
       <constructor-arg index="0" ref="wpsStorageHandler"></constructor-arg>
     </bean>
+    <bean id="vectorZonalStatistics" class="org.geoserver.wps.gs.VectorZonalStatistics" />
+    <bean id="pointBuffersProces" class="org.geoserver.wps.gs.PointBuffers" />
+    <bean id="rasterZonalStatistics" class="org.geoserver.wps.gs.RasterZonalStatistics" />
+    <bean id="rangeLookupProcess" class="org.geoserver.wps.gs.RangeLookupProcess" />
+    
     
     <!-- 
        ==================================================================
