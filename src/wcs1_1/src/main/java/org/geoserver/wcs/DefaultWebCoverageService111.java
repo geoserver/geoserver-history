@@ -322,7 +322,7 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
             intersectionEnvelope.setCoordinateReferenceSystem(targetCRS);
             
             
-            final GridGeometry2D requestedGridGeometry = new GridGeometry2D(PixelInCell.CELL_CENTER, gridToCRS, intersectionEnvelopeInSourceCRS, null);
+            final GridGeometry2D requestedGridGeometry = new GridGeometry2D(PixelInCell.CELL_CORNER, gridToCRS, intersectionEnvelopeInSourceCRS, null);
 
             final ParameterValueGroup readParametersDescriptor = reader.getFormat().getReadParameters();
             GeneralParameterValue[] readParameters = CoverageUtils.getParameters(readParametersDescriptor, meta.getParameters());
@@ -472,7 +472,7 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
              * Reproject
              */
             // adjust the grid geometry to use the final bbox and crs
-            final GridGeometry2D destinationGridGeometry =new GridGeometry2D(PixelInCell.CELL_CENTER, gridToCRS, intersectionEnvelope, null);
+            final GridGeometry2D destinationGridGeometry = new GridGeometry2D(PixelInCell.CELL_CORNER, gridToCRS, intersectionEnvelope, null);
             
             // before extracting the output make sure it's not too big
             WCSUtils.checkOutputLimits(wcs, destinationGridGeometry.getGridRange2D(), 
