@@ -18,6 +18,7 @@ import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.visitor.AbstractCalcResult;
 import org.geotools.feature.visitor.AverageVisitor;
 import org.geotools.feature.visitor.CalcResult;
+import org.geotools.feature.visitor.CountVisitor;
 import org.geotools.feature.visitor.FeatureCalc;
 import org.geotools.feature.visitor.MaxVisitor;
 import org.geotools.feature.visitor.MedianVisitor;
@@ -25,6 +26,7 @@ import org.geotools.feature.visitor.MinVisitor;
 import org.geotools.feature.visitor.StandardDeviationVisitor;
 import org.geotools.feature.visitor.SumVisitor;
 import org.geotools.process.ProcessException;
+import org.geotools.util.NullProgressListener;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.util.ProgressListener;
@@ -39,7 +41,7 @@ import org.opengis.util.ProgressListener;
 public class AggregateProcess implements GeoServerProcess {
     // the functions this process can handle
     public enum AggregationFunction {
-        Average, Max, Median, Min, StdDev, Sum;
+        Count, Average, Max, Median, Min, StdDev, Sum;
     }
 
     @DescribeResult(name = "result", description = "The reprojected features")
@@ -71,6 +73,8 @@ public class AggregateProcess implements GeoServerProcess {
             FeatureCalc calc;
             if (function == AggregationFunction.Average) {
                 calc = new AverageVisitor(attIndex, features.getSchema());
+            } else if (function == AggregationFunction.Count) {
+                calc = new CountVisitor();
             } else if (function == AggregationFunction.Max) {
                 calc = new MaxVisitor(attIndex, features.getSchema());
             } else if (function == AggregationFunction.Median) {
@@ -78,13 +82,7 @@ public class AggregateProcess implements GeoServerProcess {
             } else if (function == AggregationFunction.Min) {
                 calc = new MinVisitor(attIndex, features.getSchema());
             } else if (function == AggregationFunction.StdDev) {
-                // this approach is a tragedy, when you have time rewrite everything
-                // using the numerically stable std dev computation algorithm listed
-                // at http://www.johndcook.com/standard_deviation.html
-                calc = new AverageVisitor(attIndex, features.getSchema());
-                features.accepts(calc, null);
-                calc = new StandardDeviationVisitor(CommonFactoryFinder.getFilterFactory(null)
-                        .property(aggAttribute), calc.getResult().toDouble());
+                calc = new StandardDeviationVisitor(CommonFactoryFinder.getFilterFactory(null).property(aggAttribute));
             } else if (function == AggregationFunction.Sum) {
                 calc = new SumVisitor(attIndex, features.getSchema());
             } else {
@@ -96,15 +94,18 @@ public class AggregateProcess implements GeoServerProcess {
         EnumMap<AggregationFunction, Number> results = new EnumMap<AggregationFunction, Number>(AggregationFunction.class);
         if (singlePass != null && singlePass) {
             AggregateFeatureCalc calc = new AggregateFeatureCalc(visitors);
-            features.accepts(calc, null);
+            features.accepts(calc, new NullProgressListener());
             List<CalcResult> resultList = (List<CalcResult>) calc.getResult().getValue();
             for (int i = 0; i < functionList.size(); i++) {
-                results.put(functionList.get(i), (Number) resultList.get(i).getValue());
+                CalcResult result = resultList.get(i);
+                if(result != null) {
+                    results.put(functionList.get(i), (Number) result.getValue());
+                }
             }
         } else {
             for (int i = 0; i < functionList.size(); i++) {
                 final FeatureCalc calc = visitors.get(i);
-                features.accepts(calc, null);
+                features.accepts(calc, new NullProgressListener());
                 results.put(functionList.get(i), (Number) calc.getResult().getValue());
             }
         }
@@ -136,7 +137,7 @@ public class AggregateProcess implements GeoServerProcess {
         public CalcResult getResult() {
             final List<CalcResult> results = new ArrayList<CalcResult>();
             for (FeatureCalc delegate : delegates) {
-                results.add(delegate.getResult());
+                    results.add(delegate.getResult());
             }
 
             return new AbstractCalcResult() {
@@ -164,6 +165,7 @@ public class AggregateProcess implements GeoServerProcess {
         Double average;
         Double standardDeviation;
         Double sum;
+        Long count;
         
         public Results(EnumMap<AggregationFunction, Number> results) {
             min = toDouble(results.get(AggregationFunction.Min));
@@ -171,7 +173,11 @@ public class AggregateProcess implements GeoServerProcess {
             median = toDouble(results.get(AggregationFunction.Median));
             average = toDouble(results.get(AggregationFunction.Average));
             standardDeviation = toDouble(results.get(AggregationFunction.StdDev));
-            sum = toDouble(results.get(AggregationFunction.Sum)); 
+            sum = toDouble(results.get(AggregationFunction.Sum));
+            Number nc = results.get(AggregationFunction.Count);
+            if(nc != null) {
+                count = nc.longValue();
+            }
         }
         
         Double toDouble(Number number) {
@@ -182,23 +188,27 @@ public class AggregateProcess implements GeoServerProcess {
             }
         }
         
-        public Number getMin() {
+        public Double getMin() {
             return min;
         }
-        public Number getMax() {
+        public Double getMax() {
             return max;
         }
-        public Number getMedian() {
+        public Double getMedian() {
             return median;
         }
-        public Number getAverage() {
+        public Double getAverage() {
             return average;
         }
-        public Number getStandardDeviation() {
+        public Double getStandardDeviation() {
             return standardDeviation;
         }
-        public Number getSum() {
+        public Double getSum() {
             return sum;
+        }
+
+        public Long getCount() {
+            return count;
         }
 
     }
