@@ -76,7 +76,12 @@ public class FeatureResourceConfigurationPanel extends ResourceConfigurationPane
                     FeatureTypeInfo typeInfo = (FeatureTypeInfo) model.getObject();
                     final ResourcePool resourcePool = GeoServerApplication.get().getCatalog().getResourcePool();
                     org.opengis.feature.type.PropertyDescriptor pd = resourcePool.getFeatureType(typeInfo).getDescriptor(attribute.getName());
-                    String typeName = pd.getType().getBinding().getSimpleName();
+                    String typeName = "?";
+                    try {
+                        typeName = pd.getType().getBinding().getSimpleName();
+                    } catch(Exception e) {
+                        LOGGER.log(Level.INFO, "Could not determine the type name of attribute " + attribute.getName(), e);
+                    }
                     item.add(new Label("type", typeName));
                     item.add(new Label("nillable", pd.isNillable() + ""));
                 } catch(IOException e) {
