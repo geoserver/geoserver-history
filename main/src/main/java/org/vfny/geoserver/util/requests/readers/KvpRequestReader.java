@@ -28,8 +28,8 @@ import org.geoserver.ows.util.KvpUtils;
 import org.geoserver.platform.ServiceException;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.filter.FilterFilter;
-import org.geotools.filter.text.cql2.CQL;
 import org.geotools.filter.text.cql2.CQLException;
+import org.geotools.filter.text.ecql.ECQL;
 import org.geotools.gml.GMLFilterDocument;
 import org.geotools.gml.GMLFilterGeometry;
 import org.geotools.util.Converters;
@@ -421,7 +421,7 @@ abstract public class KvpRequestReader {
      */
     protected List readCQLFilter(String filter) throws ServiceException {
         try {
-            return CQL.toFilterList(filter);
+            return ECQL.toFilterList(filter);
         } catch (CQLException pe) {
             throw new ServiceException("Could not parse CQL filter list." + pe.getMessage(), pe);
         }
