@@ -31,6 +31,8 @@ public class CQLFilterPPIO extends CDataPPIO {
 
     @Override
     public void encode(Object value, OutputStream os) throws IOException {
+        // TODO: switch this to ECQL once http://jira.codehaus.org/browse/GEOT-3326
+        // is fixed
         String cql = CQL.toCQL((Filter) value);
         os.write(cql.getBytes("UTF-8"));
     }
