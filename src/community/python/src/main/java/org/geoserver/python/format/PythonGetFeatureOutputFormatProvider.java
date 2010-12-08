@@ -1,16 +1,16 @@
 package org.geoserver.python.format;
 
 import org.geoserver.config.GeoServer;
+import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.python.Python;
 import org.geoserver.wfs.WFSGetFeatureOutputFormat;
 
 public class PythonGetFeatureOutputFormatProvider extends PythonOutputFormatProvider<WFSGetFeatureOutputFormat> {
 
-    GeoServer gs;
     
-    public PythonGetFeatureOutputFormatProvider(Python py, GeoServer gs) {
+    
+    public PythonGetFeatureOutputFormatProvider(Python py) {
         super(py);
-        this.gs = gs;
     }
     
     public Class<WFSGetFeatureOutputFormat> getExtensionPoint() {
@@ -19,6 +19,9 @@ public class PythonGetFeatureOutputFormatProvider extends PythonOutputFormatProv
     
     @Override
     protected WFSGetFeatureOutputFormat createOutputFormat(PythonFormatAdapter adapter) {
+        //workaround, because this is an extension provider it can not depend on GeoServer or 
+        // a circular bean reference is created so we lazily obtain a reference to gs 
+        GeoServer gs = GeoServerExtensions.bean(GeoServer.class);
         return new PythonGetFeatureOutputFormat((PythonVectorFormatAdapter) adapter, gs);
     }
 
