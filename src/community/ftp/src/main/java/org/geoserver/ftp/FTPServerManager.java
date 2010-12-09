@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.ftpserver.DataConnectionConfiguration;
+import org.apache.ftpserver.DataConnectionConfigurationFactory;
 import org.apache.ftpserver.FtpServer;
 import org.apache.ftpserver.FtpServerFactory;
 import org.apache.ftpserver.ftplet.FtpException;
@@ -61,17 +63,50 @@ public class FTPServerManager implements ApplicationListener {
      */
     private void configureServer() {
         FtpServerFactory serverFactory = new FtpServerFactory();
+        ListenerFactory listenerFactory = new ListenerFactory();
+        DataConnectionConfigurationFactory dataConnConfigFac = new DataConnectionConfigurationFactory();
+
+        DataConnectionConfiguration connectionConfiguration = dataConnConfigFac
+                .createDataConnectionConfiguration();
+
+        LOGGER.info("Configuring GeoServer's FTP Server...");
+        String passivePorts = config.getPassivePorts();
+        if (passivePorts != null && passivePorts.trim().length() > 0) {
+            try {
+                LOGGER.info("Setting FTP passive ports: " + passivePorts
+                        + ". May take a few seconds while checking if they're already bound.");
+                dataConnConfigFac.setPassivePorts(passivePorts);
+            } catch (Exception e) {
+                LOGGER.log(Level.SEVERE, "Error setting the FTP server passive ports, "
+                        + "check the ftp.xml config file. Format is '\"\"|<minPort[-maxPort]>  ", e);
+            }
+        }
 
         // configure a listener on port 8021
-        ListenerFactory factory = new ListenerFactory();
-        factory.setPort(config.getFtpPort());
-        serverFactory.addListener("default", factory.createListener());
+        LOGGER.info("FTP port: " + config.getFtpPort());
+        listenerFactory.setPort(config.getFtpPort());
+
+        LOGGER.info("Iddle timeout: " + config.getIdleTimeout() + "s");
+        listenerFactory.setIdleTimeout(config.getIdleTimeout());
+
+        String serverAddress = config.getServerAddress();
+        if (serverAddress == null || serverAddress.trim().length() > 0
+                || serverAddress.toLowerCase().equals(FTPConfig.ALL_SERVER_ADDRESSES_FLAG)) {
+            LOGGER.info("Bound to all available network interfaces");
+        } else {
+            LOGGER.info("Bound to server address: " + serverAddress);
+            listenerFactory.setServerAddress(config.getServerAddress());
+        }
+
+        listenerFactory.setDataConnectionConfiguration(connectionConfiguration);
+        serverFactory.addListener("default", listenerFactory.createListener());
 
         // link the server user management to the GS one
         serverFactory.setUserManager(userManager);
 
         // find out the listeners
         Map<String, Ftplet> ftplets = callbacks.getFtpLets();
+        LOGGER.info("FTPLet callbacks: " + ftplets);
         serverFactory.setFtplets(ftplets);
 
         // start the server

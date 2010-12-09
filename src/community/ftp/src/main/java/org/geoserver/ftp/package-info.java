@@ -17,9 +17,31 @@
  * &lt;ftp&gt;
  *  &lt;enabled&gt;true&lt;/enabled&gt;
  *  &lt;ftpPort&gt;8021&lt;/ftpPort&gt;
+ *  &lt;idleTimeout&gt;10&lt;/idleTimeout&gt;
+ *  &lt;serverAddress&gt;10.0.1.5&lt;/serverAddress&gt;
+ *  &lt;passivePorts&gt;2300:2400&lt;/passivePorts&gt;
  * &lt;/ftp&gt;
  * </code>
  * </pre>
+ * Configration parameters:
+ * <ul>
+ * <li>enabled: &lt;true|false&gt; whether the embedded FTP service is enabled or not
+ * <li>ftpPort: &lt;integer {@code > 1023} &gt;, port where to listen for FTP connections
+ * <li>idleTimeout: integer, how many seconds to hold an idle connection before automatically close it
+ * <li>serverAddress: &lt;all|ip address&gt;, which server ip address to bind the FTP service to. Defaults 
+ * to the {@code all} literal meaning to bind the service to all the attached server interfaces.
+ * <li>passivePorts: the passive ports to be used for data connections. Ports can be defined as single
+ * ports, closed or open ranges.
+ * <p>
+ * Multiple definitions can be separated by commas, for example:
+ * <ul>
+ * <li>2300 : only use port 2300 as the passive port</li>
+ * <li>2300-2399 : use all ports in the range</li>
+ * <li>2300- : use all ports larger than 2300</li>
+ * <li>2300, 2305, 2400- : use 2300 or 2305 or any port larger than 2400</li>
+ * </ul>
+ * </li>
+ * </ul>
  * </p>
  * <p>
  * <H3>Usage</H3>
