@@ -47,7 +47,7 @@ class FTPConfig {
     }
 
     void setDefaults() {
-        enabled = true;
+        enabled = false;
         ftpPort = DEFAULT_FTP_PORT;
         idleTimeout = DEFAULT_IDLE_TIMEOUT_SECONDS;
         serverAddress = ALL_SERVER_ADDRESSES_FLAG;
