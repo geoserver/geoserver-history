@@ -81,6 +81,22 @@ public class FTPServerManager implements ApplicationListener {
                         + "check the ftp.xml config file. Format is '\"\"|<minPort[-maxPort]>  ", e);
             }
         }
+        String passiveAddress = config.getPassiveAddress();
+        if (passiveAddress == null || passiveAddress.trim().length() == 0
+                || FTPConfig.DEFAULT_PASSIVE_ADDRESS.equals(passiveAddress)) {
+            LOGGER.info("Passive address is the default server address");
+        } else {
+            LOGGER.info("Passive address: " + passiveAddress);
+            dataConnConfigFac.setPassiveAddress(passiveAddress);
+        }
+        String pasvExternalAddress = config.getPassiveExternalAddress();
+        if (pasvExternalAddress == null || pasvExternalAddress.trim().length() == 0
+                || FTPConfig.DEFAULT_PASSIVE_ADDRESS.equals(pasvExternalAddress)) {
+            LOGGER.info("Passive external address is the default server address");
+        } else {
+            LOGGER.info("Passive external address: " + pasvExternalAddress);
+            dataConnConfigFac.setPassiveExternalAddress(pasvExternalAddress);
+        }
 
         // configure a listener on port 8021
         LOGGER.info("FTP port: " + config.getFtpPort());
