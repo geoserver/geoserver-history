@@ -152,7 +152,7 @@ class FTPConfigLoader {
                     try {
                         xmlStreamWriter.writeCharacters("\n");
                         String comment = comments.get(elementName);
-                        if (comments != null) {
+                        if (comment != null) {
                             indent(xmlStreamWriter);
                             xmlStreamWriter.writeComment(comment);
                             xmlStreamWriter.writeCharacters("\n");
