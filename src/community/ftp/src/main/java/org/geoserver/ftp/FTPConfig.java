@@ -20,9 +20,13 @@ class FTPConfig {
 
     private static final Integer DEFAULT_IDLE_TIMEOUT_SECONDS = 10;
 
-    private static final String DEFAULT_PASSIVE_PORT_RANGE = "2300-";
+    private static final String DEFAULT_PASSIVE_PORT_RANGE = "2300-2400";
 
-    public static final String ALL_SERVER_ADDRESSES_FLAG = "all";
+    public static final String ALL_SERVER_ADDRESSES_FLAG = "";
+
+    public static final String DEFAULT_PASSIVE_ADDRESS = "";
+
+    public static final String DEGAULT_PASSIVE_EXTERNAL_ADDRESS = "";
 
     private boolean enabled;
 
@@ -34,16 +38,22 @@ class FTPConfig {
 
     private String passivePorts;
 
+    private String passiveAddress;
+
+    private String passiveExternalAddress;
+
     public FTPConfig() {
         setDefaults();
     }
 
     void setDefaults() {
-        enabled = true;
+        enabled = false;
         ftpPort = DEFAULT_FTP_PORT;
         idleTimeout = DEFAULT_IDLE_TIMEOUT_SECONDS;
-        passivePorts = DEFAULT_PASSIVE_PORT_RANGE;
         serverAddress = ALL_SERVER_ADDRESSES_FLAG;
+        passivePorts = DEFAULT_PASSIVE_PORT_RANGE;
+        passiveAddress = DEFAULT_PASSIVE_ADDRESS;
+        passiveExternalAddress = DEGAULT_PASSIVE_EXTERNAL_ADDRESS;
     }
 
     public boolean isEnabled() {
@@ -77,7 +87,7 @@ class FTPConfig {
 
     /**
      * Gets the {@link InetAddress} used for binding the local socket. Defaults to null, that is,
-     * the server binds to all available network interfaces
+     * the server binds to all available network interfaces.
      */
     public String getServerAddress() {
         return serverAddress;
@@ -100,5 +110,26 @@ class FTPConfig {
      */
     public String getPassivePorts() {
         return passivePorts;
+    }
+
+    /**
+     * The address on which the server will listen to passive data connections, if not set defaults
+     * to the same address as the control socket for the session.
+     */
+    public String getPassiveAddress() {
+        return passiveAddress;
+    }
+
+    /**
+     * Returns the address the server will claim to be listening on in the PASV reply. Useful when
+     * the server is behind a NAT firewall and the client sees a different address than the server
+     * is using.
+     */
+    public String getPassiveExternalAddress() {
+        return passiveExternalAddress;
+    }
+    
+    public String getDocumentation(){
+        return "this is the ftpconfig documentation";
     }
 }
