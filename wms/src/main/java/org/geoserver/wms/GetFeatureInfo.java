@@ -207,13 +207,14 @@ public class GetFeatureInfo {
 
         List<FeatureCollection> results = new ArrayList<FeatureCollection>(requestedLayers.size());
 
+        int maxFeatures = request.getFeatureCount();
         for (int i = 0; i < requestedLayers.size(); i++) {
             final MapLayerInfo layer = requestedLayers.get(i);
 
             // check cascaded WMS first, it's a special case
             if (layer.getType() == MapLayerInfo.TYPE_WMS) {
                 List<FeatureCollection> cascadedResults;
-                cascadedResults = handleGetFeatureInfoCascade(request, layer);
+                cascadedResults = handleGetFeatureInfoCascade(request, maxFeatures, layer);
                 if (cascadedResults != null) {
                     results.addAll(cascadedResults);
                 }
@@ -228,8 +229,8 @@ public class GetFeatureInfo {
 
             FeatureCollection collection = null;
             if (layer.getType() == MapLayerInfo.TYPE_VECTOR) {
-                collection = identifyVectorLayer(request, filters, x, y, buffer, viewParams,
-                        requestedCRS, width, height, bbox, ff, results, i, layer, rules);
+                collection = identifyVectorLayer(filters, x, y, buffer, viewParams,
+                        requestedCRS, width, height, bbox, ff, results, i, layer, rules, maxFeatures);
 
             } else if (layer.getType() == MapLayerInfo.TYPE_RASTER) {
                 final CoverageInfo cinfo = requestedLayers.get(i).getCoverage();
@@ -277,7 +278,16 @@ public class GetFeatureInfo {
             }
 
             if (collection != null) {
-                results.add(collection);
+                int size = collection.size();
+                if(size != 0) {
+                    results.add(collection);
+                    
+                    // don't return more than FEATURE_COUNT
+                    maxFeatures -= size;
+                    if(maxFeatures <= 0) {
+                        break;
+                    }
+                }
             }
         }
         return results;
@@ -423,11 +433,12 @@ public class GetFeatureInfo {
     }
 
     @SuppressWarnings("rawtypes")
-    private FeatureCollection identifyVectorLayer(GetFeatureInfoRequest request, Filter[] filters,
+    private FeatureCollection identifyVectorLayer(Filter[] filters,
             final int x, final int y, final int buffer, final Map<String, String> viewParams,
             final CoordinateReferenceSystem requestedCRS, final int width, final int height,
             final ReferencedEnvelope bbox, final FilterFactory2 ff,
-            List<FeatureCollection> results, int i, final MapLayerInfo layer, final List<Rule> rules)
+            List<FeatureCollection> results, int i, final MapLayerInfo layer, final List<Rule> rules,
+            final int maxFeatures)
             throws IOException {
 
         CoordinateReferenceSystem dataCRS = layer.getCoordinateReferenceSystem();
@@ -509,7 +520,7 @@ public class GetFeatureInfo {
         }
 
         String typeName = schema.getName().getLocalPart();
-        Query q = new Query(typeName, null, getFInfoFilter, request.getFeatureCount(),
+        Query q = new Query(typeName, null, getFInfoFilter, maxFeatures,
                 Query.ALL_NAMES, null);
 
         // handle sql view params
@@ -534,6 +545,7 @@ public class GetFeatureInfo {
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     private List<FeatureCollection> handleGetFeatureInfoCascade(GetFeatureInfoRequest request,
+            int maxFeatures,
             MapLayerInfo layerInfo) throws Exception {
 
         final int x = request.getXPixel();
@@ -570,7 +582,7 @@ public class GetFeatureInfo {
         // code
         // that we want to be consistently reproduced for GetFeatureInfo as well
         final InputStream is = ml.getFeatureInfo(bbox, width, height, x, y,
-                "application/vnd.ogc.gml", request.getFeatureCount());
+                "application/vnd.ogc.gml", maxFeatures);
         List<FeatureCollection> results = null;
         try {
             Parser parser = new Parser(new WFSConfiguration());
