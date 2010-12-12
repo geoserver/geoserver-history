@@ -35,10 +35,6 @@
    <classifier>jdk15</classifier>
   </dependency>
   <dependency>
-   <groupId>struts</groupId>
-   <artifactId>struts</artifactId>
-  </dependency>
-  <dependency>
    <groupId>xml-apis</groupId>
    <artifactId>xml-apis</artifactId>
   </dependency>
