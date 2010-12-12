@@ -13,6 +13,7 @@ import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogBuilder;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.catalog.MetadataMap;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.event.CatalogListener;
 import org.geoserver.config.util.XStreamPersister;
@@ -113,7 +114,12 @@ public class FeatureTypeResource extends AbstractCatalogResource {
                 break;
             }
         }
-        if(!typeExists) {
+        
+        //check to see if this is a virtual JDBC feature type
+        MetadataMap mdm = featureType.getMetadata();
+        boolean virtual = mdm != null && mdm.containsKey(FeatureTypeInfo.JDBC_VIRTUAL_TABLE);
+        
+        if(!virtual && !typeExists) {
             gtds.createSchema(buildFeatureType(featureType));
             // the attributes created might not match up 1-1 with the actual spec due to
             // limitations of the data store, have it re-compute them

@@ -4,6 +4,7 @@
  */
 package org.geoserver.catalog.rest;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 
 import org.geoserver.catalog.DataStoreInfo;
@@ -160,5 +161,47 @@ public class JDBCTest extends CatalogRESTTestSupport {
         //do a get feature for a sanity check
         Document dom = getAsDOM( "wfs?request=getfeature&typename=gs:widgetsNG");
         assertEquals( 2, dom.getElementsByTagName( "gs:widgetsNG" ).getLength() );
+    }
+    
+    public void testCreateSQLView() throws Exception {
+        // first create the store
+        testCreateDataStore();
+        DataStoreInfo ds = catalog.getDataStoreByName( "gs", "acme");
+        assertNull( catalog.getFeatureTypeByDataStore(ds, "widgets"));
+        
+        // create the sql view
+        String xml = "<featureType>\n" + 
+        "  <name>sqlview</name>\n" + 
+        "  <nativeName>sqlview</nativeName>\n" + 
+        "  <namespace>\n" + 
+        "    <name>gs</name>\n" + 
+        "  </namespace>\n" + 
+        "  <srs>EPSG:4326</srs>\n" +
+        "  <metadata>\n" + 
+        "  <entry key=\"JDBC_VIRTUAL_TABLE\">\n" + 
+        "     <virtualTable>" +
+        "       <name>sqlview</name>" +
+        "       <sql>select \"g\" from \"widgets\"</sql>\n" + 
+        "       <geometry>" +
+        "         <name>g</name>" +
+        "         <type>Point</type>" +
+        "         <srid>4326</srid>" +
+        "       </geometry>\n" + 
+        "     </virtualTable>" +
+        "  </entry>" +
+        "  </metadata>" +
+        "</featureType>";        
+        
+        MockHttpServletResponse resp = 
+            postAsServletResponse("/rest/workspaces/gs/datastores/acme/featuretypes", xml );
+        assertEquals( 201, resp.getStatusCode() );
+        
+        assertNotNull( catalog.getFeatureTypeByDataStore(ds, "sqlview"));
+        assertNotNull( catalog.getFeatureTypeByName("gs:sqlview"));
+        
+        //do a get feature for a sanity check
+        Document dom = getAsDOM( "wfs?request=getfeature&typename=gs:sqlview");
+        // print(dom);
+        assertEquals( 2, dom.getElementsByTagName( "gs:sqlview" ).getLength() );
     }
 }
