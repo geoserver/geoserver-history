@@ -484,4 +484,81 @@ public class KvpUtils {
         
         return result;
     }
+
+    /**
+     * Tokenize a String using the specified separator character and the backslash as an escape 
+     * character (see OGC WFS 1.1.0 14.2.2).  Escape characters within the tokens are not resolved. 
+     * 
+     *  @param s the String to parse
+     *  @param separator the character that separates tokens
+     *  
+     *  @return list of tokens
+     */
+    public static List<String> escapedTokens(String s, char separator) {
+        if (s == null) {
+            throw new IllegalArgumentException("The String to parse may not be null.");
+        }
+        if (separator == '\\') {
+            throw new IllegalArgumentException("The separator may not be a backslash.");
+        }
+        List<String> ret = new ArrayList<String>();
+        StringBuilder sb = new StringBuilder();
+        boolean escaped = false;
+        
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (c == separator && !escaped) {
+                ret.add(sb.toString());
+                sb.setLength(0);
+            } else {
+                if (escaped) {
+                    escaped = false;
+                    sb.append('\\');
+                    sb.append(c);
+                } else if (c == '\\') {
+                    escaped = true;
+                } else {
+                    sb.append(c);
+                }
+            }
+        }
+        if (escaped) {
+            throw new IllegalStateException("The specified String ends with an incomplete escape sequence.");
+        }
+        ret.add(sb.toString());
+        return ret;
+    }
+    
+    /**
+     * Resolve escape sequences in a String. 
+     * 
+     *  @param s the String to unescape
+     *  
+     *  @return resolved String
+     */
+    public static String unescape(String s) {
+        if (s == null) {
+            throw new IllegalArgumentException("The String to unescape may not be null.");
+        }
+        StringBuilder sb = new StringBuilder();
+        boolean escaped = false;
+        
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (escaped) {
+                escaped = false;
+                sb.append(c);
+            } else if (c == '\\') {
+                escaped = true;
+            } else {
+                sb.append(c);
+            }
+        }
+        if (escaped) {
+            throw new IllegalArgumentException("The specified String ends with an incomplete escape sequence.");
+        }
+        return sb.toString();
+    }
+    
+    
 }
