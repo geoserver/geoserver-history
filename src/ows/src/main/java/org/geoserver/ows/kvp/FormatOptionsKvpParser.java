@@ -13,6 +13,7 @@ import java.util.logging.Level;
 
 import org.geoserver.ows.KvpParser;
 import org.geoserver.ows.util.CaseInsensitiveMap;
+import org.geoserver.ows.util.KvpUtils;
 import org.geoserver.platform.GeoServerExtensions;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -55,26 +56,17 @@ public class FormatOptionsKvpParser extends KvpParser implements ApplicationCont
         List parsers = GeoServerExtensions.extensions(KvpParser.class, applicationContext);
         Map formatOptions = new CaseInsensitiveMap(new HashMap());
 
-        //TODO: refactor some of this routine out into utility class since 
-        // much of the logic is duplicated from the dispatcher
-        StringTokenizer st = new StringTokenizer(value, ";");
-
-        while (st.hasMoreTokens()) {
-            String kvp = (String) st.nextToken();
-            String[] kv = kvp.split(":");
-
-            String key = null;
-            String raw = null;
-
-            if (kv.length == 1) {
-                //assume its a on/off (boolean) kvp
-                key = kv[0];
-                raw = "true";
-            } else {
-                key = kv[0];
-                raw = kv[1];
+        List<String> kvps = KvpUtils.escapedTokens(value, ';');
+        
+        for (String kvp : kvps) {
+            
+            List<String> kv = KvpUtils.escapedTokens(kvp, ':');
+            if (kv.size() > 2) {
+                throw new IllegalArgumentException("Invalid key-value pair length (" + kv.size() + " elements).");
             }
-
+            String key = kv.get(0);
+            String raw = kv.size() == 1 ? "true" : KvpUtils.unescape(kv.get(1));
+               
             Object parsed = null;
 
             for (Iterator p = parsers.iterator(); p.hasNext();) {

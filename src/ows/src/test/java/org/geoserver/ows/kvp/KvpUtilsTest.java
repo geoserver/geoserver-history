@@ -21,15 +21,15 @@ public class KvpUtilsTest extends TestCase {
     }
     
     public void testEmtpyNestedString() {
-    	List result = KvpUtils.readNested("");
-    	assertEquals(1, result.size());
-    	assertEquals(0, ((List) result.get(0)).size());
+        List result = KvpUtils.readNested("");
+        assertEquals(1, result.size());
+        assertEquals(0, ((List) result.get(0)).size());
     }
     
     public void testStarNestedString() {
-    	List result = KvpUtils.readNested("*");
-    	assertEquals(1, result.size());
-    	assertEquals(0, ((List) result.get(0)).size());
+        List result = KvpUtils.readNested("*");
+        assertEquals(1, result.size());
+        assertEquals(0, ((List) result.get(0)).size());
     }
     
     public void testWellKnownTokenizers(){
@@ -80,6 +80,69 @@ public class KvpUtilsTest extends TestCase {
         List expectedList = Arrays.asList(expected);
         assertEquals(expectedList.size(), actual.size());
         assertEquals(expectedList, actual);
+    }
+
+    
+    public void testEscapedTokens() {
+        // test trivial scenarios
+        List<String> actual = KvpUtils.escapedTokens("", ',');
+        assertEquals(Arrays.asList(""), actual);
+
+        actual = KvpUtils.escapedTokens(",", ',');
+        assertEquals(Arrays.asList("", ""), actual);
+        
+        actual = KvpUtils.escapedTokens("a,b", ',');
+        assertEquals(Arrays.asList("a", "b"), actual);
+        
+        actual = KvpUtils.escapedTokens("a,b,c", ',');
+        assertEquals(Arrays.asList("a", "b", "c"), actual);
+        
+        // test escaped data
+        actual = KvpUtils.escapedTokens("\\\\,\\\\", ',');
+        assertEquals(Arrays.asList("\\\\", "\\\\"), actual);
+        
+        actual = KvpUtils.escapedTokens("a\\,b,c", ',');
+        assertEquals(Arrays.asList("a\\,b", "c"), actual);
+        
+        // test error conditions
+        try {
+            KvpUtils.escapedTokens(null, ',');
+            fail("Expected IllegalArgumentException.");
+        } catch (IllegalArgumentException e) { ; }
+        
+        try {
+            KvpUtils.escapedTokens("", '\\');
+            fail("Expected IllegalArgumentException.");
+        } catch (IllegalArgumentException e) { ; }
+        
+        try {
+            KvpUtils.escapedTokens("\\", '\\');
+            fail("Expected IllegalArgumentException.");
+        } catch (IllegalArgumentException e) { ; }
+    }
+    
+    public static void testUnescape() {
+        // test trivial scenarios
+        String actual = KvpUtils.unescape("abc");
+        assertEquals("abc", actual);
+        
+        // test escape sequences 
+        actual = KvpUtils.unescape("abc\\\\");
+        assertEquals("abc\\", actual);
+
+        actual = KvpUtils.unescape("abc\\d");
+        assertEquals("abcd", actual);
+        
+        // test error conditions
+        try {
+            KvpUtils.unescape(null);
+            fail("Expected IllegalArgumentException.");
+        } catch (IllegalArgumentException e) { ; }
+        
+        try {
+            KvpUtils.unescape("\\");
+            fail("Expected IllegalArgumentException.");
+        } catch (IllegalArgumentException e) { ; }
     }
     
 }
