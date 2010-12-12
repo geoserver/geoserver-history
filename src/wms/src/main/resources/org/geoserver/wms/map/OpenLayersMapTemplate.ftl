@@ -210,7 +210,8 @@
                         </#list>
                         WIDTH: map.size.w,
                         HEIGHT: map.size.h,
-                        format: format};
+                        format: format,
+                        srs: map.layers[0].params.SRS};
                     OpenLayers.loadURL("${baseUrl}/${servicePath}", params, this, setHTML, setHTML);
                     OpenLayers.Event.stop(e);
                 });
