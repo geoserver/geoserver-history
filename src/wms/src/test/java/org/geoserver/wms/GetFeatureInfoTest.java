@@ -167,7 +167,7 @@ public class GetFeatureInfoTest extends WMSTestSupport {
     }
     
     /**
-     * Tests a GetFeatureInfo againworks, and that the result contains the
+     * Tests a GetFeatureInfo again works, and that the result contains the
      * expected polygon
      * 
      * @throws Exception
@@ -181,8 +181,34 @@ public class GetFeatureInfoTest extends WMSTestSupport {
         assertTrue(result.indexOf("Green Forest") > 0);
         // GEOS-2603 GetFeatureInfo returns html tables without css style if more than one layer is selected
         assertTrue(result.indexOf("<style type=\"text/css\">") > 0);
-
     }
+    
+    /**
+     * Tests that FEATURE_COUNT is respected globally, not just per layer
+     * 
+     * @throws Exception
+     */
+    public void testTwoLayersFeatureCount() throws Exception {
+        // this request hits on two overlapping features, a lake and a forest
+        String layer = getLayerId(MockData.FORESTS) + "," + getLayerId(MockData.LAKES);
+        String request = "wms?REQUEST=GetFeatureInfo&EXCEPTIONS=application%2Fvnd.ogc.se_xml&" +
+        		"BBOX=-0.002356%2C-0.004819%2C0.005631%2C0.004781&SERVICE=WMS&VERSION=1.1.0&X=267&Y=325" +
+        		"&INFO_FORMAT=application/vnd.ogc.gml" +
+        		"&QUERY_LAYERS=" + layer + "&Layers=" + layer + " &Styles=&WIDTH=426&HEIGHT=512" +
+        	    "&format=image%2Fpng&srs=EPSG%3A4326";
+        // no feature count, just one should be returned
+        Document dom = getAsDOM(request);
+        assertXpathEvaluatesTo("1", "count(//gml:featureMember)", dom);
+        assertXpathEvaluatesTo("1", "count(//cite:Forests)", dom);
+        
+        // feature count set to 2, both features should be there
+        dom = getAsDOM(request + "&FEATURE_COUNT=2");
+        // print(dom);
+        assertXpathEvaluatesTo("2", "count(//gml:featureMember)", dom);
+        assertXpathEvaluatesTo("1", "count(//cite:Forests)", dom);
+        assertXpathEvaluatesTo("1", "count(//cite:Lakes)", dom);
+    }
+
 
     /**
      * Check GetFeatureInfo returns an error if the format is not known, instead
