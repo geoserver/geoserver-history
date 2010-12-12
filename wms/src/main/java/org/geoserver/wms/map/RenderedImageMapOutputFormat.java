@@ -207,6 +207,8 @@ public class RenderedImageMapOutputFormat extends AbstractMapOutputFormat {
      */
     public RenderedImageMap produceMap(final WMSMapContext mapContext, final boolean tiled)
             throws ServiceException {
+        
+        System.setProperty("tolerance", "0.333");
 
         final MapDecorationLayout layout = findDecorationLayout(mapContext, tiled);
 
