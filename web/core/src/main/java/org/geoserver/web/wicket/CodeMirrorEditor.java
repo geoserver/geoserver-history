@@ -56,7 +56,13 @@ public class CodeMirrorEditor extends FormComponentPanel<String> {
 
     @Override
     protected void convertInput() {
+        editor.processInput();
         setConvertedInput(editor.getConvertedInput());
+    }
+    
+    @Override
+    public String getInput() {
+        return editor.getInput();
     }
     
     public void setTextAreaMarkupId(String id) {

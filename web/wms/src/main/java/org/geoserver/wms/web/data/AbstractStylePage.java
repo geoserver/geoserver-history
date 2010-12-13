@@ -174,7 +174,7 @@ public abstract class AbstractStylePage extends GeoServerSecuredPage {
             
             @Override
             protected void onClick(AjaxRequestTarget target, Form form) {
-                editor.validate();
+                editor.processInput();
                 List<Exception> errors = validateSLD();
                 
                 if ( errors.isEmpty() ) {
@@ -186,24 +186,26 @@ public abstract class AbstractStylePage extends GeoServerSecuredPage {
                 }        
             }
             
-//            @Override
-//            protected IAjaxCallDecorator getAjaxCallDecorator() {
-//                // we need to force EditArea to update the textarea contents (which it hid)
-//                // before submitting the form, otherwise the validation will go bye bye
-//                return new AjaxCallDecorator() {
-//                    @Override
-//                    public CharSequence decorateScript(CharSequence script) {
-//                        return "document.getElementById('editor').value = editAreaLoader.getValue('editor');" + script;
-//                    }
-//                };
-//            }
+            @Override
+            protected IAjaxCallDecorator getAjaxCallDecorator() {
+                // we need to force CodeMirror to update the textarea contents (which it hid)
+                // before submitting the form, otherwise the validation will use the old contents
+                return new AjaxCallDecorator() {
+                    @Override
+                    public CharSequence decorateScript(CharSequence script) {
+                        // textarea.value = codemirrorinstance.getCode()
+                        return "document.getElementById('editor').value = document.gsEditors." + editor.getTextAreaMarkupId() + ".getCode();" + script;
+                    }
+                };
+            }
         };
     }
     
     List<Exception> validateSLD() {
         Parser parser = new Parser(new SLDConfiguration());
         try {
-            parser.validate( new ByteArrayInputStream(editor.getInput().getBytes()) );
+            final String sld = editor.getInput();
+            parser.validate( new ByteArrayInputStream(sld.getBytes()) );
         } catch( Exception e ) {
             return Arrays.asList( e );
         }
