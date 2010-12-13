@@ -27,6 +27,7 @@ import org.geotools.geometry.jts.LiteShape2;
 import org.geotools.renderer.lite.StyledShapePainter;
 import org.geotools.renderer.style.SLDStyleFactory;
 import org.geotools.renderer.style.Style2D;
+import org.geotools.styling.Description;
 import org.geotools.styling.FeatureTypeStyle;
 import org.geotools.styling.LineSymbolizer;
 import org.geotools.styling.PointSymbolizer;
@@ -42,6 +43,7 @@ import org.opengis.feature.IllegalAttributeException;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
+import org.opengis.util.InternationalString;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
@@ -302,11 +304,15 @@ public class BufferedImageLegendGraphicBuilder {
 
                     // What's the label on this rule? We prefer to use
                     // the 'title' if it's available, but fall-back to 'name'
-                    labels[i] = rule.getDescription().getTitle().toString();
-                    if (labels[i] == null)
+                    final Description description = rule.getDescription();
+                    if (description != null && description.getTitle() != null) {
+                        final InternationalString title = description.getTitle();
+                        labels[i] = title.toString();
+                    } else if (rule.getName() == null) {
                         labels[i] = rule.getName();
-                    if (labels[i] == null)
+                    } else {
                         labels[i] = "";
+                    }
 
                     Graphics2D g = img.createGraphics();
                     g.setFont(labelFont);
