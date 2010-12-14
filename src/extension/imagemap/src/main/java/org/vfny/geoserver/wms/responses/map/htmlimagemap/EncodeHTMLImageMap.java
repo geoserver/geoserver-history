@@ -269,7 +269,7 @@ public class EncodeHTMLImageMap {
     		Rule rule=rules[count];
     		double scaleDenominator;
 			try {
-				scaleDenominator = RendererUtilities.calculateScale(mapContext.getAreaOfInterest(), mapContext.getMapWidth(), mapContext.getMapHeight(),100);
+				scaleDenominator = RendererUtilities.calculateScale(mapContext.getAreaOfInterest(), mapContext.getMapWidth(), mapContext.getMapHeight(),90);
 			
 	            //is this rule within scale?
 	            if (EncodeHTMLImageMap.isWithInScale(rule,scaleDenominator)) {
