@@ -28,6 +28,7 @@ import org.geoserver.web.GeoServerApplication;
 import org.geoserver.web.data.layer.SQLViewEditPage;
 import org.geoserver.web.wicket.GeoServerAjaxFormLink;
 import org.geotools.jdbc.VirtualTable;
+import org.opengis.feature.type.FeatureType;
 
 @SuppressWarnings("serial")
 public class FeatureResourceConfigurationPanel extends ResourceConfigurationPanel {
@@ -75,15 +76,18 @@ public class FeatureResourceConfigurationPanel extends ResourceConfigurationPane
                     // working around a serialization issue
                     FeatureTypeInfo typeInfo = (FeatureTypeInfo) model.getObject();
                     final ResourcePool resourcePool = GeoServerApplication.get().getCatalog().getResourcePool();
-                    org.opengis.feature.type.PropertyDescriptor pd = resourcePool.getFeatureType(typeInfo).getDescriptor(attribute.getName());
+                    final FeatureType featureType = resourcePool.getFeatureType(typeInfo);
+                    org.opengis.feature.type.PropertyDescriptor pd = featureType.getDescriptor(attribute.getName());
                     String typeName = "?";
+                    String nillable = "?";
                     try {
                         typeName = pd.getType().getBinding().getSimpleName();
+                        nillable = String.valueOf(pd.isNillable());
                     } catch(Exception e) {
-                        LOGGER.log(Level.INFO, "Could not determine the type name of attribute " + attribute.getName(), e);
+                        LOGGER.log(Level.INFO, "Could not find attribute " + attribute.getName() + " in feature type " + featureType, e);
                     }
                     item.add(new Label("type", typeName));
-                    item.add(new Label("nillable", pd.isNillable() + ""));
+                    item.add(new Label("nillable", nillable));
                 } catch(IOException e) {
                     item.add(new Label("type", "?"));
                     item.add(new Label("nillable", "?"));

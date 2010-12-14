@@ -11,15 +11,18 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.List;
 
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.geoserver.catalog.impl.FeatureTypeInfoImpl;
 import org.geoserver.catalog.util.ReaderUtils;
 import org.geoserver.data.test.MockData;
 import org.geoserver.test.GeoServerTestSupport;
 import org.geotools.data.DataAccess;
+import org.geotools.feature.NameImpl;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 import org.w3c.dom.Element;
@@ -45,6 +48,41 @@ public class ResourcePoolTest extends GeoServerTestSupport {
         FeatureType ft3 = pool.getFeatureType(info);
         assertSame(ft1, ft2);
         assertSame(ft1, ft3);
+    }
+    
+    public void testAttributeCache() throws Exception {
+        final Catalog catalog = getCatalog();
+        ResourcePool pool = new ResourcePool(catalog);
+        
+        // clean up the lakes type
+        FeatureTypeInfo oldInfo = catalog.getFeatureTypeByName(
+                MockData.LAKES.getNamespaceURI(), MockData.LAKES.getLocalPart());
+        List<LayerInfo> layers = catalog.getLayers(oldInfo);
+        for (LayerInfo layerInfo : layers) {
+            catalog.remove(layerInfo);
+        }
+        catalog.remove(oldInfo);
+        
+        // rebuild as new
+        CatalogBuilder builder = new CatalogBuilder(catalog);
+        builder.setStore(catalog.getStoreByName(MockData.CITE_PREFIX, MockData.CITE_PREFIX, DataStoreInfo.class));
+        FeatureTypeInfo info = builder.buildFeatureType(new NameImpl(MockData.LAKES.getNamespaceURI(), MockData.LAKES.getLocalPart()));
+        
+        // non persisted state, caching should not occurr
+        List<AttributeTypeInfo> att1 = pool.getAttributes(info);
+        List<AttributeTypeInfo> att2 = pool.getAttributes(info);
+        assertNotSame(att1, att2);
+        assertEquals(att1, att2);
+        
+        // save it, making it persistent
+        catalog.add(info);
+        
+        // first check caching actually works against persisted type infos
+        List<AttributeTypeInfo> att3 = pool.getAttributes(info);
+        List<AttributeTypeInfo> att4 = pool.getAttributes(info);
+        assertSame(att3, att4);
+        assertNotSame(att1, att3);
+        assertEquals(att1, att3);
     }
     
     boolean cleared = false;
