@@ -461,8 +461,10 @@ public class ResourcePool {
                             "Error occured applying schema override for "+info.getName(), e);
                     }
                     
-                    //TODO: cache attributes
-                    featureTypeAttributeCache.put(info.getId(), atts);
+                    // cache attributes only if the id is not null -> the feature type is not new
+                    if(info.getId() != null) {
+                        featureTypeAttributeCache.put(info.getId(), atts);
+                    }
                 }
             }
         }
