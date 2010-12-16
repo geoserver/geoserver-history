@@ -98,6 +98,17 @@ public class GeoServerResourceLoader extends DefaultResourceLoader implements Ap
                 }
             }
         }
+        
+        //add additional lookup locations
+        if (baseDirectory != null) {
+            addSearchLocation(new File(baseDirectory, "data"));
+        }
+        
+        if (applicationContext instanceof WebApplicationContext) {
+            ServletContext servletContext = 
+                ((WebApplicationContext)applicationContext).getServletContext();
+            addSearchLocation(new File(servletContext.getRealPath("WEB-INF")));
+        }
     }
     
     /**
@@ -505,6 +516,9 @@ public class GeoServerResourceLoader extends DefaultResourceLoader implements Ap
             }
 
             file = new File(baseDirectory, location);
+            if (!file.getParentFile().exists()) {
+                file.getParentFile().mkdirs();
+            }
             file.createNewFile();
         }
         
