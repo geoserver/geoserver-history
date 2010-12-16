@@ -4,7 +4,12 @@
  */
 package org.geoserver.web.services;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.Iterator;
+import java.util.List;
+
 import org.apache.wicket.Component;
+import org.apache.wicket.WicketRuntimeException;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.CheckBox;
@@ -12,6 +17,8 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.SubmitLink;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
@@ -78,6 +85,10 @@ public abstract class BaseServiceAdminPage<T extends ServiceInfo> extends GeoSer
         
         build(infoModel, form);
         
+        //add the extension panels
+        ListView extensionPanels = createExtensionPanelList("extensions", infoModel);
+        form.add(extensionPanels);
+        
         SubmitLink submit = new SubmitLink("submit",new StringResourceModel( "save", (Component)null, null) ) {
             @Override
             public void onSubmit() {
@@ -94,6 +105,34 @@ public abstract class BaseServiceAdminPage<T extends ServiceInfo> extends GeoSer
         };
         form.add( cancel );
         //cancel.setDefaultFormProcessing( false );
+    }
+    
+    protected ListView createExtensionPanelList(String id, final IModel infoModel) {
+        List<AdminPagePanelInfo> panels = 
+            getGeoServerApplication().getBeansOfType(AdminPagePanelInfo.class);
+        for (Iterator<AdminPagePanelInfo> it = panels.iterator(); it.hasNext();) {
+            AdminPagePanelInfo panel = it.next();
+            if (!getServiceClass().equals(panel.getServiceClass())) {
+                it.remove();
+            }
+        }
+        
+        return new ListView<AdminPagePanelInfo>(id, panels) {
+
+            @Override
+            protected void populateItem(ListItem<AdminPagePanelInfo> item) {
+                AdminPagePanelInfo info = item.getModelObject();
+                try {
+                    AdminPagePanel panel = info.getComponentClass().getConstructor(
+                            String.class, IModel.class).newInstance("content", infoModel);
+                    item.add(panel);
+                } 
+                catch (Exception e) {
+                    throw new WicketRuntimeException("Failed to create admin extension panel of " +
+                        "type " + info.getComponentClass().getSimpleName(), e);
+                }
+            }
+        };
     }
     
     /**
