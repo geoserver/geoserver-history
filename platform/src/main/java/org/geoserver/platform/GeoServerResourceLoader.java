@@ -103,11 +103,14 @@ public class GeoServerResourceLoader extends DefaultResourceLoader implements Ap
         if (baseDirectory != null) {
             addSearchLocation(new File(baseDirectory, "data"));
         }
-        
+
         if (applicationContext instanceof WebApplicationContext) {
             ServletContext servletContext = 
                 ((WebApplicationContext)applicationContext).getServletContext();
-            addSearchLocation(new File(servletContext.getRealPath("WEB-INF")));
+            String path = servletContext.getRealPath("WEB-INF");
+            if (path != null) {
+                addSearchLocation(new File(path));
+            }
         }
     }
     

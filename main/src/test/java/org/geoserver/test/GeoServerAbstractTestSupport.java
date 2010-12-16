@@ -173,7 +173,15 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
             servletContext.setInitParameter("GEOSERVER_DATA_DIR", testData.getDataDirectoryRoot()
                     .getPath());
             servletContext.setInitParameter("serviceStrategy", "PARTIAL-BUFFER2");
-
+            
+            //set up a fake WEB-INF directory
+            if (testData.getDataDirectoryRoot().canWrite()) {
+                File webinf = new File(testData.getDataDirectoryRoot(), "WEB-INF");
+                webinf.mkdir();
+                
+                servletContext.setRealPath("WEB-INF", webinf.getAbsolutePath());
+            }
+            
             applicationContext = new GeoServerTestApplicationContext(getSpringContextLocations(),
                     servletContext);
             applicationContext.setUseLegacyGeoServerLoader(useLegacyDataDirectory());
