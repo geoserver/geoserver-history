@@ -141,17 +141,21 @@ public class WMSServiceExceptionHandler extends ServiceExceptionHandler {
         final int width;
         final int height;
         final String format;
+        final Color bgcolor;
+        final Boolean transparent;
         try {
             exceptions = (String) request.getKvp().get("EXCEPTIONS");
             width = (Integer) request.getKvp().get("WIDTH");
             height = (Integer) request.getKvp().get("HEIGHT");
             format = (String) request.getKvp().get("FORMAT");
+            bgcolor = (Color) request.getKvp().get("BGCOLOR");
+            transparent = (Boolean) request.getKvp().get("TRANSPARENT");
         } catch (Exception e) {
             // width and height might be missing
             handleXmlException(exception, request);
             return;
         }
-        if (exceptions == null || !"application/vnd.ogc.se_inimage".equals(exceptions)
+        if (exceptions == null || !isImageExceptionType(exceptions)
                 || width <= 0 || height <= 0 || !FORMATS.contains(format)) {
             handleXmlException(exception, request);
             return;
@@ -159,20 +163,39 @@ public class WMSServiceExceptionHandler extends ServiceExceptionHandler {
 
         // ok, it's image, then we have to build a text representing the
         // exception and lay it out in the image
-        handleImageException(exception, request, width, height, format);
+        handleImageException(exception, request, width, height, format, exceptions, bgcolor, transparent);
     }
 
+    private boolean isImageExceptionType(String exceptions) {
+        return "application/vnd.ogc.se_inimage".equals(exceptions) || "INIMAGE".equals(exceptions)
+            || "BLANK".equals(exceptions);
+    }
+    
     private void handleImageException(ServiceException exception, Request request, final int width,
-            final int height, final String format) {
+            final int height, final String format, String exceptionFormat, Color bgcolor, Boolean transparent) {
+       
+        if ("BLANK".equals(exceptionFormat) && bgcolor == null && Boolean.TRUE.equals(transparent)) {
+            bgcolor = new Color(0, 0, 0, 0);
+        }
+        
+        if (bgcolor == null) {
+            bgcolor = Color.WHITE;
+        }
+        
+        
         BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
         Graphics2D g = (Graphics2D) img.getGraphics();
-        g.setColor(Color.WHITE);
+        
+        g.setColor(bgcolor);
         g.fillRect(0, 0, img.getWidth(), img.getHeight());
-        g.setColor(Color.BLACK);
+        
+        if (!"BLANK".equals(exceptionFormat)) { //wms 1.3 only
+            g.setColor(Color.BLACK);
 
-        // draw the exception text (give it a good offset so that it can be read
-        // properly in the OL preview as well)
-        paintLines(g, buildImageExceptionText(exception), width - 2, 35, 5);
+            // draw the exception text (give it a good offset so that it can be read
+            // properly in the OL preview as well)
+            paintLines(g, buildImageExceptionText(exception), width - 2, 35, 5);
+        }
 
         // encode
         g.dispose();

@@ -17,6 +17,7 @@ import org.geoserver.ows.XmlRequestReader;
 import org.geoserver.ows.xml.v1_0.OWS;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.GetCapabilitiesRequest;
+import org.geoserver.wms.WMS;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
@@ -64,9 +65,11 @@ public class CapabilitiesXmlReader extends XmlRequestReader {
             throw new ServiceException(e, "XML capabilities request parsing error", getClass()
                     .getName());
         } catch (IOException e) {
-            throw new ServiceException(e, "XML capabilities request input error", getClass().getName());
+            throw new ServiceException(e, "XML capabilities request input error", getClass()
+                    .getName());
         } catch (ParserConfigurationException e) {
-            throw new ServiceException(e, "Some sort of issue creating parser", getClass().getName());
+            throw new ServiceException(e, "Some sort of issue creating parser", getClass()
+                    .getName());
         }
 
         return req;
@@ -124,9 +127,10 @@ public class CapabilitiesXmlReader extends XmlRequestReader {
 
                 for (int i = 0, n = atts.getLength(); i < n; i++) {
                     if (atts.getLocalName(i).equals("version")) {
-                        request.setVersion(atts.getValue(i));
+                        String version = atts.getValue(i);
+                        request.setVersion(version);
                     } else if (atts.getLocalName(i).equals("service")) {
-                        //ok WMS is implicit
+                        // ok WMS is implicit
                     } else if (atts.getLocalName(i).equals("updateSequence")) {
                         request.setUpdateSequence(atts.getValue(i));
                     }

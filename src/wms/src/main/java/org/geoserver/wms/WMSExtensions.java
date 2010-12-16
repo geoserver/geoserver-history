@@ -94,4 +94,13 @@ public class WMSExtensions {
         return formats;
     }
 
+    /**
+     * Looks up {@link ExtendedCapabilitiesProvider} extensions.
+     * 
+     */
+    public static List<ExtendedCapabilitiesProvider> findExtendedCapabilitiesProviders(
+            final ApplicationContext applicationContext) {
+        return GeoServerExtensions.extensions(ExtendedCapabilitiesProvider.class, applicationContext);
+    }
+
 }

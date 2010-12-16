@@ -8,19 +8,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.geoserver.catalog.LayerInfo;
 import org.geoserver.ows.KvpRequestReader;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.GetFeatureInfoRequest;
 import org.geoserver.wms.GetMapRequest;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
+import org.geoserver.wms.WMSErrorCode;
 import org.geoserver.wms.kvp.MapLayerInfoKvpParser;
 import org.geoserver.wms.map.GetMapKvpRequestReader;
+import org.geotools.util.Version;
 
 /**
  * Builds a GetFeatureInfo request object given by a set of CGI parameters supplied in the
  * constructor.
- * 
+ * <p>
+ * Reads both WMS 1.1.1 and 1.3.0 GetFeatureInfo requests.
+ * </p>
  * <p>
  * Request parameters:
  * </p>
@@ -38,7 +43,15 @@ public class GetFeatureInfoKvpReader extends KvpRequestReader {
     public GetFeatureInfoKvpReader(WMS wms) {
         super(GetFeatureInfoRequest.class);
         getMapReader = new GetMapKvpRequestReader(wms);
+        setWMS(wms);
+    }
+
+    public void setWMS(final WMS wms) {
         this.wms = wms;
+    }
+
+    public WMS getWMS() {
+        return wms;
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -47,8 +60,9 @@ public class GetFeatureInfoKvpReader extends KvpRequestReader {
         GetFeatureInfoRequest request = (GetFeatureInfoRequest) super.read(req, kvp, rawKvp);
         request.setRawKvp(rawKvp);
 
-        request.setQueryLayers(new MapLayerInfoKvpParser("QUERY_LAYERS", wms).parse((String)rawKvp.get("QUERY_LAYERS")));
-        
+        request.setQueryLayers(new MapLayerInfoKvpParser("QUERY_LAYERS", wms).parse((String) rawKvp
+                .get("QUERY_LAYERS")));
+
         if (request.getQueryLayers() == null || request.getQueryLayers().size() == 0) {
             throw new ServiceException("No QUERY_LAYERS has been requested, or no "
                     + "queriable layer in the request anyways");
@@ -75,6 +89,13 @@ public class GetFeatureInfoKvpReader extends KvpRequestReader {
             throw new ServiceException("QUERY_LAYERS contains layers not cited in LAYERS. "
                     + "It should be a proper subset of those instead");
         }
+        for (MapLayerInfo l : request.getQueryLayers()) {
+            LayerInfo layerInfo = l.getLayerInfo();
+            if (!wms.isQueryable(layerInfo)) {
+                throw new ServiceException("Layer " + l.getName() + " is not queryable",
+                    WMSErrorCode.LAYER_NOT_QUERYABLE.get(request.getVersion()), "QUERY_LAYERS");
+            }
+        }
 
         String format = (String) (kvp.containsKey("INFO_FORMAT") ? kvp.get("INFO_FORMAT") : null);
 
@@ -84,8 +105,7 @@ public class GetFeatureInfoKvpReader extends KvpRequestReader {
             List<String> infoFormats = wms.getAvailableFeatureInfoFormats();
             if (!infoFormats.contains(format)) {
                 throw new ServiceException("Invalid format '" + format
-                        + "', supported formats are " + infoFormats, "InvalidParameterValue",
-                        "info_format");
+                        + "', supported formats are " + infoFormats, "InvalidFormat", "info_format");
             }
         }
 
@@ -93,7 +113,6 @@ public class GetFeatureInfoKvpReader extends KvpRequestReader {
 
         request.setFeatureCount(1); // DJB: according to the WMS spec (7.3.3.7 FEATURE_COUNT) this
                                     // should be 1. also tested for by cite
-
         try {
             int maxFeatures = Integer.parseInt(String.valueOf(kvp.get("FEATURE_COUNT")));
             request.setFeatureCount(maxFeatures);
@@ -101,13 +120,46 @@ public class GetFeatureInfoKvpReader extends KvpRequestReader {
             // do nothing, FEATURE_COUNT is optional
         }
 
+        Version version = wms.negotiateVersion(request.getVersion()); 
+        request.setVersion(version.toString());
+        
+        //JD: most wms 1.3 client implementations still use x/y rather than i/j, so we support those
+        // too when i/j not specified when not running in strict cite compliance mode
+        String colPixel, rowPixel;
+        if(WMS.VERSION_1_3_0.compareTo(version) >= 0) {
+            colPixel = "I";
+            rowPixel = "J";
+            
+            if (!kvp.containsKey(colPixel) && !kvp.containsKey(rowPixel)) { 
+                if (!wms.getServiceInfo().isCiteCompliant() && kvp.containsKey("X") 
+                    && kvp.containsKey("Y")) {
+                    colPixel = "X";
+                    rowPixel = "Y"; 
+                }
+            }
+        }
+        else {
+            colPixel = "X";
+            rowPixel = "Y";
+        }
+        
         try {
-            int x = Integer.parseInt(String.valueOf(kvp.get("X")));
-            int y = Integer.parseInt(String.valueOf(kvp.get("Y")));
+            String colParam = String.valueOf(kvp.get(colPixel));
+            String rowParam = String.valueOf(kvp.get(rowPixel));
+            int x = Integer.parseInt(colParam);
+            int y = Integer.parseInt(rowParam);
+            
+            //ensure x/y in dimension of image
+            if (x < 0 || x > getMapPart.getWidth() || y < 0 || y > getMapPart.getHeight()) {
+                throw new ServiceException(
+                    String.format("%d, %d not in dimensions of image: %d, %d", x, y, 
+                        getMapPart.getWidth(), getMapPart.getHeight()), "InvalidPoint");
+            }
             request.setXPixel(x);
             request.setYPixel(y);
         } catch (NumberFormatException ex) {
-            throw new ServiceException("X and Y incorrectly specified");
+            String msg = colPixel + " and " + rowPixel + " incorrectly specified";
+            throw new ServiceException(msg, "InvalidPoint");
         }
 
         return request;

@@ -129,7 +129,7 @@ public class DescribeLayerTransformerTest extends TestCase {
         WMS wms = new WMS(geoServerImpl);
         request = new DescribeLayerRequest();
         request.setBaseUrl("http://localhost:8080/geoserver");
-        request.setVersion("1.1.1");
+        request.setVersion(WMS.VERSION_1_1_1.toString());
     }
 
     protected void tearDown() throws Exception {

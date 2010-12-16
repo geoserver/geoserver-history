@@ -17,7 +17,7 @@ public class WMSDisabledTest extends WMSTestSupport {
         wms.setEnabled(false);
         getGeoServer().save(wms);
         
-        Document doc = getAsDOM("wms?service=WMS&request=getCapabilities");
+        Document doc = getAsDOM("wms?service=WMS&version=1.1.1&request=getCapabilities");
         assertEquals("ows:ExceptionReport", doc.getDocumentElement()
                 .getNodeName());
     }
@@ -27,7 +27,7 @@ public class WMSDisabledTest extends WMSTestSupport {
         wms.setEnabled(true);
         getGeoServer().save(wms);
 
-        Document doc = getAsDOM("wms?service=WMS&request=getCapabilities");
+        Document doc = getAsDOM("wms?service=WMS&version=1.1.1&request=getCapabilities");
         assertEquals("WMT_MS_Capabilities", doc.getDocumentElement()
                 .getNodeName());
     }

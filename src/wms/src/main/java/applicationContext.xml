@@ -73,12 +73,33 @@
     </bean>
         
 	<!-- wms service + descriptor -->
- 	<bean id="wmsService2" class="org.geoserver.wms.DefaultWebMapService">
+ 	<bean id="wmsServiceTarget" class="org.geoserver.wms.DefaultWebMapService">
  	  <constructor-arg ref="wms"/>
+      <property name="getCapabilities" ref="wmsGetCapabilities"/>
+      <property name="describeLayer" ref="wmsDescribeLayer"/>
+      <property name="getMap" ref="wmsGetMap"/>
+      <property name="getFeatureInfo" ref="wmsGetFeatureInfo"/>
+      <property name="getLegendGraphic" ref="wmsGetLegendGraphic"/>
+      <property name="getStyles" ref="wmsGetStyles"/>
  	</bean>
- 	<alias name="wmsService2" alias="webMapService"/>
  	
- 	<bean id="wmsServiceDescriptor" class="org.geoserver.platform.Service">
+ 	<bean id="wmsLogger" class="org.geoserver.ows.util.RequestObjectLogger">
+      <constructor-arg type="java.lang.String" value="org.geoserver.wms"/>
+    </bean>
+    <bean id="wmsService2" class="org.springframework.aop.framework.ProxyFactoryBean">
+      <property name="proxyInterfaces">
+        <value>org.geoserver.wms.WebMapService</value>
+      </property>
+      <property name="interceptorNames">
+        <list>
+            <value>wmsLogger</value>
+            <value>wmsServiceTarget</value>
+        </list>
+      </property>
+    </bean>
+    <alias name="wmsService2" alias="webMapService"/>
+
+ 	<bean id="wms-1_1_1-ServiceDescriptor" class="org.geoserver.platform.Service">
 		<constructor-arg index="0" value="wms"/>
 		<constructor-arg index="1" ref="wmsService2"/>
 		<constructor-arg index="2" value="1.1.1"/>
@@ -97,15 +118,41 @@
           </list>
         </constructor-arg>
  	</bean>
+
  	<!-- service exception handler -->
-	<bean id="wmsExceptionHandler" class="org.geoserver.wms.WMSServiceExceptionHandler">
-		<constructor-arg ref="wmsServiceDescriptor"/>
+	<bean id="wms-1_1_1-ExceptionHandler" class="org.geoserver.wms.WMSServiceExceptionHandler">
+		<constructor-arg ref="wms-1_1_1-ServiceDescriptor"/>
         <constructor-arg ref="geoServer"/>
 		<property name="version" value="1.1.1"/>
 		<property name="contentType" value="application/vnd.ogc.se_xml"/>
 		<property name="DTDLocation" value="wms/1.1.1/WMS_exception_1_1_1.dtd"/>
 	</bean>
  	
+    <bean id="wms-1_3_0-ServiceDescriptor" class="org.geoserver.platform.Service">
+      <constructor-arg index="0" value="wms"/>
+      <constructor-arg index="1" ref="wmsService2"/>
+      <constructor-arg index="2" value="1.3.0"/>
+        <constructor-arg index="3">
+            <list>
+              <value>GetCapabilities</value>
+              <value>GetMap</value>
+              <value>DescribeLayer</value>
+              <value>GetFeatureInfo</value>
+              <value>GetLegendGraphic</value>
+              <value>reflect</value>
+              <value>kml</value>
+            </list>
+          </constructor-arg>
+    </bean>
+    
+    <bean id="wms-1_3_0-ExceptionHandler" class="org.geoserver.wms.WMSServiceExceptionHandler">
+      <constructor-arg ref="wms-1_3_0-ServiceDescriptor"/>
+      <constructor-arg ref="geoServer"/>
+      <property name="version" value="1.3.0"/>
+      <property name="contentType" value="text/xml"/>
+      <property name="schemaLocation" value="wms/1.3.0/exceptions_1_3_0.xsd"/>
+    </bean>
+
  	<!-- kvp parsers -->
   
     <!-- 
@@ -195,6 +242,7 @@
  	<!-- kvp request readers -->
  	<bean id="wmsGetCapabilitiesKvpReader" 
  		class="org.geoserver.wms.capabilities.CapabilitiesKvpReader">
+      <constructor-arg ref="wms"/>
 	</bean>
 
 	<bean id="describeLayerKvpReader"
@@ -242,9 +290,13 @@
     </bean>
    		
 	<!--  responses -->
-	<bean id="wmsGetCapabilitiesResponse"
+	<bean id="wms_1_1_1_GetCapabilitiesResponse"
 		class="org.geoserver.wms.capabilities.GetCapabilitiesResponse">
 	</bean>
+    <bean id="wms_1_3_0_GetCapabilitiesResponse"
+      class="org.geoserver.wms.capabilities.Capabilities_1_3_0_Response">
+    </bean>
+  
 	<bean id="describeLayerResponse"
 		class="org.geoserver.wms.describelayer.DescribeLayerResponse">
 	</bean>

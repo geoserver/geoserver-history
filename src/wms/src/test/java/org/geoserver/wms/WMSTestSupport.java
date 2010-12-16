@@ -13,6 +13,7 @@ import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -20,15 +21,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.imageio.ImageIO;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.commons.io.FileUtils;
 import org.custommonkey.xmlunit.SimpleNamespaceContext;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.data.test.MockData;
+import org.geoserver.platform.GeoServerResourceLoader;
 import org.geoserver.test.GeoServerTestSupport;
 import org.geotools.data.FeatureSource;
 import org.geotools.map.FeatureSourceMapLayer;
@@ -42,6 +46,7 @@ import org.vfny.geoserver.Request;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
+import com.mockrunner.mock.web.MockHttpServletResponse;
 import com.vividsolutions.jts.geom.Envelope;
 
 /**
@@ -83,8 +88,21 @@ public abstract class WMSTestSupport extends GeoServerTestSupport {
         namespaces.put("gml", "http://www.opengis.net/gml");
         getTestData().registerNamespaces(namespaces);
         XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(namespaces));
+        
+        //copy over some schema files
+        copySchemaFile("gml/2.1.2.1/geometry.xsd");
+        copySchemaFile("gml/2.1.2.1/feature.xsd");
+        copySchemaFile("xlink/1.0.0/xlinks.xsd");
+        copySchemaFile("filter/1.0.0/expr.xsd");
+        copySchemaFile("filter/1.0.0/filter.xsd");
+        copySchemaFile("sld/StyledLayerDescriptor.xsd");
     }
 
+    protected void copySchemaFile(String file) throws IOException {
+        File f = new File("../web/app/src/main/webapp/schemas/" + file);
+        FileUtils.copyFile(f, getResourceLoader().createFile("WEB-INF/schemas/"+file));
+    }
+    
     @Override
     protected void populateDataDirectory(MockData dataDirectory) throws Exception {
         super.populateDataDirectory(dataDirectory);
@@ -349,6 +367,32 @@ public abstract class WMSTestSupport extends GeoServerTestSupport {
             }
 
             frame.dispose();
+        }
+    }
+    
+    /**
+     * Performs some checks on an image response assuming the image is a png.
+     * @see #checkImage(MockHttpServletResponse, String)
+     */
+    protected void checkImage(MockHttpServletResponse response) {
+        checkImage(response, "image/png");
+    }
+    
+    /**
+     * Performs some checks on an image response such as the mime type and attempts to read the 
+     * actual image into a buffered image.
+     * 
+     */
+    protected void checkImage(MockHttpServletResponse response, String mimeType) {
+        assertEquals(mimeType, response.getContentType());
+        try {
+            BufferedImage image = ImageIO.read(getBinaryInputStream(response));
+            assertNotNull(image);
+            assertEquals(image.getWidth(), 550);
+            assertEquals(image.getHeight(), 250);
+        } catch (Throwable t) {
+            t.printStackTrace();
+            fail("Could not read image returned from GetMap:" + t.getLocalizedMessage());
         }
     }
 

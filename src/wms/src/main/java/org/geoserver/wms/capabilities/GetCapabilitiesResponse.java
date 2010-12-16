@@ -12,6 +12,7 @@ import javax.xml.transform.TransformerException;
 import org.geoserver.ows.Response;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
+import org.geoserver.wms.GetCapabilities;
 import org.geoserver.wms.GetCapabilitiesRequest;
 
 /**
@@ -23,11 +24,11 @@ import org.geoserver.wms.GetCapabilitiesRequest;
 public class GetCapabilitiesResponse extends Response {
 
     public GetCapabilitiesResponse() {
-        super(GetCapabilitiesTransformer.class);
+        super(Capabilities_1_3_0_Transformer.class);
     }
 
     /**
-     * @return {@code "application/vnd.ogc.wms_xml"}
+     * @return {@code "text/xml"}
      * @see org.geoserver.ows.Response#getMimeType(java.lang.Object,
      *      org.geoserver.platform.Operation)
      */
@@ -35,8 +36,8 @@ public class GetCapabilitiesResponse extends Response {
     public String getMimeType(final Object value, final Operation operation)
             throws ServiceException {
 
-        if (value instanceof GetCapabilitiesTransformer) {
-            return GetCapabilitiesTransformer.WMS_CAPS_MIME;
+        if (value instanceof Capabilities_1_3_0_Transformer) {
+            return Capabilities_1_3_0_Transformer.WMS_CAPS_MIME;
         }
 
         throw new IllegalArgumentException(value == null ? "null" : value.getClass().getName()
@@ -45,7 +46,7 @@ public class GetCapabilitiesResponse extends Response {
 
     /**
      * @param value
-     *            {@link WMSCapsTransformer}
+     *            {@link Capabilities_1_3_0_Transformer}
      * @param output
      *            destination
      * @param operation
@@ -57,7 +58,7 @@ public class GetCapabilitiesResponse extends Response {
     public void write(final Object value, final OutputStream output, final Operation operation)
             throws IOException, ServiceException {
 
-        GetCapabilitiesTransformer transformer = (GetCapabilitiesTransformer) value;
+        Capabilities_1_3_0_Transformer transformer = (Capabilities_1_3_0_Transformer) value;
 
         try {
             GetCapabilitiesRequest request = (GetCapabilitiesRequest) operation.getParameters()[0];

@@ -9,6 +9,7 @@ import java.util.HashMap;
 import junit.framework.TestCase;
 
 import org.geoserver.wms.GetCapabilitiesRequest;
+import org.geoserver.wms.WMS;
 
 @SuppressWarnings("rawtypes")
 public class CapabilitiesKvpReaderTest extends TestCase {
@@ -20,7 +21,7 @@ public class CapabilitiesKvpReaderTest extends TestCase {
     private HashMap rawKvp;
 
     public void setUp() {
-        this.reader = new CapabilitiesKvpReader();
+        this.reader = new CapabilitiesKvpReader(new WMS(null));
         this.kvp = new HashMap();
         this.rawKvp = new HashMap();
     }
@@ -37,7 +38,8 @@ public class CapabilitiesKvpReaderTest extends TestCase {
     }
 
     /**
-     * 1.0 "WMTVER" parameter supplied instead of "VERSION"?
+     * 1.0 "WMTVER" parameter supplied instead of "VERSION"? Version negotiation should agree on
+     * 1.1.1
      * 
      * @throws Exception
      */
@@ -47,7 +49,7 @@ public class CapabilitiesKvpReaderTest extends TestCase {
 
         GetCapabilitiesRequest read = reader.read(reader.createRequest(), kvp, rawKvp);
         assertNotNull(read);
-        assertEquals("1.0", read.getVersion());
+        assertEquals("1.1.1", read.getVersion());
     }
 
     @SuppressWarnings("unchecked")

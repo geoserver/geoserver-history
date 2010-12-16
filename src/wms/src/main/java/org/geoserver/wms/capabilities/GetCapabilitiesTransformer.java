@@ -10,6 +10,7 @@ import static org.geoserver.ows.util.ResponseUtils.buildURL;
 import static org.geoserver.ows.util.ResponseUtils.params;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -132,6 +133,9 @@ public class GetCapabilitiesTransformer extends TransformerBase {
         this.getLegendGraphicFormats = getLegendGraphicFormats;
         this.baseURL = baseURL;
         this.setNamespaceDeclarationEnabled(false);
+        setIndentation(2);
+        final Charset encoding = wms.getCharSet();
+        setEncoding(encoding);
     }
 
     @Override
@@ -253,8 +257,9 @@ public class GetCapabilitiesTransformer extends TransformerBase {
             AttributesImpl orAtts = new AttributesImpl();
             orAtts.addAttribute("", "xmlns:xlink", "xmlns:xlink", "", XLINK_NS);
             orAtts.addAttribute(XLINK_NS, "xlink:type", "xlink:type", "", "simple");
-            orAtts.addAttribute("", "xlink:href", "xlink:href", "",
-                    buildURL(request.getBaseUrl(), "wms", null, URLType.SERVICE));
+            String requestBaseUrl = request.getBaseUrl();
+            String onlineResource = buildURL(requestBaseUrl, "wms", null, URLType.SERVICE);
+            orAtts.addAttribute("", "xlink:href", "xlink:href", "", onlineResource);
             element("OnlineResource", null, orAtts);
 
             GeoServer geoServer = wmsConfig.getGeoServer();
@@ -978,7 +983,7 @@ public class GetCapabilitiesTransformer extends TransformerBase {
                 return false;
             }
         }
-        
+
         protected void handleLayerGroups(List<LayerGroupInfo> layerGroups) throws FactoryException,
                 TransformException {
             if (layerGroups == null || layerGroups.size() == 0) {
@@ -1234,106 +1239,5 @@ public class GetCapabilitiesTransformer extends TransformerBase {
 
             element("BoundingBox", null, bboxAtts);
         }
-    }
-}
-
-/**
- * A Class to manage the WMS Layer structure
- * 
- * @author fabiania
- * 
- *         TODO To change the template for this generated type comment go to Window - Preferences -
- *         Java - Code Style - Code Templates
- */
-class LayerTree {
-    private String name;
-
-    private Collection<LayerTree> childrens;
-
-    private Collection<LayerInfo> data;
-
-    /**
-     * @param name
-     *            String
-     */
-    public LayerTree(String name) {
-        this.name = name;
-        this.childrens = new ArrayList<LayerTree>();
-        this.data = new ArrayList<LayerInfo>();
-    }
-
-    /**
-     * @param c
-     *            Collection
-     */
-    public LayerTree(Collection<LayerInfo> c) {
-        this.name = "";
-        this.childrens = new ArrayList<LayerTree>();
-        this.data = new ArrayList<LayerInfo>();
-
-        for (Iterator<LayerInfo> it = c.iterator(); it.hasNext();) {
-            LayerInfo layer = it.next();
-            // ask for enabled() instead of isEnabled() to account for disabled resource/store
-            if (layer.enabled()) {
-                String wmsPath = layer.getPath() == null ? "" : layer.getPath();
-
-                if (wmsPath.startsWith("/")) {
-                    wmsPath = wmsPath.substring(1, wmsPath.length());
-                }
-
-                String[] treeStructure = wmsPath.split("/");
-                addToNode(this, treeStructure, layer);
-            }
-        }
-    }
-
-    /**
-     * @param tree
-     * @param treeStructure
-     * @param layer
-     */
-    private void addToNode(LayerTree tree, String[] treeStructure, LayerInfo layer) {
-        final int length = treeStructure.length;
-
-        if ((length == 0) || (treeStructure[0].length() == 0)) {
-            tree.data.add(layer);
-        } else {
-            LayerTree node = tree.getNode(treeStructure[0]);
-
-            if (node == null) {
-                node = new LayerTree(treeStructure[0]);
-                tree.childrens.add(node);
-            }
-
-            String[] subTreeStructure = new String[length - 1];
-            System.arraycopy(treeStructure, 1, subTreeStructure, 0, length - 1);
-            addToNode(node, subTreeStructure, layer);
-        }
-    }
-
-    /**
-     * @param string
-     * @return
-     */
-    public LayerTree getNode(String name) {
-        for (LayerTree tmpNode : this.childrens) {
-            if (tmpNode.name.equals(name)) {
-                return tmpNode;
-            }
-        }
-
-        return null;
-    }
-
-    public Collection<LayerTree> getChildrens() {
-        return childrens;
-    }
-
-    public Collection<LayerInfo> getData() {
-        return data;
-    }
-
-    public String getName() {
-        return name;
     }
 }

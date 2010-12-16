@@ -13,6 +13,7 @@ import org.geoserver.wms.DescribeLayerRequest;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.kvp.MapLayerInfoKvpParser;
+import org.geotools.util.Version;
 
 /**
  * Parses a DescribeLayer request, wich consists only of a list of layer names, given by the

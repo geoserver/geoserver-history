@@ -148,6 +148,13 @@ public class GetMapRequest extends WMSRequest {
     }
 
     /**
+     * Gets the string specified by the "SLD_VERSION" parameter.
+     */
+    public String getSldVersion() {
+        return this.optionalParams.sldVersion;
+    }
+
+    /**
      * Gets the value of the "VALIDATESCHEMA" parameter which controls wether the value of the "SLD
      * paramter is schema validated.
      */
@@ -406,6 +413,13 @@ public class GetMapRequest extends WMSRequest {
      */
     public void setSldBody(String sldBody) {
         this.optionalParams.sldBody = sldBody;
+    }
+
+    /**
+     * Sets the string specified by the "SLD_VERSION" parameter
+     */
+    public void setSldVersion(String sldVersion) {
+        this.optionalParams.sldVersion = sldVersion;
     }
 
     /**
@@ -696,6 +710,11 @@ public class GetMapRequest extends WMSRequest {
          */
         String sldBody;
 
+        /** 
+         * SLD_VERSION parameter
+         */
+        String sldVersion;
+        
         /** flag to validate SLD parameter */
         Boolean validateSLD = Boolean.FALSE;
 
