@@ -10,6 +10,7 @@
 package org.vfny.geoserver.util;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -23,6 +24,9 @@ import javax.servlet.ServletContext;
 
 import org.apache.xerces.parsers.SAXParser;
 import org.geoserver.ows.util.ResponseUtils;
+import org.geoserver.platform.GeoServerExtensions;
+import org.geoserver.platform.GeoServerResourceLoader;
+import org.geotools.data.DataUtilities;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -194,16 +198,28 @@ public class SLDValidator {
         SAXParser parser = new SAXParser();
 
         try {
-            String schemaLoction = ResponseUtils.buildSchemaURL(baseURL, "sld/StyledLayerDescriptor.xsd");
-            // this takes care of spaces in the path to the file
-            URL schemaFile = new URL(schemaLoction);
-
-            if (LOGGER.isLoggable(Level.INFO)) {
-                LOGGER.info(new StringBuffer("Validating SLD with ").append(schemaFile.toString())
-                                                                    .toString());
+            String schemaUrl = null;
+            if (baseURL != null) {
+                String schemaLoction = ResponseUtils.buildSchemaURL(baseURL, "sld/StyledLayerDescriptor.xsd");
+                // this takes care of spaces in the path to the file
+                URL schemaFile = new URL(schemaLoction);
+    
+                if (LOGGER.isLoggable(Level.INFO)) {
+                    LOGGER.info(new StringBuffer("Validating SLD with ").append(schemaFile.toString())
+                                                                        .toString());
+                }
+    
+                schemaUrl = schemaFile.toString();
             }
-
-            String schemaUrl = schemaFile.toString();
+            else {
+                File file = GeoServerExtensions.bean(GeoServerResourceLoader.class)
+                    .find("schemas", "sld", "StyledLayerDescriptor.xsd");
+                if (file == null) {
+                    throw new RuntimeException("base url not specified and unable to find internal SLD schema");
+                }
+                
+                schemaUrl = DataUtilities.fileToURL(file).toString();
+            }
 
             //     1. tell the parser to validate the XML document vs the schema
             //     2. does not validate the schema (the GML schema is *not* valid.  This is
