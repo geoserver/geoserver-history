@@ -4,6 +4,11 @@
  */
 package org.geoserver.ows.util;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -13,6 +18,9 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.geoserver.platform.ServiceException;
 import org.geotools.util.Version;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
 
 
 /**
@@ -180,5 +188,65 @@ public class RequestUtils {
             String msg = v + " is an invalid version number";
             throw new ServiceException(msg, "VersionNegotiationFailed", locator);
         }
+    }
+    
+    /**
+     * Wraps an xml input xstream in a buffered reader specifying a lookahead that can be used
+     * to preparse some of the xml document, resetting it back to its original state for actual 
+     * parsing.
+     * 
+     * @param stream The original xml stream.
+     * @param xmlLookahead The number of bytes to support for parse. If more than this number of 
+     *   bytes are preparsed the stream can not be properly reset.
+     *     
+     * @return The buffered reader.
+     * @throws IOException
+     */
+    public static BufferedReader getBufferedXMLReader(InputStream stream, int xmlLookahead) 
+        throws IOException {
+        
+        //create a buffer so we can reset the input stream
+        BufferedInputStream input = new BufferedInputStream(stream);
+        input.mark(xmlLookahead);
+
+        //create object to hold encoding info
+        EncodingInfo encoding = new EncodingInfo();
+
+        //call this method to set the encoding info
+        XmlCharsetDetector.getCharsetAwareReader(input, encoding);
+
+        //call this method to create the reader
+        Reader reader = XmlCharsetDetector.createReader(input, encoding);
+
+        //rest the input
+        input.reset();
+        
+        return getBufferedXMLReader(reader, xmlLookahead);
+    }
+    
+    /**
+     * Wraps an xml reader in a buffered reader specifying a lookahead that can be used
+     * to preparse some of the xml document, resetting it back to its original state for actual 
+     * parsing.
+     * 
+     * @param reader The original xml reader.
+     * @param xmlLookahead The number of bytes to support for parse. If more than this number of 
+     *   bytes are preparsed the stream can not be properly reset.
+     *     
+     * @return The buffered reader.
+     * @throws IOException
+     */
+    public static BufferedReader getBufferedXMLReader(Reader reader, int xmlLookahead) 
+        throws IOException {
+        //ensure the reader is a buffered reader
+        
+        if (!(reader instanceof BufferedReader)) {
+            reader = new BufferedReader(reader);
+        }
+
+        //mark the input stream
+        reader.mark(xmlLookahead);
+        
+        return (BufferedReader) reader;
     }
 }
