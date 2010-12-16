@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns:inspire_vs="http://inspire.europa.eu/networkservice/view/1.0"
+  xmlns="http://www.w3.org/2001/XMLSchema"
+  xmlns:gco="http://www.isotc211.org/2005/gco"
+  xmlns:gmd="http://www.isotc211.org/2005/gmd" 
+  xmlns:srv="http://www.isotc211.org/2005/srv" 
+  xmlns:wms="http://www.opengis.net/wms"
+  xmlns:xlink="http://wwww.w3.org/1999/xlink"
+  targetNamespace="http://inspire.europa.eu/networkservice/view/1.0" 
+  elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.0.0">
+
+  <import namespace="http://www.opengis.net/wms" schemaLocation="http://schemas.opengis.net/wms/1.3.0/capabilities_1_3_0.xsd"/>
+  <import namespace="http://www.isotc211.org/2005/gmd" schemaLocation="http://schemas.opengis.net/iso/19139/20060504/gmd/gmd.xsd"/>
+  <import namespace="http://www.isotc211.org/2005/gco" schemaLocation="http://schemas.opengis.net/iso/19139/20060504/gco/gco.xsd"/>
+  <import namespace="http://www.isotc211.org/2005/srv" schemaLocation="http://schemas.opengis.net/iso/19139/20060504/srv/srv.xsd"/>
+
+  <element name="ExtendedCapabilities" type="inspire_vs:ExtendedCapabilitiesType" substitutionGroup="wms:_ExtendedCapabilities"/>
+
+  <complexType name="ExtendedCapabilitiesType">
+    <sequence>
+      <element name="ResourceLocator" type="gmd:CI_OnlineResource_Type" minOccurs="0"/>
+      <element name="MetadataUrl" type="gmd:CI_OnlineResource_Type" minOccurs="0"/>
+      <element name="ResourceType" type="gmd:MD_ScopeCode_PropertyType" minOccurs="0"/>
+      <element name="TemporalReference" type="gmd:EX_Extent_Type" minOccurs="0"/>
+      <element name="Conformity" type="gmd:DQ_ConformanceResult_type" minOccurs="0" maxOccurs="unbounded"/>
+      <element name="MetadataPointOfContact" type="gmd:CI_ResponsibleParty_Type" minOccurs="0"/>
+      <element name="MetadataDate" type="gco:Date_Type" minOccurs="0"/>
+      <element name="SpatialDataServiceType" type="srv:SV_ServiceType_Type" minOccurs="0"/>
+      <element name="InspireKeywords" type="gmd:MD_Keywords_Type" minOccurs="0"/>
+      <element name="Languages" type="inspire_vs:LanguagesType" minOccurs="0"/>
+      <element name="Language" type="inspire_vs:LanguageType"/>
+    </sequence>
+  </complexType>
+
+  <complexType name="LanguagesType">
+    <sequence>
+      <element name="Language" type="inspire_vs:LanguageType" maxOccurs="unbounded"/>
+    </sequence>
+  </complexType>
+
+  <complexType name="LanguageType">
+    <simpleContent>
+      <extension base="string">
+        <attribute name="default" type="boolean" use="optional" default="false"/>
+      </extension>
+    </simpleContent>
+  </complexType>
+
+</schema>
