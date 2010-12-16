@@ -32,8 +32,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.xml.transform.TransformerException;
-
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.xsd.XSDElementDeclaration;
@@ -75,10 +73,7 @@ import org.geotools.gml2.GML;
 import org.geotools.jdbc.JDBCDataStore;
 import org.geotools.jdbc.VirtualTable;
 import org.geotools.referencing.CRS;
-import org.geotools.styling.SLDParser;
-import org.geotools.styling.SLDTransformer;
 import org.geotools.styling.Style;
-import org.geotools.styling.StyleFactory;
 import org.geotools.util.logging.Logging;
 import org.geotools.xml.Schemas;
 import org.opengis.coverage.grid.GridCoverage;
@@ -1196,7 +1191,6 @@ public class ResourcePool {
             synchronized (styleCache) {
                 style = styleCache.get( info );
                 if ( style == null ) {
-                    StyleFactory styleFactory = CommonFactoryFinder.getStyleFactory(null);
                     
                     //JD: it is important that we call the SLDParser(File) constructor because
                     // if not the sourceURL will not be set which will mean it will fail to 
@@ -1206,8 +1200,8 @@ public class ResourcePool {
                         throw new IOException( "No such file: " + info.getFilename());
                     }
                     
-                    SLDParser stylereader = new SLDParser(styleFactory, styleFile);
-                    style = stylereader.readXML()[0];
+                    style = Styles.style(Styles.parse(styleFile, info.getSLDVersion()));
+                    
                     //set the name of the style to be the name of hte style metadata
                     // remove this when wms works off style info
                     style.setName( info.getName() );
@@ -1268,16 +1262,7 @@ public class ResourcePool {
             BufferedOutputStream out = new BufferedOutputStream( new FileOutputStream( styleFile ) );
             
             try {
-                SLDTransformer tx = new SLDTransformer();
-                if (format) {
-                    tx.setIndentation(2);
-                }
-                try {
-                    tx.transform( style, out );
-                } 
-                catch (TransformerException e) {
-                    throw (IOException) new IOException("Error writing style").initCause(e);
-                }
+                Styles.encode(Styles.sld(style), info.getSLDVersion(), format, out);
                 clear(info);
             }
             finally {
