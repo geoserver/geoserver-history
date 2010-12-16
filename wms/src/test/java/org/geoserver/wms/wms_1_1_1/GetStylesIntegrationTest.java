@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.geoserver.wms;
+package org.geoserver.wms.wms_1_1_1;
 
 import java.io.InputStream;
 
@@ -13,6 +13,7 @@ import org.geoserver.catalog.CatalogBuilder;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.data.test.MockData;
+import org.geoserver.wms.WMSTestSupport;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.styling.NamedLayer;
 import org.geotools.styling.SLDParser;
@@ -56,7 +57,7 @@ public class GetStylesIntegrationTest extends WMSTestSupport {
     }
     
     public void testSimple() throws Exception {
-        InputStream stream = get("wms?service=WMS&version=1.1.0&&request=GetStyles&layers="
+        InputStream stream = get("wms?service=WMS&version=1.1.1&&request=GetStyles&layers="
                 + getLayerId(MockData.BASIC_POLYGONS) + "&sldver=1.0.0");
         
         SLDParser parser = new SLDParser(CommonFactoryFinder.getStyleFactory(null));
@@ -75,7 +76,7 @@ public class GetStylesIntegrationTest extends WMSTestSupport {
     }
     
     public void testGroup() throws Exception {
-        InputStream stream = get("wms?service=WMS&version=1.1.0&request=GetStyles&layers=lakesGroup&sldver=1.0.0");
+        InputStream stream = get("wms?service=WMS&version=1.1.1&request=GetStyles&layers=lakesGroup&sldver=1.0.0");
         
         SLDParser parser = new SLDParser(CommonFactoryFinder.getStyleFactory(null));
         parser.setInput(stream);
@@ -91,7 +92,7 @@ public class GetStylesIntegrationTest extends WMSTestSupport {
     }
     
     public void testMultiStyle() throws Exception {
-        InputStream stream = get("wms?service=WMS&version=1.1.0&request=GetStyles&layers="
+        InputStream stream = get("wms?service=WMS&version=1.1.1&request=GetStyles&layers="
                 + getLayerId(MockData.LAKES) + "&sldver=1.0.0");
         
         SLDParser parser = new SLDParser(CommonFactoryFinder.getStyleFactory(null));

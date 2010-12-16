@@ -44,6 +44,7 @@ public class PDFMapOutputFormat extends AbstractMapOutputFormat {
 
         PDFMap result = new PDFMap(mapContext);
         result.setContentDispositionHeader(mapContext, ".pdf");
+        result.setMimeType(MIME_TYPE);
         return result;
     }
 

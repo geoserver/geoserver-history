@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.geoserver.wms;
+package org.geoserver.wms.wms_1_1_1;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 
@@ -13,6 +13,8 @@ import javax.xml.namespace.QName;
 import junit.framework.Test;
 
 import org.geoserver.data.test.MockData;
+import org.geoserver.wms.WMSInfo;
+import org.geoserver.wms.WMSTestSupport;
 import org.geotools.util.logging.Logging;
 import org.w3c.dom.Document;
 
@@ -60,7 +62,8 @@ public class GetFeatureInfoTest extends WMSTestSupport {
      */
     public void testSimple() throws Exception {
         String layer = getLayerId(MockData.FORESTS);
-        String request = "wms?bbox=-0.002,-0.002,0.002,0.002&styles=&format=jpeg&info_format=text/plain&request=GetFeatureInfo&layers="
+        String request = "wms?version=1.1.1&bbox=-0.002,-0.002,0.002,0.002&styles=&format=jpeg" +
+                "&info_format=text/plain&request=GetFeatureInfo&layers="
                 + layer + "&query_layers=" + layer + "&width=20&height=20&x=10&y=10";
         String result = getAsString(request);
         //System.out.println(result);
@@ -76,9 +79,11 @@ public class GetFeatureInfoTest extends WMSTestSupport {
      */
     public void testSimpleHtml() throws Exception {
         String layer = getLayerId(MockData.FORESTS);
-        String request = "wms?bbox=-0.002,-0.002,0.002,0.002&styles=&format=jpeg&info_format=text/html&request=GetFeatureInfo&layers="
+        String request = "wms?version=1.1.1&bbox=-0.002,-0.002,0.002,0.002&styles=&format=jpeg" +
+                "&info_format=text/html&request=GetFeatureInfo&layers="
                 + layer + "&query_layers=" + layer + "&width=20&height=20&x=10&y=10";
         Document dom = getAsDOM(request);
+        
         // count lines that do contain a forest reference
         assertXpathEvaluatesTo("1", "count(/html/body/table/tr/td[starts-with(.,'Forests.')])", dom);
     }
@@ -93,7 +98,8 @@ public class GetFeatureInfoTest extends WMSTestSupport {
         // to setup the request and the buffer I rendered BASIC_POLYGONS using GeoServer, then played
         // against the image coordinates
         String layer = getLayerId(MockData.BASIC_POLYGONS);
-        String base = "wms?bbox=-4.5,-2.,4.5,7&styles=&format=jpeg&info_format=text/html&request=GetFeatureInfo&layers="
+        String base = "wms?version=1.1.1&bbox=-4.5,-2.,4.5,7&styles=&format=jpeg&info_format=text/html" +
+                "&request=GetFeatureInfo&layers="
                 + layer + "&query_layers=" + layer + "&width=300&height=300";
         Document dom = getAsDOM(base + "&x=85&y=230");
         // make sure the document is empty, as we chose an area with no features inside
@@ -119,7 +125,8 @@ public class GetFeatureInfoTest extends WMSTestSupport {
      */
     public void testAutoBuffer() throws Exception {
         String layer = getLayerId(MockData.BASIC_POLYGONS);
-        String base = "wms?bbox=-4.5,-2.,4.5,7&format=jpeg&info_format=text/html&request=GetFeatureInfo&layers="
+        String base = "wms?version=1.1.1&bbox=-4.5,-2.,4.5,7&format=jpeg&info_format=text/html" +
+                "&request=GetFeatureInfo&layers="
                 + layer + "&query_layers=" + layer + "&width=300&height=300&x=114&y=229";
         Document dom = getAsDOM(base + "&styles=");
         // make sure the document is empty, the style we chose has thin lines
@@ -139,7 +146,7 @@ public class GetFeatureInfoTest extends WMSTestSupport {
      */
     public void testBufferScales() throws Exception {
         String layer = getLayerId(SQUARES);
-        String base = "wms?&format=png&info_format=text/html&request=GetFeatureInfo&layers="
+        String base = "wms?version=1.1.1&format=png&info_format=text/html&request=GetFeatureInfo&layers="
                 + layer + "&query_layers=" + layer + "&styles=squares&bbox=0,0,10000,10000&feature_count=10";
         
         // first request, should provide no result, scale is 1:100
@@ -174,7 +181,8 @@ public class GetFeatureInfoTest extends WMSTestSupport {
      */
     public void testTwoLayers() throws Exception {
         String layer = getLayerId(MockData.FORESTS) + "," + getLayerId(MockData.LAKES);
-        String request = "wms?bbox=-0.002,-0.002,0.002,0.002&styles=&format=jpeg&info_format=text/html&request=GetFeatureInfo&layers="
+        String request = "wms?version=1.1.1&bbox=-0.002,-0.002,0.002,0.002&styles=&format=jpeg" +
+                "&info_format=text/html&request=GetFeatureInfo&layers="
                 + layer + "&query_layers=" + layer + "&width=20&height=20&x=10&y=10&info";
         String result = getAsString(request);
         assertNotNull(result);
@@ -219,12 +227,12 @@ public class GetFeatureInfoTest extends WMSTestSupport {
      */
     public void testUknownFormat() throws Exception {
         String layer = MockData.FORESTS.getPrefix() + ":" + MockData.FORESTS.getLocalPart();
-        String request = "wms?bbox=-0.002,-0.002,0.002,0.002&styles=&format=jpeg&info_format=unknown/format&request=GetFeatureInfo&layers="
+        String request = "wms?version=1.1.1&bbox=-0.002,-0.002,0.002,0.002&styles=&format=jpeg&info_format=unknown/format&request=GetFeatureInfo&layers="
                 + layer + "&query_layers=" + layer + "&width=20&height=20&x=10&y=10";
         Document doc = dom(get(request), true);
         // print(doc);
         assertXpathEvaluatesTo("1", "count(//ServiceExceptionReport/ServiceException)", doc);
-        assertXpathEvaluatesTo("InvalidParameterValue", "/ServiceExceptionReport/ServiceException/@code", doc);
+        assertXpathEvaluatesTo("InvalidFormat", "/ServiceExceptionReport/ServiceException/@code", doc);
         assertXpathEvaluatesTo("info_format", "/ServiceExceptionReport/ServiceException/@locator", doc);
     }
     
@@ -293,7 +301,7 @@ public class GetFeatureInfoTest extends WMSTestSupport {
     public void testUnkonwnQueryLayer() throws Exception {
         String layers1 = getLayerId(MockData.FORESTS) + "," + getLayerId(MockData.LAKES);
         String layers2 = getLayerId(MockData.FORESTS) + "," + getLayerId(MockData.BRIDGES);
-        String request = "wms?bbox=-0.002,-0.002,0.002,0.002&styles=&format=jpeg&info_format=text/html&request=GetFeatureInfo&layers="
+        String request = "wms?version=1.1.1&bbox=-0.002,-0.002,0.002,0.002&styles=&format=jpeg&info_format=text/html&request=GetFeatureInfo&layers="
                 + layers1 + "&query_layers=" + layers2 + "&width=20&height=20&x=10&y=10&info";
         
         Document dom = getAsDOM(request + "");
@@ -302,7 +310,8 @@ public class GetFeatureInfoTest extends WMSTestSupport {
     
     public void testLayerQualified() throws Exception {
         String layer = "Forests";
-        String q = "?bbox=-0.002,-0.002,0.002,0.002&styles=&format=jpeg&info_format=text/plain&request=GetFeatureInfo&layers="
+        String q = "?version=1.1.1&bbox=-0.002,-0.002,0.002,0.002&styles=&format=jpeg" +
+                "&info_format=text/plain&request=GetFeatureInfo&layers="
                 + layer + "&query_layers=" + layer + "&width=20&height=20&x=10&y=10";
         String request = "cite/Ponds/wms" + q;
         Document dom = getAsDOM(request);
@@ -315,4 +324,21 @@ public class GetFeatureInfoTest extends WMSTestSupport {
         assertTrue(result.indexOf("Green Forest") > 0);
     }
     
+    public void testNonExactVersion() throws Exception {
+        String layer = getLayerId(MockData.FORESTS);
+        String request = "wms?version=1.0.0&bbox=-0.002,-0.002,0.002,0.002&styles=&format=jpeg" +
+                "&info_format=text/plain&request=GetFeatureInfo&layers="
+                + layer + "&query_layers=" + layer + "&width=20&height=20&x=10&y=10";
+        String result = getAsString(request);
+        assertNotNull(result);
+        assertTrue(result.indexOf("Green Forest") > 0);
+        
+        request = "wms?version=1.1.0&bbox=-0.002,-0.002,0.002,0.002&styles=&format=jpeg" +
+        "&info_format=text/plain&request=GetFeatureInfo&layers="
+        + layer + "&query_layers=" + layer + "&width=20&height=20&x=10&y=10";
+        result = getAsString(request);
+        
+        assertNotNull(result);
+        assertTrue(result.indexOf("Green Forest") > 0);
+    }
 }

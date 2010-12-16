@@ -78,7 +78,7 @@ public class RenderingBufferTest extends WMSTestSupport {
     
     public void testGetFeatureInfoExplicitBuffer() throws Exception {
         final String layerName = getLayerId(LINE_WIDTH_LAYER);
-        String request = "cite/wms?request=getfeatureinfo&service=wms" + "&layers="
+        String request = "cite/wms?version=1.1.1&request=getfeatureinfo&service=wms" + "&layers="
                 + layerName + "&styles=" + LINE_WIDTH_STYLE
                 + "&width=50&height=50&format=image/png" + "&srs=epsg:4326&bbox=-6,0,-1,5&x=49&y=49&query_layers=" 
                 + layerName + "&info_format=application/vnd.ogc.gml&buffer=30";
@@ -111,7 +111,7 @@ public class RenderingBufferTest extends WMSTestSupport {
         catalog.save(layer);
         
         final String layerName = getLayerId(LINE_WIDTH_LAYER);
-        String request = "cite/wms?request=getfeatureinfo&service=wms" + "&layers="
+        String request = "cite/wms?version=1.1.1&request=getfeatureinfo&service=wms" + "&layers="
                 + layerName + "&styles=" + LINE_WIDTH_STYLE
                 + "&width=50&height=50&format=image/png" + "&srs=epsg:4326&bbox=-6,0,-1,5&x=49&y=49&query_layers=" 
                 + layerName + "&info_format=application/vnd.ogc.gml";

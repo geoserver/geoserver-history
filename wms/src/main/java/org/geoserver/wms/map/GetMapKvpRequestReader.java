@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.StyleInfo;
+import org.geoserver.catalog.Styles;
 import org.geoserver.catalog.WMSLayerInfo;
 import org.geoserver.ows.HttpServletRequestAware;
 import org.geoserver.ows.KvpRequestReader;
@@ -33,6 +34,7 @@ import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.GetMapRequest;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
+import org.geoserver.wms.WMSErrorCode;
 import org.geotools.data.DataStore;
 import org.geotools.data.FeatureReader;
 import org.geotools.data.Query;
@@ -49,13 +51,13 @@ import org.geotools.styling.FeatureTypeConstraint;
 import org.geotools.styling.NamedLayer;
 import org.geotools.styling.NamedStyle;
 import org.geotools.styling.RemoteOWS;
-import org.geotools.styling.SLDParser;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleAttributeExtractor;
 import org.geotools.styling.StyleFactory;
 import org.geotools.styling.StyledLayer;
 import org.geotools.styling.StyledLayerDescriptor;
 import org.geotools.styling.UserLayer;
+import org.geotools.util.Version;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
@@ -150,11 +152,17 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
         // set the raw params used to create the request
         getMap.setRawKvp(rawKvp);
 
+        // wms 1.3, srs changed to crs
+        if (kvp.containsKey("crs")) {
+            getMap.setSRS((String)kvp.get("crs"));
+        }
         // do some additional checks
 
         // srs
         String epsgCode = getMap.getSRS();
-
+        epsgCode = WMS.toInternalSRS(epsgCode, WMS.version(getMap.getVersion()));
+        getMap.setSRS(epsgCode);
+        
         if (epsgCode != null) {
             try {
                 // set the crs as well
@@ -164,7 +172,7 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
                 // couldnt make it - we send off a service exception with the
                 // correct info
                 throw new ServiceException("Error occurred decoding the espg code " + epsgCode, e,
-                        "InvalidSRS");
+                    WMSErrorCode.INVALID_CRS.get(getMap.getVersion()));
             }
         }
 
@@ -224,7 +232,7 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
             if (getMap.getValidateSchema().booleanValue()) {
                 ByteArrayInputStream stream = new ByteArrayInputStream(getMap.getSldBody()
                         .getBytes());
-                List errors = validateSld(stream, getMap.getBaseUrl());
+                List errors = validateSld(stream, getMap);
 
                 if (errors.size() != 0) {
                     throw new ServiceException(SLDValidator.getErrorMessage(
@@ -232,8 +240,8 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
                 }
             }
 
-            StyledLayerDescriptor sld = parseSld(new ByteArrayInputStream(getMap.getSldBody()
-                    .getBytes()));
+            InputStream input = new ByteArrayInputStream(getMap.getSldBody().getBytes());
+            StyledLayerDescriptor sld = parseSld(getMap, input);
             processSld(getMap, requestedLayerInfos, sld, styleNameList);
 
             // set filter in, we'll check consistency later
@@ -250,7 +258,7 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
                 List errors = null;
 
                 try {
-                    errors = validateSld(input, getMap.getBaseUrl());
+                    errors = validateSld(input, getMap);
                 } finally {
                     input.close();
                 }
@@ -271,7 +279,7 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
             InputStream input = Requests.getInputStream(sldUrl);
 
             try {
-                StyledLayerDescriptor sld = parseSld(input);
+                StyledLayerDescriptor sld = parseSld(getMap, input);
                 processSld(getMap, requestedLayerInfos, sld, styleNameList);
             } finally {
                 input.close();
@@ -454,20 +462,39 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
      * validates an sld document.
      * 
      */
-    private List validateSld(InputStream input, String baseURL) {
-        // user requested to validate the schema.
-        SLDValidator validator = new SLDValidator();
-
-        return validator.validateSLD(input, baseURL);
+    private List validateSld(InputStream stream, GetMapRequest getMap) {
+        try {
+            if (getMap.getSldVersion() != null) {
+                return Styles.validate(stream, new Version(getMap.getSldVersion()));
+            }
+            else {
+                return Styles.validate(stream);
+            }
+        } 
+        catch (IOException e) {
+            throw new ServiceException("Error validating style", e);
+        }
     }
 
     /**
      * Parses an sld document.
      */
-    private StyledLayerDescriptor parseSld(InputStream input) {
-        SLDParser parser = new SLDParser(styleFactory, input);
-
-        return parser.parseSLD();
+    private StyledLayerDescriptor parseSld(GetMapRequest getMap, InputStream stream) {
+       
+        StyledLayerDescriptor sld;
+        try {
+            if (getMap.getSldVersion() != null) {
+                sld = Styles.parse(stream, new Version(getMap.getSldVersion()));
+            }
+            else {
+                sld = Styles.parse(stream);
+            }
+        }
+        catch(IOException e) {
+            throw new ServiceException("Error parsing style", e);
+        }
+       
+        return sld;
     }
 
     private void processSld(final GetMapRequest request, final List<?> requestedLayers,

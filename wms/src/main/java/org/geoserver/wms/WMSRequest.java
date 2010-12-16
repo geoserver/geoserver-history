@@ -7,6 +7,7 @@ package org.geoserver.wms;
 import java.util.Map;
 
 import org.geoserver.ows.Dispatcher;
+import org.geotools.util.Version;
 
 /**
  * Defines a general Request type and provides accessor methods for universal request information.
@@ -37,13 +38,10 @@ public abstract class WMSRequest {
     private String requestCharset;
 
     /**
-     * Creates the new request, supplying the request name and the sevlet handling the request.
+     * Creates the new request with the given operation name
      * 
-     * @param requestType
-     *            name of hte request, (Example, GetCapabiliites)
-     * @param wms
-     *            The wms configuration object.
-     * 
+     * @param request
+     *            name of the request, (Example, GetCapabiliites)
      */
     protected WMSRequest(final String request) {
         setRequest(request);

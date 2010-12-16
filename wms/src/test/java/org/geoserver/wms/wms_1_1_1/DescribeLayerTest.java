@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.geoserver.wms;
+package org.geoserver.wms.wms_1_1_1;
 
 import java.util.logging.Level;
 
@@ -10,6 +10,7 @@ import junit.framework.Test;
 
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.data.test.MockData;
+import org.geoserver.wms.WMSTestSupport;
 import org.geotools.util.logging.Logging;
 import org.w3c.dom.Document;
 

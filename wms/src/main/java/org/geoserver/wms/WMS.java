@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.geoserver.catalog.Catalog;
@@ -21,12 +22,15 @@ import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.MetadataMap;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.StyleInfo;
+import org.geoserver.catalog.WMSLayerInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.config.JAIInfo;
 import org.geoserver.wms.WMSInfo.WMSInterpolation;
 import org.geoserver.wms.WatermarkInfo.Position;
 import org.geoserver.wms.featureinfo.GetFeatureInfoOutputFormat;
+import org.geotools.data.ows.Layer;
+import org.geotools.data.ows.WMSCapabilities;
 import org.geotools.styling.Style;
 import org.geotools.util.Converters;
 import org.geotools.util.Version;
@@ -42,6 +46,10 @@ import org.springframework.context.ApplicationContextAware;
  * @author Gabriel Roldan
  */
 public class WMS implements ApplicationContextAware {
+
+    public static final Version VERSION_1_1_1 = new Version("1.1.1");
+
+    public static final Version VERSION_1_3_0 = new Version("1.3.0");
 
     public static final String JPEG_COMPRESSION = "jpegCompression";
 
@@ -139,6 +147,53 @@ public class WMS implements ApplicationContextAware {
     public boolean isEnabled() {
         WMSInfo serviceInfo = getServiceInfo();
         return serviceInfo.isEnabled();
+    }
+
+    /**
+     * /**
+     * Returns a supported version according to the version negotiation rules in section 6.2.4 of
+     * the WMS 1.3.0 spec.
+     * <p>
+     * Calls through to {@link #negotiateVersion(Version)}. 
+     * </p>
+     * @param requestedVersion The version, may be bull.
+     * 
+     */
+    public Version negotiateVersion(final String requestedVersion) {
+        return negotiateVersion(requestedVersion != null ? new Version(requestedVersion) : null);
+    }
+    
+    /**
+     * Returns a supported version according to the version negotiation rules in section 6.2.4 of
+     * the WMS 1.3.0 spec.
+     * <p>
+     * For instance: <u>
+     * <li>request version not provided? -> higher version supported
+     * <li>requested version supported? -> that same version
+     * <li>requested version < lowest supported version? -> lowest supported
+     * <li>requested version > lowest supported version? -> higher supported version that's lower
+     * than the requested version </u>
+     * </p>
+     * 
+     * @param requestedVersion
+     *            the request version, or {@code null} if unspecified
+     * @return
+     */
+    public Version negotiateVersion(final Version requestedVersion) {
+        if (null == requestedVersion) {
+            return VERSION_1_3_0;
+        }
+        if (VERSION_1_1_1.equals(requestedVersion)) {
+            return VERSION_1_1_1;
+        }
+        if (VERSION_1_3_0.equals(requestedVersion)) {
+            return VERSION_1_3_0;
+        }
+        if (requestedVersion.compareTo(VERSION_1_3_0) < 0) {
+            return VERSION_1_1_1;
+        }
+
+        return VERSION_1_3_0;
     }
 
     public String getVersion() {
@@ -389,6 +444,13 @@ public class WMS implements ApplicationContextAware {
     }
 
     /**
+     * Returns all available map output formats. 
+     */
+    public Collection<GetMapOutputFormat> getAvailableMapFormats() {
+        return WMSExtensions.findMapProducers(applicationContext);
+    }
+    
+    /**
      * Grabs the list of available MIME-Types for the GetMap operation from the set of
      * {@link GetMapOutputFormat}s registered in the application context.
      * 
@@ -396,7 +458,7 @@ public class WMS implements ApplicationContextAware {
      *            The application context where to grab the GetMapOutputFormats from.
      * @see GetMapOutputFormat#getContentType()
      */
-    public Set<String> getAvailableMapFormats() {
+    public Set<String> getAvailableMapFormatNames() {
 
         final Collection<GetMapOutputFormat> producers;
         producers = WMSExtensions.findMapProducers(applicationContext);
@@ -422,6 +484,13 @@ public class WMS implements ApplicationContextAware {
         return mimeTypes;
     }
 
+    /**
+     * Returns all {@link ExtendedCapabilitiesProvider} extensions.
+     */
+    public List<ExtendedCapabilitiesProvider> getAvailableExtendedCapabilitiesProviders() {
+        return WMSExtensions.findExtendedCapabilitiesProviders(applicationContext);
+    }
+    
     /**
      * @see org.springframework.context.ApplicationContextAware#setApplicationContext(org.springframework.context.ApplicationContext)
      */
@@ -481,4 +550,72 @@ public class WMS implements ApplicationContextAware {
         format = WMSExtensions.findLegendGraphicFormat(outputFormat, applicationContext);
         return format;
     }
+
+    public static Version version(String version) {
+        if (version == null || 0 == version.trim().length()) {
+            return null;
+        }
+        if (VERSION_1_1_1.toString().equals(version)) {
+            return VERSION_1_1_1;
+        } else if (VERSION_1_3_0.toString().equals(version)) {
+            return VERSION_1_3_0;
+        }
+        return new Version(version);
+    }
+    
+    /**
+     * Transforms a crs identifier to its internal representation based on the specified 
+     * WMS version.
+     * <p>
+     * In version 1.3 of WMS geographic coordinate systems are to be ordered y/x or 
+     * latitude/longitude. The only possible way to represent this internally is to use the 
+     * explicit epsg namespace "urn:x-ogc:def:crs:EPSG:". This method essentially replaces the 
+     * traditional "EPSG:" namespace with the explicit. 
+     * </p>
+     */
+    public static String toInternalSRS(String srs, Version version) {
+        if (VERSION_1_3_0.equals(version)) {
+            if (srs != null && srs.toUpperCase().startsWith("EPSG:")) {
+                srs = srs.toUpperCase().replace("EPSG:", "urn:x-ogc:def:crs:EPSG:");
+            }
+        }
+        
+        return srs;
+    }
+
+    /**
+     * Returns true if the layer can be queried
+     */
+    public boolean isQueryable(LayerInfo layer) {
+        try {
+            if (layer.getResource() instanceof WMSLayerInfo) {
+                WMSLayerInfo info = (WMSLayerInfo) layer.getResource();
+                Layer wl = info.getWMSLayer(null);
+                if (!wl.isQueryable()) {
+                    return false;
+                }
+                WMSCapabilities caps = info.getStore().getWebMapServer(null).getCapabilities();
+                if (!caps.getRequest().getGetFeatureInfo().getFormats()
+                        .contains("application/vnd.ogc.gml")) {
+                    return false;
+                }
+            }
+            // all other layers are queryable
+            return true;
+        } catch (IOException e) {
+            LOGGER.log(Level.INFO,
+                    "Failed to determin if the layer is queryable, assuming it's not", e);
+            return false;
+        }
+    }
+
+    public boolean isQueryable(LayerGroupInfo layerGroup) {
+        for (LayerInfo layer : layerGroup.getLayers()) {
+            if (!isQueryable(layer)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 }

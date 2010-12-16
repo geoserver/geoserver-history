@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.geoserver.wms;
+package org.geoserver.wms.wms_1_1_1;
 
 import java.awt.image.BufferedImage;
 import java.net.URL;
@@ -16,6 +16,7 @@ import junit.framework.Test;
 
 import org.geoserver.data.test.MockData;
 import org.geoserver.test.RemoteOWSTestSupport;
+import org.geoserver.wms.WMSTestSupport;
 import org.geotools.util.logging.Logging;
 import org.w3c.dom.Document;
 
@@ -35,6 +36,37 @@ public class GetMapIntegrationTest extends WMSTestSupport {
             + "</Filter><PolygonSymbolizer><Fill><CssParameter name=\"fill\">#FF0000</CssParameter></Fill>"
             + "</PolygonSymbolizer></Rule><Rule><LineSymbolizer><Stroke/></LineSymbolizer></Rule>"
             + "</FeatureTypeStyle></UserStyle></UserLayer></StyledLayerDescriptor>";
+    
+    public static final String STATES_SLD11 = 
+        "<StyledLayerDescriptor version=\"1.1.0\"> "+
+        " <UserLayer> "+
+        "  <Name>sf:states</Name> "+
+        "  <UserStyle> "+
+        "   <Name>UserSelection</Name> "+
+        "   <se:FeatureTypeStyle xmlns:se=\"http://www.opengis.net/se\"> "+
+        "    <se:Rule> "+
+        "     <ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\"> "+
+        "      <ogc:PropertyIsEqualTo> "+
+        "       <ogc:PropertyName>STATE_ABBR</ogc:PropertyName> "+
+        "       <ogc:Literal>IL</ogc:Literal> "+
+        "      </ogc:PropertyIsEqualTo> "+
+        "     </ogc:Filter> "+
+        "     <se:PolygonSymbolizer> "+
+        "      <se:Fill> "+
+        "       <se:SvgParameter name=\"fill\">#FF0000</se:SvgParameter> "+
+        "      </se:Fill> "+
+        "     </se:PolygonSymbolizer> "+
+        "    </se:Rule> "+
+        "    <se:Rule> "+
+        "     <se:LineSymbolizer> "+
+        "      <se:Stroke/> "+
+        "     </se:LineSymbolizer> "+
+        "    </se:Rule> "+
+        "   </se:FeatureTypeStyle> "+
+        "  </UserStyle> "+
+        " </UserLayer> "+
+        "</StyledLayerDescriptor>";
+
 
     public static final String STATES_GETMAP = //
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?> \n "
@@ -101,6 +133,14 @@ public class GetMapIntegrationTest extends WMSTestSupport {
                 + STATES_SLD.replaceAll("=", "%3D"));
         checkImage(response);
     }
+    
+    public void testSldBody11() throws Exception {
+        MockHttpServletResponse response = getAsServletResponse("wms?bbox=" + bbox + "&styles="
+                + "&layers=" + layers + "&Format=image/png" + "&request=GetMap" + "&width=550"
+                + "&height=250" + "&srs=EPSG:4326" + "&SLD_BODY="
+                + STATES_SLD11.replaceAll("=", "%3D"));
+        checkImage(response);
+    }
 
     public void testSldBodyPost() throws Exception {
         MockHttpServletResponse response = postAsServletResponse("wms?bbox=" + bbox
@@ -109,23 +149,18 @@ public class GetMapIntegrationTest extends WMSTestSupport {
 
         checkImage(response);
     }
+    
+    public void testSldBodyPost11() throws Exception {
+        MockHttpServletResponse response = postAsServletResponse("wms?bbox=" + bbox
+                + "&format=image/png&request=GetMap&width=550&height=250" + "&srs=EPSG:4326",
+                STATES_SLD11);
+
+        checkImage(response);
+    }
 
     public void testXmlPost() throws Exception {
         MockHttpServletResponse response = postAsServletResponse("wms?", STATES_GETMAP);
         checkImage(response);
-    }
-
-    private void checkImage(MockHttpServletResponse response) {
-        assertEquals("image/png", response.getContentType());
-        try {
-            BufferedImage image = ImageIO.read(getBinaryInputStream(response));
-            assertNotNull(image);
-            assertEquals(image.getWidth(), 550);
-            assertEquals(image.getHeight(), 250);
-        } catch (Throwable t) {
-            t.printStackTrace();
-            fail("Could not read image returned from GetMap:" + t.getLocalizedMessage());
-        }
     }
 
     public void testRemoteOWSGet() throws Exception {

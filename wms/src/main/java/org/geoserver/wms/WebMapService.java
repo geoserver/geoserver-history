@@ -8,8 +8,6 @@ import net.opengis.wfs.FeatureCollectionType;
 
 import org.geoserver.ows.Response;
 import org.geoserver.sld.GetStylesRequest;
-import org.geoserver.wms.capabilities.GetCapabilitiesTransformer;
-import org.geoserver.wms.describelayer.DescribeLayerTransformer;
 import org.geotools.styling.StyledLayerDescriptor;
 
 /**
@@ -32,9 +30,9 @@ public interface WebMapService {
     /**
      * GetCapabilities operation.
      */
-    GetCapabilitiesTransformer getCapabilities(GetCapabilitiesRequest request);
+    Object getCapabilities(GetCapabilitiesRequest request);
 
-    GetCapabilitiesTransformer capabilities(GetCapabilitiesRequest request);
+    Object capabilities(GetCapabilitiesRequest request);
 
     /**
      * GetMap operation.
@@ -46,7 +44,7 @@ public interface WebMapService {
     /**
      * DescribeLayer operation.
      */
-    DescribeLayerTransformer describeLayer(DescribeLayerRequest request);
+    Object describeLayer(DescribeLayerRequest request);
 
     /**
      * GetFeatureInfo operation.
@@ -67,6 +65,11 @@ public interface WebMapService {
     WebMap reflect(GetMapRequest request);
 
     WebMap getMapReflect(GetMapRequest request);
+    
+    /**
+     * KML reflector
+     */
+    WebMap kml(GetMapRequest getMap);
 
     StyledLayerDescriptor getStyles(GetStylesRequest request);
 }
