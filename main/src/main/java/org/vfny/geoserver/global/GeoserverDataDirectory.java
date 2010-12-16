@@ -266,7 +266,7 @@ public class GeoserverDataDirectory {
      */
     public static void init(WebApplicationContext context) {
         ServletContext servContext = context.getServletContext();
-
+        
         // Oh, this is really sad. We need a reference to Data in order to
         // resolve feature type dirs, but gathering it here triggers the loading
         // of Geoserver (on whose Catalog depends on), which depends on having
@@ -295,9 +295,6 @@ public class GeoserverDataDirectory {
             String dataDirStr = findGeoServerDataDir(servContext);
 
             dataDir = new File(dataDirStr);
-            //loader.setBaseDirectory(dataDir);
-            loader.addSearchLocation(new File(dataDir, "data"));
-            loader.addSearchLocation(new File(dataDir, "WEB-INF"));
             LOGGER
                     .severe("\n----------------------------------\n- GEOSERVER_DATA_DIR: "
                             + dataDir.getAbsolutePath()
