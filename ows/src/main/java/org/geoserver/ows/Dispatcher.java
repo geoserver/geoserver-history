@@ -265,9 +265,7 @@ public class Dispatcher extends AbstractController {
             //wrap the input stream in a buffered input stream
             request.setInput(reader(httpRequest));
 
-            //mark the input stream
             char[] req = new char[1024];
-            request.getInput().mark(XML_LOOKAHEAD);
             int read = request.getInput().read(req, 0, 1024);
             
             if (logger.isLoggable(Level.FINE)) {
@@ -327,30 +325,8 @@ public class Dispatcher extends AbstractController {
         return req;
     }
     
-    BufferedReader reader(HttpServletRequest httpRequest)
-        throws IOException {
-        //create a buffer so we can reset the input stream
-        BufferedInputStream input = new BufferedInputStream(httpRequest.getInputStream());
-        input.mark(XML_LOOKAHEAD);
-
-        //create object to hold encoding info
-        EncodingInfo encoding = new EncodingInfo();
-
-        //call this method to set the encoding info
-        XmlCharsetDetector.getCharsetAwareReader(input, encoding);
-
-        //call this method to create the reader
-        Reader reader = XmlCharsetDetector.createReader(input, encoding);
-
-        //rest the input
-        input.reset();
-
-        //ensure the reader is a buffered reader
-        if (reader instanceof BufferedReader) {
-            return (BufferedReader) reader;
-        }
-
-        return new BufferedReader(reader);
+    BufferedReader reader(HttpServletRequest httpRequest) throws IOException {
+       return RequestUtils.getBufferedXMLReader(httpRequest.getInputStream(), XML_LOOKAHEAD);
     }
 
     Service service(Request req) throws Exception {
