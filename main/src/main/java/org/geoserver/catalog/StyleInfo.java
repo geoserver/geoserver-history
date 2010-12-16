@@ -7,6 +7,7 @@ package org.geoserver.catalog;
 import java.io.IOException;
 
 import org.geotools.styling.Style;
+import org.geotools.util.Version;
 
 /**
  * A style for a geospatial resource.
@@ -51,6 +52,16 @@ public interface StyleInfo extends CatalogInfo {
      */
     void setName(String name);
 
+    /**
+     * The sld version of the style.
+     */
+    Version getSLDVersion();
+
+    /**
+     * Sets the sld version of the style.
+     */
+    void setSLDVersion(Version v);
+    
     /**
      * The name of the file the style originates from.
      */

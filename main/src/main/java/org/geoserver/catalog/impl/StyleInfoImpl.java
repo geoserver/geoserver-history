@@ -10,6 +10,7 @@ import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogVisitor;
 import org.geoserver.catalog.StyleInfo;
 import org.geotools.styling.Style;
+import org.geotools.util.Version;
 
 public class StyleInfoImpl implements StyleInfo {
 
@@ -17,6 +18,8 @@ public class StyleInfoImpl implements StyleInfo {
 
     protected String name;
 
+    protected Version sldVersion = new Version("1.0.0");
+    
     protected String filename;
     
     protected transient Catalog catalog;
@@ -48,6 +51,14 @@ public class StyleInfoImpl implements StyleInfo {
         this.name = name;
     }
 
+    public Version getSLDVersion() {
+        return sldVersion;
+    }
+    
+    public void setSLDVersion(Version v) {
+        this.sldVersion = v;
+    }
+    
     public String getFilename() {
         return filename;
     }
@@ -71,6 +82,7 @@ public class StyleInfoImpl implements StyleInfo {
                 + ((filename == null) ? 0 : filename.hashCode());
         result = prime * result + ((id == null) ? 0 : id.hashCode());
         result = prime * result + ((name == null) ? 0 : name.hashCode());
+        result = prime * result + ((sldVersion == null) ? 0 : sldVersion.hashCode());
         return result;
     }
 
@@ -97,7 +109,12 @@ public class StyleInfoImpl implements StyleInfo {
                 return false;
         } else if (!name.equals(other.getName()))
             return false;
-        
+        if (sldVersion == null) {
+            if (other.getSLDVersion() != null)
+                return false;
+        } else if (!sldVersion.equals(other.getSLDVersion()))
+            return false;
+
         return true;
     }
 
@@ -107,4 +124,12 @@ public class StyleInfoImpl implements StyleInfo {
                 .toString();
     }
     
+    private Object readResolve() {
+        //this check is here to enable smooth migration from old configurations that don't have 
+        // the sldVersion property
+        if (sldVersion == null) {
+            sldVersion = new Version("1.0.0");
+        }
+        return this;
+    }
 }
