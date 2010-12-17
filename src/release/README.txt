@@ -1,3 +1,15 @@
+GeoServer 2.1-beta3 (December 17, 2010)
+---------------------------------------
+
+The third beta release of GeoServer 2.1.
+
+The most notable change since beta2 is the additioon of WMS 1.3 support.
+
+The entire change log is avaialble here:
+
+  http://jira.codehaus.org/secure/ReleaseNote.jspa?projectId=10311&version=17024 
+This release is based on GeoTools 2.7-M5.
+
 GeoServer 2.1-beta2 (December 02, 2010)
 ----------------------------------------
 
