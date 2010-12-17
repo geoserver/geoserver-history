@@ -107,7 +107,7 @@ public class DataStoreFileResource extends StoreFileResource {
         builder.setWorkspace( catalog.getWorkspaceByName( workspace ) );
         
         //check if the datastore already exists, if not auto configure one
-        DataStoreInfo info = catalog.getDataStoreByName( datastore );
+        DataStoreInfo info = catalog.getDataStoreByName( workspace, datastore );
         
         boolean add = false;
         if ( info == null ) {
