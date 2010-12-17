@@ -159,7 +159,7 @@ public class WMS implements ApplicationContextAware {
      * @param requestedVersion The version, may be bull.
      * 
      */
-    public Version negotiateVersion(final String requestedVersion) {
+    public static Version negotiateVersion(final String requestedVersion) {
         return negotiateVersion(requestedVersion != null ? new Version(requestedVersion) : null);
     }
     
@@ -179,7 +179,7 @@ public class WMS implements ApplicationContextAware {
      *            the request version, or {@code null} if unspecified
      * @return
      */
-    public Version negotiateVersion(final Version requestedVersion) {
+    public static Version negotiateVersion(final Version requestedVersion) {
         if (null == requestedVersion) {
             return VERSION_1_3_0;
         }
