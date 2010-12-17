@@ -120,12 +120,14 @@
  	</bean>
 
  	<!-- service exception handler -->
-	<bean id="wms-1_1_1-ExceptionHandler" class="org.geoserver.wms.WMSServiceExceptionHandler">
-		<constructor-arg ref="wms-1_1_1-ServiceDescriptor"/>
-        <constructor-arg ref="geoServer"/>
-		<property name="version" value="1.1.1"/>
-		<property name="contentType" value="application/vnd.ogc.se_xml"/>
-		<property name="DTDLocation" value="wms/1.1.1/WMS_exception_1_1_1.dtd"/>
+	<bean id="wmsExceptionHandler" class="org.geoserver.wms.WMSServiceExceptionHandler">
+		<constructor-arg>
+		  <list>
+		    <ref bean="wms-1_1_1-ServiceDescriptor"/>
+		    <ref bean="wms-1_3_0-ServiceDescriptor"/>
+		  </list>
+		</constructor-arg>
+		<constructor-arg ref="geoServer"/>
 	</bean>
  	
     <bean id="wms-1_3_0-ServiceDescriptor" class="org.geoserver.platform.Service">
@@ -146,16 +148,8 @@
             </list>
           </constructor-arg>
     </bean>
-    
-    <bean id="wms-1_3_0-ExceptionHandler" class="org.geoserver.wms.WMSServiceExceptionHandler">
-      <constructor-arg ref="wms-1_3_0-ServiceDescriptor"/>
-      <constructor-arg ref="geoServer"/>
-      <property name="version" value="1.3.0"/>
-      <property name="contentType" value="text/xml"/>
-      <property name="schemaLocation" value="wms/1.3.0/exceptions_1_3_0.xsd"/>
-    </bean>
 
- 	<!-- kvp parsers -->
+    <!-- kvp parsers -->
   
     <!-- 
     Can't use MapLayerInfoKvpParser due to the issue with the workspace qualifier callbacks in Dispatcher:

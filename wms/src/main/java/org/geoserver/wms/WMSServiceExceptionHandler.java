@@ -22,6 +22,7 @@ import java.text.AttributedString;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -37,6 +38,7 @@ import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.Service;
 import org.geoserver.platform.ServiceException;
+import org.geotools.util.Version;
 
 /**
  * An implementation of {@link ServiceExceptionHandler} which outputs as service exception in a
@@ -82,56 +84,20 @@ public class WMSServiceExceptionHandler extends ServiceExceptionHandler {
         }
     };
 
-    /**
-     * the version of the service exceptoin report.
-     */
-    private String version = "1.2.0";
-
-    /**
-     * Location of document type defintion for document
-     */
-    private String dtdLocation = null;
-
-    /**
-     * Location of schema for document.
-     */
-    private String schemaLocation = null;
-
-    /**
-     * The content type of the produced document
-     */
-    private String contentType = "text/xml";
-
     private GeoServer geoServer;
 
     /**
      * Creates a new exception handler for WMS exceptions
      * 
-     * @param service
-     *            the {@link WMSInfo} this handler writes exceptions for
+     * @param services
+     *            the {@link WMSInfo}s this handler writes exceptions for
      * @param geoServer
      *            needed to know whether to write detailed exception reports or not (as per
      *            {@code GeoServer.getGlobal().isVerbose()})
      */
-    public WMSServiceExceptionHandler(Service service, GeoServer geoServer) {
-        super(service);
+    public WMSServiceExceptionHandler(List services, GeoServer geoServer) {
+        super(services);
         this.geoServer = geoServer;
-    }
-
-    public void setVersion(String version) {
-        this.version = version;
-    }
-
-    public void setDTDLocation(String dtd) {
-        this.dtdLocation = dtd;
-    }
-
-    public void setSchemaLocation(String schemaLocation) {
-        this.schemaLocation = schemaLocation;
-    }
-
-    public void setContentType(String contentType) {
-        this.contentType = contentType;
     }
 
     @Override
@@ -212,6 +178,29 @@ public class WMSServiceExceptionHandler extends ServiceExceptionHandler {
     }
 
     public void handleXmlException(ServiceException exception, Request request) {
+        //Location of document type defintion for document
+        String dtdLocation = null;
+
+        //Location of schema for document.
+        String schemaLocation = null;
+        
+        //The content type of the produced document
+        String contentType;
+
+        //first off negotiate the version to see what version of exception report to return
+        Version version = WMS.negotiateVersion(request.getVersion());
+        if (version == WMS.VERSION_1_1_1) {
+            //use dtd style
+            dtdLocation = "wms/1.1.1/WMS_exception_1_1_1.dtd";
+            contentType = "application/vnd.ogc.se_xml";
+        }
+        else {
+            //use xml schema
+            schemaLocation = "wms/1.3.0/exceptions_1_3_0.xsd";
+            contentType = "text/xml";
+        }
+        
+        
         String tab = "   ";
         StringBuffer sb = new StringBuffer();
 
@@ -232,7 +221,7 @@ public class WMSServiceExceptionHandler extends ServiceExceptionHandler {
         }
 
         // root element
-        sb.append("<ServiceExceptionReport version=\"" + version + "\" ");
+        sb.append("<ServiceExceptionReport version=\"" + version.toString() + "\" ");
 
         // xml schema location
         if ((schemaLocation != null) && (dtdLocation == null)) {
