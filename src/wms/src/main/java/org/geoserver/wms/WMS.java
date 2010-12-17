@@ -551,7 +551,26 @@ public class WMS implements ApplicationContextAware {
         return format;
     }
 
+    /**
+     * Returns a version object for the specified version string.
+     * <p>
+     * Calls through to {@link #version(String, boolean)} with exact set to <code>false</false>.
+     * </p>
+     */
     public static Version version(String version) {
+        return version(version, false);
+    }
+
+    /**
+     * Returns a version object for the specified version string optionally returning null
+     * when the version string does not match one of the available WMS versions.
+     * 
+     * @param version The version string.
+     * @param exact If set to false, a version object will always be returned. If set to true 
+     *   only a version matching on of the available wms versions will be returned.
+     * @return
+     */
+    public static Version version(String version, boolean exact) {
         if (version == null || 0 == version.trim().length()) {
             return null;
         }
@@ -560,9 +579,10 @@ public class WMS implements ApplicationContextAware {
         } else if (VERSION_1_3_0.toString().equals(version)) {
             return VERSION_1_3_0;
         }
-        return new Version(version);
+
+        return exact ? null : new Version(version);
     }
-    
+
     /**
      * Transforms a crs identifier to its internal representation based on the specified 
      * WMS version.

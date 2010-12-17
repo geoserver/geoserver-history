@@ -39,6 +39,22 @@ public class CapabilitiesKvpReader extends KvpRequestReader {
             version = (String) rawKvp.get("WMTVER");
         }
         
+        //kind of a silly check but the cite tests put some rules about using WMTVER vs VERSION
+        // depending on which one shows up as a kvp parameter first in order, which actualy 
+        // violates http get, but we do a check here to throw out one if it does not match 
+        // an available wms version
+        if (rawKvp.containsKey("VERSION") && rawKvp.containsKey("WMTVER")) {
+            String ver = (String) rawKvp.get("VERSION");
+            String wmtver = (String) rawKvp.get("WMTVER");
+            
+            if (WMS.version(ver, true) != null && WMS.version(wmtver, true) == null) {
+                version = ver;
+            }
+            else if (WMS.version(ver, true) == null && WMS.version(wmtver, true) != null) {
+                version = wmtver;
+            }
+        }
+ 
         // version negotation
         Version requestedVersion = WMS.version(version);
         Version negotiatedVersion = wms.negotiateVersion(requestedVersion);
