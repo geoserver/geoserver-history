@@ -27,6 +27,7 @@ public class PythonProcessFactory implements ProcessFactory {
     SoftValueHashMap<Name, PythonProcessAdapter> processes = new SoftValueHashMap(10);
     
     public Set<Name> getNames() {
+        Python.LOGGER.fine("Performning process lookup");
         Set<Name> names = new TreeSet<Name>();
         
         Python py = py();
@@ -34,9 +35,12 @@ public class PythonProcessFactory implements ProcessFactory {
             File processRoot = py.getProcessRoot();
             for (String file : processRoot.list()) {
                 if (file.endsWith(".py")) {
-                    PythonProcessAdapter adapter = 
-                        new PythonProcessAdapter(new File(processRoot, file), py);
+                    File f = new File(processRoot, file);
+                    PythonProcessAdapter adapter = new PythonProcessAdapter(f, py);
+                    
+                    Python.LOGGER.finest("Examining "+f.getAbsolutePath()+" for process functions");
                     for(String n : adapter.getNames()) {
+                        Python.LOGGER.finest("Found process function " + n);
                         names.add(new NameImpl(FilenameUtils.getBaseName(file), n));
                     }
                 }
