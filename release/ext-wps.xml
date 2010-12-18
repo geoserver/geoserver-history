@@ -13,7 +13,11 @@
         <include>web-wps*</include>
         <include>gt-process*</include>
         <include>gt-xsd-wps*</include>
+        <include>gt-geojson*</include>
         <include>net.opengis.wps*</include>
+        <include>utils-*</include>
+        <include>rangelookup-*</include>
+        <include>zonalstats-*</include>
       </includes>
     </fileSet>
   </fileSets>
