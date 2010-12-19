@@ -151,7 +151,7 @@ public abstract class AbstractStylePage extends GeoServerSecuredPage {
 
                 try {
                     IOUtils.copy(upload.getInputStream(), bout);
-                    setRawSLD(new InputStreamReader(new ByteArrayInputStream(bout.toByteArray())));
+                    setRawSLD(new InputStreamReader(new ByteArrayInputStream(bout.toByteArray()), "UTF-8"));
                     editor.setModelObject(rawSLD);
                 } catch (IOException e) {
                     throw new WicketRuntimeException(e);
