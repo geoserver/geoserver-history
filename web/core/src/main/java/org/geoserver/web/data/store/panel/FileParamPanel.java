@@ -20,10 +20,10 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.validation.IValidator;
+import org.geoserver.config.GeoServerDataDirectory;
 import org.geoserver.web.util.MapModel;
 import org.geoserver.web.wicket.GeoServerAjaxFormLink;
 import org.geoserver.web.wicket.browser.GeoServerFileChooser;
-import org.vfny.geoserver.global.GeoserverDataDirectory;
 
 /**
  * A label, a text field, a file chooser
@@ -132,66 +132,6 @@ public class FileParamPanel extends Panel {
      */
     public void setFileFilter(IModel<? extends FileFilter> fileFilter) {
         this.fileFilter = fileFilter;
-    }
-    
-    /**
-     * Makes sure the file path for files do start with file:// otherwise
-     * stuff like /home/user/file.shp won't be recognized as valid. Also, if a 
-     * path is inside the data directory it will be turned into a relative path 
-     * @author Andrea Aime - GeoSolutions
-     *
-     */
-    private final class FileModel implements IModel {
-        IModel delegate;
-        
-        private FileModel(IModel delegate) {
-            this.delegate = delegate;
-        }
-
-        
-        
-        private boolean isSubfile(File root, File selection) {
-            if(selection == null || "".equals(selection.getPath()))
-                return false;
-            if(selection.equals(root))
-                return true;
-            
-            return isSubfile(root, selection.getParentFile());
-        }
-
-        public Object getObject() {
-            return delegate.getObject();
-        }
-
-        public void detach() {
-            // TODO Auto-generated method stub
-            
-        }
-
-        public void setObject(Object object) {
-            String location = (String) object;
-            
-            File dataDirectory = GeoserverDataDirectory.getGeoserverDataDirectory();
-            File file = new File(location);
-            if(isSubfile(dataDirectory, file)) {
-                File curr = file;
-                String path = null;
-                // paranoid check to avoid infinite loops
-                while(curr != null && !curr.equals(dataDirectory)){
-                    if(path == null) {
-                        path = curr.getName();
-                    } else {
-                        path = curr.getName() + "/" + path;
-                    }
-                    curr = curr.getParentFile();
-                } 
-                location = "file:" + path; 
-            } else {
-                location = "file://" + file.getAbsolutePath();
-            }
-            
-            delegate.setObject(location);
-        }
     }
     
     
