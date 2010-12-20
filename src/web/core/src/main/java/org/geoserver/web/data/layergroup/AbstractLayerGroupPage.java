@@ -37,7 +37,10 @@ import org.geoserver.web.wicket.ParamResourceModel;
 import org.geoserver.web.wicket.SimpleAjaxLink;
 import org.geoserver.web.wicket.GeoServerDataProvider.BeanProperty;
 import org.geoserver.web.wicket.GeoServerDataProvider.Property;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 /**
  * Handles layer group
@@ -48,7 +51,6 @@ public abstract class AbstractLayerGroupPage extends GeoServerSecuredPage {
     public static final String GROUP = "group";
     IModel lgModel;
     EnvelopePanel envelopePanel;
-    CRSPanel crsPanel;
     LayerGroupEntryPanel lgEntryPanel;
     String layerGroupId;
     
@@ -70,14 +72,8 @@ public abstract class AbstractLayerGroupPage extends GeoServerSecuredPage {
         //bounding box
         form.add(envelopePanel = new EnvelopePanel( "bounds" )/*.setReadOnly(true)*/);
         envelopePanel.setRequired(true);
+        envelopePanel.setCRSFieldVisible(true);
         envelopePanel.setOutputMarkupId( true );
-        
-        CoordinateReferenceSystem crs = layerGroup.getBounds() != null 
-            ? layerGroup.getBounds().getCoordinateReferenceSystem() : null;
-
-        form.add(crsPanel = (crs != null) ? new CRSPanel( "crs", crs ) : new CRSPanel( "crs", new Model() ));
-        crsPanel.setOutputMarkupId( true );
-        crsPanel.setRequired(true);
         
         form.add(new GeoServerAjaxFormLink( "generateBounds") {
             @Override
@@ -90,7 +86,9 @@ public abstract class AbstractLayerGroupPage extends GeoServerSecuredPage {
                 }
                 
                 try {
-                    CoordinateReferenceSystem crs = crsPanel.getCRS();
+                    // grab the eventually manually inserted 
+                    CoordinateReferenceSystem crs = envelopePanel.getCoordinateReferenceSystem();
+                     
                     if ( crs != null ) {
                         //ensure the bounds calculated in terms of the user specified crs
                         new CatalogBuilder( getCatalog() ).calculateLayerGroupBounds( lg, crs );
@@ -102,12 +100,6 @@ public abstract class AbstractLayerGroupPage extends GeoServerSecuredPage {
                     
                     envelopePanel.setModelObject( lg.getBounds() );
                     target.addComponent( envelopePanel );
-                    
-                    if ( crs == null ) {
-                        //update the crs as well
-                        crsPanel.setModelObject( lg.getBounds().getCoordinateReferenceSystem() );
-                        target.addComponent( crsPanel );
-                    }
                     
                 } 
                 catch (Exception e) {

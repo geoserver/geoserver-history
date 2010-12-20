@@ -28,6 +28,7 @@ public class EnvelopePanel extends FormComponentPanel {
     CoordinateReferenceSystem crs;
     WebMarkupContainer crsContainer;
     private CRSPanel crsPanel;
+    boolean crsRequired;
     
     public EnvelopePanel(String id ) {
         super(id);
@@ -53,12 +54,25 @@ public class EnvelopePanel extends FormComponentPanel {
         return crsContainer.isVisible();
     }
     
+    public boolean isCrsRequired() {
+        return crsRequired;
+    }
+
+    /**
+     * Makes the CRS bounds a required component of the envelope. 
+     * It is warmly suggested that the crs field be made visible too
+     * @param crsRequired
+     */
+    public void setCrsRequired(boolean crsRequired) {
+        this.crsRequired = crsRequired;
+    }
+
     void initComponents() {
         updateFields();
         
         add( new TextField( "minX", new PropertyModel(this, "minX")) );
         add( new TextField( "minY", new PropertyModel(this, "minY")) );
-        add( new TextField( "maxX", new PropertyModel(this, "maxX") ) );
+        add( new TextField( "maxX", new PropertyModel(this, "maxX") ));
         add( new TextField( "maxY", new PropertyModel(this, "maxY")) );
         crsContainer = new WebMarkupContainer("crsContainer");
         crsContainer.setVisible(false);
@@ -110,10 +124,15 @@ public class EnvelopePanel extends FormComponentPanel {
         }
         
         // update the envelope model
-        if(minX != null && maxX != null && minY != null && maxX != null)
-            setConvertedInput(new ReferencedEnvelope(minX, maxX, minY, maxY, crs));
-        else
+        if(minX != null && maxX != null && minY != null && maxX != null) {
+            if(crsRequired && crs == null) {
+                setConvertedInput(null);
+            } else {
+                setConvertedInput(new ReferencedEnvelope(minX, maxX, minY, maxY, crs));
+            }
+        } else {
             setConvertedInput(null);
+        }
     }
     
     @Override
@@ -130,5 +149,12 @@ public class EnvelopePanel extends FormComponentPanel {
         });
     }
     
+    /**
+     * Returns the coordinate reference system added by the user in the GUI, if any and valid
+     * @return
+     */
+    public CoordinateReferenceSystem getCoordinateReferenceSystem() {
+        return crs;
+    }
     
 }
