@@ -59,7 +59,6 @@ import org.geotools.coverage.grid.GridEnvelope2D;
 import org.geotools.coverage.grid.GridGeometry2D;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
-import org.geotools.gce.imagemosaic.ImageMosaicDescriptor;
 import org.geotools.gce.imagemosaic.ImageMosaicFormat;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.image.ImageWorker;
@@ -69,13 +68,11 @@ import org.geotools.parameter.Parameter;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.referencing.operation.builder.GridToEnvelopeMapper;
-import org.geotools.renderedimage.viewer.RenderedImageBrowser;
 import org.geotools.renderer.GTRenderer;
 import org.geotools.renderer.lite.RendererUtilities;
 import org.geotools.renderer.lite.StreamingRenderer;
 import org.geotools.renderer.lite.gridcoverage2d.GridCoverageRenderer;
 import org.geotools.renderer.shape.ShapefileRenderer;
-import org.geotools.resources.CRSUtilities;
 import org.geotools.resources.image.ColorUtilities;
 import org.geotools.styling.RasterSymbolizer;
 import org.geotools.styling.Style;
@@ -852,9 +849,6 @@ public class RenderedImageMapOutputFormat extends AbstractMapOutputFormat {
                     // create a solid color empty image
                     image = gcr.renderImage(coverage, symbolizer, interpolation,
                             mapContext.getBgColor(), tileSizeX, tileSizeY);
-                    
-                    // FIXME remove me
-                    RenderedImageBrowser.showChain(coverage.getRenderedImage());
                 }
             } finally {
                 // once the final image is rendered we need to clean up the planar image chain
