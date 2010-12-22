@@ -313,9 +313,12 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
                         LayerGroupInfo groupInfo = (LayerGroupInfo) o;
                         for (int j = 0; j < groupInfo.getStyles().size(); j++) {
                             StyleInfo si = groupInfo.getStyles().get(j);
-                            if (si == null)
-                                si = groupInfo.getLayers().get(j).getDefaultStyle();
-                            newStyles.add(si.getStyle());
+                            if (si != null){
+                                newStyles.add(si.getStyle());
+                            } else {
+                                LayerInfo layer = groupInfo.getLayers().get(j);
+                                newStyles.add(getDefaultStyle(layer));
+                            }
                         }
                         // expand the filter on the layer group to all its sublayers
                         if (filters != null) {
@@ -329,17 +332,7 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
                             newStyles.add(style);
                         } else {
                             LayerInfo layer = (LayerInfo) o;
-                            if (layer.getResource() instanceof WMSLayerInfo) {
-                                // NamedStyle is a subclass of Style -> we use it as a way to convey
-                                // cascaded WMS layer styles
-                                NamedStyle namedStyle = CommonFactoryFinder.getStyleFactory(null)
-                                        .createNamedStyle();
-                                namedStyle.setName(null);
-                                newStyles.add(namedStyle);
-                            } else {
-                                StyleInfo defaultStyle = ((LayerInfo) o).getDefaultStyle();
-                                newStyles.add(defaultStyle.getStyle());
-                            }
+                            newStyles.add(getDefaultStyle(layer));
                         }
                         // add filter if needed
                         if (filters != null)
@@ -399,6 +392,20 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
         }
 
         return getMap;
+    }
+
+    private Style getDefaultStyle (LayerInfo layer) throws IOException{
+        if (layer.getResource() instanceof WMSLayerInfo) {
+            // NamedStyle is a subclass of Style -> we use it as a way to convey
+            // cascaded WMS layer styles
+            NamedStyle namedStyle = CommonFactoryFinder.getStyleFactory(null)
+                    .createNamedStyle();
+            namedStyle.setName(null);
+            return namedStyle;
+        } else {
+            StyleInfo defaultStyle = layer.getDefaultStyle();
+            return defaultStyle.getStyle();
+        }
     }
 
     Filter getFilter(List<Filter> filters, int index) {
