@@ -119,12 +119,6 @@ import org.vfny.geoserver.global.GeoserverDataDirectory;
  */
 public class RenderedImageMapOutputFormat extends AbstractMapOutputFormat {
     
-    /**
-     * This variable is used to bypass direct raster rendering.
-     */
-    private static boolean BYPASS_DIRECT = Boolean
-            .getBoolean("org.geoserver.render.raster.direct.disable");
-    
     private final static Interpolation NN_INTERPOLATION = new InterpolationNearest();
 
     private final static Interpolation BIL_INTERPOLATION = new InterpolationBilinear();
@@ -284,7 +278,9 @@ public class RenderedImageMapOutputFormat extends AbstractMapOutputFormat {
 
         RenderedImage image = null;
         // fast path for pure coverage rendering
-        if (!BYPASS_DIRECT&&mapContext.getLayerCount() == 1 && mapContext.getAngle() == 0.0) {
+        if (DefaultWebMapService.isDirectRasterPathEnabled() && 
+                mapContext.getLayerCount() == 1 
+                && mapContext.getAngle() == 0.0) {
             List<GridCoverage2D> renderedCoverages = new ArrayList<GridCoverage2D>(2);
             try {
                 image = directRasterRender(mapContext, 0, renderedCoverages);

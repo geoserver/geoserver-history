@@ -122,6 +122,11 @@ public class DefaultWebMapService implements WebMapService, ApplicationContextAw
      * Temporary field that handles the choice of renderer to be used
      */
     private static Boolean USE_SHAPEFILE_RENDERER = null;
+    
+    /**
+     * This variable is used to bypass direct raster rendering.
+     */
+    private static boolean BYPASS_DIRECT = Boolean.getBoolean("org.geoserver.render.raster.direct.disable");
 
     /**
      * Max number of rule filters to be used against the data source
@@ -257,6 +262,14 @@ public class DefaultWebMapService implements WebMapService, ApplicationContextAw
      */
     public static int getMaxFilterRules() {
         return MAX_FILTER_RULES;
+    }
+    
+    /**
+     * If true (default) the direct raster rendering path is enabled
+     * @return
+     */
+    public static boolean isDirectRasterPathEnabled() {
+        return !BYPASS_DIRECT;
     }
 
     /**
