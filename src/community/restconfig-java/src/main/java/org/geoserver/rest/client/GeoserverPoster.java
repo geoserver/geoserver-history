@@ -6,8 +6,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.rmi.RemoteException;
 
-import javax.ws.rs.core.MediaType;
-
 import org.geoserver.rest.client.datatypes.ConnectionParameters;
 import org.geoserver.rest.client.datatypes.Coverage;
 import org.geoserver.rest.client.datatypes.CoverageStore;

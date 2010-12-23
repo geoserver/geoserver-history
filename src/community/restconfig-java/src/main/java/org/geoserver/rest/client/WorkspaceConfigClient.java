@@ -22,7 +22,7 @@ public class WorkspaceConfigClient extends ConfigClient {
 	/**
 	 * The URI for manipulating a single {@link Workspace}
 	 */
-	private static final String SPACE_URI = "/rest/workspaces/{wksp}";
+	private static final String SPACE_URI = "/rest/workspaces/{wksp}";	
 
 	/**
 	 * The URI for manipulating a collection of {@link CoverageStore}s
