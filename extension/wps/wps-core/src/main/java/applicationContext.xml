@@ -139,6 +139,7 @@
       <constructor-arg index="0" ref="catalog"/>
     </bean>
     <bean id="reprojectProcess" class="org.geoserver.wps.gs.ReprojectProcess"/>
+    <bean id="reprojectGeometryProcess" class="org.geoserver.wps.gs.ReprojectGeometry"/>
     <bean id="queryProcess" class="org.geoserver.wps.gs.QueryProcess"/>
     <bean id="aggregateProcess" class="org.geoserver.wps.gs.AggregateProcess"/>
     <bean id="aggregateProcessResultPPIO" class="org.geoserver.wps.gs.AggregateProcessPPIO"/>
