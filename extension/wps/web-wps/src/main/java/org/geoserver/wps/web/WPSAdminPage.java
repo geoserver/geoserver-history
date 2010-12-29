@@ -11,8 +11,9 @@ import org.geoserver.wps.WPSInfo;
 
 /**
  * Configure the WPS service global informations
+ * 
  * @author Andrea Aime - GeoSolutions
- *
+ * 
  */
 public class WPSAdminPage extends BaseServiceAdminPage<WPSInfo> {
     protected Class<WPSInfo> getServiceClass() {

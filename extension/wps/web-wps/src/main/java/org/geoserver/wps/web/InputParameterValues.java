@@ -13,6 +13,7 @@ import java.util.Set;
 
 import org.geoserver.wps.ppio.BoundingBoxPPIO;
 import org.geoserver.wps.ppio.ComplexPPIO;
+import org.geoserver.wps.ppio.CoordinateReferenceSystemPPIO;
 import org.geoserver.wps.ppio.ProcessParameterIO;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.data.Parameter;
@@ -23,139 +24,148 @@ import org.opengis.coverage.grid.GridCoverage;
 import org.opengis.feature.type.Name;
 
 /**
- * Contains the set of values for a single parameter. For most input parameters
- * it will be just one value actually
+ * Contains the set of values for a single parameter. For most input parameters it will be just one
+ * value actually
  * 
  * @author Andrea Aime - OpenGeo
  */
 @SuppressWarnings("serial")
 class InputParameterValues implements Serializable {
-	public enum ParameterType {
-		LITERAL, TEXT, VECTOR_LAYER, RASTER_LAYER, REFERENCE, SUBPROCESS;
-	};
+    public enum ParameterType {
+        LITERAL, TEXT, VECTOR_LAYER, RASTER_LAYER, REFERENCE, SUBPROCESS;
+    };
 
-	Name processName;
-	String paramName;
-	List<ParameterValue> values = new ArrayList<ParameterValue>();
+    Name processName;
 
-	public InputParameterValues(Name processName, String paramName) {
-		this.processName = processName;
-		this.paramName = paramName;
-		Parameter<?> p = getParameter();
-		for (int i = 0; i < Math.max(1, p.minOccurs); i++) {
-			values.add(new ParameterValue(guessBestType(), getDefaultMime(),
-					null));
-		}
-	}
+    String paramName;
 
-	private ParameterType guessBestType() {
-		if (!isComplex())
-			return ParameterType.LITERAL;
-		if (FeatureCollection.class.isAssignableFrom(getParameter().type)) {
-			return ParameterType.VECTOR_LAYER;
-		} else if (GridCoverage2D.class.isAssignableFrom(getParameter().type)) {
-			return ParameterType.RASTER_LAYER;
-		} else {
-			return ParameterType.TEXT;
-		}
-	}
-	
-	public List<ParameterType> getSupportedTypes() {
-	    if(!isComplex()) {
-	        return Collections.singletonList(ParameterType.LITERAL);
-	    } else {
-	        Set<ParameterType> result = new LinkedHashSet<ParameterType>();
-	        result.add(ParameterType.TEXT);
-	        result.add(ParameterType.REFERENCE);
-	        result.add(ParameterType.SUBPROCESS);
-	        for (ProcessParameterIO ppio : getProcessParameterIO()) {
-                if(FeatureCollection.class.isAssignableFrom(ppio.getType())) {
+    List<ParameterValue> values = new ArrayList<ParameterValue>();
+
+    public InputParameterValues(Name processName, String paramName) {
+        this.processName = processName;
+        this.paramName = paramName;
+        Parameter<?> p = getParameter();
+        final ParameterType type = guessBestType();
+        final String mime = getDefaultMime();
+        for (int i = 0; i < Math.max(1, p.minOccurs); i++) {
+            values.add(new ParameterValue(type, mime, null));
+        }
+    }
+
+    private ParameterType guessBestType() {
+        if (!isComplex())
+            return ParameterType.LITERAL;
+        if (FeatureCollection.class.isAssignableFrom(getParameter().type)) {
+            return ParameterType.VECTOR_LAYER;
+        } else if (GridCoverage2D.class.isAssignableFrom(getParameter().type)) {
+            return ParameterType.RASTER_LAYER;
+        } else {
+            return ParameterType.TEXT;
+        }
+    }
+
+    public List<ParameterType> getSupportedTypes() {
+        if (!isComplex()) {
+            return Collections.singletonList(ParameterType.LITERAL);
+        } else {
+            Set<ParameterType> result = new LinkedHashSet<ParameterType>();
+            result.add(ParameterType.TEXT);
+            result.add(ParameterType.REFERENCE);
+            result.add(ParameterType.SUBPROCESS);
+            for (ProcessParameterIO ppio : getProcessParameterIO()) {
+                if (FeatureCollection.class.isAssignableFrom(ppio.getType())) {
                     result.add(ParameterType.VECTOR_LAYER);
-                } else if(GridCoverage.class.isAssignableFrom(ppio.getType())) {
+                } else if (GridCoverage.class.isAssignableFrom(ppio.getType())) {
                     result.add(ParameterType.RASTER_LAYER);
                 }
             }
-	        return new ArrayList<ParameterType>(result);
-	    }
-	}
+            return new ArrayList<ParameterType>(result);
+        }
+    }
 
-	String getDefaultMime() {
-		if (!isComplex()) {
-			return null;
-		} else {
-			return ((ComplexPPIO) getProcessParameterIO().get(0)).getMimeType();
-		}
-	}
+    String getDefaultMime() {
+        if (!isComplex()) {
+            return null;
+        } else {
+            return ((ComplexPPIO) getProcessParameterIO().get(0)).getMimeType();
+        }
+    }
 
-	public List<String> getSupportedMime() {
-		List<String> results = new ArrayList<String>();
-		for (ProcessParameterIO ppio : getProcessParameterIO()) {
-			ComplexPPIO cp = (ComplexPPIO) ppio;
-			results.add(cp.getMimeType());
-		}
-		return results;
-	}
+    public List<String> getSupportedMime() {
+        List<String> results = new ArrayList<String>();
+        for (ProcessParameterIO ppio : getProcessParameterIO()) {
+            ComplexPPIO cp = (ComplexPPIO) ppio;
+            results.add(cp.getMimeType());
+        }
+        return results;
+    }
 
-	public boolean isComplex() {
-		List<ProcessParameterIO> ppios = getProcessParameterIO();
-		return ppios.size() > 0 && ppios.get(0) instanceof ComplexPPIO;
-	}
-	
-	public boolean isBoundingBox() {
-	    List<ProcessParameterIO> ppios = getProcessParameterIO();
-        return ppios.size() > 0 && ppios.get(0) instanceof BoundingBoxPPIO; 
-	}
+    public boolean isComplex() {
+        List<ProcessParameterIO> ppios = getProcessParameterIO();
+        return ppios.size() > 0 && ppios.get(0) instanceof ComplexPPIO;
+    }
 
-	List<ProcessParameterIO> getProcessParameterIO() {
-		return ProcessParameterIO.findAll(getParameter(), null);
-	}
+    public boolean isBoundingBox() {
+        List<ProcessParameterIO> ppios = getProcessParameterIO();
+        return ppios.size() > 0 && ppios.get(0) instanceof BoundingBoxPPIO;
+    }
 
-	ProcessFactory getProcessFactory() {
-		return Processors.createProcessFactory(processName);
-	}
+    public boolean isCoordinateReferenceSystem() {
+        List<ProcessParameterIO> ppios = getProcessParameterIO();
+        return ppios.size() > 0 && ppios.get(0) instanceof CoordinateReferenceSystemPPIO;
+    }
 
-	Parameter<?> getParameter() {
-		return getProcessFactory().getParameterInfo(processName).get(paramName);
-	}
+    List<ProcessParameterIO> getProcessParameterIO() {
+        return ProcessParameterIO.findAll(getParameter(), null);
+    }
 
-	/**
-	 * A single value, along with the chosen editor and its mime type
-	 */
-	static class ParameterValue implements Serializable {
-		ParameterType type;
-		String mime;
-		Serializable value;
+    ProcessFactory getProcessFactory() {
+        return Processors.createProcessFactory(processName);
+    }
 
-		public ParameterValue(ParameterType type, String mime,
-				Serializable value) {
-			this.type = type;
-			this.mime = mime;
-			this.value = value;
-		}
+    Parameter<?> getParameter() {
+        return getProcessFactory().getParameterInfo(processName).get(paramName);
+    }
 
-		public ParameterType getType() {
-			return type;
-		}
+    /**
+     * A single value, along with the chosen editor and its mime type
+     */
+    static class ParameterValue implements Serializable {
+        ParameterType type;
 
-		public void setType(ParameterType type) {
-			this.type = type;
-		}
+        String mime;
 
-		public String getMime() {
-			return mime;
-		}
+        Serializable value;
 
-		public void setMime(String mime) {
-			this.mime = mime;
-		}
+        public ParameterValue(ParameterType type, String mime, Serializable value) {
+            this.type = type;
+            this.mime = mime;
+            this.value = value;
+        }
 
-		public Serializable getValue() {
-			return value;
-		}
+        public ParameterType getType() {
+            return type;
+        }
 
-		public void setValue(Serializable value) {
-			this.value = value;
-		}
+        public void setType(ParameterType type) {
+            this.type = type;
+        }
 
-	}
+        public String getMime() {
+            return mime;
+        }
+
+        public void setMime(String mime) {
+            this.mime = mime;
+        }
+
+        public Serializable getValue() {
+            return value;
+        }
+
+        public void setValue(Serializable value) {
+            this.value = value;
+        }
+
+    }
 }

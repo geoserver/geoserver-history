@@ -13,13 +13,13 @@ import org.apache.wicket.model.PropertyModel;
  * Shows the Execute xml
  */
 public class XMLExecutePage extends WebPage {
-	String xml;
+    String xml;
 
-	public XMLExecutePage(final ModalWindow container, final ModalWindow responseWindow, String initialXml) {
-		this.xml = initialXml;
-		
-		add(new Label("xml", new PropertyModel(this, "xml")));
-	}
-	
-	
+    public XMLExecutePage(final ModalWindow container, final ModalWindow responseWindow,
+            String initialXml) {
+        this.xml = initialXml;
+
+        add(new Label("xml", new PropertyModel(this, "xml")));
+    }
+
 }

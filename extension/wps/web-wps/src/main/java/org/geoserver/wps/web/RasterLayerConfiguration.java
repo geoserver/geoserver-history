@@ -9,31 +9,31 @@ import java.io.Serializable;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 
 /**
- * The GUI configuration for a raster layer. For the time being just the name,
- * but expect to see bbox extraction and resolution setting (probably ND slicing
- * for ND coverages?)
+ * The GUI configuration for a raster layer. For the time being just the name, but expect to see
+ * bbox extraction and resolution setting (probably ND slicing for ND coverages?)
  * 
  * @author Andrea Aime - OpenGeo
  */
 @SuppressWarnings("serial")
 class RasterLayerConfiguration implements Serializable {
-	String layerName;
-	ReferencedEnvelope spatialDomain;
+    String layerName;
 
-	public ReferencedEnvelope getSpatialDomain() {
-		return spatialDomain;
-	}
+    ReferencedEnvelope spatialDomain;
 
-	public void setSpatialDomain(ReferencedEnvelope spatialDomain) {
-		this.spatialDomain = spatialDomain;
-	}
+    public ReferencedEnvelope getSpatialDomain() {
+        return spatialDomain;
+    }
 
-	public String getLayerName() {
-		return layerName;
-	}
+    public void setSpatialDomain(ReferencedEnvelope spatialDomain) {
+        this.spatialDomain = spatialDomain;
+    }
 
-	public void setLayerName(String layerName) {
-		this.layerName = layerName;
-	}
+    public String getLayerName() {
+        return layerName;
+    }
+
+    public void setLayerName(String layerName) {
+        this.layerName = layerName;
+    }
 
 }

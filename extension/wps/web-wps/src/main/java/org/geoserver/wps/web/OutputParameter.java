@@ -16,57 +16,59 @@ import org.geotools.process.Processors;
 import org.opengis.feature.type.Name;
 
 /**
- * A single output parameter, along with the chosen output mime type and
- * the output inclusion flag
+ * A single output parameter, along with the chosen output mime type and the output inclusion flag
  * 
  * @author Andrea Aime - OpenGeo
  */
 @SuppressWarnings("serial")
 class OutputParameter implements Serializable {
-	Name processName;
-	String paramName;
-	String mimeType;
-	boolean include = true;
+    Name processName;
 
-	public OutputParameter(Name processName, String paramName) {
-		this.processName = processName;
-		this.paramName = paramName;
-		Parameter<?> p = getParameter();
-		this.mimeType = getDefaultMime();
-	}
+    String paramName;
 
-	String getDefaultMime() {
-		if (!isComplex()) {
-			return null;
-		} else {
-			return ((ComplexPPIO) getProcessParameterIO().get(0)).getMimeType();
-		}
-	}
+    String mimeType;
 
-	public List<String> getSupportedMime() {
-		List<String> results = new ArrayList<String>();
-		for (ProcessParameterIO ppio : getProcessParameterIO()) {
-			ComplexPPIO cp = (ComplexPPIO) ppio;
-			results.add(cp.getMimeType());
-		}
-		return results;
-	}
+    boolean include = true;
 
-	public boolean isComplex() {
-		List<ProcessParameterIO> ppios = getProcessParameterIO();
-		return ppios.size() > 0 && ppios.get(0) instanceof ComplexPPIO;
-	}
+    public OutputParameter(Name processName, String paramName) {
+        this.processName = processName;
+        this.paramName = paramName;
+        Parameter<?> p = getParameter();
+        this.mimeType = getDefaultMime();
+    }
 
-	List<ProcessParameterIO> getProcessParameterIO() {
-		return ProcessParameterIO.findAll(getParameter(), null);
-	}
+    String getDefaultMime() {
+        if (!isComplex()) {
+            return null;
+        } else {
+            return ((ComplexPPIO) getProcessParameterIO().get(0)).getMimeType();
+        }
+    }
 
-	ProcessFactory getProcessFactory() {
-		return Processors.createProcessFactory(processName);
-	}
+    public List<String> getSupportedMime() {
+        List<String> results = new ArrayList<String>();
+        for (ProcessParameterIO ppio : getProcessParameterIO()) {
+            ComplexPPIO cp = (ComplexPPIO) ppio;
+            results.add(cp.getMimeType());
+        }
+        return results;
+    }
 
-	Parameter<?> getParameter() {
-		return getProcessFactory().getResultInfo(processName, null).get(paramName);
-	}
+    public boolean isComplex() {
+        List<ProcessParameterIO> ppios = getProcessParameterIO();
+        return ppios.size() > 0 && ppios.get(0) instanceof ComplexPPIO;
+    }
+
+    List<ProcessParameterIO> getProcessParameterIO() {
+        return ProcessParameterIO.findAll(getParameter(), null);
+    }
+
+    ProcessFactory getProcessFactory() {
+        return Processors.createProcessFactory(processName);
+    }
+
+    Parameter<?> getParameter() {
+        return getProcessFactory().getResultInfo(processName, null).get(paramName);
+    }
 
 }

@@ -13,45 +13,48 @@ import java.io.Serializable;
  */
 @SuppressWarnings("serial")
 class ReferenceConfiguration implements Serializable {
-	enum Method {
-		GET, POST
-	};
+    enum Method {
+        GET, POST
+    };
 
-	Method method = Method.GET;
-	String url;
-	String body;
-	String mime;
+    Method method = Method.GET;
 
-	public Method getMethod() {
-		return method;
-	}
+    String url;
 
-	public String getMime() {
-		return mime;
-	}
+    String body;
 
-	public void setMime(String mime) {
-		this.mime = mime;
-	}
+    String mime;
 
-	public void setMethod(Method method) {
-		this.method = method;
-	}
+    public Method getMethod() {
+        return method;
+    }
 
-	public String getUrl() {
-		return url;
-	}
+    public String getMime() {
+        return mime;
+    }
 
-	public void setUrl(String url) {
-		this.url = url;
-	}
+    public void setMime(String mime) {
+        this.mime = mime;
+    }
 
-	public String getBody() {
-		return body;
-	}
+    public void setMethod(Method method) {
+        this.method = method;
+    }
 
-	public void setBody(String body) {
-		this.body = body;
-	}
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
+    }
 
 }
