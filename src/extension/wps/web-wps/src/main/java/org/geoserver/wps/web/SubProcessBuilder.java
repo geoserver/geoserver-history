@@ -12,7 +12,7 @@ public class SubProcessBuilder extends WebPage {
         Form form = new Form("form");
         add(form);
 
-        final RequestBuilderPanel builder = new RequestBuilderPanel("builder", request);
+        final WPSRequestBuilderPanel builder = new WPSRequestBuilderPanel("builder", request);
         form.add(builder);
 
         form.add(new AjaxSubmitLink("apply") {

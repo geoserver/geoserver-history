@@ -35,7 +35,7 @@ public class WPSRequestBuilder extends GeoServerBasePage {
 
     ModalWindow responseWindow;
 
-    RequestBuilderPanel builder;
+    WPSRequestBuilderPanel builder;
 
     public WPSRequestBuilder() {
         // the form
@@ -43,7 +43,7 @@ public class WPSRequestBuilder extends GeoServerBasePage {
         add(form);
 
         // the actual request builder component
-        builder = new RequestBuilderPanel("requestBuilder", new ExecuteRequest());
+        builder = new WPSRequestBuilderPanel("requestBuilder", new ExecuteRequest());
         form.add(builder);
 
         // the xml popup window
