@@ -25,39 +25,38 @@ import org.geoserver.web.demo.DemoRequest;
 import org.geoserver.web.demo.DemoRequestResponse;
 
 /**
- * Small embedded WPS client enabling users to visually build a WPS Execute
- * request (and as a side effect also showing what capabilities and describe
- * process would provide)
+ * Small embedded WPS client enabling users to visually build a WPS Execute request (and as a side
+ * effect also showing what capabilities and describe process would provide)
  * 
  * @author Andrea Aime - OpenGeo
  */
 @SuppressWarnings("serial")
 public class WPSRequestBuilder extends GeoServerBasePage {
 
-	ModalWindow responseWindow;
-	RequestBuilderPanel builder;
+    ModalWindow responseWindow;
 
-	public WPSRequestBuilder() {
-		// the form
-		Form form = new Form("form");
-		add(form);
-		
-		// the actual request builder component
-		builder = new RequestBuilderPanel("requestBuilder", new ExecuteRequest());
-		form.add(builder);
+    RequestBuilderPanel builder;
 
-		// the xml popup window
-		final ModalWindow xmlWindow = new ModalWindow("xmlWindow");
-		add(xmlWindow);
-		xmlWindow.setPageCreator(new ModalWindow.PageCreator() {
+    public WPSRequestBuilder() {
+        // the form
+        Form form = new Form("form");
+        add(form);
 
-			public Page createPage() {
-				return new XMLExecutePage(xmlWindow, responseWindow,
-						getRequestXML());
-			}
-		});
-		
-		// the output response window
+        // the actual request builder component
+        builder = new RequestBuilderPanel("requestBuilder", new ExecuteRequest());
+        form.add(builder);
+
+        // the xml popup window
+        final ModalWindow xmlWindow = new ModalWindow("xmlWindow");
+        add(xmlWindow);
+        xmlWindow.setPageCreator(new ModalWindow.PageCreator() {
+
+            public Page createPage() {
+                return new XMLExecutePage(xmlWindow, responseWindow, getRequestXML());
+            }
+        });
+
+        // the output response window
         responseWindow = new ModalWindow("responseWindow");
         add(responseWindow);
         responseWindow.setPageMapName("demoResponse");
@@ -67,63 +66,64 @@ public class WPSRequestBuilder extends GeoServerBasePage {
 
             public Page createPage() {
                 DemoRequest request = new DemoRequest(null);
-                HttpServletRequest http = ((WebRequest) WPSRequestBuilder.this.getRequest()).getHttpServletRequest();
-                String url = ResponseUtils.buildURL(ResponseUtils.baseURL(http), "ows", Collections.singletonMap("strict", "true"), URLType.SERVICE);
+                HttpServletRequest http = ((WebRequest) WPSRequestBuilder.this.getRequest())
+                        .getHttpServletRequest();
+                String url = ResponseUtils.buildURL(ResponseUtils.baseURL(http), "ows", Collections
+                        .singletonMap("strict", "true"), URLType.SERVICE);
                 request.setRequestUrl(url);
                 request.setRequestBody((String) responseWindow.getDefaultModelObject());
                 return new DemoRequestResponse(new Model(request));
             }
         });
 
+        form.add(new AjaxSubmitLink("execute") {
 
-		form.add(new AjaxSubmitLink("execute") {
+            @Override
+            protected void onSubmit(AjaxRequestTarget target, Form form) {
+                responseWindow.setDefaultModel(new Model(getRequestXML()));
+                responseWindow.show(target);
+            }
 
-			@Override
-			protected void onSubmit(AjaxRequestTarget target, Form form) {
-				responseWindow.setDefaultModel(new Model(getRequestXML()));
-				responseWindow.show(target);
-			}
-			
-			@Override
-			protected void onError(AjaxRequestTarget target, Form form) {
-				super.onError(target, form);
-				target.addComponent(builder.getFeedbackPanel());
-			}
-		});
+            @Override
+            protected void onError(AjaxRequestTarget target, Form form) {
+                super.onError(target, form);
+                target.addComponent(builder.getFeedbackPanel());
+            }
+        });
 
-		form.add(new AjaxSubmitLink("executeXML") {
+        form.add(new AjaxSubmitLink("executeXML") {
 
-			@Override
-			protected void onSubmit(AjaxRequestTarget target, Form form) {
-				try {
-					getRequestXML();
-					xmlWindow.show(target);
-				} catch (Exception e) {
-					error(e.getMessage());
-					target.addComponent(getFeedbackPanel());
-				}
-			}
+            @Override
+            protected void onSubmit(AjaxRequestTarget target, Form form) {
+                try {
+                    getRequestXML();
+                    xmlWindow.show(target);
+                } catch (Exception e) {
+                    error(e.getMessage());
+                    target.addComponent(getFeedbackPanel());
+                }
+            }
 
-			@Override
-			protected void onError(AjaxRequestTarget target, Form form) {
-				target.addComponent(getFeedbackPanel());
-			}
-		});
-	}
+            @Override
+            protected void onError(AjaxRequestTarget target, Form form) {
+                target.addComponent(getFeedbackPanel());
+            }
+        });
+    }
 
-	String getRequestXML() {
-		// turn the GUI request into an actual WPS request
-		WPSExecuteTransformer tx = new WPSExecuteTransformer();
-		tx.setIndentation(2);
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
+    String getRequestXML() {
+        // turn the GUI request into an actual WPS request
+        WPSExecuteTransformer tx = new WPSExecuteTransformer();
+        tx.setIndentation(2);
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-		try {
-			tx.transform(builder.execute, out);
-		} catch (TransformerException e) {
-			LOGGER.log(Level.SEVERE, "Error generating xml request", e);
-			error(e);
-		}
-		return out.toString();
-	}
+        try {
+            tx.transform(builder.execute, out);
+        } catch (TransformerException e) {
+            LOGGER.log(Level.SEVERE, "Error generating xml request", e);
+            error(e);
+        }
+        return out.toString();
+    }
 
 }

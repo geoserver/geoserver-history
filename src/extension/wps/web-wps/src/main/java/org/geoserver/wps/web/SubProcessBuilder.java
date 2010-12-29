@@ -8,26 +8,26 @@ import org.apache.wicket.markup.html.form.Form;
 
 public class SubProcessBuilder extends WebPage {
 
-	public SubProcessBuilder(ExecuteRequest request, final ModalWindow window) {
-		Form form = new Form("form");
-		add(form);
+    public SubProcessBuilder(ExecuteRequest request, final ModalWindow window) {
+        Form form = new Form("form");
+        add(form);
 
-		final RequestBuilderPanel builder = new RequestBuilderPanel("builder", request);
-		form.add(builder);
+        final RequestBuilderPanel builder = new RequestBuilderPanel("builder", request);
+        form.add(builder);
 
-		form.add(new AjaxSubmitLink("apply") {
+        form.add(new AjaxSubmitLink("apply") {
 
-			@Override
-			protected void onSubmit(AjaxRequestTarget target, Form form) {
-				window.close(target);
-			}
-			
-			@Override
-			protected void onError(AjaxRequestTarget target, Form form) {
-				super.onError(target, form);
-				target.addComponent(builder.getFeedbackPanel());
-			}
-		});
+            @Override
+            protected void onSubmit(AjaxRequestTarget target, Form form) {
+                window.close(target);
+            }
 
-	}
+            @Override
+            protected void onError(AjaxRequestTarget target, Form form) {
+                super.onError(target, form);
+                target.addComponent(builder.getFeedbackPanel());
+            }
+        });
+
+    }
 }

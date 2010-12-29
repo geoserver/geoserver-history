@@ -14,21 +14,23 @@ import java.util.List;
  */
 @SuppressWarnings("serial")
 class ExecuteRequest implements Serializable {
-	String processName;
-	List<InputParameterValues> inputs;
-	List<OutputParameter> outputs;
+    String processName;
 
-	public ExecuteRequest(String processName, List<InputParameterValues> inputs,
-			List<OutputParameter> outputs) {
-		this.processName = processName;
-		this.inputs = inputs;
-		this.outputs = outputs;
-	}
-	
-	public ExecuteRequest() {
-		this.processName = null;
-		this.inputs = new ArrayList<InputParameterValues>();
-		this.outputs = new ArrayList<OutputParameter>();
-	}
+    List<InputParameterValues> inputs;
+
+    List<OutputParameter> outputs;
+
+    public ExecuteRequest(String processName, List<InputParameterValues> inputs,
+            List<OutputParameter> outputs) {
+        this.processName = processName;
+        this.inputs = inputs;
+        this.outputs = outputs;
+    }
+
+    public ExecuteRequest() {
+        this.processName = null;
+        this.inputs = new ArrayList<InputParameterValues>();
+        this.outputs = new ArrayList<OutputParameter>();
+    }
 
 }

@@ -8,39 +8,41 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * The GUI configuration for a vector layer. At the moment just the layer
- * name is provided, but there are plans to add filtering and attribute selection
- * as well
+ * The GUI configuration for a vector layer. At the moment just the layer name is provided, but
+ * there are plans to add filtering and attribute selection as well
+ * 
  * @author Andrea Aime - OpenGeo
  */
 @SuppressWarnings("serial")
 class VectorLayerConfiguration implements Serializable {
-	String layerName;
-	List<String> attributes;
-	String filter;
+    String layerName;
 
-	public String getLayerName() {
-		return layerName;
-	}
+    List<String> attributes;
 
-	public void setLayerName(String layerName) {
-		this.layerName = layerName;
-	}
+    String filter;
 
-	public List<String> getAttributes() {
-		return attributes;
-	}
+    public String getLayerName() {
+        return layerName;
+    }
 
-	public void setAttributes(List<String> attributes) {
-		this.attributes = attributes;
-	}
+    public void setLayerName(String layerName) {
+        this.layerName = layerName;
+    }
 
-	public String getFilter() {
-		return filter;
-	}
+    public List<String> getAttributes() {
+        return attributes;
+    }
 
-	public void setFilter(String filter) {
-		this.filter = filter;
-	}
+    public void setAttributes(List<String> attributes) {
+        this.attributes = attributes;
+    }
+
+    public String getFilter() {
+        return filter;
+    }
+
+    public void setFilter(String filter) {
+        this.filter = filter;
+    }
 
 }
