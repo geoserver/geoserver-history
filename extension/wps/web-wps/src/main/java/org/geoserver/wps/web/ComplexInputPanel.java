@@ -43,7 +43,7 @@ import org.geotools.util.logging.Logging;
  */
 @SuppressWarnings("serial")
 public class ComplexInputPanel extends Panel {
-    static final Logger LOGGER = Logging.getLogger(RequestBuilderPanel.class);
+    static final Logger LOGGER = Logging.getLogger(WPSRequestBuilderPanel.class);
 
     private DropDownChoice typeChoice;
 
