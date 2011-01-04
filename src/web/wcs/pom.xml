@@ -32,7 +32,13 @@
       <artifactId>web-core</artifactId>
       <version>${project.version}</version>
     </dependency>
-     <dependency>
+    <dependency>
+      <groupId>org.geoserver.web</groupId>
+      <artifactId>web-demo</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <!--  test dependecies -->
+    <dependency>
       <groupId>org.geoserver.web</groupId>
       <artifactId>web-core</artifactId>
       <version>${project.version}</version>

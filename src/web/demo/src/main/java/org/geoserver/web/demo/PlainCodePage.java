@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
-package org.geoserver.wps.web;
+package org.geoserver.web.demo;
 
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.WebPage;
@@ -10,16 +10,15 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.PropertyModel;
 
 /**
- * Shows the Execute xml
+ * Shows the text in a <pre> section
  */
-public class XMLExecutePage extends WebPage {
-    String xml;
+public class PlainCodePage extends WebPage {
+	String code;
 
-    public XMLExecutePage(final ModalWindow container, final ModalWindow responseWindow,
-            String initialXml) {
-        this.xml = initialXml;
-
-        add(new Label("xml", new PropertyModel(this, "xml")));
-    }
-
+	public PlainCodePage(final ModalWindow container, final ModalWindow responseWindow, String initialXml) {
+		this.code = initialXml;
+		
+		add(new Label("code", new PropertyModel(this, "code")));
+	}
+	
 }

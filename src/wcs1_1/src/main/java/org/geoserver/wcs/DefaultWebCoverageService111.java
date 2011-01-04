@@ -245,11 +245,16 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
 
                 // building the actual transform for the resulting grid geometry
                 AffineTransform tx;
-                if (gridCRS.getGridType().equals(GridType.GT2dSimpleGrid.getXmlConstant()) || 
-                        gridCRS.getGridType().equals(GridType.GT2dGridIn2dCrs.getXmlConstant())) {
+                if (gridCRS.getGridType().equals(GridType.GT2dSimpleGrid.getXmlConstant())) {
                     tx = new AffineTransform(
                             offsets[0], 0, 
                             0, offsets[1], 
+                            origin[0], origin[1]
+                    );
+                } else if(gridCRS.getGridType().equals(GridType.GT2dGridIn2dCrs.getXmlConstant())) {
+                    tx = new AffineTransform(
+                            offsets[0], offsets[1], 
+                            offsets[2], offsets[3], 
                             origin[0], origin[1]
                     );
                 } else {
