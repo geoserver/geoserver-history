@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
-package org.geoserver.wps.web;
+package org.geoserver.wcs.web.demo;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Collections;
@@ -20,44 +20,47 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.protocol.http.WebRequest;
 import org.geoserver.ows.URLMangler.URLType;
 import org.geoserver.ows.util.ResponseUtils;
+import org.geoserver.wcs.web.demo.GetCoverageRequest.Version;
 import org.geoserver.web.GeoServerBasePage;
 import org.geoserver.web.demo.DemoRequest;
 import org.geoserver.web.demo.DemoRequestResponse;
 import org.geoserver.web.demo.PlainCodePage;
+import org.geotools.xml.transform.TransformerBase;
 
 /**
- * Small embedded WPS client enabling users to visually build a WPS Execute request (and as a side
- * effect also showing what capabilities and describe process would provide)
+ * Small embedded WCS client enabling users to build a wcs GetCoverage request (and as a side effect
+ * also showing what capabilities and describe process would provide) using
  * 
  * @author Andrea Aime - OpenGeo
  */
 @SuppressWarnings("serial")
-public class WPSRequestBuilder extends GeoServerBasePage {
+public class WCSRequestBuilder extends GeoServerBasePage {
 
-	ModalWindow responseWindow;
-	WPSRequestBuilderPanel builder;
+    ModalWindow responseWindow;
 
-	public WPSRequestBuilder() {
-		// the form
-		Form form = new Form("form");
-		add(form);
-		
-		// the actual request builder component
-		builder = new WPSRequestBuilderPanel("requestBuilder", new ExecuteRequest());
-		form.add(builder);
+    WCSRequestBuilderPanel builder;
 
-		// the xml popup window
-		final ModalWindow xmlWindow = new ModalWindow("xmlWindow");
-		add(xmlWindow);
-		xmlWindow.setPageCreator(new ModalWindow.PageCreator() {
+    public WCSRequestBuilder() {
+        // the form
+        Form form = new Form("form");
+        add(form);
 
-			public Page createPage() {
-				return new PlainCodePage(xmlWindow, responseWindow,
-						getRequestXML());
-			}
-		});
-		
-		// the output response window
+        // the actual request builder component
+        builder = new WCSRequestBuilderPanel("requestBuilder", new GetCoverageRequest());
+        form.add(builder);
+
+        // the xml popup window
+        final ModalWindow xmlWindow = new ModalWindow("xmlWindow");
+        add(xmlWindow);
+        xmlWindow.setPageCreator(new ModalWindow.PageCreator() {
+
+            public Page createPage() {
+                return new PlainCodePage(xmlWindow, responseWindow, getRequestXML());
+
+            }
+        });
+
+        // the output response window
         responseWindow = new ModalWindow("responseWindow");
         add(responseWindow);
         responseWindow.setPageMapName("demoResponse");
@@ -67,7 +70,7 @@ public class WPSRequestBuilder extends GeoServerBasePage {
 
             public Page createPage() {
                 DemoRequest request = new DemoRequest(null);
-                HttpServletRequest http = ((WebRequest) WPSRequestBuilder.this.getRequest())
+                HttpServletRequest http = ((WebRequest) WCSRequestBuilder.this.getRequest())
                         .getHttpServletRequest();
                 String url = ResponseUtils.buildURL(ResponseUtils.baseURL(http), "ows", Collections
                         .singletonMap("strict", "true"), URLType.SERVICE);
@@ -113,13 +116,18 @@ public class WPSRequestBuilder extends GeoServerBasePage {
     }
 
     String getRequestXML() {
-        // turn the GUI request into an actual WPS request
-        WPSExecuteTransformer tx = new WPSExecuteTransformer();
-        tx.setIndentation(2);
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
+        TransformerBase tx;
+        if (builder.getCoverage.version == Version.v1_0_0) {
+            tx = new WCS10GetCoverageTransformer(getCatalog());
+        } else {
+            tx = new WCS11GetCoverageTransformer(getCatalog());
+        }
+
         try {
-            tx.transform(builder.execute, out);
+            tx.setIndentation(2);
+            tx.transform(builder.getCoverageRequest(), out);
         } catch (TransformerException e) {
             LOGGER.log(Level.SEVERE, "Error generating xml request", e);
             error(e);

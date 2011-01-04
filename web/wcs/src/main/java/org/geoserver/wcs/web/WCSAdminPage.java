@@ -13,7 +13,7 @@ import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.validation.validator.NumberValidator;
+import org.apache.wicket.validation.validator.MinimumValidator;
 import org.geoserver.wcs.WCSInfo;
 import org.geoserver.web.services.BaseServiceAdminPage;
 import org.geotools.coverage.grid.io.OverviewPolicy;
@@ -30,10 +30,10 @@ public class WCSAdminPage extends BaseServiceAdminPage<WCSInfo> {
         
         // resource limits
         TextField maxInputMemory = new TextField("maxInputMemory");
-        maxInputMemory.add(NumberValidator.minimum(0.0));
+        maxInputMemory.add(new MinimumValidator(0.0));
         form.add(maxInputMemory);
         TextField maxOutputMemory = new TextField("maxOutputMemory");
-        maxOutputMemory.add(NumberValidator.minimum(0.0));
+        maxOutputMemory.add(new MinimumValidator(0.0));
         form.add(maxOutputMemory);
     }
 

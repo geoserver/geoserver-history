@@ -16,9 +16,16 @@
     <property name="titleKey" value="data.resource.config.wcs"/>
     <property name="componentClass" value="org.geoserver.wcs.web.publish.WCSLayerConfig"/>
     <property name="supportedTypes">
-      <list>
+      <list>  
         <value>org.geoserver.catalog.CoverageInfo</value>
       </list>
     </property>
   </bean>
+  
+   <bean id="wcsRequestBuilder" class="org.geoserver.web.DemoLinkInfo">
+      <property name="id" value="wcsRequestBuilder" />
+      <property name="titleKey" value="WCSRequestBuilder.title" />
+      <property name="descriptionKey" value="WCSRequestBuilder.shortDescription" />
+      <property name="componentClass" value="org.geoserver.wcs.web.demo.WCSRequestBuilder" />
+    </bean>
 </beans>
