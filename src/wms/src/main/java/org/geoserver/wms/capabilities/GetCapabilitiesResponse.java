@@ -24,7 +24,7 @@ import org.geoserver.wms.GetCapabilitiesRequest;
 public class GetCapabilitiesResponse extends Response {
 
     public GetCapabilitiesResponse() {
-        super(Capabilities_1_3_0_Transformer.class);
+        super(GetCapabilitiesTransformer.class);
     }
 
     /**
@@ -36,8 +36,8 @@ public class GetCapabilitiesResponse extends Response {
     public String getMimeType(final Object value, final Operation operation)
             throws ServiceException {
 
-        if (value instanceof Capabilities_1_3_0_Transformer) {
-            return Capabilities_1_3_0_Transformer.WMS_CAPS_MIME;
+        if (value instanceof GetCapabilitiesTransformer) {
+            return GetCapabilitiesTransformer.WMS_CAPS_MIME;
         }
 
         throw new IllegalArgumentException(value == null ? "null" : value.getClass().getName()
@@ -46,7 +46,7 @@ public class GetCapabilitiesResponse extends Response {
 
     /**
      * @param value
-     *            {@link Capabilities_1_3_0_Transformer}
+     *            {@link GetCapabilitiesTransformer}
      * @param output
      *            destination
      * @param operation
@@ -58,7 +58,7 @@ public class GetCapabilitiesResponse extends Response {
     public void write(final Object value, final OutputStream output, final Operation operation)
             throws IOException, ServiceException {
 
-        Capabilities_1_3_0_Transformer transformer = (Capabilities_1_3_0_Transformer) value;
+        GetCapabilitiesTransformer transformer = (GetCapabilitiesTransformer) value;
 
         try {
             GetCapabilitiesRequest request = (GetCapabilitiesRequest) operation.getParameters()[0];
