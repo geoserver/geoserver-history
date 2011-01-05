@@ -79,6 +79,10 @@ public class CatalogConfiguration implements Configuration {
         return "GeoServer Catalog Configuration";
     }
 
+    public Catalog getCatalog() {
+        return cat;
+    }
+
     /**
      * 
      * @see org.geowebcache.config.Configuration#getServiceInformation()

@@ -15,6 +15,10 @@
     <constructor-arg ref="gwcCatalogConfiguration" />
   </bean>
 
+  <bean id="gwcWMSExtendedCapabilitiesProvider" class="org.geoserver.gwc.wms.CachingExtendedCapabilitiesProvider">
+    <constructor-arg ref="gwcFacade" />
+  </bean>
+
   <bean id="gwcTransactionListener" class="org.geoserver.gwc.GWCTransactionListener">
     <constructor-arg ref="rawCatalog" /> <!-- GeoServer -->
     <constructor-arg ref="gwcFacade" />

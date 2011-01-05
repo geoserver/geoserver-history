@@ -13,8 +13,10 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
+import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.wms.GetMapRequest;
 import org.geoserver.wms.MapLayerInfo;
 import org.geotools.geometry.jts.ReferencedEnvelope;
@@ -316,5 +318,40 @@ public class GWC implements DisposableBean {
             return false;
         }
         return true;
+    }
+
+    public List<TileLayer> getLayers() {
+        return new ArrayList<TileLayer>(tld.getLayers().values());
+    }
+
+    public List<TileLayer> getLayers(final String namespacePrefixFilter) {
+        if (namespacePrefixFilter == null) {
+            return getLayers();
+        }
+
+        final Catalog catalog = config.getCatalog();
+
+        final NamespaceInfo namespaceFilter = catalog.getNamespaceByPrefix(namespacePrefixFilter);
+        if (namespaceFilter == null) {
+            return getLayers();
+        }
+
+        List<TileLayer> filteredLayers = new ArrayList<TileLayer>();
+
+        NamespaceInfo layerNamespace;
+        String layerName;
+
+        for (TileLayer tileLayer : getLayers()) {
+            layerName = tileLayer.getName();
+            LayerInfo layerInfo = catalog.getLayerByName(layerName);
+            if (layerInfo != null) {
+                layerNamespace = layerInfo.getResource().getNamespace();
+                if (namespaceFilter.equals(layerNamespace)) {
+                    filteredLayers.add(tileLayer);
+                }
+            }
+        }
+
+        return filteredLayers;
     }
 }
