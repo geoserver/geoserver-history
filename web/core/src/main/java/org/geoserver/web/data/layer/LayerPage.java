@@ -22,12 +22,14 @@ import org.apache.wicket.model.IModel;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.StoreInfo;
+import org.geoserver.catalog.WMSStoreInfo;
 import org.geoserver.web.CatalogIconFactory;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.data.SelectionRemovalLink;
 import org.geoserver.web.data.resource.ResourceConfigurationPage;
 import org.geoserver.web.data.store.CoverageStoreEditPage;
 import org.geoserver.web.data.store.DataAccessEditPage;
+import org.geoserver.web.data.store.WMSStoreEditPage;
 import org.geoserver.web.data.workspace.WorkspaceEditPage;
 import org.geoserver.web.wicket.GeoServerDialog;
 import org.geoserver.web.wicket.GeoServerTablePanel;
@@ -120,6 +122,10 @@ public class LayerPage extends GeoServerSecuredPage {
         StoreInfo store = getCatalog().getStoreByName(wsName, storeName, StoreInfo.class);
         if(store instanceof DataStoreInfo) {
             return new SimpleBookmarkableLink(id, DataAccessEditPage.class, storeModel, 
+                    DataAccessEditPage.STORE_NAME, storeName, 
+                    DataAccessEditPage.WS_NAME, wsName);
+        } else if (store instanceof WMSStoreInfo) {
+            return new SimpleBookmarkableLink(id, WMSStoreEditPage.class, storeModel, 
                     DataAccessEditPage.STORE_NAME, storeName, 
                     DataAccessEditPage.WS_NAME, wsName);
         } else {

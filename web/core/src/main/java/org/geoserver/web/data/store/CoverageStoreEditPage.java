@@ -48,7 +48,7 @@ public class CoverageStoreEditPage extends AbstractCoverageStorePage {
         CoverageStoreInfo csi = getCatalog().getCoverageStoreByName(wsName, storeName);
         
         if(csi == null) {
-            error(new ParamResourceModel("CoverageStoreEditPage.notFound", this, wsName, storeName).getString());
+            error(new ParamResourceModel("CoverageStoreEditPage.notFound", this, storeName, wsName).getString());
             setResponsePage(StorePage.class);
             return;
         }
