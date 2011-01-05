@@ -499,6 +499,18 @@ public class GetCapabilitiesTransformer extends TransformerBase {
         }
 
         private void handleVendorSpecificCapabilities() {
+            /*
+             * Check whether some caps provider contributes to the internal DTD. If not, there's no
+             * need to output the VendorSpecificCapabilities element. Moreover, the document will
+             * not validate if it's there but not declared in the internal DTD
+             */
+            for (ExtendedCapabilitiesProvider cp : extCapsProviders) {
+                List<String> roots = cp.getVendorSpecificCapabilitiesRoots(request);
+                if (roots == null || roots.size() == 0) {
+                    return;
+                }
+            }
+
             start("VendorSpecificCapabilities");
             for (ExtendedCapabilitiesProvider cp : extCapsProviders) {
                 try {
