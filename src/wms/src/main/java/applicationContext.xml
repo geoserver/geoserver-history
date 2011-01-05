@@ -90,10 +90,12 @@
       <property name="proxyInterfaces">
         <value>org.geoserver.wms.WebMapService</value>
       </property>
+      <property name="targetName">
+        <value>wmsServiceTarget</value>
+      </property>
       <property name="interceptorNames">
         <list>
             <value>wmsLogger</value>
-            <value>wmsServiceTarget</value>
         </list>
       </property>
     </bean>
