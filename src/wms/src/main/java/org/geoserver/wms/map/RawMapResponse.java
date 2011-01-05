@@ -21,8 +21,8 @@ import org.springframework.util.Assert;
  */
 public class RawMapResponse extends AbstractMapResponse {
 
-    public RawMapResponse(final Set<String> outputFormats) {
-        super(RawMap.class, outputFormats);
+    public RawMapResponse() {
+        super(RawMap.class, (Set<String>) null);
     }
 
     @Override
