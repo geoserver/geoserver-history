@@ -1,5 +1,7 @@
 if [ "$1" = "" ]; then
-  echo "Usage: $0 <profile>"
+  echo "Usage: $0 <profile> <options>"
+  echo "Options:"
+  echo "\t-h : Run the engine headless"
   exit -1
 fi
 
@@ -8,6 +10,12 @@ service=${1:0:3}
 version=${1:4:$#1}
 base=engine/scripts
 logdir=users/geoserver
+
+#headless?
+HEADLESS=0
+if [ "$2" == "-h" ]; then
+  HEADLESS=1
+fi
 
 #find the control file
 ctl=""
@@ -46,8 +54,12 @@ else
   fi
 fi
 
-#export JAVA_OPTS="-Xmx512m -Dcite.headless=true -Djava.awt.headless=true"
-export JAVA_OPTS="-Xmx512m"
+JAVA_OPTS="-Xmx512m"
+if [ $HEADLESS == 1 ]; then
+  JAVA_OPTS="$JAVA_OPTS -Dcite.headless=true -Djava.awt.headless=true"
+fi
+export JAVA_OPTS
+
 if [ "$mode" = "resume" ]; then
   sh engine/bin/test.sh -mode=$mode -source=$ctl -workdir=target/work -logdir=${logdir} -session=$1
 
@@ -57,3 +69,4 @@ fi
 
 # copy session.xml file so it gets picked up by the web ui
 cp target/sessions/session.xml.$1 $logdir/$1/session.xml
+
