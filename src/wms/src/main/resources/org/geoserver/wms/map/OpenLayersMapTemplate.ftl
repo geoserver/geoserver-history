@@ -148,7 +148,7 @@
                 tiled = new OpenLayers.Layer.WMS(
                     "${layerName} - Tiled", "${baseUrl}/${servicePath}",
                     {
-                        <#list parameters as param>            
+                        <#list parameters as param>
                         ${param.name}: '${param.value?js_string}',
                         </#list>
                         format: format,
@@ -165,7 +165,7 @@
                 untiled = new OpenLayers.Layer.WMS(
                     "${layerName} - Untiled", "${baseUrl}/${servicePath}",
                     {
-                        <#list parameters as param>            
+                        <#list parameters as param>
                         ${param.name}: '${param.value?js_string}',
                         </#list>
                         format: format
@@ -175,7 +175,7 @@
         
                 map.addLayers([untiled, tiled]);
 
-                // build up all controls            
+                // build up all controls
                 map.addControl(new OpenLayers.Control.PanZoomBar({
                     position: new OpenLayers.Pixel(2, 15)
                 }));
@@ -235,7 +235,7 @@
                 map.updateSize()
             }
             
-            // Tiling mode, can be 'tiled' or 'untiled'            
+            // Tiling mode, can be 'tiled' or 'untiled'
             function setTileMode(tilingMode){
                 if (tilingMode == 'tiled') {
                     untiled.setVisibility(false);
@@ -246,6 +246,18 @@
                     untiled.setVisibility(true);
                     tiled.setVisibility(false);
                     map.setBaseLayer(untiled);
+                }
+            }
+            
+            // Transition effect, can be null or 'resize'
+            function setTransitionMode(transitionEffect){
+                if (transitionEffect === 'resize') {
+                    tiled.transitionEffect = transitionEffect;
+                    untiled.transitionEffect = transitionEffect;
+                }
+                else {
+                    tiled.transitionEffect = null;
+                    untiled.transitionEffect = null;
                 }
             }
             
@@ -354,7 +366,7 @@
                 var filterType = document.getElementById('filterType').value;
                 var filter = document.getElementById('filter').value;
                 
-                // by default, reset all filters                
+                // by default, reset all filters
                 var filterParams = {
                     filter: null,
                     cql_filter: null,
@@ -394,6 +406,13 @@
                     <select id="tilingModeSelector" onchange="setTileMode(value)">
                         <option value="untiled">Single tile</option>
                         <option value="tiled">Tiled</option>
+                    </select>
+                </li>
+                <li>
+                    <a>Transition effect:</a>
+                    <select id="transitionEffectSelector" onchange="setTransitionMode(value)">
+                        <option value="">None</option>
+                        <option value="resize">Resize</option>
                     </select>
                 </li>
                 <li>
