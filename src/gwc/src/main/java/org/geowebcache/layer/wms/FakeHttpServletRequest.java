@@ -29,33 +29,33 @@ import org.geowebcache.util.ServletUtils;
 
 public class FakeHttpServletRequest implements HttpServletRequest {
     private static Logger log = Logging.getLogger(HttpServletRequest.class.toString());
-    
+
     private String wmsParams;
-    
-    private HashMap<String,String> parameterMap = new HashMap<String,String>(10);
+
+    private HashMap<String, String> parameterMap = new HashMap<String, String>(10);
 
     private Cookie[] cookies;
-    
+
     public FakeHttpServletRequest(String wmsParams, Cookie[] cookies) {
         log.finer("Constructing from " + wmsParams);
-        
+
         this.wmsParams = wmsParams;
         this.cookies = cookies;
-        
+
         // This is a bit stupid... refactor parameters in GWC, again?
         String[] pairs = this.wmsParams.split("&");
-        for(int i=0; i< pairs.length; i++) {
-            //log.finest(pairs[i]);
+        for (int i = 0; i < pairs.length; i++) {
+            // log.finest(pairs[i]);
             String[] key_value = pairs[i].split("=");
-            if(key_value.length < 2) {
+            if (key_value.length < 2) {
                 parameterMap.put(key_value[0], "");
             } else {
-                parameterMap.put(key_value[0],ServletUtils.URLDecode(key_value[1], "UTF-8"));
+                parameterMap.put(key_value[0], ServletUtils.URLDecode(key_value[1], "UTF-8"));
             }
-            
+
         }
     }
-    
+
     /**
      * Standard interface
      */
@@ -81,7 +81,15 @@ public class FakeHttpServletRequest implements HttpServletRequest {
     }
 
     public Enumeration getHeaderNames() {
-        throw new ServletDebugException();
+        return new Enumeration() {
+            public boolean hasMoreElements() {
+                return false;
+            }
+
+            public Object nextElement() {
+                return null;
+            }
+        };
     }
 
     public Enumeration getHeaders(String arg0) {
@@ -273,9 +281,8 @@ public class FakeHttpServletRequest implements HttpServletRequest {
         throw new ServletDebugException();
     }
 
-    public void setCharacterEncoding(String arg0)
-            throws UnsupportedEncodingException {
-        if(! arg0.equals("UTF-8")) {
+    public void setCharacterEncoding(String arg0) throws UnsupportedEncodingException {
+        if (!arg0.equals("UTF-8")) {
             throw new ServletDebugException();
         }
     }

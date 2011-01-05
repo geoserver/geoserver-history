@@ -51,6 +51,8 @@ public class GetMapRequest extends WMSRequest {
     /** sql view parameters */
     private Map<String, String> viewParams = new HashMap<String, String>();
 
+    private Map<String, String> httpRequestHeaders;
+
     public GetMapRequest() {
         super("GetMap");
     }
@@ -770,5 +772,16 @@ public class GetMapRequest extends WMSRequest {
 
         // returnString.append("\n inside: " + filter.toString());
         return returnString.toString();
+    }
+
+    public String getHttpRequestHeader(String headerName) {
+        return httpRequestHeaders == null ? null : httpRequestHeaders.get(headerName);
+    }
+
+    public void putHttpRequestHeader(String headerName, String value) {
+        if (httpRequestHeaders == null) {
+            httpRequestHeaders = new HashMap<String, String>();
+        }
+        httpRequestHeaders.put(headerName, value);
     }
 }

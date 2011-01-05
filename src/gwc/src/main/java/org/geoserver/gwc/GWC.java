@@ -1,3 +1,7 @@
+/* Copyright (c) 2010 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
 package org.geoserver.gwc;
 
 import static org.geowebcache.seed.GWCTask.TYPE.TRUNCATE;
@@ -6,18 +10,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
+import org.geoserver.wms.GetMapRequest;
+import org.geoserver.wms.MapLayerInfo;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.util.logging.Logging;
 import org.geowebcache.GeoWebCacheException;
+import org.geowebcache.conveyor.ConveyorTile;
 import org.geowebcache.grid.BoundingBox;
 import org.geowebcache.grid.GridSet;
 import org.geowebcache.grid.GridSubset;
 import org.geowebcache.grid.SRS;
 import org.geowebcache.layer.TileLayer;
 import org.geowebcache.layer.TileLayerDispatcher;
+import org.geowebcache.mime.MimeException;
 import org.geowebcache.mime.MimeType;
 import org.geowebcache.seed.GWCTask;
 import org.geowebcache.seed.TileBreeder;
@@ -26,6 +37,9 @@ import org.geowebcache.storage.StorageException;
 import org.geowebcache.storage.TileRange;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.springframework.beans.factory.DisposableBean;
+import org.springframework.util.Assert;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 /**
  * Spring bean acting as a facade to GWC for the GWC/GeoServer integration classes so that they
@@ -169,4 +183,138 @@ public class GWC implements DisposableBean {
         addOrReplaceLayer(tileLayer);
     }
 
+    /**
+     * Tries to dispatch a tile request represented by a GeoServer WMS {@link GetMapRequest} through
+     * GeoWebCache, and returns the {@link ConveyorTile} if succeeded or {@code null} if it wasn't
+     * possible.
+     * <p>
+     * Preconditions:
+     * <ul>
+     * <li><code>{@link GetMapRequest#isTiled() request.isTiled()} == true</code>
+     * </ul>
+     * </p>
+     * 
+     * @param request
+     * @return
+     */
+    public ConveyorTile dispatch(final GetMapRequest request) {
+        Assert.isTrue(request.isTiled(), "isTiled");
+        // Assert.notNull(request.getTilesOrigin(), "getTilesOrigin");
+
+        if (!isCachingPossible(request)) {
+            return null;
+        }
+
+        // request.isTransparent()??
+        // request.getEnv()??
+        // request.getFormatOptions()??
+        final List<MapLayerInfo> layers = request.getLayers();
+        if (layers.size() != 1) {
+            return null;
+        }
+        final String layerName = layers.get(0).getName();
+        final TileLayer tileLayer;
+        try {
+            tileLayer = this.tld.getTileLayer(layerName);
+        } catch (GeoWebCacheException e) {
+            return null;
+        }
+
+        final MimeType mimeType;
+        try {
+            mimeType = MimeType.createFromFormat(request.getFormat());
+            List<MimeType> tileLayerFormats = tileLayer.getMimeTypes();
+            if (!tileLayerFormats.contains(mimeType)) {
+                return null;
+            }
+        } catch (MimeException me) {
+            // not a GWC supported format
+            return null;
+        }
+        ConveyorTile tileResp = null;
+
+        try {
+            HttpServletRequest servletReq = null;
+            HttpServletResponse servletResp = null;
+            final String gridSetId;
+            long[] tileIndex;
+            try {
+                String srs = request.getSRS();
+                int epsgId = Integer.parseInt(srs.substring(srs.indexOf(':') + 1));
+                SRS srs2 = SRS.getSRS(epsgId);
+                GridSubset gridSubset = tileLayer.getGridSubsetForSRS(srs2);
+                gridSetId = gridSubset.getName();
+                Envelope bbox = request.getBbox();
+                BoundingBox tileBounds = new BoundingBox(bbox.getMinX(), bbox.getMinY(),
+                        bbox.getMaxX(), bbox.getMaxY());
+                tileIndex = gridSubset.closestIndex(tileBounds);
+            } catch (Exception e) {
+                return null;
+            }
+
+            String fullParameters = null;
+            String modifiedParameters = null;
+            ConveyorTile tileReq;
+            tileReq = new ConveyorTile(storageBroker, layerName, gridSetId, tileIndex, mimeType,
+                    fullParameters, modifiedParameters, servletReq, servletResp);
+
+            tileResp = tileLayer.getTile(tileReq);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return tileResp;
+    }
+
+    /**
+     * Determines whether the given {@link GetMapRequest} is a candidate to match a GWC tile or not.
+     * 
+     * @param request
+     * @return {@code true} if {@code request} <b>might</b>
+     */
+    private boolean isCachingPossible(GetMapRequest request) {
+
+        if (request.getFormatOptions() != null && !request.getFormatOptions().isEmpty()) {
+            return false;
+        }
+        if (0.0 != request.getAngle()) {
+            return false;
+        }
+        // if (null != request.getBgColor()) {
+        // return false;
+        // }
+        if (0 != request.getBuffer()) {
+            return false;
+        }
+        if (null != request.getCQLFilter() && !request.getCQLFilter().isEmpty()) {
+            return false;
+        }
+        if (!Double.isNaN(request.getElevation())) {
+            return false;
+        }
+        if (null != request.getFeatureId() && !request.getFeatureId().isEmpty()) {
+            return false;
+        }
+        if (null != request.getFilter() && !request.getFilter().isEmpty()) {
+            return false;
+        }
+        if (null != request.getPalette()) {
+            return false;
+        }
+        if (null != request.getRemoteOwsType() || null != request.getRemoteOwsURL()) {
+            return false;
+        }
+        if (null != request.getSld() || null != request.getSldBody()) {
+            return false;
+        }
+        if (null != request.getStartIndex()) {
+            return false;
+        }
+        if (null != request.getTime() && !request.getTime().isEmpty()) {
+            return false;
+        }
+        if (null != request.getViewParams() && !request.getViewParams().isEmpty()) {
+            return false;
+        }
+        return true;
+    }
 }

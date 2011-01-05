@@ -22,6 +22,7 @@ import java.util.logging.Level;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.collections.EnumerationUtils;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.StyleInfo;
@@ -135,12 +136,18 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
         this.parseStyles = styleRequired;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public GetMapRequest createRequest() throws Exception {
         GetMapRequest request = new GetMapRequest();
-        if (this.httpRequest != null) {
+        if (httpRequest != null) {
             request.setRequestCharset(httpRequest.getCharacterEncoding());
             request.setGet("GET".equalsIgnoreCase(httpRequest.getMethod()));
+            List<String> headerNames = (List<String>) EnumerationUtils.toList(httpRequest
+                    .getHeaderNames());
+            for (String headerName : headerNames) {
+                request.putHttpRequestHeader(headerName, httpRequest.getHeader(headerName));
+            }
         }
         return request;
     }
