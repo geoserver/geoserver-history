@@ -13,6 +13,7 @@
     <constructor-arg ref="gwcTLDispatcher" />
     <constructor-arg ref="gwcTileBreeder" />
     <constructor-arg ref="gwcCatalogConfiguration" />
+    <constructor-arg ref="geoServer" />
   </bean>
 
   <bean id="gwcWMSExtendedCapabilitiesProvider" class="org.geoserver.gwc.wms.CachingExtendedCapabilitiesProvider">
