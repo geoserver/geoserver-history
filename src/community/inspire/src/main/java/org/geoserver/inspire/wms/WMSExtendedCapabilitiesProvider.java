@@ -1,10 +1,15 @@
 package org.geoserver.inspire.wms;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 
 import org.geoserver.config.ContactInfo;
 import org.geoserver.wms.ExtendedCapabilitiesProvider;
+import org.geoserver.wms.GetCapabilitiesRequest;
+import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSInfo;
+import org.geotools.util.Version;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.AttributesImpl;
 import org.xml.sax.helpers.NamespaceSupport;
@@ -19,6 +24,22 @@ public class WMSExtendedCapabilitiesProvider implements ExtendedCapabilitiesProv
         return new String[]{NAMESPACE, "www/inspire/inspire_vs.xsd"};
     }
 
+    /**
+     * @return empty list, INSPIRE profile for WMS 1.1.1 not supported.
+     * @see org.geoserver.wms.ExtendedCapabilitiesProvider#getVendorSpecificCapabilitiesRoots()
+     */
+    public List<String> getVendorSpecificCapabilitiesRoots(GetCapabilitiesRequest request) {
+        return Collections.emptyList();
+    }
+
+    /**
+     * @return empty list, INSPIRE profile for WMS 1.1.1 not supported.
+     * @see org.geoserver.wms.ExtendedCapabilitiesProvider#getVendorSpecificCapabilitiesChildDecls()
+     */
+    public List<String> getVendorSpecificCapabilitiesChildDecls(GetCapabilitiesRequest request) {
+        return Collections.emptyList();
+    }
+
     public void registerNamespaces(NamespaceSupport namespaces) {
         namespaces.declarePrefix("inspire_vs", NAMESPACE);
         namespaces.declarePrefix("gml", "http://schemas.opengis.net/gml");
@@ -27,7 +48,11 @@ public class WMSExtendedCapabilitiesProvider implements ExtendedCapabilitiesProv
         namespaces.declarePrefix("srv", "http://schemas.opengis.net/iso/19139/20060504/srv/srv.xsd");
     }
 
-    public void encode(Translator tx, WMSInfo wms) throws IOException {
+    public void encode(Translator tx, WMSInfo wms, GetCapabilitiesRequest request) throws IOException {
+        Version requestVersion = WMS.version(request.getVersion());
+        if (!WMS.VERSION_1_3_0.equals(requestVersion)) {
+            return;
+        }
         tx.start("inspire_vs:ExtendedCapabilities");
     
         tx.start("inspire_vs:ResourceLocator");
