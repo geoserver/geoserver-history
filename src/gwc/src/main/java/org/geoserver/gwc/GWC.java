@@ -17,14 +17,17 @@ import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.NamespaceInfo;
+import org.geoserver.config.GeoServer;
 import org.geoserver.wms.GetMapRequest;
 import org.geoserver.wms.MapLayerInfo;
+import org.geoserver.wms.WMSInfo;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.util.logging.Logging;
 import org.geowebcache.GeoWebCacheException;
 import org.geowebcache.conveyor.ConveyorTile;
 import org.geowebcache.grid.BoundingBox;
+import org.geowebcache.grid.GridMismatchException;
 import org.geowebcache.grid.GridSet;
 import org.geowebcache.grid.GridSubset;
 import org.geowebcache.grid.SRS;
@@ -39,7 +42,6 @@ import org.geowebcache.storage.StorageException;
 import org.geowebcache.storage.TileRange;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.springframework.beans.factory.DisposableBean;
-import org.springframework.util.Assert;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -53,6 +55,8 @@ import com.vividsolutions.jts.geom.Envelope;
  */
 public class GWC implements DisposableBean {
 
+    public static final String WMS_INTEGRATION_ENABLED_KEY = "GWC_WMS_Integration";
+
     private static Logger log = Logging.getLogger("org.geoserver.gwc.GWC");
 
     private final CatalogConfiguration config;
@@ -63,12 +67,35 @@ public class GWC implements DisposableBean {
 
     private final TileBreeder tileBreeder;
 
+    private final GeoServer geoserver;
+
     public GWC(final StorageBroker sb, final TileLayerDispatcher tld,
-            final TileBreeder tileBreeder, final CatalogConfiguration config) {
+            final TileBreeder tileBreeder, final CatalogConfiguration config, GeoServer geoserver) {
         this.tld = tld;
         this.storageBroker = sb;
         this.tileBreeder = tileBreeder;
         this.config = config;
+        this.geoserver = geoserver;
+    }
+
+    /**
+     * Returns the value of the {@link WMSInfo} {@link #WMS_INTEGRATION_ENABLED_KEY} metadata key,
+     * indicating whether direct GWC/WMS integration is enabled.
+     * 
+     * @return {@code true} if direct WMS integration is enabled, defaults to {@code false} if not
+     *         set
+     */
+    public boolean isWMSIntegrationEnabled() {
+        boolean enabled = false;
+        WMSInfo service = geoserver.getService(WMSInfo.class);
+        if (service != null && service.getMetadata() != null) {
+            Boolean storedValue = service.getMetadata().get(WMS_INTEGRATION_ENABLED_KEY,
+                    Boolean.class);
+            if (storedValue != null) {
+                enabled = storedValue.booleanValue();
+            }
+        }
+        return enabled;
     }
 
     public void truncate(final String layerName) {
@@ -199,8 +226,8 @@ public class GWC implements DisposableBean {
      * @param request
      * @return
      */
-    public ConveyorTile dispatch(final GetMapRequest request) {
-        Assert.isTrue(request.isTiled(), "isTiled");
+    public final ConveyorTile dispatch(final GetMapRequest request) {
+        // Assert.isTrue(request.isTiled(), "isTiled");
         // Assert.notNull(request.getTilesOrigin(), "getTilesOrigin");
 
         if (!isCachingPossible(request)) {
@@ -222,6 +249,20 @@ public class GWC implements DisposableBean {
             return null;
         }
 
+        GridSubset gridSubset;
+        try {
+            String srs = request.getSRS();
+            int epsgId = Integer.parseInt(srs.substring(srs.indexOf(':') + 1));
+            SRS srs2 = SRS.getSRS(epsgId);
+            gridSubset = tileLayer.getGridSubsetForSRS(srs2);
+        } catch (Exception e) {
+            return null;
+        }
+
+        if (request.getWidth() != gridSubset.getTileWidth()
+                || request.getHeight() != gridSubset.getTileHeight()) {
+            return null;
+        }
         final MimeType mimeType;
         try {
             mimeType = MimeType.createFromFormat(request.getFormat());
@@ -240,17 +281,13 @@ public class GWC implements DisposableBean {
             HttpServletResponse servletResp = null;
             final String gridSetId;
             long[] tileIndex;
+            gridSetId = gridSubset.getName();
+            Envelope bbox = request.getBbox();
+            BoundingBox tileBounds = new BoundingBox(bbox.getMinX(), bbox.getMinY(),
+                    bbox.getMaxX(), bbox.getMaxY());
             try {
-                String srs = request.getSRS();
-                int epsgId = Integer.parseInt(srs.substring(srs.indexOf(':') + 1));
-                SRS srs2 = SRS.getSRS(epsgId);
-                GridSubset gridSubset = tileLayer.getGridSubsetForSRS(srs2);
-                gridSetId = gridSubset.getName();
-                Envelope bbox = request.getBbox();
-                BoundingBox tileBounds = new BoundingBox(bbox.getMinX(), bbox.getMinY(),
-                        bbox.getMaxX(), bbox.getMaxY());
                 tileIndex = gridSubset.closestIndex(tileBounds);
-            } catch (Exception e) {
+            } catch (GridMismatchException e) {
                 return null;
             }
 

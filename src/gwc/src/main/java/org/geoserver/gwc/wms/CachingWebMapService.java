@@ -47,6 +47,10 @@ public class CachingWebMapService implements MethodInterceptor {
      * @see org.aopalliance.intercept.MethodInterceptor#invoke(org.aopalliance.intercept.MethodInvocation)
      */
     public WebMap invoke(MethodInvocation invocation) throws Throwable {
+        if (!gwc.isWMSIntegrationEnabled()) {
+            return (WebMap) invocation.proceed();
+        }
+
         final Method method = invocation.getMethod();
         Assert.isTrue(method.getDeclaringClass().equals(WebMapService.class));
         Assert.isTrue("getMap".equals(method.getName()));
@@ -57,7 +61,6 @@ public class CachingWebMapService implements MethodInterceptor {
         Assert.isInstanceOf(GetMapRequest.class, arguments[0]);
 
         final GetMapRequest request = (GetMapRequest) arguments[0];
-
         boolean tiled = request.isTiled();
         if (tiled) {
             ConveyorTile cachedTile = gwc.dispatch(request);
