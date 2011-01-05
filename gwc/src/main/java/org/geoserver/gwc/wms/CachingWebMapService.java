@@ -5,6 +5,7 @@
 package org.geoserver.gwc.wms;
 
 import java.lang.reflect.Method;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletResponse;
@@ -58,10 +59,12 @@ public class CachingWebMapService implements MethodInterceptor {
         final GetMapRequest request = (GetMapRequest) arguments[0];
 
         boolean tiled = request.isTiled();
-        // Point2D tilesOrigin = request.getTilesOrigin();
-        if (tiled) {// && tilesOrigin != null) {
+        if (tiled) {
             ConveyorTile cachedTile = gwc.dispatch(request);
             if (cachedTile != null) {
+                if (LOGGER.isLoggable(Level.FINEST)) {
+                    LOGGER.finest("GetMap request intercepted, serving cached content: " + request);
+                }
                 // Handle Etags
                 final String ifNoneMatch = request.getHttpRequestHeader("If-None-Match");
                 final String hexTag = Long.toHexString(cachedTile.getTSCreated());

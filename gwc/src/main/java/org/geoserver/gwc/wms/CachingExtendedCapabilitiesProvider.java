@@ -6,8 +6,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.geoserver.catalog.Catalog;
-import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.gwc.GWC;
 import org.geoserver.wms.ExtendedCapabilitiesProvider;
 import org.geoserver.wms.GetCapabilitiesRequest;
