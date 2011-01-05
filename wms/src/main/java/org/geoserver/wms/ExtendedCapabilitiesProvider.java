@@ -5,6 +5,7 @@
 package org.geoserver.wms;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.NamespaceSupport;
@@ -34,6 +35,34 @@ public interface ExtendedCapabilitiesProvider {
      * </p>
      */
     String[] getSchemaLocations();
+
+    /**
+     * Returns the element names that are direct children of {@code VendorSpecificCapabilities}
+     * contributed by this extended capabilities provider for WMS 1.1.1 DOCTYPE declaration.
+     * <p>
+     * This method returns only the element names that are direct children of
+     * VendorSpecificCapabilities so that they can be aggregated in a single declaration like
+     * {@code <!ELEMENT VendorSpecificCapabilities (ContributedElementOne*, ContributedElementTwo*) >}
+     * . Implement {@link #getVendorSpecificCapabilitiesChildDecls()} to contribute the child
+     * elements of these root ones.
+     * </p>
+     * 
+     * @return the name of the elements to be declared as direct children of
+     *         VendorSpecificCapabilities in a WMS 1.1.1 DOCTYPE internal DTD.
+     */
+    List<String> getVendorSpecificCapabilitiesRoots(GetCapabilitiesRequest request);
+    
+    /**
+     * Returns the list of internal DTD element declarations contributed to WMS 1.1.1 DOCTYPE
+     * GetCapabilities document.
+     * <p>
+     * Example DTD element declaration that could be a memeber of the returned list: "
+     * {@code <!ELEMENT Resolutions (#PCDATA) >}"
+     * </p>
+     * 
+     * @return the list of GetCapabilities internal DTD elements declarations, may be empty.
+     */
+    List<String> getVendorSpecificCapabilitiesChildDecls(GetCapabilitiesRequest request);
     
     /**
      * Registers the xmlns namespace prefix:uri mappings for any elements used by 
@@ -43,8 +72,16 @@ public interface ExtendedCapabilitiesProvider {
     
     /**
      * Encodes the extended capabilities.
+     * 
+     * @param tx
+     *            the translator used to encode the extended capabilities to
+     * @param wms
+     *            WMS service metadata
+     * @param request
+     *            the originating request, may be useful for the provider to decide whether or not,
+     *            or how, to contribute to the capabilities document
      */
-    void encode(Translator tx, WMSInfo wms) throws IOException;
+    void encode(Translator tx, WMSInfo wms, GetCapabilitiesRequest request) throws IOException;
     
     /**
      * Interface for clients to encode XML.
@@ -79,4 +116,5 @@ public interface ExtendedCapabilitiesProvider {
          */
         void end(String element);
     }
+
 }

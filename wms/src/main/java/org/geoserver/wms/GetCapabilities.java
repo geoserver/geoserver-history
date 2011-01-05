@@ -5,6 +5,7 @@
 package org.geoserver.wms;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 import org.geoserver.platform.ServiceException;
@@ -69,7 +70,10 @@ public class GetCapabilities {
         String baseUrl = request.getBaseUrl();
         if (WMS.VERSION_1_1_1.equals(version)) {
             Set<String> mapFormats = wms.getAvailableMapFormatNames();
-            transformer = new GetCapabilitiesTransformer(wms, baseUrl, mapFormats, legendFormats);
+            List<ExtendedCapabilitiesProvider> extCapsProviders;
+            extCapsProviders = wms.getAvailableExtendedCapabilitiesProviders();
+            transformer = new GetCapabilitiesTransformer(wms, baseUrl, mapFormats, legendFormats,
+                    extCapsProviders);
         } else if (WMS.VERSION_1_3_0.equals(version)) {
             Collection<GetMapOutputFormat> mapFormats = wms.getAvailableMapFormats();
             Collection<ExtendedCapabilitiesProvider> extCapsProviders = 

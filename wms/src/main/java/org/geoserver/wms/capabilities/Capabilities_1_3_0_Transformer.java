@@ -65,7 +65,6 @@ import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
 import org.opengis.feature.type.Name;
 import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.TransformException;
 import org.springframework.util.Assert;
@@ -545,7 +544,7 @@ public class Capabilities_1_3_0_Transformer extends TransformerBase {
                         public void end(String element) {
                             Capabilities_1_3_0_Translator.this.end(element);
                         }
-                    }, wmsConfig.getServiceInfo());
+                    }, wmsConfig.getServiceInfo(), request);
                 } 
                 catch (Exception e) {
                     throw new ServiceException("Extended capabilities provider threw error", e);

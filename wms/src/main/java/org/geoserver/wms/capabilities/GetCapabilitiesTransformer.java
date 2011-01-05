@@ -48,6 +48,7 @@ import org.geoserver.config.GeoServer;
 import org.geoserver.ows.URLMangler.URLType;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.sld.GetStylesResponse;
+import org.geoserver.wms.ExtendedCapabilitiesProvider;
 import org.geoserver.wms.GetCapabilities;
 import org.geoserver.wms.GetCapabilitiesRequest;
 import org.geoserver.wms.GetLegendGraphicRequest;
@@ -69,6 +70,7 @@ import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.TransformException;
 import org.springframework.util.Assert;
+import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.AttributesImpl;
 
@@ -105,6 +107,8 @@ public class GetCapabilitiesTransformer extends TransformerBase {
 
     private WMS wmsConfig;
 
+    private Collection<ExtendedCapabilitiesProvider> extCapsProviders;
+
     /**
      * Creates a new WMSCapsTransformer object.
      * 
@@ -121,7 +125,8 @@ public class GetCapabilitiesTransformer extends TransformerBase {
      *             if <code>schemaBaseUrl</code> is null;
      */
     public GetCapabilitiesTransformer(WMS wms, String baseURL, Set<String> getMapFormats,
-            Set<String> getLegendGraphicFormats) {
+            Set<String> getLegendGraphicFormats,
+            Collection<ExtendedCapabilitiesProvider> extCapsProviders) {
         super();
         Assert.notNull(wms);
         Assert.notNull(baseURL, "baseURL");
@@ -132,6 +137,8 @@ public class GetCapabilitiesTransformer extends TransformerBase {
         this.getMapFormats = getMapFormats;
         this.getLegendGraphicFormats = getLegendGraphicFormats;
         this.baseURL = baseURL;
+        this.extCapsProviders = extCapsProviders == null ? Collections.EMPTY_LIST
+                : extCapsProviders;
         this.setNamespaceDeclarationEnabled(false);
         setIndentation(2);
         final Charset encoding = wms.getCharSet();
@@ -141,7 +148,7 @@ public class GetCapabilitiesTransformer extends TransformerBase {
     @Override
     public Translator createTranslator(ContentHandler handler) {
         return new CapabilitiesTranslator(handler, wmsConfig, getMapFormats,
-                getLegendGraphicFormats);
+                getLegendGraphicFormats, extCapsProviders);
     }
 
     /**
@@ -199,6 +206,8 @@ public class GetCapabilitiesTransformer extends TransformerBase {
 
         private WMS wmsConfig;
 
+        private Collection<ExtendedCapabilitiesProvider> extCapsProviders;
+
         /**
          * Creates a new CapabilitiesTranslator object.
          * 
@@ -207,11 +216,13 @@ public class GetCapabilitiesTransformer extends TransformerBase {
          * @param wmsConfig2
          */
         public CapabilitiesTranslator(ContentHandler handler, WMS wmsConfig,
-                Set<String> getMapFormats, Set<String> getLegendGraphicFormats) {
+                Set<String> getMapFormats, Set<String> getLegendGraphicFormats,
+                Collection<ExtendedCapabilitiesProvider> extCapsProviders) {
             super(handler, null, null);
             this.wmsConfig = wmsConfig;
             this.getMapFormats = getMapFormats;
             this.getLegendGraphicFormats = getLegendGraphicFormats;
+            this.extCapsProviders = extCapsProviders;
         }
 
         /**
@@ -354,6 +365,7 @@ public class GetCapabilitiesTransformer extends TransformerBase {
             start("Capability");
             handleRequest();
             handleException();
+            handleVendorSpecificCapabilities();
             handleSLD();
             handleLayers();
             end("Capability");
@@ -484,6 +496,34 @@ public class GetCapabilitiesTransformer extends TransformerBase {
             end("UserDefinedSymbolization");
 
             // element("UserDefinedSymbolization", null, sldAtts);
+        }
+
+        private void handleVendorSpecificCapabilities() {
+            start("VendorSpecificCapabilities");
+            for (ExtendedCapabilitiesProvider cp : extCapsProviders) {
+                try {
+                    cp.encode(new ExtendedCapabilitiesProvider.Translator() {
+                        public void start(String element) {
+                            CapabilitiesTranslator.this.start(element);
+                        }
+
+                        public void start(String element, Attributes attributes) {
+                            CapabilitiesTranslator.this.start(element, attributes);
+                        }
+
+                        public void chars(String text) {
+                            CapabilitiesTranslator.this.chars(text);
+                        }
+
+                        public void end(String element) {
+                            CapabilitiesTranslator.this.end(element);
+                        }
+                    }, wmsConfig.getServiceInfo(), request);
+                } catch (Exception e) {
+                    throw new ServiceException("Extended capabilities provider threw error", e);
+                }
+            }
+            end("VendorSpecificCapabilities");
         }
 
         /**

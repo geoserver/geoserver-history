@@ -6,9 +6,11 @@ package org.geoserver.wms.capabilities;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 
+import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -25,15 +27,18 @@ import org.geoserver.config.GeoServerInfo;
 import org.geoserver.config.impl.ContactInfoImpl;
 import org.geoserver.config.impl.GeoServerImpl;
 import org.geoserver.config.impl.GeoServerInfoImpl;
+import org.geoserver.wms.ExtendedCapabilitiesProvider;
 import org.geoserver.wms.GetCapabilitiesRequest;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSInfo;
 import org.geoserver.wms.WMSInfoImpl;
 import org.geoserver.wms.WMSTestSupport;
 import org.geotools.referencing.CRS;
+import org.geotools.util.Version;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.xml.sax.helpers.NamespaceSupport;
 
 /**
  * 
@@ -116,7 +121,7 @@ public class GetCapabilitiesTransformerTest extends TestCase {
 
     public void testHeader() throws Exception {
         GetCapabilitiesTransformer tr;
-        tr = new GetCapabilitiesTransformer(wmsConfig, baseUrl, mapFormats, legendFormats);
+        tr = new GetCapabilitiesTransformer(wmsConfig, baseUrl, mapFormats, legendFormats, null);
         StringWriter writer = new StringWriter();
         tr.transform(req, writer);
         String content = writer.getBuffer().toString();
@@ -129,7 +134,7 @@ public class GetCapabilitiesTransformerTest extends TestCase {
 
     public void testRootElement() throws Exception {
         GetCapabilitiesTransformer tr;
-        tr = new GetCapabilitiesTransformer(wmsConfig, baseUrl, mapFormats, legendFormats);
+        tr = new GetCapabilitiesTransformer(wmsConfig, baseUrl, mapFormats, legendFormats, null);
 
         Document dom = WMSTestSupport.transform(req, tr);
         Element root = dom.getDocumentElement();
@@ -138,7 +143,7 @@ public class GetCapabilitiesTransformerTest extends TestCase {
         assertEquals("0", root.getAttribute("updateSequence"));
 
         geosInfo.setUpdateSequence(10);
-        tr = new GetCapabilitiesTransformer(wmsConfig, baseUrl, mapFormats, legendFormats);
+        tr = new GetCapabilitiesTransformer(wmsConfig, baseUrl, mapFormats, legendFormats, null);
         dom = WMSTestSupport.transform(req, tr);
         root = dom.getDocumentElement();
         assertEquals("10", root.getAttribute("updateSequence"));
@@ -173,7 +178,7 @@ public class GetCapabilitiesTransformerTest extends TestCase {
         wmsInfo.setAccessConstraints("accessConstraints");
 
         GetCapabilitiesTransformer tr;
-        tr = new GetCapabilitiesTransformer(wmsConfig, baseUrl, mapFormats, legendFormats);
+        tr = new GetCapabilitiesTransformer(wmsConfig, baseUrl, mapFormats, legendFormats, null);
         tr.setIndentation(2);
         Document dom = WMSTestSupport.transform(req, tr);
 
@@ -216,7 +221,7 @@ public class GetCapabilitiesTransformerTest extends TestCase {
 
     public void testCRSList() throws Exception {
         GetCapabilitiesTransformer tr;
-        tr = new GetCapabilitiesTransformer(wmsConfig, baseUrl, mapFormats, legendFormats);
+        tr = new GetCapabilitiesTransformer(wmsConfig, baseUrl, mapFormats, legendFormats, null);
         tr.setIndentation(2);
         Document dom = WMSTestSupport.transform(req, tr);
         final Set<String> supportedCodes = CRS.getSupportedCodes("EPSG");
@@ -231,11 +236,61 @@ public class GetCapabilitiesTransformerTest extends TestCase {
         wmsInfo.getSRS().add("EPSG:23030");
 
         GetCapabilitiesTransformer tr;
-        tr = new GetCapabilitiesTransformer(wmsConfig, baseUrl, mapFormats, legendFormats);
+        tr = new GetCapabilitiesTransformer(wmsConfig, baseUrl, mapFormats, legendFormats, null);
         tr.setIndentation(2);
         Document dom = WMSTestSupport.transform(req, tr);
         NodeList limitedCrsCodes = XPATH.getMatchingNodes(
                 "/WMT_MS_Capabilities/Capability/Layer/SRS", dom);
         assertEquals(2, limitedCrsCodes.getLength());
+    }
+
+    public void testVendorSpecificCapabilities() throws Exception {
+        ExtendedCapabilitiesProvider vendorCapsProvider = new ExtendedCapabilitiesProvider() {
+
+            public String[] getSchemaLocations() {
+                throw new UnsupportedOperationException();
+            }
+
+            public void registerNamespaces(NamespaceSupport namespaces) {
+                throw new UnsupportedOperationException();
+            }
+
+            public List<String> getVendorSpecificCapabilitiesRoots(GetCapabilitiesRequest request) {
+                return Collections.singletonList("TestElement?");
+            }
+
+            /**
+             * 
+             * @see org.geoserver.wms.ExtendedCapabilitiesProvider#getVendorSpecificCapabilitiesChildDecls()
+             */
+            public List<String> getVendorSpecificCapabilitiesChildDecls(
+                    GetCapabilitiesRequest request) {
+                return Collections.singletonList("<!ELEMENT TestSubElement (#PCDATA) >");
+            }
+
+            public void encode(Translator tx, WMSInfo wms, GetCapabilitiesRequest request)
+                    throws IOException {
+                tx.start("TestElement");
+                tx.start("TestSubElement");
+                tx.end("TestSubElement");
+                tx.end("TestElement");
+            }
+
+        };
+
+        GetCapabilitiesTransformer tr;
+        tr = new GetCapabilitiesTransformer(wmsConfig, baseUrl, mapFormats, legendFormats,
+                Collections.singletonList(vendorCapsProvider));
+        tr.setIndentation(2);
+        Document dom = WMSTestSupport.transform(req, tr);
+        NodeList list = XPATH.getMatchingNodes(
+                "/WMT_MS_Capabilities/Capability/VendorSpecificCapabilities/TestElement", dom);
+        assertEquals(1, list.getLength());
+
+        list = XPATH
+                .getMatchingNodes(
+                        "/WMT_MS_Capabilities/Capability/VendorSpecificCapabilities/TestElement/TestSubElement",
+                        dom);
+        assertEquals(1, list.getLength());
     }
 }
