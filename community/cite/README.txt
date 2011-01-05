@@ -4,131 +4,81 @@ CITE Testing Instructions
 Building the Engine
 -------------------
 
-1. Checkout Engine Sources
+ To build the test ending execute the command `mvn clean install` 
 
-Create a directory called 'engine', and check the out the teamengine sources
-into it.
+Running a Test Suite
+--------------------
 
-  'mkdir engine'
-  'svn co -r 433 http://teamengine.svn.sourceforge.net/svnroot/teamengine/branches/team2 engine'
+ The `run.sh` script is used to execute a test suite:
+
+    ./run.sh <service>-<version>
+
+ For example:
+
+    ./run.sh wfs-1.1.0
+    ./run.sh wms-1.1.1
   
-*Note*: Revision 443 is the last verified version of the engine.
+Running Headless
+----------------
 
-2. Checkout Test Sources
+ During normal execution of a test suite the user will be prompted with a form 
+ to fill out all the test parameters such as the location of the server under
+ test. However the engine can be run in a headless mode as well.
 
-Create a directory called 'tests', and check out the cite test sources into
-it.
+ Executing `run.sh` with the flag `-h` engages headless mode. When running 
+ headless will use existing xml files that contain all the test suite 
+ parameters. The name of the xml file is <service>-<version>.xml.
 
-*Note*: You need an account to access the test sources. If you have an OGC
-        portal account that will work. If not simply ask on the developer
-        list and someone will send you a copy of the tests.
+ For example, running:
 
-  'mkdir tests'
-  'svn co -r 2740 https://svn.opengeospatial.org:8443/ogc-projects/cite/scripts/wfs/1.0.0/trunk tests/wfs-1.0.0'
-  'svn co -r 2740 https://svn.opengeospatial.org:8443/ogc-projects/cite/scripts/wfs/1.1.0/trunk tests/wfs-1.1.0'
-  'svn co -r 2740 https://svn.opengeospatial.org:8443/ogc-projects/cite/scripts/wms/1.1.1/trunk tests/wms-1.1.1'
-  'svn co -r 2740 https://svn.opengeospatial.org:8443/ogc-projects/cite/scripts/wcs/1.0.0/trunk tests/wcs-1.0.0'
-  'svn co -r 2740 https://svn.opengeospatial.org:8443/ogc-projects/cite/scripts/wcs/1.1.1/trunk tests/wcs-1.1.1'
-  'svn co https://svn.opengeospatial.org:8443/ogc-projects/cite/scripts/wms/1.3.0/trunk tests/wms-1.3.0'
+   ./run.sh wms-1.1.1 -h 
 
-*Note* : Revision 2740 is the last verified version of the tests.
+ Will use the file `wms-1.1.1.xml`, located in the current directory, for the 
+ test suite parameters. These xml files may be edited to modify the test suite
+ setup.
 
-3. Checkout the CITE1 Component
+Viewing Test Results
+--------------------
 
-  'svn co https://svn.opengeospatial.org:8443/ogc-projects/cite/components/cite1/trunk cite1'
+ The `log.sh` file can be used to view the log for a test run:
 
-4. Patch the Test Engine Sources
+    ./log.sh <service>-<version> [testid]
 
-Patch the engine sources with the 'engine.patch' file.
+ When the `testid` parameter is ommitted the entire test log is output. When it
+ is specified only the log for that specifc test is output. Example:
 
-   'patch -p0 < engine.patch'
+    ./log.sh wfs-1.0.0 wfs-1.0.0/w24aac25b3b9d185b1_1 
 
-5. Patch the Test Sources
+Running TEAMEngine Webapp
+-------------------------
 
-Patch the test sources with the 'tests.patch' file.
+ While the `log.sh` can output raw information about a test run using it for 
+ test debugging is tedious. The TEAMEngine web application provides a nicer
+ interface. 
 
-   'patch -p0 < tests.patch'
+ To start the TEAMEngine webapp:
 
-6. Build the Test Engine
+   cd engine
+   mvn jetty:run-exploded
 
-The test engine is built with the following command: 
+ The above command will start a jetty container on port 7070. The webapp is 
+ then available at http://localhost:7070/teamengine . The port can be changed
+ by modifying the `engine/pom.xml` file.
 
-  'mvn clean install'
+ To log into the teamengine use the username "geoserver" and the password 
+ "geoserver". This default password can be changed by modifying the 
+ `engine/realm.properties` file.
 
-Running the Engine with Jetty
------------------------------
+Cleaning Up
+-----------
 
-Change to the 'engine' directory and run the 'mvn jetty:run-exploded' command:
+ The user data for each test run is stored under the `users/geoserver` 
+ directory. This directory contains directories named `<service>-<version>` that
+ correspond to the various service test suites. To remove data for a test run
+ simply remove the corresponding directory.
 
-  'cd engine'
-  'mvn jetty:run-exploded'
-
-Navigate to http://localhost:9090/teamengine in a web browser.
-
-Running the Engine from the Command Line
-----------------------------------------
-
-Running a test suite is done with the command:
-
-  'run.sh <testsuite>'
-
-Where testsuite is one of the following:
-
-  'wfs-1.0.0'
-  'wfs-1.1.0'
-  'wms-1.1.1'
-  'wcs-1.0.0'
-  'wcs-1.1.1'
-
-Examples:
-
-  'run.sh wfs-1.0.0'
-
-E. View the Test Logs
-
-Viewing the entire log of a test run is done with the command:
-
-  'log.sh <profile>'
-
-Viewing the log of a single test is done with the command:
-
-  'log.sh <profile> <testid>'
-
-Where testid is the identifer for the test. For example:
-
-  'log.sh wfs-1.0.0 wfs-1.0.0/w24aac25b3b9d185b1_1'
-
-F. Note for Windows Users
-
-At this time, run.sh and log.sh have yet to ported to batch files. Windows
-users must use the batch files included with the test engine. 
-
-The equivalent to 'run.sh <profile>':
-
-  'engine/bin/test.sh 
-      -logdir=target/logs
-      -source=tests/<service>/<version>/ets/ctl/[main.xml|<service>.xml] 
-      -session=<profile>' 
-
-Where service and version are the service and version being tested
-respectively. Examples:
-
-  'engine/bin/test.sh
-      -logdir=target/logs
-      -source=tests/wfs/1.0.0/ets/ctl/wfs.xml
-      -session=wfs-1.0.0'
-
-  'engine/bin/test.sh
-      -logdir=target/logs
-      -source=tests/wfs/1.1.0/ets/ctl/main.xml
-      -session=wfs-1.1.0'
-
-The equivalent to 'log.sh <profile> [<test>]':
-
-  'engine/bin/viewlog.sh -logdir=target/logs -session=<profile> [<test>]'
-
-Example:
-
-  'engine/bin/viewlog.sh -logdir=target/logs -session=wfs-1.0.0 wfs-1.0.0/w24aac25b3b9d185b1_1' 
-
-
+ *Note*: For a single service and version under test only data for one test run
+ is maintained. Which means if you execute a test suite twice consecutively the 
+ second run will use the configuration and results of the first test run. 
+ Therefore it is important to clean out the test run directories in order to 
+ ensure a "clean" run.
