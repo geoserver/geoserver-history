@@ -25,6 +25,8 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.media.jai.BorderExtender;
+import javax.media.jai.BorderExtenderConstant;
 import javax.media.jai.ImageLayout;
 import javax.media.jai.Interpolation;
 import javax.media.jai.InterpolationBicubic2;
@@ -36,10 +38,12 @@ import javax.media.jai.PlanarImage;
 import javax.media.jai.ROI;
 import javax.media.jai.ROIShape;
 import javax.media.jai.operator.BandMergeDescriptor;
+import javax.media.jai.operator.BorderDescriptor;
 import javax.media.jai.operator.ConstantDescriptor;
 import javax.media.jai.operator.CropDescriptor;
 import javax.media.jai.operator.LookupDescriptor;
 import javax.media.jai.operator.MosaicDescriptor;
+import javax.swing.border.Border;
 
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.DefaultWebMapService;
@@ -47,9 +51,9 @@ import org.geoserver.wms.GetMapOutputFormat;
 import org.geoserver.wms.GetMapRequest;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSInfo;
+import org.geoserver.wms.WMSInfo.WMSInterpolation;
 import org.geoserver.wms.WMSMapContext;
 import org.geoserver.wms.WatermarkInfo;
-import org.geoserver.wms.WMSInfo.WMSInterpolation;
 import org.geoserver.wms.decoration.MapDecoration;
 import org.geoserver.wms.decoration.MapDecorationLayout;
 import org.geoserver.wms.decoration.MetatiledMapDecorationLayout;
@@ -679,13 +683,18 @@ public class RenderedImageMapOutputFormat extends AbstractMapOutputFormat {
      */
     private RenderedImage directRasterRender(WMSMapContext mapContext, int layerIndex,
             List<GridCoverage2D> renderedCoverages) throws IOException {
-        // extract the raster symbolizers and see if we can use the fast path
+        
+        //
+        // extract the raster symbolizers 
+        //
         List<RasterSymbolizer> symbolizers = getRasterSymbolizers(mapContext, 0);
         if (symbolizers.size() != 1)
             return null;
         RasterSymbolizer symbolizer = symbolizers.get(0);
 
-        // extract the reader
+        //
+        // Get a reader
+        //
         final Feature feature = mapContext.getLayer(0).getFeatureSource().getFeatures().features().next();
         final AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) feature.getProperty("grid").getValue();
         final Object params = feature.getProperty("params").getValue();
@@ -699,17 +708,17 @@ public class RenderedImageMapOutputFormat extends AbstractMapOutputFormat {
             tileSizeX = mapContext.getMapWidth();
             tileSizeY = mapContext.getMapHeight();
         }
-
-        // prepare a final image layout should we need to perform a mosaic or a crop
-        final ImageLayout layout = new ImageLayout();
-        layout.setMinX(0);
-        layout.setMinY(0);
-        layout.setWidth(mapContext.getMapWidth());
-        layout.setHeight(mapContext.getMapHeight());
-        layout.setTileGridXOffset(0);
-        layout.setTileGridYOffset(0);
-        layout.setTileWidth(tileSizeX);
-        layout.setTileHeight(tileSizeY);
+        
+        //
+        // dimensions
+        //
+        final int mapWidth = mapContext.getMapWidth();
+        final int mapHeight= mapContext.getMapHeight();
+        final ReferencedEnvelope mapEnvelope = mapContext.getAreaOfInterest();
+        final CoordinateReferenceSystem mapCRS=mapContext.getCoordinateReferenceSystem();        
+        final Rectangle mapRasterArea = new Rectangle(0, 0, mapWidth,mapHeight);
+        final AffineTransform worldToScreen = RendererUtilities.worldToScreenTransform(mapEnvelope, mapRasterArea);        
+         
 
         //
         // Check transparency and bg color
@@ -719,9 +728,10 @@ public class RenderedImageMapOutputFormat extends AbstractMapOutputFormat {
         // set transparency
         if (transparent)
             bgColor = new Color(bgColor.getRed(), bgColor.getGreen(), bgColor.getBlue(), 0);
-          
-
+  
+        //
         // grab the interpolation
+        //
         Interpolation interpolation = Interpolation.getInstance(Interpolation.INTERP_NEAREST);
         if (wms != null) {
             if (WMSInterpolation.Nearest.equals(wms.getInterpolation())) {
@@ -733,22 +743,17 @@ public class RenderedImageMapOutputFormat extends AbstractMapOutputFormat {
             }
         }
 
+        //
         // read best available coverage and render it
-        final Rectangle rasterArea = new Rectangle(0, 0, mapContext.getMapWidth(),
-                mapContext.getMapHeight());
-        final AffineTransform worldToScreen = RendererUtilities.worldToScreenTransform(
-                mapContext.getAreaOfInterest(), rasterArea);
-        
-        final CoordinateReferenceSystem requestCRS=mapContext.getCoordinateReferenceSystem();
+        //        
         final CoordinateReferenceSystem coverageCRS= reader.getCrs();
-        
         final GridGeometry2D readGG;
         final ReferencedEnvelope bufferedEnvelope;
         final Rectangle bufferedTargetArea;
-        final boolean equalsMetadata=CRS.equalsIgnoreMetadata(requestCRS, coverageCRS);
+        final boolean equalsMetadata=CRS.equalsIgnoreMetadata(mapCRS, coverageCRS);
         boolean sameCRS;
         try {
-            sameCRS = equalsMetadata?true:CRS.findMathTransform(requestCRS, coverageCRS,true).isIdentity();
+            sameCRS = equalsMetadata?true:CRS.findMathTransform(mapCRS, coverageCRS,true).isIdentity();
         } catch (FactoryException e1) {
             final IOException ioe= new IOException();
             ioe.initCause(e1);
@@ -757,8 +762,8 @@ public class RenderedImageMapOutputFormat extends AbstractMapOutputFormat {
         
         if(sameCRS){
             readGG = new GridGeometry2D(
-                    new GridEnvelope2D(rasterArea),
-                    mapContext.getAreaOfInterest() );
+                    new GridEnvelope2D(mapRasterArea),
+                    mapEnvelope );
             bufferedTargetArea=null;
             bufferedEnvelope=null;
             
@@ -773,22 +778,21 @@ public class RenderedImageMapOutputFormat extends AbstractMapOutputFormat {
 //            final Rectangle bufferedTargetArea = (Rectangle) rasterArea.clone();
 //            bufferedTargetArea.add(rasterArea.x+rasterArea.width+-rPadding*2, rasterArea.y+rasterArea.height+-uPadding*2);
 //            bufferedTargetArea.add(rasterArea.x-lPadding*2, rasterArea.y-bPadding*2);             
-            bufferedTargetArea = (Rectangle) rasterArea.clone();
-            bufferedTargetArea.add(rasterArea.x+rasterArea.width+10, rasterArea.y+rasterArea.height+10);
-            bufferedTargetArea.add(rasterArea.x-10, rasterArea.y-10);
-            final GridToEnvelopeMapper ge = new GridToEnvelopeMapper(new GridEnvelope2D(rasterArea), mapContext
-                    .getAreaOfInterest());
+            bufferedTargetArea = (Rectangle) mapRasterArea.clone();
+            bufferedTargetArea.add(mapRasterArea.x+mapRasterArea.width+10, mapRasterArea.y+mapRasterArea.height+10);
+            bufferedTargetArea.add(mapRasterArea.x-10, mapRasterArea.y-10);
+            final GridToEnvelopeMapper ge = new GridToEnvelopeMapper(new GridEnvelope2D(mapRasterArea), mapEnvelope);
             
             readGG = new GridGeometry2D(
                     new GridEnvelope2D(bufferedTargetArea),
                     PixelInCell.CELL_CORNER,
                     ge.createTransform(),
-                    mapContext.getCoordinateReferenceSystem(), 
+                    mapCRS, 
                     null );
             bufferedEnvelope=new ReferencedEnvelope(readGG.getEnvelope2D());    
         }
 
-        // create a solid color empty image
+        // actual read
         RenderedImage image = null;
         try {
             
@@ -798,8 +802,8 @@ public class RenderedImageMapOutputFormat extends AbstractMapOutputFormat {
                 coverage= readBestCoverage(
                         reader, 
                         params,
-                        mapContext.getAreaOfInterest(),
-                        rasterArea, 
+                        mapEnvelope,
+                        mapRasterArea, 
                         interpolation);
             }else{
                 coverage= readBestCoverage(
@@ -811,30 +815,29 @@ public class RenderedImageMapOutputFormat extends AbstractMapOutputFormat {
             }
              
             
-            
-            
 
-            // render the coverage
+            //
+            // now, render the coverage using the gridcoverage renderer
+            //
             try {
                 if (coverage == null) { 
                     // we're outside of the coverage definition area, return an empty space
-                    image = createBkgImage((float) mapContext.getMapWidth(),(float) mapContext.getMapHeight(), bgColor, new RenderingHints(
-                            JAI.KEY_IMAGE_LAYOUT, layout));
+                    image = createBkgImage((float) mapWidth,(float) mapHeight, bgColor,null);
                 } else {
                     
                     final GridCoverageRenderer gcr;
                     if(sameCRS){
                         
                       gcr = new GridCoverageRenderer(
-                              mapContext.getCoordinateReferenceSystem(),
-                              mapContext.getAreaOfInterest(), rasterArea, worldToScreen,
+                              mapCRS,
+                              mapEnvelope, mapRasterArea, worldToScreen,
                               new RenderingHints(JAI.KEY_INTERPOLATION,interpolation));
                     }else{
                         //
                         // SG added gutter to the drawing. We need to investigate much more and also we need to do this only when needed
                         //
                         gcr = new GridCoverageRenderer(
-                                mapContext.getCoordinateReferenceSystem(),
+                                mapCRS,
                                 bufferedEnvelope, 
                                 bufferedTargetArea, 
                                 worldToScreen, 
@@ -872,7 +875,20 @@ public class RenderedImageMapOutputFormat extends AbstractMapOutputFormat {
         // if we need to mess up with the background color we need to go by Mosaic and we cannot use Crop 
         // since it does not support changing the bkg color.
         //
-        ////
+        ////        
+        final Rectangle imageBounds = PlanarImage.wrapRenderedImage(image).getBounds(); 
+        
+        // we need to do a mosaic, let's prepare a layout
+        // prepare a final image layout should we need to perform a mosaic or a crop
+        final ImageLayout layout = new ImageLayout();
+        layout.setMinX(0);
+        layout.setMinY(0);
+        layout.setWidth(mapWidth);
+        layout.setHeight(mapHeight);
+        layout.setTileGridXOffset(0);
+        layout.setTileGridYOffset(0);
+        layout.setTileWidth(tileSizeX);
+        layout.setTileHeight(tileSizeY);
         
         // We need to find the background color expressed in terms of image color components
         // (which depends on the color model nature, the input and output transparency)
@@ -975,9 +991,13 @@ public class RenderedImageMapOutputFormat extends AbstractMapOutputFormat {
             } else {
                 if (transparent) {
                     // we need to expand the image with an alpha channel
-                    RenderedImage alpha = ConstantDescriptor.create(new Float(image.getMinX()
-                            + image.getWidth()), new Float(image.getMinY() + image.getHeight()),
-                            new Byte[] { new Byte((byte) 255) }, null);
+                    final ImageLayout tempLayout= new ImageLayout(image);
+                    tempLayout.unsetValid(ImageLayout.COLOR_MODEL_MASK).unsetValid(ImageLayout.SAMPLE_MODEL_MASK);                    
+                    RenderedImage alpha = ConstantDescriptor.create(
+                            Float.valueOf( image.getWidth()),
+                            Float.valueOf(image.getHeight()),
+                            new Byte[] { Byte.valueOf((byte) 255) }, 
+                            new RenderingHints(JAI.KEY_IMAGE_LAYOUT,tempLayout));
                     image = BandMergeDescriptor.create(image, alpha, null);
                     // this will work fine for all situation where the color components are <= 3
                     // e.g., one band rasters with no colormap will have only one usually
@@ -994,17 +1014,18 @@ public class RenderedImageMapOutputFormat extends AbstractMapOutputFormat {
         }
         // TODO: handle other color models, as the direct one (can we ever get it?)
 
-        Rectangle imageBounds = PlanarImage.wrapRenderedImage(image).getBounds();
-
-        // If we need to add a collar and apply a bg color, use mosaic for fast bg color application
-        // Else check if we need to crop a larger than required image
-        if (imageBounds.getWidth() < rasterArea.getWidth()
-                || imageBounds.getHeight() < rasterArea.getHeight() || imageBounds.getMinX() > 0
-                || imageBounds.getMinY() > 0 || alphaChannels != null) {
+        //
+        // If we need to add a collar and/or apply a bkg color, use mosaic for fast bg color application
+        // Else check if we need to crop a larger than required image, else return it right away
+        //
+        if((!imageBounds.contains(mapRasterArea)&& !imageBounds.equals(mapRasterArea))|| alphaChannels != null){
+//        if (imageBounds.getWidth() < mapWidth
+//                || imageBounds.getHeight() <mapHeight || imageBounds.getMinX() > 0
+//                || imageBounds.getMinY() > 0 || alphaChannels != null) {
             // setup the ROI, otherwise we won't get solid color background collars around the image
-            Rectangle roi = new Rectangle(image.getMinX(), image.getMinY(), image.getWidth(),
-                    image.getHeight());
-            ROI[] rois = new ROI[] { new ROIShape(roi) };
+//            Rectangle roi = new Rectangle(image.getMinX(), image.getMinY(), image.getWidth(),
+//                    image.getHeight());
+            ROI[] rois = new ROI[] { new ROIShape(imageBounds) };
 
             // build the transparency thresholds
             double[][] thresholds = new double[][] { { ColorUtilities.getThreshold(image
@@ -1016,14 +1037,18 @@ public class RenderedImageMapOutputFormat extends AbstractMapOutputFormat {
                                                          // MosaicDescriptor.MOSAIC_TYPE_OVERLAY,
                     alphaChannels, rois, thresholds, bgValues, new RenderingHints(
                             JAI.KEY_IMAGE_LAYOUT, layout));
+            
 
-        } else if (imageBounds.getWidth() > rasterArea.getWidth()
-                || imageBounds.getHeight() > rasterArea.getHeight()) {
+        } else if (imageBounds.contains(mapRasterArea)) { // the produced image does not need a final mosaicking operation but a crop!
             // reduce the image to the actually required size
-            image = CropDescriptor.create(image, 0f, 0f, (float) mapContext.getMapWidth(),
-                    (float) mapContext.getMapHeight(), new RenderingHints(JAI.KEY_IMAGE_LAYOUT,
-                            layout));
-        }
+            image= CropDescriptor.create(
+                    image, 
+                    (float)0, 
+                    (float)0, 
+                    (float)mapWidth,
+                    (float)mapHeight,
+                     null);
+        }  
         return image;
     }
 
@@ -1056,19 +1081,33 @@ public class RenderedImageMapOutputFormat extends AbstractMapOutputFormat {
      * @throws IOException
      */
     private static GridCoverage2D readBestCoverage(
-            AbstractGridCoverage2DReader reader, 
-            Object params,
+            final AbstractGridCoverage2DReader reader, 
+            final Object params,
             final ReferencedEnvelope requestedModelArea,
             final Rectangle requestedRasterArea,
-            Interpolation interpolation) throws IOException {
+            final Interpolation interpolation) throws IOException {
 
+        ////
+        //
+        // Intersect the present envelope with the request envelope, also in WGS 84 to make sure
+        // there is an actual intersection
+        //
+        ////
         try {
-            ReferencedEnvelope dataEnvelope = new ReferencedEnvelope(reader.getOriginalEnvelope())
-                    .transform(DefaultGeographicCRS.WGS84, true);
-            ReferencedEnvelope requestEnvelope = requestedModelArea.transform(
-                    DefaultGeographicCRS.WGS84, true);
-            if (!dataEnvelope.intersects((BoundingBox) requestEnvelope))
-                return null;
+            final CoordinateReferenceSystem coverageCRS=reader.getCrs();
+            final CoordinateReferenceSystem requestCRS= requestedModelArea.getCoordinateReferenceSystem();
+            final ReferencedEnvelope coverageEnvelope=new ReferencedEnvelope(reader.getOriginalEnvelope());
+            if(CRS.equalsIgnoreMetadata(coverageCRS, requestCRS)){
+                if(!coverageEnvelope.intersects((BoundingBox)requestedModelArea))
+                    return null;
+            }else{
+                
+                ReferencedEnvelope dataEnvelopeWGS84 = coverageEnvelope.transform(DefaultGeographicCRS.WGS84, true);
+                ReferencedEnvelope requestEnvelopeWGS84 = requestedModelArea.transform(
+                        DefaultGeographicCRS.WGS84, true);
+                if (!dataEnvelopeWGS84.intersects((BoundingBox) requestEnvelopeWGS84))
+                    return null;                
+            }
         } catch (Exception e) {
             LOGGER.log(
                     Level.WARNING,
