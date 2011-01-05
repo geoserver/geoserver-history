@@ -96,6 +96,9 @@
       <property name="interceptorNames">
         <list>
             <value>wmsLogger</value>
+            <!-- allow any other advise defined elsewhere and named "wmsServiceInterceptor*" 
+                 to be added to the interceptors list -->
+            <value>wmsServiceInterceptor*</value>
         </list>
       </property>
     </bean>
