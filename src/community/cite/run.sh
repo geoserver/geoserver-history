@@ -1,5 +1,5 @@
 if [ "$1" = "" ]; then
-  echo "Usage: $0 <profile> <options>"
+  echo "Usage: $0 <profile> [testid] [options]"
   echo "Options:"
   echo "\t-h : Run the engine headless"
   exit -1
@@ -10,10 +10,16 @@ service=${1:0:3}
 version=${1:4:$#1}
 base=engine/scripts
 logdir=users/geoserver
+testid=""
 
 #headless?
 HEADLESS=0
-if [ "$2" == "-h" ]; then
+
+if [ "$2" != "" ] && [ "$2" != "-h" ]; then
+  testid=$2
+fi
+
+if [ "$2" == "-h" ] || [ "$3" == "-h" ]; then
   HEADLESS=1
 fi
 
@@ -42,7 +48,7 @@ fi
 ctl=$base/$service-$version/ctl/$ctl
 
 mode=test
-if [ "$2" != "" ]; then
+if [ "$testid" != "" ]; then
   if [ ! -e ${logdir}/$1 ]; then
     echo "Error: No logs found for profile '$1'."
     exit -1
@@ -64,7 +70,7 @@ if [ "$mode" = "resume" ]; then
   sh engine/bin/test.sh -mode=$mode -source=$ctl -workdir=target/work -logdir=${logdir} -session=$1
 
 else 
-  sh engine/bin/test.sh -mode=$mode -source=$ctl -workdir=target/work -logdir=${logdir} -session=$1 $2
+  sh engine/bin/test.sh -mode=$mode -source=$ctl -workdir=target/work -logdir=${logdir} -session=$1 $testid
 fi
 
 # copy session.xml file so it gets picked up by the web ui
