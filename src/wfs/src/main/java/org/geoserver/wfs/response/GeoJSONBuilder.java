@@ -6,6 +6,8 @@
 package org.geoserver.wfs.response;
 
 import java.io.Writer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import net.sf.json.JSONException;
 import net.sf.json.util.JSONBuilder;
@@ -33,6 +35,9 @@ import com.vividsolutions.jts.geom.impl.CoordinateArraySequence;
  *
  */
 public class GeoJSONBuilder extends JSONBuilder {
+    private final Logger LOGGER = org.geotools.util.logging.Logging
+    .getLogger(this.getClass().toString());
+    
     public GeoJSONBuilder(Writer w) {
         super(w);
     }
@@ -194,29 +199,23 @@ public class GeoJSONBuilder extends JSONBuilder {
     protected static final int MULTIGEOMETRY = 7;
 
     public static String getGeometryName(Geometry geometry) {
-        Class geomClass = geometry.getClass();
-        String returnValue = null;
-
-        if (geomClass.equals(Point.class)) {
-            returnValue = "Point";
-        } else if (geomClass.equals(LineString.class)) {
-            returnValue = "LineString";
-        } else if (geomClass.equals(Polygon.class)) {
-            returnValue = "Polygon";
-        } else if (geomClass.equals(MultiPoint.class)) {
-            returnValue = "MultiPoint";
-        } else if (geomClass.equals(MultiLineString.class)) {
-            returnValue = "MultiLineString";
-        } else if (geomClass.equals(MultiPolygon.class)) {
-            returnValue = "MultiPolygon";
-        } else if (geomClass.equals(GeometryCollection.class)) {
-            returnValue = "GeometryCollection";
+        if (geometry instanceof Point) {
+            return "Point";
+        } else if (geometry instanceof LineString) {
+            return "LineString";
+        } else if (geometry instanceof Polygon) {
+            return "Polygon";
+        } else if (geometry instanceof MultiPoint) {
+            return "MultiPoint";
+        } else if (geometry instanceof MultiLineString) {
+            return "MultiLineString";
+        } else if (geometry instanceof MultiPolygon) {
+            return "MultiPolygon";
+        } else if (geometry instanceof GeometryCollection) {
+            return "GeometryCollection";
         } else {
-            //HACK!!! throw exception
-            returnValue = null;
+            throw new IllegalArgumentException("Unknown geometry type " + geometry.getClass());
         }
-
-        return returnValue;
     }
 
     /**
@@ -228,33 +227,27 @@ public class GeoJSONBuilder extends JSONBuilder {
      */
     public static int getGeometryType(Geometry geometry) {
         //LOGGER.entering("GMLUtils", "getGeometryType", geometry);
-        Class geomClass = geometry.getClass();
-        int returnValue = -1;
-
-        if (geomClass.equals(Point.class)) {
+        if (geometry instanceof Point) {
             //LOGGER.finest("found point");
-            returnValue = POINT;
-        } else if (geomClass.equals(LineString.class)) {
+            return POINT;
+        } else if (geometry instanceof LineString) {
             //LOGGER.finest("found linestring");
-            returnValue = LINESTRING;
-        } else if (geomClass.equals(Polygon.class)) {
+            return LINESTRING;
+        } else if (geometry instanceof Polygon) {
             //LOGGER.finest("found polygon");
-            returnValue = POLYGON;
-        } else if (geomClass.equals(MultiPoint.class)) {
+            return POLYGON;
+        } else if (geometry instanceof MultiPoint) {
             //LOGGER.finest("found multiPoint");
-            returnValue = MULTIPOINT;
-        } else if (geomClass.equals(MultiLineString.class)) {
-            returnValue = MULTILINESTRING;
-        } else if (geomClass.equals(MultiPolygon.class)) {
-            returnValue = MULTIPOLYGON;
-        } else if (geomClass.equals(GeometryCollection.class)) {
-            returnValue = MULTIGEOMETRY;
+            return MULTIPOINT;
+        } else if (geometry instanceof MultiLineString) {
+            return MULTILINESTRING;
+        } else if (geometry instanceof MultiPolygon) {
+            return MULTIPOLYGON;
+        } else if (geometry instanceof GeometryCollection) {
+            return MULTIGEOMETRY;
         } else {
-            returnValue = -1;
-
-            //HACK!!! throw exception.
+            throw new IllegalArgumentException(
+                "Unable to determine geometry type " + geometry.getClass());
         }
-
-        return returnValue;
     }
 }
