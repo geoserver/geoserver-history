@@ -35,6 +35,7 @@ import org.geotools.data.DataStore;
 import org.geotools.data.property.PropertyDataStore;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.util.Version;
+import org.opengis.filter.Filter;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -119,6 +120,27 @@ public class Ogr2OgrFormatTest extends TestCase {
         // it's kml with the proper number of features
         assertEquals("kml", dom.getDocumentElement().getTagName());
         assertEquals(2, dom.getElementsByTagName("Placemark").getLength());
+    }
+    
+    public void testEmptyKML() throws Exception {
+        // prepare input
+        FeatureCollection fc = dataStore.getFeatureSource("Buildings").getFeatures(Filter.EXCLUDE);
+        fct.getFeature().add(fc);
+
+        // write out
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        gft.setOutputFormat("OGR-KML");
+        ogr.write(fct, bos, op);
+
+        // parse the kml to check it's really xml... 
+        Document dom = dom(new ByteArrayInputStream(bos.toByteArray()));
+        // print(dom);
+
+        // some very light assumptions on the contents, since we
+        // cannot control how ogr encodes the kml... let's just assess
+        // it's kml with the proper number of features
+        assertEquals("kml", dom.getDocumentElement().getTagName());
+        assertEquals(0, dom.getElementsByTagName("Placemark").getLength());
     }
     
     public void testSimpleCSV() throws Exception {

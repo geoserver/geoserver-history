@@ -9,9 +9,12 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
 import java.util.zip.ZipOutputStream;
 
 import javax.xml.namespace.QName;
@@ -29,15 +32,42 @@ import org.geoserver.wfs.WFSGetFeatureOutputFormat;
 import org.geotools.data.DataStore;
 import org.geotools.data.FeatureStore;
 import org.geotools.data.shapefile.ShapefileDataStore;
+import org.geotools.data.store.EmptyFeatureCollection;
 import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.gml.producer.FeatureTransformer;
-import org.geotools.gml2.bindings.GML2EncodingUtils;
-import org.opengis.feature.GeometryAttribute;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.AttributeDescriptor;
+import org.opengis.feature.type.FeatureType;
+import org.opengis.feature.type.GeometryDescriptor;
+import org.opengis.feature.type.GeometryType;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
+import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.MultiLineString;
+import com.vividsolutions.jts.geom.MultiPoint;
+import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Polygon;
+
 public class Ogr2OgrOutputFormat extends WFSGetFeatureOutputFormat {
+    
+    /**
+     * The types of geometries a shapefile can handle
+     */
+    private static final Set<Class> SHAPEFILE_GEOM_TYPES = new HashSet<Class>() {
+        {
+            add(Point.class);
+            add(LineString.class);
+            add(LinearRing.class);
+            add(Polygon.class);
+            add(MultiPoint.class);
+            add(MultiLineString.class);
+            add(MultiPolygon.class);
+        }
+    };
     
     /**
      * The fs path to ogr2ogr. If null, we'll assume ogr2ogr is in the PATH and
@@ -250,6 +280,18 @@ public class Ogr2OgrOutputFormat extends WFSGetFeatureOutputFormat {
      */
     private File writeToDisk(File tempDir,
             FeatureCollection<SimpleFeatureType, SimpleFeature> curCollection) throws Exception {
+        // ogr2ogr cannot handle empty gml collections, but it can handle empty
+        // shapefiles
+        final SimpleFeatureType originalSchema = curCollection.getSchema();
+        if(curCollection.isEmpty()) {
+            if(isShapefileCompatible(originalSchema)) {
+                return writeShapefile(tempDir, curCollection);
+            } else {
+                SimpleFeatureType simplifiedShema = buildShapefileCompatible(originalSchema);
+                return writeShapefile(tempDir, new EmptyFeatureCollection(simplifiedShema));
+            }
+        }
+        
         // create the temp file for this output
         File outFile = new File(tempDir, curCollection.getSchema().getTypeName() + ".gml");
 
@@ -263,13 +305,74 @@ public class Ogr2OgrOutputFormat extends WFSGetFeatureOutputFormat {
             ft.setNumDecimals(16);
             ft.setNamespaceDeclarationEnabled(false);
             ft.getFeatureNamespaces().declarePrefix("topp",
-                    curCollection.getSchema().getName().getNamespaceURI());
+                    originalSchema.getName().getNamespaceURI());
             ft.transform(curCollection, os);
         } finally {
             os.close();
         }
 
         return outFile;
+    }
+    
+    private SimpleFeatureType buildShapefileCompatible(SimpleFeatureType originalSchema) {
+        SimpleFeatureTypeBuilder tb = new SimpleFeatureTypeBuilder();
+        tb.setName(originalSchema.getName());
+        // add the fake geometry
+        tb.add("the_geom", Point.class, originalSchema.getCoordinateReferenceSystem());
+        // preserve all othr attributes
+        for (AttributeDescriptor at : originalSchema.getAttributeDescriptors()) {
+            if(!(at instanceof GeometryDescriptor)) {
+                tb.add(at);
+            }
+        }
+        return tb.buildFeatureType();
+    }
+
+    /**
+     * Returns true if the schema has just one geometry and the geom type is known
+     * @param schema
+     * @return
+     */
+    private boolean isShapefileCompatible(SimpleFeatureType schema) {
+        GeometryType gt = null;
+        for (AttributeDescriptor at : schema.getAttributeDescriptors()) {
+            if(at instanceof GeometryDescriptor) {
+                if(gt == null)
+                    gt = ((GeometryDescriptor) at).getType();
+                else
+                    // more than one geometry 
+                    return false;
+            }
+        } 
+        
+        return gt != null && SHAPEFILE_GEOM_TYPES.contains(gt.getBinding()); 
+    }
+    
+    private File writeShapefile(File tempDir,
+            FeatureCollection collection) {
+        SimpleFeatureType schema = (SimpleFeatureType) collection.getSchema();
+
+        FeatureStore fstore = null;
+        DataStore dstore = null;
+        File file = null;
+        try {
+            file = new File(tempDir, schema.getTypeName() + ".shp");
+            dstore = new ShapefileDataStore(file.toURL());
+            dstore.createSchema(schema);
+            
+            fstore = (FeatureStore) dstore.getFeatureSource(schema.getTypeName());
+            fstore.addFeatures(collection);
+        } catch (IOException ioe) {
+            LOGGER.log(Level.WARNING,
+                "Error while writing featuretype '" + schema.getTypeName() + "' to shapefile.", ioe);
+            throw new ServiceException(ioe);
+        } finally {
+            if(dstore != null) {
+                dstore.dispose();
+            }
+        }
+        
+        return file; 
     }
 
 }
