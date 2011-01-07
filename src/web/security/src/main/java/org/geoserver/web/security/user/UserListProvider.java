@@ -12,7 +12,7 @@ import org.springframework.security.GrantedAuthority;
 import org.springframework.security.userdetails.User;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.geoserver.security.GeoserverUserDao;
+import org.geoserver.security.impl.GeoserverUserDao;
 import org.geoserver.web.GeoServerApplication;
 import org.geoserver.web.wicket.GeoServerDataProvider;
 

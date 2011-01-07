@@ -1,8 +1,8 @@
 package org.geoserver.wfsv.security;
 
 import org.geoserver.platform.ExtensionPriority;
-import org.geoserver.security.SecureCatalogImpl.Response;
-import org.geoserver.security.SecureCatalogImpl.WrapperPolicy;
+import org.geoserver.security.Response;
+import org.geoserver.security.WrapperPolicy;
 import org.geoserver.security.decorators.SecuredObjectFactory;
 import org.geotools.data.VersioningDataStore;
 import org.geotools.data.VersioningFeatureLocking;

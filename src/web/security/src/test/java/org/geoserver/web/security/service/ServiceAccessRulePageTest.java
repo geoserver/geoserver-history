@@ -1,7 +1,7 @@
 package org.geoserver.web.security.service;
 
-import org.geoserver.security.ServiceAccessRule;
-import org.geoserver.security.ServiceAccessRuleDAO;
+import org.geoserver.security.impl.ServiceAccessRule;
+import org.geoserver.security.impl.ServiceAccessRuleDAO;
 import org.geoserver.web.GeoServerWicketTestSupport;
 
 public class ServiceAccessRulePageTest extends GeoServerWicketTestSupport {

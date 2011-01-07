@@ -7,8 +7,11 @@ package org.geoserver.security.decorators;
 import java.util.Iterator;
 
 import org.geoserver.platform.ExtensionPriority;
-import org.geoserver.security.SecureCatalogImpl.Response;
-import org.geoserver.security.SecureCatalogImpl.WrapperPolicy;
+import org.geoserver.security.AccessLevel;
+import org.geoserver.security.Response;
+import org.geoserver.security.WrapperPolicy;
+import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
+import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.data.DataAccess;
 import org.geotools.data.DataStore;
 import org.geotools.data.FeatureLocking;
@@ -21,9 +24,10 @@ import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.data.simple.SimpleFeatureLocking;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.data.simple.SimpleFeatureStore;
+import org.geotools.data.wms.WebMapServer;
 
 /**
- * The default read only wrapper factory, used as a fallback when no other, more
+ * The default secured wrapper factory, used as a fallback when no other, more
  * specific factory can be used.
  * <p>
  * <b>Implementation note</b>: this factory uses actual decorator objects to
@@ -46,7 +50,10 @@ public class DefaultSecureDataFactory implements SecuredObjectFactory {
                 || FeatureLocking.class.isAssignableFrom(clazz)
                 || FeatureCollection.class.isAssignableFrom(clazz)
                 || Iterator.class.isAssignableFrom(clazz)
-                || FeatureIterator.class.isAssignableFrom(clazz);
+                || FeatureIterator.class.isAssignableFrom(clazz) 
+                || AbstractGridCoverage2DReader.class.isAssignableFrom(clazz)
+                || AbstractGridFormat.class.isAssignableFrom(clazz)
+                || WebMapServer.class.isAssignableFrom(clazz);
     }
 
     public Object secure(Object object, WrapperPolicy policy) {
@@ -74,45 +81,56 @@ public class DefaultSecureDataFactory implements SecuredObjectFactory {
         // challenge mode is set to true, otherwise we're hide mode and we
         // should just return a read only wrapper, a FeatureSource
         if (SimpleFeatureSource.class.isAssignableFrom(clazz)) {
-            // if the policy is not challenge, since this is a secured object,
-            // it must be read only (we don't wrap native objects if not
-            // required in order to add a security restriction)
-            if (policy.response != Response.CHALLENGE) {
-                return new ReadOnlySimpleFeatureSource((SimpleFeatureSource) object, policy);
+            if ((policy.level == AccessLevel.READ_ONLY || policy.level == AccessLevel.METADATA
+                    || policy.level == AccessLevel.HIDDEN) && policy.response != Response.CHALLENGE) {
+                return new SecuredSimpleFeatureSource((SimpleFeatureSource) object, policy);
             } else if (SimpleFeatureLocking.class.isAssignableFrom(clazz)) {
-                return new ReadOnlySimpleFeatureLocking((SimpleFeatureLocking) object, policy);
+                return new SecuredSimpleFeatureLocking((SimpleFeatureLocking) object, policy);
             } else if (SimpleFeatureStore.class.isAssignableFrom(clazz)) {
-                return new ReadOnlySimpleFeatureStore((SimpleFeatureStore) object, policy);
+                return new SecuredSimpleFeatureStore((SimpleFeatureStore) object, policy);
             } else if (SimpleFeatureSource.class.isAssignableFrom(clazz)) {
-                return new ReadOnlySimpleFeatureSource((SimpleFeatureSource) object, policy);
+                return new SecuredSimpleFeatureSource((SimpleFeatureSource) object, policy);
             }
         } else if (FeatureSource.class.isAssignableFrom(clazz)) {
-        
-            // if the policy is not challenge, since this is a secured object,
-            // it must be read only (we don't wrap native objects if not
-            // required in order to add a security restriction)
-            if (policy.response != Response.CHALLENGE) {
-                return new ReadOnlyFeatureSource((FeatureSource) object, policy);
+            if ((policy.level == AccessLevel.READ_ONLY || policy.level == AccessLevel.METADATA 
+                    || policy.level == AccessLevel.HIDDEN) && policy.response != Response.CHALLENGE) {
+                return new SecuredFeatureSource((FeatureSource) object, policy);
             } else if (FeatureLocking.class.isAssignableFrom(clazz)) {
-                return new ReadOnlyFeatureLocking((FeatureLocking) object, policy);
+                return new SecuredFeatureLocking((FeatureLocking) object, policy);
             } else if (FeatureStore.class.isAssignableFrom(clazz)) {
-                return new ReadOnlyFeatureStore((FeatureStore) object, policy);
+                return new SecuredFeatureStore((FeatureStore) object, policy);
             } else if (FeatureSource.class.isAssignableFrom(clazz)) {
-                return new ReadOnlyFeatureSource((FeatureSource) object, policy);
+                return new SecuredFeatureSource((FeatureSource) object, policy);
             }
         }
 
         // deal with feature collection and family
         if (SimpleFeatureCollection.class.isAssignableFrom(clazz)) {
-            return new ReadOnlySimpleFeatureCollection((SimpleFeatureCollection) object, policy);
+            return new SecuredSimpleFeatureCollection((SimpleFeatureCollection) object, policy);
         } else if (FeatureCollection.class.isAssignableFrom(clazz)) {
-            return new ReadOnlyFeatureCollection((FeatureCollection) object, policy);
+            return new SecuredFeatureCollection((FeatureCollection) object, policy);
         } else if (Iterator.class.isAssignableFrom(clazz)) {
-            return new ReadOnlyIterator((Iterator) object, policy);
+            return new SecuredIterator((Iterator) object, policy);
         } else if (SimpleFeatureIterator.class.isAssignableFrom(clazz)) {
-            return new ReadOnlySimpleFeatureIterator((SimpleFeatureIterator) object); 
+            return new SecuredSimpleFeatureIterator((SimpleFeatureIterator) object); 
         } else if (FeatureIterator.class.isAssignableFrom(clazz)) {
-            return new ReadOnlyFeatureIterator((FeatureIterator) object); 
+            return new SecuredFeatureIterator((FeatureIterator) object); 
+        }
+        
+        // try coverage readers and formats
+        if(AbstractGridCoverage2DReader.class.isAssignableFrom(clazz)) {
+            return new SecuredGridCoverage2DReader((AbstractGridCoverage2DReader) object, policy);
+        } else if(AbstractGridFormat.class.isAssignableFrom(clazz)) {
+            return new SecuredGridFormat((AbstractGridFormat) object, policy);
+        }
+        
+        // wms cascading related
+        if(WebMapServer.class.isAssignableFrom(clazz)) {
+            try {
+                return new SecuredWebMapServer((WebMapServer) object);
+            } catch(Exception e) {
+                throw new RuntimeException("Unexpected error wrapping the web map server", e);
+            }
         }
 
         // all attempts have been made, we don't know how to handle this object

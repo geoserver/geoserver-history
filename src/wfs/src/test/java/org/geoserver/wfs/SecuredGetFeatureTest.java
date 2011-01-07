@@ -18,8 +18,8 @@ import org.apache.commons.codec.binary.Base64;
 import org.custommonkey.xmlunit.exceptions.XpathException;
 import org.geoserver.data.test.MockData;
 import org.geoserver.platform.GeoServerExtensions;
-import org.geoserver.security.DataAccessRuleDAO;
-import org.geoserver.security.DataAccessManager.CatalogMode;
+import org.geoserver.security.CatalogMode;
+import org.geoserver.security.impl.DataAccessRuleDAO;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -101,12 +101,8 @@ public class SecuredGetFeatureTest extends WFSTestSupport {
         DataAccessRuleDAO dao = GeoServerExtensions.bean(DataAccessRuleDAO.class, applicationContext);
         dao.setCatalogMode(CatalogMode.CHALLENGE);
         
-        MockHttpServletRequest request = createRequest("wfs?request=GetFeature&version=1.0.0&service=wfs&typeName=" + getLayerId(MockData.BUILDINGS));
-        request.addHeader("Authorization",  "Basic " + new String(Base64.encodeBase64((username + ":" + password).getBytes()))); 
-
-        MockHttpServletResponse resp = dispatch(request);
-        assertEquals(200, resp.getErrorCode());
-        Document doc = dom(new ByteArrayInputStream(resp.getOutputStreamContent().getBytes()));
+        authenticate(username, password);
+        Document doc = getAsDOM("wfs?request=GetFeature&version=1.0.0&service=wfs&typeName=" + getLayerId(MockData.BUILDINGS));
         // print(doc);
         assertXpathEvaluatesTo("1", "count(/wfs:FeatureCollection)", doc);
     }

@@ -7,8 +7,9 @@ package org.geoserver.security.decorators;
 import java.io.IOException;
 
 import org.geoserver.catalog.DataStoreInfo;
+import org.geoserver.security.AccessLevel;
 import org.geoserver.security.SecureCatalogImpl;
-import org.geoserver.security.SecureCatalogImpl.WrapperPolicy;
+import org.geoserver.security.WrapperPolicy;
 import org.geotools.data.DataAccess;
 import org.geotools.data.DataStore;
 import org.opengis.feature.Feature;
@@ -40,7 +41,7 @@ public class SecuredDataStoreInfo extends DecoratingDataStoreInfo {
                 .getDataStore(listener);
         if (ds == null)
             return null;
-        else if(policy == WrapperPolicy.METADATA)
+        else if(policy.level == AccessLevel.METADATA)
             throw SecureCatalogImpl.unauthorizedAccess(this.getName());
         else
             return (DataStore) SecuredObjects.secure(ds, policy);

@@ -22,7 +22,7 @@ import org.apache.wicket.model.Model;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.security.AccessMode;
-import org.geoserver.security.DataAccessRule;
+import org.geoserver.security.impl.DataAccessRule;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.security.RolesFormComponent;
 import org.geoserver.web.wicket.ParamResourceModel;

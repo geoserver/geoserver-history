@@ -9,7 +9,7 @@ import java.util.List;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 
-public class SecuredLayerGroupInfo extends DecoratingLayerGroupINfo {
+public class SecuredLayerGroupInfo extends DecoratingLayerGroupInfo {
 
     private List<LayerInfo> layers;
 

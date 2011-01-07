@@ -18,7 +18,9 @@ import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.data.test.MockData;
 import org.geoserver.security.AccessMode;
+import org.geoserver.security.CatalogMode;
 import org.geoserver.security.DataAccessManager;
+import org.geoserver.security.DataAccessManagerAdapter;
 import org.geoserver.security.SecureCatalogImpl;
 import org.geoserver.wms.WMSTestSupport;
 
@@ -36,7 +38,7 @@ public class GetFeatureInfoRestrictedTest extends WMSTestSupport {
 	 */
 	class TestableSecureCatalogImpl extends SecureCatalogImpl {
 		public TestableSecureCatalogImpl(Catalog catalog, DataAccessManager manager) {
-			super(catalog, manager);
+			super(catalog, new DataAccessManagerAdapter(manager));
 		}
 	}
 	
@@ -59,7 +61,7 @@ public class GetFeatureInfoRestrictedTest extends WMSTestSupport {
         expect(mockManager.canAccess((Authentication) anyObject(), (ResourceInfo) anyObject(), eq(AccessMode.WRITE))).andReturn(false).anyTimes();
         expect(mockManager.canAccess((Authentication) anyObject(), (LayerInfo) anyObject(), eq(AccessMode.READ))).andReturn(true).anyTimes();
         expect(mockManager.canAccess((Authentication) anyObject(), (LayerInfo) anyObject(), eq(AccessMode.WRITE))).andReturn(false).anyTimes();
-        expect(mockManager.getMode()).andReturn(DataAccessManager.CatalogMode.HIDE).anyTimes();
+        expect(mockManager.getMode()).andReturn(CatalogMode.HIDE).anyTimes();
         replay(mockManager);
         
         //Overwrite our catalog with this new restricted catalog

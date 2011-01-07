@@ -8,8 +8,9 @@ import java.io.IOException;
 
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.CoverageStoreInfo;
+import org.geoserver.security.AccessLevel;
 import org.geoserver.security.SecureCatalogImpl;
-import org.geoserver.security.SecureCatalogImpl.WrapperPolicy;
+import org.geoserver.security.WrapperPolicy;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.opengis.coverage.grid.GridCoverage;
@@ -28,25 +29,32 @@ public class SecuredCoverageInfo extends DecoratingCoverageInfo {
     @Override
     public GridCoverage getGridCoverage(ProgressListener listener, Hints hints)
             throws IOException {
-        if(policy == WrapperPolicy.METADATA) 
+        if(policy.level == AccessLevel.METADATA) 
             throw SecureCatalogImpl.unauthorizedAccess(this.getName());
-        return super.getGridCoverage(listener, hints);
+        
+        // go through the secured reader
+        GridCoverageReader reader = getGridCoverageReader(listener, hints);
+        return getCatalog().getResourcePool().getGridCoverage(this, reader, null, hints);
     }
 
     @Override
     public GridCoverage getGridCoverage(ProgressListener listener,
             ReferencedEnvelope envelope, Hints hints) throws IOException {
-        if(policy == WrapperPolicy.METADATA) 
+        if(policy.level == AccessLevel.METADATA) 
             throw SecureCatalogImpl.unauthorizedAccess(this.getName());
-        return super.getGridCoverage(listener, envelope, hints);
+        
+        // go through the secured reader
+        GridCoverageReader reader = getGridCoverageReader(listener, hints);
+        return getCatalog().getResourcePool().getGridCoverage(this, reader, envelope, hints);
     }
 
     @Override
     public GridCoverageReader getGridCoverageReader(ProgressListener listener,
             Hints hints) throws IOException {
-        if(policy == WrapperPolicy.METADATA)
+        if(policy.level == AccessLevel.METADATA)
             throw SecureCatalogImpl.unauthorizedAccess(this.getName());
-        return super.getGridCoverageReader(listener, hints);
+        GridCoverageReader reader = super.getGridCoverageReader(listener, hints);
+        return (GridCoverageReader) SecuredObjects.secure(reader, policy);
     }
 
     @Override

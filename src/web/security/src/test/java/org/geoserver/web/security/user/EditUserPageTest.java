@@ -1,6 +1,6 @@
 package org.geoserver.web.security.user;
 
-import org.geoserver.security.GeoserverUserDao;
+import org.geoserver.security.impl.GeoserverUserDao;
 import org.geoserver.web.GeoServerWicketTestSupport;
 
 public class EditUserPageTest extends GeoServerWicketTestSupport {

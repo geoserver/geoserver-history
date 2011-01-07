@@ -5,8 +5,8 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 
 import org.springframework.security.SpringSecurityException;
-import org.geoserver.security.SecureObjectsTest;
-import org.geoserver.security.SecureCatalogImpl.WrapperPolicy;
+import org.geoserver.security.WrapperPolicy;
+import org.geoserver.security.impl.SecureObjectsTest;
 import org.geotools.data.DataAccess;
 import org.geotools.data.FeatureSource;
 import org.geotools.feature.NameImpl;
@@ -32,9 +32,9 @@ public class ReadOnlyDataAccessTest extends SecureObjectsTest {
     }
 
     public void testDontChallenge() throws Exception {
-        ReadOnlyDataAccess ro = new ReadOnlyDataAccess(da, WrapperPolicy.HIDE);
-        ReadOnlyFeatureSource fs = (ReadOnlyFeatureSource) ro.getFeatureSource(name);
-        assertEquals(WrapperPolicy.HIDE, fs.policy);
+        ReadOnlyDataAccess ro = new ReadOnlyDataAccess(da, WrapperPolicy.hide(null));
+        SecuredFeatureSource fs = (SecuredFeatureSource) ro.getFeatureSource(name);
+        assertTrue(fs.policy.isHide());
 
         // check the easy ones, those that are not implemented in a read only
         // collection
@@ -51,9 +51,9 @@ public class ReadOnlyDataAccessTest extends SecureObjectsTest {
     }
 
     public void testChallenge() throws Exception {
-        ReadOnlyDataAccess ro = new ReadOnlyDataAccess(da, WrapperPolicy.RO_CHALLENGE);
-        ReadOnlyFeatureSource fs = (ReadOnlyFeatureSource) ro.getFeatureSource(name);
-        assertEquals(WrapperPolicy.RO_CHALLENGE, fs.policy);
+        ReadOnlyDataAccess ro = new ReadOnlyDataAccess(da, WrapperPolicy.readOnlyChallenge(null));
+        SecuredFeatureSource fs = (SecuredFeatureSource) ro.getFeatureSource(name);
+        assertTrue(fs.policy.isReadOnlyChallenge());
 
         // check the easy ones, those that are not implemented in a read only
         // collection

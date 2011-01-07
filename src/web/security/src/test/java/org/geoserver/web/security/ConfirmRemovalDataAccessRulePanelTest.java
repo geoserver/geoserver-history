@@ -5,7 +5,7 @@ import java.util.Set;
 
 import org.apache.wicket.Component;
 import org.geoserver.security.AccessMode;
-import org.geoserver.security.DataAccessRule;
+import org.geoserver.security.impl.DataAccessRule;
 import org.geoserver.web.ComponentBuilder;
 import org.geoserver.web.FormTestPage;
 import org.geoserver.web.GeoServerWicketTestSupport;

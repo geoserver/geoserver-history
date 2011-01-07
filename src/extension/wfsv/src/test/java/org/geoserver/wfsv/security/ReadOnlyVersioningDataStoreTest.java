@@ -5,7 +5,7 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 
 import org.springframework.security.SpringSecurityException;
-import org.geoserver.security.SecureCatalogImpl.WrapperPolicy;
+import org.geoserver.security.WrapperPolicy;
 import org.geoserver.security.decorators.SecuredObjects;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.VersioningDataStore;
@@ -37,7 +37,7 @@ public class ReadOnlyVersioningDataStoreTest extends SecuredVersioningTest {
 
     public void testDataStoreHide() throws Exception {
         ReadOnlyVersioningDataStore secured = (ReadOnlyVersioningDataStore) SecuredObjects.secure(
-                mock, WrapperPolicy.HIDE);
+                mock, WrapperPolicy.hide(null));
         assertTrue(secured.isVersioned(SCHEMA));
         try {
             secured.setVersioned(SCHEMA, true, null, null);
@@ -52,7 +52,7 @@ public class ReadOnlyVersioningDataStoreTest extends SecuredVersioningTest {
     
     public void testDataStoreChallenge() throws Exception {
         ReadOnlyVersioningDataStore secured = (ReadOnlyVersioningDataStore) SecuredObjects.secure(
-                mock, WrapperPolicy.RO_CHALLENGE);
+                mock, WrapperPolicy.readOnlyChallenge(null));
         assertTrue(secured.isVersioned(SCHEMA));
         try {
             secured.setVersioned(SCHEMA, true, null, null);

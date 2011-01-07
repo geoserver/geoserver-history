@@ -7,7 +7,7 @@ package org.geoserver.web.security.user;
 import java.util.logging.Level;
 
 import org.springframework.security.userdetails.UserDetails;
-import org.geoserver.security.GeoserverUserDao;
+import org.geoserver.security.impl.GeoserverUserDao;
 import org.geoserver.web.wicket.ParamResourceModel;
 
 /**

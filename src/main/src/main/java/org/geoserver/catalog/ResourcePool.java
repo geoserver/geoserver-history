@@ -984,6 +984,28 @@ public class ResourcePool {
     public void clear(CoverageStoreInfo info) {
         coverageReaderCache.remove(info);
     }
+    
+    /**
+     * Loads a grid coverage.
+     * <p>
+     * 
+     * </p>
+     * 
+     * @param info The grid coverage metadata.
+     * @param envelope The section of the coverage to load. 
+     * @param hints Hints to use while loading the coverage.
+     * 
+     * @throws IOException Any errors that occur loading the coverage.
+     */
+    @SuppressWarnings("deprecation")
+    public GridCoverage getGridCoverage( CoverageInfo info, ReferencedEnvelope env, Hints hints) throws IOException {
+        final GridCoverageReader reader = getGridCoverageReader(info.getStore(), hints);
+        if(reader == null) {
+            return null;
+        }
+        
+        return getGridCoverage(info, reader, env, hints);
+    }
  
     /**
      * Loads a grid coverage.
@@ -998,7 +1020,7 @@ public class ResourcePool {
      * @throws IOException Any errors that occur loading the coverage.
      */
     @SuppressWarnings("deprecation")
-    public GridCoverage getGridCoverage( CoverageInfo info, ReferencedEnvelope env, /*Rectangle dim,*/ Hints hints) 
+    public GridCoverage getGridCoverage( CoverageInfo info, GridCoverageReader reader, ReferencedEnvelope env, Hints hints) 
         throws IOException {
         
         ReferencedEnvelope coverageBounds;
@@ -1066,17 +1088,6 @@ public class ResourcePool {
         }
         
         envelope.setCoordinateReferenceSystem(destCRS);
-        
-        // /////////////////////////////////////////////////////////
-        //
-        // get a reader
-        //
-        // /////////////////////////////////////////////////////////
-        final GridCoverageReader reader = getGridCoverageReader(info.getStore(),hints);
-        
-        if (reader == null) {
-            return null;
-        }
         
         // /////////////////////////////////////////////////////////
         //

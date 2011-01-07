@@ -1,41 +1,22 @@
 package org.geoserver.wcs;
 
-import static org.geoserver.data.test.MockData.TASMANIA_BM;
-import static org.geoserver.data.test.MockData.WORLD;
-import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.InvalidParameterValue;
+import static org.geoserver.data.test.MockData.*;
+import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.*;
 
-import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.ServletResponse;
 
 import junit.framework.Test;
-import junit.textui.TestRunner;
-import net.opengis.wcs11.GetCoverageType;
 
-import org.geoserver.config.GeoServer;
-import org.geoserver.wcs.kvp.GetCoverageRequestReader;
-import org.geoserver.wcs.test.WCSTestSupport;
-import org.geoserver.wcs.xml.v1_1_1.WCSConfiguration;
-import org.geoserver.wcs.xml.v1_1_1.WcsXmlReader;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.referencing.CRS;
 import org.opengis.coverage.grid.GridCoverage;
 import org.vfny.geoserver.wcs.WcsException;
 import org.w3c.dom.Document;
 
-public class GetCoverageTest extends WCSTestSupport {
-
-    private static final double EPS = 10 - 6;
-
-    private GetCoverageRequestReader kvpreader;
-
-    private WebCoverageService111 service;
-
-    private WCSConfiguration configuration;
-
-    private WcsXmlReader xmlReader;
+public class GetCoverageTest extends AbstractGetCoverageTest {
 
     /**
      * This is a READ ONLY TEST so we can use one time setup
@@ -44,15 +25,6 @@ public class GetCoverageTest extends WCSTestSupport {
         return new OneTimeTestSetup(new GetCoverageTest());
     }
 
-    @Override
-    protected void setUpInternal() throws Exception {
-        super.setUpInternal();
-        kvpreader = (GetCoverageRequestReader) applicationContext
-                .getBean("wcs111GetCoverageRequestReader");
-        service = (WebCoverageService111) applicationContext.getBean("wcs111ServiceTarget");
-        configuration = new WCSConfiguration();
-        xmlReader = new WcsXmlReader("GetCoverage", "1.1.1", configuration);
-    }
 
     @Override
     protected String getLogConfiguration() {
@@ -87,24 +59,6 @@ public class GetCoverageTest extends WCSTestSupport {
     // executeGetCoverageXml(request);
     // }
 
-    /**
-     * Runs GetCoverage on the specified parameters and returns an array of coverages
-     */
-    GridCoverage[] executeGetCoverageKvp(Map<String, Object> raw) throws Exception {
-        GetCoverageType getCoverage = (GetCoverageType) kvpreader.read(kvpreader.createRequest(),
-                parseKvp(raw), raw);
-        return service.getCoverage(getCoverage);
-    }
-
-    /**
-     * Runs GetCoverage on the specified parameters and returns an array of coverages
-     */
-    GridCoverage[] executeGetCoverageXml(String request) throws Exception {
-        GetCoverageType getCoverage = (GetCoverageType) xmlReader.read(null, new StringReader(
-                request), null);
-        return service.getCoverage(getCoverage);
-    }
-
     public void testKvpBasic() throws Exception {
         Map<String, Object> raw = baseMap();
         final String getLayerId = getLayerId(TASMANIA_BM);
@@ -119,14 +73,6 @@ public class GetCoverageTest extends WCSTestSupport {
         GridCoverage2D coverage = (GridCoverage2D) coverages[0];
         assertEquals(CRS.decode("urn:ogc:def:crs:EPSG:6.6:4326"), coverage.getEnvelope()
                 .getCoordinateReferenceSystem());
-    }
-
-    private Map<String, Object> baseMap() {
-        Map<String, Object> raw = new HashMap<String, Object>();
-        raw.put("service", "WCS");
-        raw.put("version", "1.1.1");
-        raw.put("request", "GetCoverage");
-        return raw;
     }
 
     public void testAntimeridianWorld() throws Exception {
@@ -278,20 +224,6 @@ public class GetCoverageTest extends WCSTestSupport {
         }
     }
 
-    private void setInputLimit(int kbytes) {
-        GeoServer gs = getGeoServer();
-        WCSInfo info = gs.getService(WCSInfo.class);
-        info.setMaxInputMemory(kbytes);
-        gs.save(info);
-    } 
-    
-
-    private void setOutputLimit(int kbytes) {
-        GeoServer gs = getGeoServer();
-        WCSInfo info = gs.getService(WCSInfo.class);
-        info.setMaxOutputMemory(kbytes);
-        gs.save(info);
-    } 
 
 
 }

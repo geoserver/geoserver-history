@@ -3,7 +3,7 @@ package org.geoserver.web.security.user;
 import org.springframework.security.GrantedAuthority;
 import org.springframework.security.GrantedAuthorityImpl;
 import org.springframework.security.userdetails.User;
-import org.geoserver.security.GeoserverUserDao;
+import org.geoserver.security.impl.GeoserverUserDao;
 import org.geoserver.web.GeoServerWicketTestSupport;
 
 public class UserListPageTest extends GeoServerWicketTestSupport {

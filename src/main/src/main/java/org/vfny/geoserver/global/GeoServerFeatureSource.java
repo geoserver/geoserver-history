@@ -375,7 +375,8 @@ public class GeoServerFeatureSource implements SimpleFeatureSource {
             
             // now we apply a default to all geometries and bbox in the filter
             DefaultCRSFilterVisitor defaultCRSVisitor = new DefaultCRSFilterVisitor(ff, defaultCRS);
-            Filter defaultedFilter = (Filter) query.getFilter().accept(defaultCRSVisitor, null);
+            Filter filter = query.getFilter() != null ? query.getFilter() : Filter.INCLUDE;
+            Filter defaultedFilter = (Filter) filter.accept(defaultCRSVisitor, null);
             
             // and then we reproject all geometries so that the datastore receives
             // them in the native projection system (or the forced one, in case of force) 

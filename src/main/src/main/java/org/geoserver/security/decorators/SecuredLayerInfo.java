@@ -8,8 +8,9 @@ import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.ResourceInfo;
+import org.geoserver.catalog.WMSLayerInfo;
 import org.geoserver.security.SecureCatalogImpl;
-import org.geoserver.security.SecureCatalogImpl.WrapperPolicy;
+import org.geoserver.security.WrapperPolicy;
 
 public class SecuredLayerInfo extends DecoratingLayerInfo {
 
@@ -29,6 +30,8 @@ public class SecuredLayerInfo extends DecoratingLayerInfo {
             return new SecuredFeatureTypeInfo((FeatureTypeInfo) r, policy);
         else if (r instanceof CoverageInfo)
             return new SecuredCoverageInfo((CoverageInfo) r, policy);
+        else if (r instanceof WMSLayerInfo)
+            return new SecuredWMSLayerInfo((WMSLayerInfo) r, policy);
         else
             throw new RuntimeException("Don't know how to make resource of type " + r.getClass());
     }

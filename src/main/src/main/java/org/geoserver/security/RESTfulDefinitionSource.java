@@ -15,6 +15,7 @@ import org.springframework.security.intercept.web.FilterInvocationDefinitionSour
 import org.springframework.security.util.StringSplitUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.geoserver.security.impl.RESTAccessRuleDAO;
 import org.springframework.util.StringUtils;
 
 

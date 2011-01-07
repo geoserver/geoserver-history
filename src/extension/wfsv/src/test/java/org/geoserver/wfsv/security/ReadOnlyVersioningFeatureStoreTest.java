@@ -5,7 +5,7 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 
 import org.springframework.security.SpringSecurityException;
-import org.geoserver.security.SecureCatalogImpl.WrapperPolicy;
+import org.geoserver.security.WrapperPolicy;
 import org.geoserver.security.decorators.SecuredObjects;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.VersioningDataStore;
@@ -42,7 +42,7 @@ public class ReadOnlyVersioningFeatureStoreTest extends SecuredVersioningTest {
         
         // create secured version
         secured = (ReadOnlyVersioningFeatureStore) SecuredObjects.secure(
-                fsMock, WrapperPolicy.RO_CHALLENGE);
+                fsMock, WrapperPolicy.readOnlyChallenge(null));
     }
 
     public void testRemove() throws Exception {
