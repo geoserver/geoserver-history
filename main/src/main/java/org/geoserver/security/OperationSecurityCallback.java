@@ -18,6 +18,8 @@ import org.geoserver.ows.Response;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.Service;
 import org.geoserver.platform.ServiceException;
+import org.geoserver.security.impl.ServiceAccessRule;
+import org.geoserver.security.impl.ServiceAccessRuleDAO;
 
 /**
  * This callback performs security access checks at the service/method

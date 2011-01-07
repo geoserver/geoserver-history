@@ -15,7 +15,6 @@ import org.geoserver.security.DataAccessManagerWrapper;
  * Restricts access to data based on the value of {@link LocalWorkspace} and {@link LocalLayer}. 
  * 
  * @author Justin Deoliveira, OpenGeo
- *
  */
 public class LocalWorkspaceDataAccessManager extends DataAccessManagerWrapper {
 

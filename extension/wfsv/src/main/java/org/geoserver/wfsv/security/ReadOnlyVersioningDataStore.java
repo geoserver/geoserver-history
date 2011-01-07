@@ -6,7 +6,7 @@ package org.geoserver.wfsv.security;
 
 import java.io.IOException;
 
-import org.geoserver.security.SecureCatalogImpl.WrapperPolicy;
+import org.geoserver.security.WrapperPolicy;
 import org.geoserver.security.decorators.ReadOnlyDataStore;
 import org.geotools.data.DataStore;
 import org.geotools.data.VersioningDataStore;

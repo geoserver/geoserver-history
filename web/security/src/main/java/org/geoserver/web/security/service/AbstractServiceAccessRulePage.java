@@ -19,8 +19,8 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.Service;
-import org.geoserver.security.DataAccessRule;
-import org.geoserver.security.ServiceAccessRule;
+import org.geoserver.security.impl.DataAccessRule;
+import org.geoserver.security.impl.ServiceAccessRule;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.security.RolesFormComponent;
 

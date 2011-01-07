@@ -198,7 +198,7 @@ public class InsertElementHandler extends AbstractTransactionElementHandler {
             // update the insert counter
             inserted += insert.getFeature().size();
         } catch (Exception e) {
-            String msg = "Error performing insert";
+            String msg = "Error performing insert: " + e.getMessage();
             throw new WFSTransactionException(msg, e, insert.getHandle());
         }
 

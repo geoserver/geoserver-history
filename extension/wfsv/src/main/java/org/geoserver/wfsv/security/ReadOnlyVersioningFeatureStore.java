@@ -6,8 +6,8 @@ package org.geoserver.wfsv.security;
 
 import java.io.IOException;
 
-import org.geoserver.security.SecureCatalogImpl.WrapperPolicy;
-import org.geoserver.security.decorators.ReadOnlyFeatureStore;
+import org.geoserver.security.WrapperPolicy;
+import org.geoserver.security.decorators.SecuredFeatureStore;
 import org.geotools.data.FeatureDiffReader;
 import org.geotools.data.FeatureStore;
 import org.geotools.data.Query;
@@ -24,7 +24,7 @@ import org.opengis.filter.Filter;
  * 
  * @author Andrea Aime - TOPP
  */
-public class ReadOnlyVersioningFeatureStore extends ReadOnlyFeatureStore<SimpleFeatureType, SimpleFeature> implements VersioningFeatureStore {
+public class ReadOnlyVersioningFeatureStore extends SecuredFeatureStore<SimpleFeatureType, SimpleFeature> implements VersioningFeatureStore {
 
     public ReadOnlyVersioningFeatureStore(FeatureStore delegate, WrapperPolicy policy) {
         super(delegate, policy);

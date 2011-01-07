@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.geoserver.platform.GeoServerExtensions;
-import org.geoserver.security.SecureCatalogImpl.WrapperPolicy;
+import org.geoserver.security.WrapperPolicy;
 
 /**
  * Utility class that provides easy and fast access to the registered

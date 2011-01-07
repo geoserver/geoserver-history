@@ -2,8 +2,8 @@ package org.geoserver.web.security.data;
 
 import org.geoserver.data.test.MockData;
 import org.geoserver.security.AccessMode;
-import org.geoserver.security.DataAccessRule;
-import org.geoserver.security.DataAccessRuleDAO;
+import org.geoserver.security.impl.DataAccessRule;
+import org.geoserver.security.impl.DataAccessRuleDAO;
 import org.geoserver.web.GeoServerWicketTestSupport;
 
 public class DataAccessRulePageTest extends GeoServerWicketTestSupport {

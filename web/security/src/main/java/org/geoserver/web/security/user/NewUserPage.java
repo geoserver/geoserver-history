@@ -10,7 +10,7 @@ import java.util.logging.Level;
 import org.springframework.security.userdetails.UsernameNotFoundException;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
-import org.geoserver.security.GeoserverUserDao;
+import org.geoserver.security.impl.GeoserverUserDao;
 import org.geoserver.web.wicket.ParamResourceModel;
 
 

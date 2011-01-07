@@ -8,7 +8,7 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.StringResourceModel;
-import org.geoserver.security.DataAccessRule;
+import org.geoserver.security.impl.DataAccessRule;
 
 public class ConfirmRemovalDataAccessRulePanel extends Panel {
 

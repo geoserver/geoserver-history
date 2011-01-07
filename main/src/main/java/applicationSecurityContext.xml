@@ -307,23 +307,23 @@
     Ah, finally the one that hits the disk and, backed by a property file, returns known
     users, their passwords and roles
   -->
-  <bean id="userDetailsService" class="org.geoserver.security.GeoserverUserDao" depends-on="extensions">
+  <bean id="userDetailsService" class="org.geoserver.security.impl.GeoserverUserDao" depends-on="extensions">
   </bean>
   
   <!-- The dao used to deal with layer level security -->
-  <bean id="accessRulesDao" class="org.geoserver.security.DataAccessRuleDAO">
+  <bean id="accessRulesDao" class="org.geoserver.security.impl.DataAccessRuleDAO">
   	<constructor-arg ref="dataDirectory"/>
   	<constructor-arg ref="rawCatalog"/>
   </bean>
   
   <!-- The dao used to deal with service level security -->
-  <bean id="serviceRulesDao" class="org.geoserver.security.ServiceAccessRuleDAO">
+  <bean id="serviceRulesDao" class="org.geoserver.security.impl.ServiceAccessRuleDAO">
     <constructor-arg ref="dataDirectory"/>
   	<constructor-arg ref="rawCatalog"/>
   </bean>
 
   <!-- The dao used to deal with rest security -->
-  <bean id="restRulesDao" class="org.geoserver.security.RESTAccessRuleDAO">
+  <bean id="restRulesDao" class="org.geoserver.security.impl.RESTAccessRuleDAO">
     <constructor-arg ref="dataDirectory"/>
   </bean>
   

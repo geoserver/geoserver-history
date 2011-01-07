@@ -6,8 +6,8 @@ package org.geoserver.web.security.data;
 
 import java.util.logging.Level;
 
-import org.geoserver.security.DataAccessRule;
-import org.geoserver.security.DataAccessRuleDAO;
+import org.geoserver.security.impl.DataAccessRule;
+import org.geoserver.security.impl.DataAccessRuleDAO;
 import org.geoserver.web.wicket.ParamResourceModel;
 
 /**

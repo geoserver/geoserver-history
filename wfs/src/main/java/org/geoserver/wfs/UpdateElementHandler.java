@@ -142,13 +142,16 @@ public class UpdateElementHandler extends AbstractTransactionElementHandler {
 
         try {
             Filter filter = (Filter) update.getFilter();
-            
-            
+
             // make sure all geometric elements in the filter have a crs, and that the filter
             // is reprojected to store's native crs as well
             CoordinateReferenceSystem declaredCRS = WFSReprojectionUtil.getDeclaredCrs(
                     store.getSchema(), request.getVersion());
-            filter = WFSReprojectionUtil.normalizeFilterCRS(filter, store.getSchema(), declaredCRS);
+            if(filter != null) {
+                filter = WFSReprojectionUtil.normalizeFilterCRS(filter, store.getSchema(), declaredCRS);
+            } else {
+                filter = Filter.INCLUDE;
+            }
 
 
             AttributeDescriptor[] types = new AttributeDescriptor[update.getProperty().size()];
@@ -240,7 +243,7 @@ public class UpdateElementHandler extends AbstractTransactionElementHandler {
                 // that the 'InvalidParameterValue' code be set on exceptions in 
                 // cases where a "bad" value is being suppliedin an update, so 
                 // we always set to that code
-                throw new WFSTransactionException( "update error", e, "InvalidParameterValue");
+                throw new WFSTransactionException( "Update error: " + e.getMessage(), e, "InvalidParameterValue");
                 
             }
             finally {

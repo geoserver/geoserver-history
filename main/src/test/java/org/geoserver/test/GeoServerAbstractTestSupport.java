@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -15,9 +16,11 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -46,6 +49,7 @@ import javax.xml.validation.Validator;
 import net.sf.json.JSON;
 import net.sf.json.JSONSerializer;
 
+import org.apache.commons.codec.binary.Base64;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.NamespaceInfo;
@@ -53,6 +57,7 @@ import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerDataDirectory;
 import org.geoserver.config.GeoServerLoader;
 import org.geoserver.config.GeoServerLoaderProxy;
+import org.geoserver.data.test.MockData;
 import org.geoserver.data.test.TestData;
 import org.geoserver.logging.LoggingUtils;
 import org.geoserver.ows.util.KvpUtils;
@@ -112,6 +117,10 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
 
     protected static TestData testData;
     
+    String username;
+    
+    String password;
+    
     /**
      * Returns a test data instance
      * 
@@ -134,6 +143,13 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
             LOGGER.warning("Skipping " + getClass() + "." + getName()
                     + " since test data is not available");
         }
+    }
+    
+    @Override
+    protected void tearDownInternal() throws Exception {
+        super.tearDownInternal();
+        username = null;
+        password = null;
     }
 
     /**
@@ -340,6 +356,43 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
     protected FeatureTypeInfo getFeatureTypeInfo(QName typename){
         return getCatalog().getFeatureTypeByName( typename.getNamespaceURI(), typename.getLocalPart() ); 
     }
+    
+    /**
+     * Sets the authentication for this test run (will be removed during {@link #tearDownInternal()}
+     * ). Use a null user name to turn off authentication again.
+     * <p>
+     * Remember to override the getFilters() method so that Spring Security filters are enabled
+     * during testing (otherwise no authentication will take place):
+     * 
+     * <pre>
+     * protected List&lt;javax.servlet.Filter&gt; getFilters() {
+     *     return Collections.singletonList((javax.servlet.Filter) GeoServerExtensions
+     *             .bean(&quot;filterChainProxy&quot;));
+     * }
+     * </pre>
+     * <p>
+     * Also remember to add the users in the user.properties file, for example:
+     * 
+     * <pre>
+     * protected void populateDataDirectory(MockData dataDirectory) throws Exception {
+     *     super.populateDataDirectory(dataDirectory);
+     *     File security = new File(dataDirectory.getDataDirectoryRoot(), &quot;security&quot;);
+     *     security.mkdir();
+     * 
+     *     File users = new File(security, &quot;users.properties&quot;);
+     *     Properties props = new Properties();
+     *     props.put(&quot;admin&quot;, &quot;geoserver,ROLE_ADMINISTRATOR&quot;);
+     *     props.store(new FileOutputStream(users), &quot;&quot;);
+     * }
+     * </pre>
+     * 
+     * @param username
+     * @param password
+     */
+    protected void authenticate(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
 
     /**
      * Get the FeatureTypeInfo for a featuretype by the layername that would be used in a request.
@@ -402,7 +455,17 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
         request.setQueryString(ResponseUtils.getQueryString(path));
         request.setRemoteAddr("127.0.0.1");
         request.setServletPath(ResponseUtils.makePathAbsolute( ResponseUtils.stripRemainingPath(path)) );
-        request.setPathInfo(ResponseUtils.makePathAbsolute( ResponseUtils.stripBeginningPath( path))); 
+        request.setPathInfo(ResponseUtils.makePathAbsolute( ResponseUtils.stripBeginningPath( path)));
+        
+        // deal with authentication
+        if(username != null) {
+            String token = username + ":";
+            if(password != null) {
+                token += password;
+            }
+            request.addHeader("Authorization",  "Basic " + new String(Base64.encodeBase64(token.getBytes())));
+        }
+        
         
         kvp(request, path);
 
@@ -962,8 +1025,10 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
         try {
             reader = new BufferedReader(new InputStreamReader(input));
             String line = null;
-            while((line = reader.readLine()) != null)
+            while((line = reader.readLine()) != null) {
                 sb.append(line);
+                sb.append("\n");
+            }
         } finally {
             if(reader != null)
                 reader.close();

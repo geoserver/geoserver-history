@@ -10,7 +10,7 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.model.IModel;
-import org.geoserver.security.DataAccessRule;
+import org.geoserver.security.impl.DataAccessRule;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.security.SelectionDataRuleRemovalLink;
 import org.geoserver.web.wicket.GeoServerDialog;

@@ -5,7 +5,7 @@ import java.util.Locale;
 import org.springframework.security.userdetails.UserDetails;
 import org.apache.wicket.extensions.markup.html.form.palette.component.Recorder;
 import org.apache.wicket.util.tester.FormTester;
-import org.geoserver.security.GeoserverUserDao;
+import org.geoserver.security.impl.GeoserverUserDao;
 import org.geoserver.web.GeoServerWicketTestSupport;
 
 public class NewUserPageTest extends GeoServerWicketTestSupport {

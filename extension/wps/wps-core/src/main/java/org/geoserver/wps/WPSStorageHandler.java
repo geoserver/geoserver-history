@@ -21,7 +21,6 @@ import org.geoserver.ows.Dispatcher;
 import org.geoserver.ows.URLMangler.URLType;
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.ows.util.ResponseUtils;
-import org.geoserver.security.SecureCatalogImpl.Response;
 import org.geoserver.wcs.response.WCSStorageCleaner;
 import org.geotools.util.logging.Logging;
 

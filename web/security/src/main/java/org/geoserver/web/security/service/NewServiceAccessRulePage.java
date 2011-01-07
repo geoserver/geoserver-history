@@ -9,8 +9,8 @@ import java.util.logging.Level;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.validation.AbstractFormValidator;
-import org.geoserver.security.ServiceAccessRule;
-import org.geoserver.security.ServiceAccessRuleDAO;
+import org.geoserver.security.impl.ServiceAccessRule;
+import org.geoserver.security.impl.ServiceAccessRuleDAO;
 import org.geoserver.web.wicket.ParamResourceModel;
 
 /**

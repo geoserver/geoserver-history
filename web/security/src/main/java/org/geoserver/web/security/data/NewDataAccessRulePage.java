@@ -10,8 +10,8 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.validation.AbstractFormValidator;
 import org.geoserver.security.AccessMode;
-import org.geoserver.security.DataAccessRule;
-import org.geoserver.security.DataAccessRuleDAO;
+import org.geoserver.security.impl.DataAccessRule;
+import org.geoserver.security.impl.DataAccessRuleDAO;
 import org.geoserver.web.wicket.ParamResourceModel;
 
 /**

@@ -8,11 +8,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.springframework.security.AccessDeniedException;
-import org.springframework.security.SpringSecurityException;
-import org.springframework.security.Authentication;
-import org.springframework.security.InsufficientAuthenticationException;
-import org.springframework.security.context.SecurityContextHolder;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogFacade;
 import org.geoserver.catalog.CatalogFactory;
@@ -30,6 +25,8 @@ import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.ResourcePool;
 import org.geoserver.catalog.StoreInfo;
 import org.geoserver.catalog.StyleInfo;
+import org.geoserver.catalog.WMSLayerInfo;
+import org.geoserver.catalog.WMSStoreInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.catalog.event.CatalogListener;
 import org.geoserver.catalog.impl.AbstractDecorator;
@@ -37,82 +34,55 @@ import org.geoserver.ows.Dispatcher;
 import org.geoserver.ows.Request;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.GeoServerResourceLoader;
-import org.geoserver.security.DataAccessManager.CatalogMode;
 import org.geoserver.security.decorators.SecuredCoverageInfo;
 import org.geoserver.security.decorators.SecuredCoverageStoreInfo;
 import org.geoserver.security.decorators.SecuredDataStoreInfo;
 import org.geoserver.security.decorators.SecuredFeatureTypeInfo;
 import org.geoserver.security.decorators.SecuredLayerGroupInfo;
 import org.geoserver.security.decorators.SecuredLayerInfo;
+import org.geoserver.security.decorators.SecuredWMSLayerInfo;
+import org.geoserver.security.impl.DataAccessRuleDAO;
+import org.geoserver.security.impl.DefaultDataAccessManager;
 import org.opengis.feature.type.Name;
+import org.opengis.filter.Filter;
+import org.springframework.security.AccessDeniedException;
+import org.springframework.security.Authentication;
+import org.springframework.security.InsufficientAuthenticationException;
+import org.springframework.security.SpringSecurityException;
+import org.springframework.security.context.SecurityContextHolder;
 
 /**
+ * Wraps the catalog and applies the security directives provided by a {@link ResourceAccessManager}
+ * or a {@link DataAccessManager} registered in the Spring application context
  * 
- * @author Andrea Aime - TOPP TODO: - docs - uniform argument order in helper
- *         methods - create wrappers around the returned values so that they can
- *         be used only within the limits of the current user power - move the
- *         layer group checks into this class out of DataAccessManager? - does
- *         administration goes thru this catalog, or directly accesses the
- *         insecured one? Option one, admin directly accesses. Option two, admin
- *         users get a special role that make them uber-powerful (root like) and
- *         everything goes thru the secured catalog
+ * @author Andrea Aime - GeoSolutions
  */
 public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Catalog {
 
-    /**
-     * The kind of access we can give the user for a given resource
-     */
-    public enum AccessLevel {
-        HIDDEN,
-        METADATA,
-        READ_ONLY,
-        READ_WRITE
-    }
-
-    /**
-     * The response to be used when the user tries to go beyond the level
-     * that he's authorized to see
-     */
-    public enum Response {
-        HIDE,
-        CHALLENGE
-    }
-    
-    /** 
-     * The combination of access level granted and response policy (lists only possible cases)
-     */
-    public enum WrapperPolicy {
-        HIDE(AccessLevel.HIDDEN, Response.HIDE),
-        METADATA(AccessLevel.METADATA, Response.CHALLENGE),
-        RO_CHALLENGE(AccessLevel.READ_ONLY, Response.CHALLENGE),
-        RO_HIDE(AccessLevel.READ_ONLY, Response.HIDE),
-        RW(AccessLevel.READ_WRITE, Response.HIDE);
-        
-        public final AccessLevel level;
-        public final Response response;
-        
-        WrapperPolicy(AccessLevel level, Response response) {
-            this.level = level;
-            this.response = response;
-        }
-    }
-    
-    protected DataAccessManager accessManager;
+    protected ResourceAccessManager accessManager;
 
     public SecureCatalogImpl(Catalog catalog) throws Exception {
-        this(catalog, lookupDataAccessManager(catalog));
+        this(catalog, lookupResourceAccessManager());
     }
     
     public String getId() {
         return delegate.getId();
     }
+    
+    static ResourceAccessManager lookupResourceAccessManager() throws Exception {
+        ResourceAccessManager manager = GeoServerExtensions.bean(ResourceAccessManager.class);
+        if (manager == null) {
+            DataAccessManager daManager = lookupDataAccessManager();
+            manager = new DataAccessManagerAdapter(daManager);
+        } 
+        return manager;
+    }
 
-    static DataAccessManager lookupDataAccessManager(Catalog catalog) throws Exception {
+    static DataAccessManager lookupDataAccessManager() throws Exception {
         DataAccessManager manager = GeoServerExtensions.bean(DataAccessManager.class);
         if (manager == null) {
             manager = new DefaultDataAccessManager(GeoServerExtensions.bean(DataAccessRuleDAO.class));
-        }
-        else {
+        } else {
             if (manager instanceof DataAccessManagerWrapper) {
                 ((DataAccessManagerWrapper)manager).setDelegate(
                     new DefaultDataAccessManager(GeoServerExtensions.bean(DataAccessRuleDAO.class)));
@@ -121,7 +91,7 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
         return manager;
     }
 
-    protected SecureCatalogImpl(Catalog catalog, DataAccessManager manager) {
+    public SecureCatalogImpl(Catalog catalog, ResourceAccessManager manager) {
         super(catalog);
         this.accessManager = manager;
     }
@@ -446,15 +416,12 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
             return null;
         
         // first off, handle the case where the user cannot even read the data
-        boolean canRead = accessManager.canAccess(user, info, AccessMode.READ);
-        boolean canWrite = accessManager.canAccess(user, info, AccessMode.WRITE);
-        WrapperPolicy policy = checkWrapperPolicy(user, canRead, canWrite, info.getName());
+        WrapperPolicy policy = buildWrapperPolicy(user, info, info.getName());
         
         // handle the modes that do not require wrapping
-        if(policy == WrapperPolicy.HIDE)
+        if(policy.level == AccessLevel.HIDDEN)
             return null;
-        else if(policy.level == AccessLevel.READ_WRITE || 
-                (policy.level == AccessLevel.READ_ONLY && info instanceof CoverageInfo))
+        else if(policy.level == AccessLevel.READ_WRITE && policy.getLimits() == null)
             return info;
         
         // otherwise we are in a mixed case where the user can read but not write, or
@@ -463,6 +430,8 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
             return (T) new SecuredFeatureTypeInfo((FeatureTypeInfo) info, policy);
         } else if(info instanceof CoverageInfo) {
             return (T) new SecuredCoverageInfo((CoverageInfo) info, policy);
+        } else if(info instanceof WMSLayerInfo) {
+            return (T) new SecuredWMSLayerInfo((WMSLayerInfo) info, policy);
         } else {
             throw new RuntimeException("Unknown resource type " + info.getClass());
         }
@@ -477,13 +446,10 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
         if (store == null)
             return null;
         
-        // first off, handle the case where the user cannot even read the data
-        boolean canRead = accessManager.canAccess(user, store.getWorkspace(), AccessMode.READ);
-        boolean canWrite = accessManager.canAccess(user, store.getWorkspace(), AccessMode.WRITE);
-        WrapperPolicy policy = checkWrapperPolicy(user, canRead, canWrite, store.getName());
+        WrapperPolicy policy = buildWrapperPolicy(user, store.getWorkspace(), store.getName());
         
         // handle the modes that do not require wrapping
-        if(policy == WrapperPolicy.HIDE)
+        if(policy.level == AccessLevel.HIDDEN)
             return null;
         else if(policy.level == AccessLevel.READ_WRITE || 
                 (policy.level == AccessLevel.READ_ONLY && store instanceof CoverageStoreInfo))
@@ -495,6 +461,9 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
             return (T) new SecuredDataStoreInfo((DataStoreInfo) store, policy);
         } else if(store instanceof CoverageStoreInfo) {
             return (T) new SecuredCoverageStoreInfo((CoverageStoreInfo) store, policy);
+        } else if(store instanceof WMSStoreInfo) {
+            // TODO: implement WMSStoreInfo wrappring if necessary
+            return store;
         } else {
             throw new RuntimeException("Unknown store type " + store.getClass());
         }
@@ -510,12 +479,10 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
             return null;
         
         // first off, handle the case where the user cannot even read the data
-        boolean canRead = accessManager.canAccess(user, layer, AccessMode.READ);
-        boolean canWrite = accessManager.canAccess(user, layer, AccessMode.WRITE);
-        WrapperPolicy policy = checkWrapperPolicy(user, canRead, canWrite, layer.getName());
+        WrapperPolicy policy = buildWrapperPolicy(user, layer, layer.getName());
         
         // handle the modes that do not require wrapping
-        if(policy == WrapperPolicy.HIDE)
+        if(policy.level == AccessLevel.HIDDEN)
             return null;
         else if(policy.level == AccessLevel.READ_WRITE)
             return layer;
@@ -587,18 +554,17 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
         if (ws == null)
             return null;
         
-        // first off, handle the case where the user cannot even read the data
-        boolean canRead = accessManager.canAccess(user, ws, AccessMode.READ);
-        boolean canWrite = accessManager.canAccess(user, ws, AccessMode.WRITE);
-        WrapperPolicy policy = checkWrapperPolicy(user, canRead, canWrite, ws.getName());
+        WrapperPolicy policy = buildWrapperPolicy(user, ws, ws.getName());
         
         // if we don't need to hide it, then we can return it as is since it
         // can only provide metadata.
-        if(policy == WrapperPolicy.HIDE)
+        if(policy.level == AccessLevel.HIDDEN)
             return null;
         else 
             return ws;
     }
+    
+    
     
     /**
      * Factors out the policy that decides what access level the current user
@@ -610,33 +576,69 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
      * @param resourceName
      * @return
      */
-    WrapperPolicy checkWrapperPolicy(Authentication user,
-            boolean canRead, boolean canWrite, String resourceName) {
+    public WrapperPolicy buildWrapperPolicy(Authentication user,
+            CatalogInfo info, String resourceName) {
+        boolean canRead = true;
+        boolean canWrite = true;
+        AccessLimits limits;
+        
+        if(info instanceof WorkspaceInfo) {
+            // unsure here... shall we disallow writing? Only catalog and config
+            // related code should be playing with stores directly, so it's more of a 
+            // matter if you can admin a workspace or not
+            limits = accessManager.getAccessLimits(user, (WorkspaceInfo) info);
+            WorkspaceAccessLimits wl = (WorkspaceAccessLimits) limits;
+            if(wl != null) {
+                canRead = wl.isReadable();
+                canWrite = wl.isWritable();
+            }
+        } else if(info instanceof LayerInfo || info instanceof ResourceInfo) {
+            DataAccessLimits dl;
+            if(info instanceof LayerInfo) {
+                dl = accessManager.getAccessLimits(user, (LayerInfo) info);
+            } else {
+                dl = accessManager.getAccessLimits(user, (ResourceInfo) info);
+            }
+            if(dl != null) {
+                canRead = dl.getReadFilter() != Filter.EXCLUDE;
+                if(dl instanceof VectorAccessLimits) {
+                    canWrite = ((VectorAccessLimits) dl).getWriteFilter() != Filter.EXCLUDE;
+                } else {
+                    canWrite = false;
+                }
+            }
+            limits = dl;
+        } else {
+            throw new IllegalArgumentException("Can't build the wrapper policy for objects " +
+            		"other than workspace, layer or resource: " + info);
+        }
+        
+        final CatalogMode mode = limits != null ? limits.getMode() : CatalogMode.HIDE;
         if (!canRead) {
             // if in hide mode, we just hide the resource
-            if (accessManager.getMode() == CatalogMode.HIDE) {
-                return WrapperPolicy.HIDE;
-            } else if (accessManager.getMode() == CatalogMode.MIXED) {
+            if (mode == CatalogMode.HIDE) {
+                return WrapperPolicy.hide(limits);
+            } else if (mode == CatalogMode.MIXED) {
                 // if request is a get capabilities and mixed, we hide again
                 Request request = Dispatcher.REQUEST.get();
                 if(request != null && "GetCapabilities".equalsIgnoreCase(request.getRequest()))
-                    return WrapperPolicy.HIDE;
+                    return WrapperPolicy.hide(limits);
                 // otherwise challenge the user for credentials
                 else
                     throw unauthorizedAccess(resourceName);
             } else {
                 // for challenge mode we agree to show freely only the metadata, every
                 // other access will trigger a security exception
-                return WrapperPolicy.METADATA;
+                return WrapperPolicy.metadata(limits);
             }
         } else if (!canWrite) {
-            if (accessManager.getMode() == CatalogMode.HIDE) {
-                return WrapperPolicy.RO_HIDE;
+            if (mode == CatalogMode.HIDE) {
+                return WrapperPolicy.readOnlyHide(limits);
             } else {
-                return WrapperPolicy.RO_CHALLENGE;
+                return WrapperPolicy.readOnlyChallenge(limits);
             }
         }
-        return WrapperPolicy.RW;
+        return WrapperPolicy.readWrite(limits);
     }
 
     public static SpringSecurityException unauthorizedAccess(String resourceName) {

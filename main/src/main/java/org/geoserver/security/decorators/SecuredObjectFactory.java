@@ -5,7 +5,7 @@
 package org.geoserver.security.decorators;
 
 import org.geoserver.platform.ExtensionPriority;
-import org.geoserver.security.SecureCatalogImpl.WrapperPolicy;
+import org.geoserver.security.WrapperPolicy;
 
 /**
  * Builds secured versions of various catalog and data access object used by

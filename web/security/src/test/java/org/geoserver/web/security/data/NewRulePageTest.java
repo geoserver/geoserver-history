@@ -8,8 +8,8 @@ import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.util.tester.FormTester;
 import org.geoserver.data.test.MockData;
 import org.geoserver.security.AccessMode;
-import org.geoserver.security.DataAccessRule;
-import org.geoserver.security.DataAccessRuleDAO;
+import org.geoserver.security.impl.DataAccessRule;
+import org.geoserver.security.impl.DataAccessRuleDAO;
 import org.geoserver.web.GeoServerWicketTestSupport;
 
 public class NewRulePageTest extends GeoServerWicketTestSupport {

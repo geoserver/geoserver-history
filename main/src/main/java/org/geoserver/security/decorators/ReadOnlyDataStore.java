@@ -6,12 +6,14 @@ package org.geoserver.security.decorators;
 
 import java.io.IOException;
 
+import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.security.Response;
 import org.geoserver.security.SecureCatalogImpl;
-import org.geoserver.security.SecureCatalogImpl.Response;
-import org.geoserver.security.SecureCatalogImpl.WrapperPolicy;
+import org.geoserver.security.WrapperPolicy;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.FeatureSource;
+import org.geotools.data.FeatureStore;
 import org.geotools.data.FeatureWriter;
 import org.geotools.data.Transaction;
 import org.geotools.data.simple.SimpleFeatureSource;
@@ -22,7 +24,9 @@ import org.opengis.filter.Filter;
 
 /**
  * Given a {@link DataStore} subclass makes sure no write operations can be
- * performed through it
+ * performed through it. Regardless of the policy the store is kept read only as
+ * services are supposed to perform writes via {@link FeatureStore} instances returned
+ * by {@link FeatureTypeInfo} and not via direct data store access.
  * 
  * @author Andrea Aime - TOPP
  */
@@ -102,7 +106,7 @@ public class ReadOnlyDataStore extends DecoratingDataStore {
         if(policy.response == Response.CHALLENGE) {
             return SecureCatalogImpl.unauthorizedAccess();
         } else
-            return new UnsupportedOperationException("This datastore is read only");
+            return new UnsupportedOperationException("This datastore is read only, service code is supposed to perform writes via FeatureStore instead");
     }
 
 }

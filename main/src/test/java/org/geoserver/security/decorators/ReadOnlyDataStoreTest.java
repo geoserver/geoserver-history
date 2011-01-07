@@ -5,8 +5,8 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 
 import org.springframework.security.SpringSecurityException;
-import org.geoserver.security.SecureObjectsTest;
-import org.geoserver.security.SecureCatalogImpl.WrapperPolicy;
+import org.geoserver.security.WrapperPolicy;
+import org.geoserver.security.impl.SecureObjectsTest;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.Transaction;
@@ -29,8 +29,8 @@ public class ReadOnlyDataStoreTest extends SecureObjectsTest {
         replay(ds);
     }
 
-    public void testDontChallenge() throws Exception {
-        ReadOnlyDataStore ro = new ReadOnlyDataStore(ds, WrapperPolicy.HIDE);
+    public void testDisallowedAPI() throws Exception {
+        ReadOnlyDataStore ro = new ReadOnlyDataStore(ds, WrapperPolicy.hide(null));
 
         try {
             ro.createSchema(null);
@@ -73,7 +73,7 @@ public class ReadOnlyDataStoreTest extends SecureObjectsTest {
     }
     
     public void testChallenge() throws Exception {
-        ReadOnlyDataStore ro = new ReadOnlyDataStore(ds, WrapperPolicy.RO_CHALLENGE);
+        ReadOnlyDataStore ro = new ReadOnlyDataStore(ds, WrapperPolicy.readOnlyChallenge(null));
 
         try {
             ro.createSchema(null);

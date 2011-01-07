@@ -4,8 +4,8 @@ import org.apache.wicket.Component;
 import org.apache.wicket.Component.IVisitor;
 import org.apache.wicket.markup.html.form.RadioChoice;
 import org.apache.wicket.util.tester.FormTester;
-import org.geoserver.security.DataAccessRuleDAO;
-import org.geoserver.security.DataAccessManager.CatalogMode;
+import org.geoserver.security.CatalogMode;
+import org.geoserver.security.impl.DataAccessRuleDAO;
 import org.geoserver.web.GeoServerWicketTestSupport;
 
 public class CatalogModePageTest extends GeoServerWicketTestSupport {

@@ -2,7 +2,7 @@ package org.geoserver.web.security.data;
 
 import java.io.Serializable;
 
-import org.geoserver.security.DataAccessManager.CatalogMode;
+import org.geoserver.security.CatalogMode;
 
 public class CatalogModeModel implements Serializable {
 

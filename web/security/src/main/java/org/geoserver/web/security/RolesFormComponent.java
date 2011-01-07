@@ -18,7 +18,7 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
-import org.geoserver.security.GeoserverUserDao;
+import org.geoserver.security.impl.GeoserverUserDao;
 import org.geoserver.web.wicket.SimpleChoiceRenderer;
 
 /**
