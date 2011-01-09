@@ -132,6 +132,11 @@ public class DefaultWebMapService implements WebMapService, ApplicationContextAw
      * Max number of rule filters to be used against the data source
      */
     private static Integer MAX_FILTER_RULES = null;
+    
+    /**
+     * Enable continuous map wrapping
+     */
+    private static Boolean ENABLE_MAP_WRAPPING = null;
 
     private GetCapabilities getCapabilities;
 
@@ -232,6 +237,16 @@ public class DefaultWebMapService implements WebMapService, ApplicationContextAw
             else
                 MAX_FILTER_RULES = Integer.valueOf(rules);
         }
+        
+        // enable/disable map wrapping
+        if (ENABLE_MAP_WRAPPING == null) {
+            String wrapping = GeoServerExtensions.getProperty("ENABLE_MAP_WRAPPING", context);
+            // default to true, but allow switching off
+            if (wrapping == null)
+                ENABLE_MAP_WRAPPING = true;
+            else
+                ENABLE_MAP_WRAPPING = Boolean.valueOf(wrapping);
+        }
     }
 
     /**
@@ -242,6 +257,15 @@ public class DefaultWebMapService implements WebMapService, ApplicationContextAw
      */
     public static boolean isLineWidthOptimizationEnabled() {
         return OPTIMIZE_LINE_WIDTH;
+    }
+    
+    /**
+     * Checks if continuous map wrapping is enabled or not
+     * 
+     * @return
+     */
+    public static boolean isContinuousMapWrappingEnabled() {
+        return ENABLE_MAP_WRAPPING;
     }
 
     /**

@@ -385,8 +385,13 @@ public class RenderedImageMapOutputFormat extends AbstractMapOutputFormat {
         if (DefaultWebMapService.isLineWidthOptimizationEnabled()) {
             rendererParams.put(StreamingRenderer.LINE_WIDTH_OPTIMIZATION_KEY, true);
         }
+        
         // turn on advanced projection handling
         rendererParams.put(StreamingRenderer.ADVANCED_PROJECTION_HANDLING_KEY, true);
+        if(DefaultWebMapService.isContinuousMapWrappingEnabled()) {
+            rendererParams.put(StreamingRenderer.CONTINUOUS_MAP_WRAPPING, true);
+        }
+        
         // see if the user specified a dpi
         if (mapContext.getRequest().getFormatOptions().get("dpi") != null) {
             rendererParams.put(StreamingRenderer.DPI_KEY, ((Integer) mapContext.getRequest()

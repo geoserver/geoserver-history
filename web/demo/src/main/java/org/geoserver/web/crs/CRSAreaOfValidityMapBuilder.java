@@ -219,6 +219,7 @@ class CRSAreaOfValidityMapBuilder {
         Map renderingHints = new HashMap();
         renderingHints.put("optimizedDataLoadingEnabled", Boolean.TRUE);
         renderingHints.put(StreamingRenderer.ADVANCED_PROJECTION_HANDLING_KEY, Boolean.TRUE);
+        renderingHints.put(StreamingRenderer.CONTINUOUS_MAP_WRAPPING, Boolean.TRUE);
         renderer.setRendererHints(renderingHints);
         renderer.paint(graphics, paintArea, areaOfInterest);
     }
