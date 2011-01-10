@@ -1026,6 +1026,8 @@ public class CatalogBuilder {
             layer.setType(LayerInfo.Type.VECTOR);
         } else if (layer.getResource() instanceof CoverageInfo) {
             layer.setType(LayerInfo.Type.RASTER);
+        } else if (layer.getResource() instanceof WMSLayerInfo) {
+            layer.setType(LayerInfo.Type.WMS);
         }
 
         return layer;

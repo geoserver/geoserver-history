@@ -161,6 +161,9 @@ public class CatalogBuilderTest extends GeoServerTestSupport {
         assertEquals(CRS.decode("EPSG:4326"), wmsLayer.getNativeCRS());
         assertNotNull(wmsLayer.getNativeBoundingBox());
         assertNotNull(wmsLayer.getLatLonBoundingBox());
+        
+        LayerInfo layer = cb.buildLayer(wmsLayer);
+        assertEquals(LayerInfo.Type.WMS, layer.getType());
     }
 
     Name toName(QName qname) {
