@@ -52,6 +52,7 @@ import org.geoserver.catalog.impl.CatalogImpl;
 import org.geoserver.catalog.util.LegacyCatalogImporter;
 import org.geoserver.catalog.util.LegacyCatalogReader;
 import org.geoserver.catalog.util.LegacyFeatureTypeInfoReader;
+import org.geoserver.config.impl.CoverageAccessInfoImpl;
 import org.geoserver.config.impl.GeoServerInfoImpl;
 import org.geoserver.config.util.LegacyConfigurationImporter;
 import org.geoserver.config.util.XStreamPersister;
@@ -214,6 +215,9 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
                     global.setMetadata(new MetadataMap());
                 if(global.getClientProperties() == null)
                     global.setClientProperties(new HashMap<Object, Object>());
+                if (global.getCoverageAccess() == null){
+                    global.setCoverageAccess(new CoverageAccessInfoImpl());
+                }
                 geoServer.setGlobal( global );    
             }
             

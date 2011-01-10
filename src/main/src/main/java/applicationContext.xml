@@ -90,6 +90,10 @@
   <!-- jai initializer -->
   <bean id="jaiInitializer" class="org.geoserver.jai.JAIInitializer"/>
   
+  <!-- coverage access initializer -->
+  <bean id="coverageAccessInitializer" class="org.geoserver.coverage.CoverageAccessInitializer">
+  </bean>
+  
   <!-- logging initializer -->
   <bean id="loggingInitializer" class="org.geoserver.logging.LoggingInitializer">
     <property name="resourceLoader" ref="resourceLoader"/>

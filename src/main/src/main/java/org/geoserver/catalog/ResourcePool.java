@@ -4,6 +4,7 @@
  */
 package org.geoserver.catalog;
 
+import java.awt.RenderingHints;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -25,6 +26,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -128,6 +130,9 @@ public class ResourcePool {
      * Default number of hard references
      */
     static int FEATURETYPE_CACHE_SIZE_DEFAULT = 100;
+    
+    private static final String IMAGE_PYRAMID = "ImagePyramid";
+    private static final String IMAGE_MOSAIC = "ImageMosaic";
 
     Catalog catalog;
     HashMap<String, CoordinateReferenceSystem> crsCache;
@@ -138,6 +143,7 @@ public class ResourcePool {
     CoverageReaderCache hintCoverageReaderCache;
     HashMap<StyleInfo,Style> styleCache;
     List<Listener> listeners;
+    ThreadPoolExecutor coverageExecutor;
     
     public ResourcePool(Catalog catalog) {
         this.catalog = catalog;
@@ -163,6 +169,15 @@ public class ResourcePool {
         synchronized (this) {
             featureTypeCache.clear();
             featureTypeCache = new FeatureTypeCache(featureTypeCacheSize);
+        }
+    }
+    
+    /**
+     * Sets the coverage Executor.
+     */
+    public void setCoverageExecutor(ThreadPoolExecutor coverageExecutor) {
+        synchronized (this) {
+            this.coverageExecutor = coverageExecutor;
         }
     }
     
@@ -844,7 +859,18 @@ public class ResourcePool {
                 final File obj = GeoserverDataDirectory.findDataFile(info.getURL());
     
                 // XXX CACHING READERS HERE
-                reader = (info.getFormat()).getReader(obj,hints);
+                final AbstractGridFormat gridFormat = info.getFormat();
+                final String formatName = gridFormat.getName();
+                if (formatName.equalsIgnoreCase(IMAGE_MOSAIC) || formatName.equalsIgnoreCase(IMAGE_PYRAMID)){
+                    if (coverageExecutor != null){
+                        if (hints != null){
+                            hints.add(new RenderingHints(Hints.EXECUTOR_SERVICE, coverageExecutor));
+                        } else {
+                            hints = new Hints(new RenderingHints(Hints.EXECUTOR_SERVICE, coverageExecutor));
+                        }
+                    }
+                }
+                reader = gridFormat.getReader(obj,hints);
                 (hints != null ? hintCoverageReaderCache : coverageReaderCache ).put(info, reader);
             }
         }

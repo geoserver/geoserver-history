@@ -5,11 +5,14 @@
 package org.geoserver.catalog;
 
 import java.util.List;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import org.geoserver.config.ConfigurationListenerAdapter;
+import org.geoserver.config.CoverageAccessInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.config.GeoServerInitializer;
+import org.geoserver.config.impl.CoverageAccessInfoImpl;
 
 /**
  * Initializes parameters of the {@link ResourcePool} class from configuration.
@@ -24,9 +27,19 @@ public class ResourcePoolInitializer implements GeoServerInitializer {
     public void initialize(GeoServer geoServer) throws Exception {
         this.gs = geoServer;
         
-        int cacheSize = geoServer.getGlobal().getFeatureTypeCacheSize();
+        final GeoServerInfo global = geoServer.getGlobal();
+        final int cacheSize = global.getFeatureTypeCacheSize();
         if (cacheSize > 0) {
             gs.getCatalog().getResourcePool().setFeatureTypeCacheSize(cacheSize);
+        }
+        CoverageAccessInfo coverageAccess = global.getCoverageAccess();
+        if (coverageAccess == null){
+           coverageAccess = new CoverageAccessInfoImpl();
+           global.setCoverageAccess(coverageAccess);
+        }
+        final ThreadPoolExecutor executor = coverageAccess.getThreadPoolExecutor();
+        if (executor != null){
+            gs.getCatalog().getResourcePool().setCoverageExecutor(executor);    
         }
         
         geoServer.addListener(new ConfigurationListenerAdapter() {
@@ -37,6 +50,7 @@ public class ResourcePoolInitializer implements GeoServerInitializer {
                 if (i > -1) {
                     gs.getCatalog().getResourcePool().setFeatureTypeCacheSize(i);
                 }
+                gs.getCatalog().getResourcePool().setCoverageExecutor(global.getCoverageAccess().getThreadPoolExecutor());
             }
         });
     }

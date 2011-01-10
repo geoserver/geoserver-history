@@ -49,6 +49,16 @@ public interface GeoServerInfo extends Info {
      * Sets the Java Advanced Imaging configuration.
      */
     void setJAI( JAIInfo jai );
+    
+    /**
+     * The Coverage Access configuration.
+     */
+    CoverageAccessInfo getCoverageAccess();
+    
+    /**
+     * Sets the Coverage Access configuration.
+     */
+    void setCoverageAccess( CoverageAccessInfo coverageInfo );
 
     /**
      * The default character set.
