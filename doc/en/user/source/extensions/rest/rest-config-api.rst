@@ -1,4 +1,4 @@
-.. _rest_config_api_ref:
+. _rest_config_api_ref:
 
 REST Configuration API Reference
 ================================
@@ -122,14 +122,17 @@ Operations
      - Return Code
      - Formats
      - Default Format
+     - Parameters
    * - GET
      - Returns workspace ``ws``
      - 200
      - HTML, XML, JSON
      - HTML
+     -
    * - POST
      -
      - 405
+     -
      -
      -
    * - PUT
@@ -137,11 +140,13 @@ Operations
      - Modify workspace ``ws``
      - XML, JSON
      -
+     -
    * - DELETE
      - 200
      - Delete workspace ``ws``
      - XML, JSON
      -
+     - :ref:`recurse <workspace_recurse>`
 
 *Representations*:
 
@@ -155,6 +160,13 @@ Operations
 - GET for a workspace that does not exist -> 404
 - PUT that changes name of workspace -> 403
 - DELETE against a workspace that is non-empty -> 403
+
+.. _workspace_recurse:
+
+The ``recurse`` parameter is used to recursively delete all resources contained 
+by the specified workspace. This includes data stores, coverage stores, 
+feature types, etc... Allowable values for this parameter are "true" or "false". 
+The default value is "false".
 
 ``/workspaces/default[.<format>]``
 
@@ -372,18 +384,22 @@ Operations
      - Return Code
      - Formats
      - Default Format
+     - Parameters
    * - GET
      - Return data store ``ds``
      - 200
      - HTML, XML, JSON
      - HTML
+     -
    * - POST
      - 
      - 405
      - 
+     -
      - 
    * - PUT
      - Modify data store ``ds``
+     -
      -
      -
      -
@@ -392,6 +408,7 @@ Operations
      -
      -
      -
+     - :ref:`recurse <datastore_recurse>`
 
 *Representations*:
 
@@ -406,9 +423,22 @@ Operations
 - PUT that changes workspace of data store -> 403
 - DELETE against a data store that contains configured feature types -> 403
 
-``/workspaces/<ws>/datastores/<ds>/file[.<extension>]``
+.. _datastore_recurse:
 
-The ``extension`` parameter specifies the type of data store. The following 
+The ``recurse`` parameter is used to recursively delete all feature types contained
+by the specified data store. Allowable values for this parameter are "true" or  "false". 
+The default value is "false".
+
+``/workspaces/<ws>/datastores/<ds>/file[.<extension>]``
+``/workspaces/<ws>/datastores/<ds>/url[.<extension>]``
+``/workspaces/<ws>/datastores/<ds>/external[.<extension>]``
+
+This operation uploads a file containing spatial data into an existing datastore, or 
+creates a new datastore.
+
+.. _extension_parameter:
+
+The ``extension`` parameter specifies the type of data being uploaded. The following 
 extensions are supported:
 
 .. list-table::
@@ -418,11 +448,25 @@ extensions are supported:
      - Datastore
    * - shp
      - Shapefile
-   * - gml
-     - GML (Geographic Markup Language)
    * - properties
      - Property file
+   * - h2
+     - H2 Database
+   * - spatialite
+     - SpatiaLite Database
 
+The ``file``, ``url``, and ``external`` endpoints are used to specify the method that is 
+used to upload the file. 
+
+The ``file`` method is used to directly upload a file from a local source. The body of the request is the 
+file itself.
+
+The ``url`` method is used to indirectly upload a file from an remote source. The body of the request is
+a url pointing to the file to upload. This url must be visible from the server. 
+
+The ``external`` method is used to forgo upload and use an existing file on the server. The body of the 
+request is the absolute path to the existing file.
+	
 .. list-table::
    :header-rows: 1
 
@@ -434,7 +478,7 @@ extensions are supported:
      - Parameters
    * - GET
      - Get the underlying files for the data store as a zip file with 
-       mime type ``application/zip``.
+       mime type ``application/zip``. *Deprecated*.
      - 200
      - 
      - 
@@ -446,11 +490,11 @@ extensions are supported:
      - 
      -
    * - PUT
-     - Creates or overwrites the files for data store ``ds``.
+     - Uploads files to the data store ``ds``, creating it if necessary.
      - 200
      - See :ref:`notes <datastore_file_put_notes>` below.
      - 
-     - :ref:`configure <configure_parameter>`
+     - :ref:`configure <configure_parameter>`, :ref:`target <target_parameter>`, :ref:`update <update_parameter>`
    * - DELETE
      -
      - 405
@@ -480,10 +524,25 @@ The ``configure`` parameter is used to control how the data store is
 configured upon file upload. It can take one of the three values "first",
 "none", or "all".
 
-- ``first`` - Only setup the first feature type available in the data store.
-              This is the default value.
+- ``first`` - Only setup the first feature type available in the data store. This is the default.
 - ``none`` - Do not configure any feature types.
 - ``all`` - Configure all feature types.
+
+.. _target_parameter:
+
+The ``target`` parameter is used to control the type of datastore that is created
+on the server when the datastore being PUT to does not exist. The allowable values
+for this parameter are the same as for the :ref:`extension parameter <extension_parameter>`. 
+
+.. _update_parameter:
+
+The ``update`` parameter is used to control how existing data is handled when the 
+file is PUT into a datastore that (a) already exists and (b) already contains a 
+schema that matches the content of the file. It can take one of the two values 
+"append", or "overwrite".
+
+- ``append`` - Data being uploaded is appended to the existing data. This is the default.
+- ``overwrite`` - Data being uploaded replaces any existing data.
 
 Feature types
 -------------
@@ -566,26 +625,31 @@ are returned. It can take one of the three values "configured", "available", or 
      - Return Code
      - Formats
      - Default Format
+     - Parameters
    * - GET
      - Return feature type ``ft``
      - 200
      - HTML, XML, JSON
      - HTML
+     -
    * - POST
      -
      - 405
+     -
      -
      -
    * - PUT
      - Modify feature type ``ft``
      - 200
      - XML,JSON
+     -
      - 
    * - DELETE
      - Delete feature type ``ft``
      - 200
      -
      -
+     - :ref:`recurse <featuretype_recurse>`
 
 *Representations*:
 
@@ -598,6 +662,12 @@ are returned. It can take one of the three values "configured", "available", or 
 - GET for a feature type that does not exist -> 404
 - PUT that changes name of feature type -> 403
 - PUT that changes data store of feature type -> 403
+
+.. _featuretype_recurse:
+
+The ``recurse`` parameter is used to recursively delete all layers that reference
+by the specified feature type. Allowable values for this parameter are "true" or  
+"false".  The default value is "false".
 
 
 Coverage stores
@@ -655,18 +725,22 @@ Operations
      - Return Code
      - Formats
      - Default Format
+     - Parameters
    * - GET
      - Return coverage store ``cs``
      - 200
      - HTML, XML, JSON
      - HTML
+     -
    * - POST
      - 
      - 405
      - 
+     -
      - 
    * - PUT
      - Modify coverage store ``cs``
+     -
      -
      -
      -
@@ -675,6 +749,7 @@ Operations
      -
      -
      -
+     - :ref:`recurse <coveragestore_recurse>`
 
 *Representations*:
 
@@ -688,6 +763,12 @@ Operations
 - PUT that changes name of coverage store -> 403
 - PUT that changes workspace of coverage store -> 403
 - DELETE against a coverage store that contains configured coverage -> 403
+
+.. _coveragestore_recurse:
+
+The ``recurse`` parameter is used to recursively delete all coverages contained
+by the specified coverage store. Allowable values for this parameter are "true" or  "false". 
+The default value is "false".
 
 ``/workspaces/<ws>/coveragestores/<cs>/file[.<extension>]``
 
@@ -826,26 +907,31 @@ Operations
      - Return Code
      - Formats
      - Default Format
+     - Parameters
    * - GET
      - Return coverage ``c``
      - 200
      - HTML, XML, JSON
      - HTML
+     -
    * - POST
      -
      - 405
+     -
      -
      -
    * - PUT
      - Modify coverage ``c``
      - 200
      - XML,JSON
+     -
      - 
    * - DELETE
      - Delete coverage ``c``
      - 200
      -
      -
+     - :ref:`recurse <coverage_recurse>`
 
 *Representations*:
 
@@ -858,6 +944,12 @@ Operations
 - GET for a coverage that does not exist -> 404
 - PUT that changes name of coverage -> 403
 - PUT that changes coverage store of coverage -> 403
+
+.. _coverage_recurse:
+
+The ``recurse`` parameter is used to recursively delete all layers that reference
+by the specified coverage. Allowable values for this parameter are "true" or  
+"false".  The default value is "false".
 
 Styles
 ------
@@ -1034,26 +1126,31 @@ Operations
      - Return Code
      - Formats
      - Default Format
+     - Parameters
    * - GET
      - Return layer ``l``
      - 200
      - HTML, XML, JSON
      - HTML
+     -
    * - POST
      - 
      - 405
+     -
      -
      -
    * - PUT
      - Modify layer ``l`` 
      - 200
      - XML,JSON
+     -
      - 
    * - DELETE
      - Delete layer ``l``
      - 200
      -
      -
+     - :ref:`recurse <layer_recurse>`
 
 *Representations*:
 
@@ -1066,6 +1163,12 @@ Operations
 - GET for a layer that does not exist -> 404
 - PUT that changes name of layer -> 403
 - PUT that changes resource of layer -> 403
+
+.. _layer_recurse:
+
+The ``recurse`` parameter is used to recursively delete all resources referenced
+by the specified layer. Allowable values for this parameter are "true" or  
+"false".  The default value is "false".
 
 ``/layers/<l>/styles[.<format>]``
 
