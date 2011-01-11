@@ -75,13 +75,17 @@ public abstract class StoreFileResource extends Resource {
       * @param storeName The name of the store being added
       * @param format The store format.
       */
-     protected File doFileUpload(String method, String storeName, String format) {
+     protected File doFileUpload(String method, String workspaceName, String storeName, String format) {
          File directory = null;
          
          // Prepare the directory only in case this is not an external upload
          if (isInlineUpload(method)){ 
              try {
-                  directory = catalog.getResourceLoader().createDirectory( "data/" + storeName );
+                  directory = catalog.getResourceLoader()
+                      .findOrCreateDirectory("data", workspaceName, storeName);
+//                  directory = File.createTempFile(storeName + "_", "", data);
+//                  directory.delete();
+//                  directory.mkdir();
              } 
              catch (IOException e) {
                  throw new RestletException( e.getMessage(), Status.SERVER_ERROR_INTERNAL, e );

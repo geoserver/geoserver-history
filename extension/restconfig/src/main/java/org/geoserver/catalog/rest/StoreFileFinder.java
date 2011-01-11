@@ -18,11 +18,6 @@ import org.restlet.resource.Resource;
 
 public class StoreFileFinder extends AbstractCatalogFinder {
 
-    protected static HashMap<String,String> formatToDataStoreFactory = new HashMap();
-    static {
-        formatToDataStoreFactory.put( "shp", "org.geotools.data.shapefile.ShapefileDataStoreFactory");
-        formatToDataStoreFactory.put( "properties", "org.geotools.data.property.PropertyDataStoreFactory");
-    }
     
     protected static HashMap<String,String> formatToCoverageStoreFormat = new HashMap();
     static {
@@ -44,22 +39,7 @@ public class StoreFileFinder extends AbstractCatalogFinder {
         String coveragestore = getAttribute(request, "coveragestore");
         
         if ( datastore != null ) {
-            String factoryClassName = formatToDataStoreFactory.get( format );
-            
-            if ( factoryClassName == null ) {
-                throw new RestletException( "Unsupported format: " + format, Status.CLIENT_ERROR_BAD_REQUEST );
-            }
-            
-            DataStoreFactorySpi factory;
-            try {
-                Class factoryClass = Class.forName( factoryClassName );
-                factory = (DataStoreFactorySpi) factoryClass.newInstance();
-            }
-            catch ( Exception e ) {
-                throw new RestletException( "Datastore format unavailable: " + factoryClassName, Status.SERVER_ERROR_INTERNAL );
-            }
-            
-            return new DataStoreFileResource(request,response,factory,catalog);
+            return new DataStoreFileResource(request,response,format,catalog);
         }
         else {
             String coverageFormatName = formatToCoverageStoreFormat.get( format );
