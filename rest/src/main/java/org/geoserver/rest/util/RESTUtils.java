@@ -261,13 +261,21 @@ public class RESTUtils {
      */
     public static String getAttribute(Request request, String name) {
         Object o = request.getAttributes().get(name);
-
-        if (o == null) {
+        return decode(o);
+    }
+    
+    public static String getQueryStringValue(Request request, String key) {
+        String value = request.getResourceRef().getQueryAsForm().getFirstValue(key);
+        return decode(value);
+    }
+    
+    static String decode(Object value) {
+        if (value == null) {
             return null;
         }
-
+        
         try {
-            return URLDecoder.decode(o.toString(), "UTF-8");
+            return URLDecoder.decode(value.toString(), "UTF-8");
         } catch (UnsupportedEncodingException e) {
             return null;
         }
