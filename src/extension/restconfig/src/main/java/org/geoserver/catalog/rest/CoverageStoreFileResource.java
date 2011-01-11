@@ -46,7 +46,7 @@ public class CoverageStoreFileResource extends StoreFileResource {
         String format = getAttribute("format");
         String method = getUploadMethod(request);
         
-        final File uploadedFile = doFileUpload(method, coveragestore, format);
+        final File uploadedFile = doFileUpload(method, workspace, coveragestore, format);
         
         // /////////////////////////////////////////////////////////////////////
         //
@@ -79,7 +79,9 @@ public class CoverageStoreFileResource extends StoreFileResource {
         
         info.setType(coverageFormat.getName());
         if (isInlineUpload(method)) {
-            info.setURL("file:data/" + coveragestore + "/" + uploadedFile.getName() );
+            //TODO: create a method to figure out the relative url instead of making assumption
+            // about the structure
+            info.setURL("file:data/" + workspace + "/" + coveragestore + "/" + uploadedFile.getName() );
         }
         else {
             try {

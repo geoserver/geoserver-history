@@ -9,13 +9,18 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogBuilder;
@@ -24,24 +29,97 @@ import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.rest.RestletException;
 import org.geoserver.rest.format.StreamDataFormat;
+import org.geoserver.rest.util.RESTUtils;
+import org.geotools.data.DataAccessFactory;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFactorySpi;
+import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.DataAccessFactory.Param;
+import org.geotools.data.FeatureStore;
+import org.geotools.data.Transaction;
+import org.geotools.feature.FeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.filter.Filter;
 import org.restlet.data.Form;
 import org.restlet.data.MediaType;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
+import org.vfny.geoserver.util.DataStoreUtils;
 
 public class DataStoreFileResource extends StoreFileResource {
 
+    protected static HashMap<String,String> formatToDataStoreFactory = new HashMap();
+    static {
+        formatToDataStoreFactory.put( "shp", "org.geotools.data.shapefile.ShapefileDataStoreFactory");
+        formatToDataStoreFactory.put( "properties", "org.geotools.data.property.PropertyDataStoreFactory");
+        formatToDataStoreFactory.put( "h2", "org.geotools.data.h2.H2DataStoreFactory");
+        formatToDataStoreFactory.put( "spatialite", "org.geotools.data.spatialite.SpatiaLiteDataStoreFactory");
+    }
+    
+    protected static HashMap<String,Map> dataStoreFactoryToDefaultParams = new HashMap();
+    static {
+        HashMap map = new HashMap();
+        map.put("database", "@NAME@");
+        map.put("dbtype", "h2");
+        
+        dataStoreFactoryToDefaultParams.put("org.geotools.data.h2.H2DataStoreFactory", map);
+        
+        map = new HashMap();
+        map.put("database", "@NAME@");
+        map.put("dbtype", "spatialite");
+        
+        dataStoreFactoryToDefaultParams.put("org.geotools.data.spatialite.SpatiaLiteDataStoreFactory", map);
+    }
+    
+    public static DataStoreFactorySpi lookupDataStoreFactory(String format) {
+        String factoryClassName = formatToDataStoreFactory.get( format );
+        
+        if ( factoryClassName == null ) {
+            throw new RestletException( "Unsupported format: " + format, Status.CLIENT_ERROR_BAD_REQUEST );
+        }
+        
+        DataStoreFactorySpi factory;
+        try {
+            Class factoryClass = Class.forName( factoryClassName );
+            factory = (DataStoreFactorySpi) factoryClass.newInstance();
+        }
+        catch ( Exception e ) {
+            throw new RestletException( "Datastore format unavailable: " + factoryClassName, Status.SERVER_ERROR_INTERNAL );
+        }
+        
+        return factory;
+    }
+    
+    public static String lookupDataStoreFactoryFormat(String type) {
+        for (DataAccessFactory factory : DataStoreUtils.getAvailableDataStoreFactories()) {
+            if (!(factory instanceof DataStoreFactorySpi)) {
+                continue;
+            }
+            
+            if (factory.getDisplayName().equals(type)) {
+                for(Map.Entry e: formatToDataStoreFactory.entrySet()) {
+                    if (e.getValue().equals(factory.getClass().getCanonicalName())) {
+                        return (String) e.getKey();
+                    }
+                }
+                
+                return factory.getDisplayName();
+            }
+        }
+        
+        return null;
+    }
+    
+    String dataStoreFormat;
     DataStoreFactorySpi factory;
     
-    public DataStoreFileResource( Request request, Response response, DataStoreFactorySpi factory, Catalog catalog ) {
+    public DataStoreFileResource( Request request, Response response, String dataStoreFormat, Catalog catalog ) {
         super( request, response, catalog );
-        this.factory = factory;
+        this.dataStoreFormat = dataStoreFormat;
+        this.factory = lookupDataStoreFactory(dataStoreFormat);
     }
     
     @Override
@@ -50,13 +128,28 @@ public class DataStoreFileResource extends StoreFileResource {
         String datastore = getAttribute("datastore");
         String format = getAttribute("format");
 
-        //find the directory containig the files
-        File directory;
-        try {
-            directory = catalog.getResourceLoader().find( "data/" + datastore );
-        } 
-        catch (IOException e) {
-            throw new RestletException( e.getMessage(), Status.SERVER_ERROR_INTERNAL, e );
+        //find the directory from teh datastore connection parameters
+        DataStoreInfo info = catalog.getDataStoreByName(workspace, datastore);
+        if (info == null) {
+            throw new RestletException("No such datastore " + datastore, Status.CLIENT_ERROR_NOT_FOUND);
+        }
+        
+        Map<String,Serializable> params = info.getConnectionParameters();
+        File directory = null;
+        for (Map.Entry<String, Serializable> e : params.entrySet()) {
+            if (e.getValue() instanceof File) {
+                directory = (File) e.getValue();
+            }
+            else if (e.getValue() instanceof URL) {
+                directory = new File(((URL)e.getValue()).getFile());
+            }
+            if (directory != null && !"directory".equals(e.getKey())) {
+                directory = directory.getParentFile();
+            }
+            
+            if (directory != null) {
+                break;
+            }
         }
         
         if ( directory == null || !directory.exists() || !directory.isDirectory() ) {
@@ -100,30 +193,259 @@ public class DataStoreFileResource extends StoreFileResource {
         getResponse().setStatus(Status.SUCCESS_ACCEPTED);
         Form form = getRequest().getResourceRef().getQueryAsForm();
 
-        File uploadedFile = doFileUpload(method, datastore, format);
+        File uploadedFile = doFileUpload(method, workspace, datastore, format);
+        
+        //look up the target datastore type specified by user
+        String sourceDataStoreFormat = dataStoreFormat; 
+        String targetDataStoreFormat = RESTUtils.getQueryStringValue(getRequest(), "target");
+        if (targetDataStoreFormat == null) {
+            //set the same type as the source
+            targetDataStoreFormat = sourceDataStoreFormat;
+        }
+        
+        sourceDataStoreFormat = sourceDataStoreFormat.toLowerCase();
+        targetDataStoreFormat = targetDataStoreFormat.toLowerCase();
         
         //create a builder to help build catalog objects
         CatalogBuilder builder = new CatalogBuilder(catalog);
         builder.setWorkspace( catalog.getWorkspaceByName( workspace ) );
         
-        //check if the datastore already exists, if not auto configure one
+        //does the target datastore already exist?
         DataStoreInfo info = catalog.getDataStoreByName( workspace, datastore );
-        
+
+        // set the namespace uri
+        NamespaceInfo namespace = catalog.getNamespaceByPrefix( workspace );
+
         boolean add = false;
-        if ( info == null ) {
+        boolean save = false;
+        boolean canRemoveFiles = false;
+        
+        if (info == null) {
             LOGGER.info("Auto-configuring datastore: " + datastore);
             
             info = builder.buildDataStore( datastore );
             add = true;
+            
+            DataStoreFactorySpi targetFactory = factory;
+            if (!targetDataStoreFormat.equals(sourceDataStoreFormat)) {
+                //target is different, we need to create it
+                targetFactory = lookupDataStoreFactory(targetDataStoreFormat);
+                if (targetFactory == null) {
+                    throw new RestletException( "Unable to create data store of type "
+                        + targetDataStoreFormat, Status.CLIENT_ERROR_BAD_REQUEST );
+                }
+                
+                autoCreateParameters(info, namespace, targetFactory);
+                canRemoveFiles = true;
+            }
+            else {
+                updateParameters(info, namespace, targetFactory, uploadedFile);
+            }
+            
+            info.setType(targetFactory.getDisplayName());
         }
         else {
             LOGGER.info("Using existing datastore: " + datastore);
+            
+            // look up the target data store factory
+            targetDataStoreFormat = lookupDataStoreFactoryFormat(info.getType());
+            if (targetDataStoreFormat == null) {
+                throw new RuntimeException("Unable to locate data store factory of type " + info.getType());
+            }
+            
+            if (targetDataStoreFormat.equals(sourceDataStoreFormat)) {
+                save = true;
+                updateParameters(info, namespace, factory, uploadedFile);
+            }
+            else {
+                canRemoveFiles = true;
+            }
         }
-        
         builder.setStore(info);
         
-        //update the connection parameters to point to the new file
+        //add or update the datastore info
+        if ( add ) {
+            catalog.add( info );
+        }
+        else {
+            if (save) {
+                catalog.save( info );
+            }
+        }
+        
+        //create an instanceof the source datastore
+        HashMap params = new HashMap();
+        updateParameters(params, factory, uploadedFile);
+        DataStore source;
+        try {
+            source = factory.createDataStore(params);
+        } catch (IOException e) {
+            throw new RuntimeException("Unable to create source data store", e);
+        }
+        
+        try {
+            DataStore ds = (DataStore) info.getDataStore(null);
+            //synchronized(ds) {
+            //if it is the case that the source does not match the target we need to 
+            // copy the data into the target
+            if (!targetDataStoreFormat.equals(sourceDataStoreFormat)) {
+                //copy over the feature types
+                for (String featureTypeName : source.getTypeNames()) {
+                    SimpleFeatureType featureType = null;
+                    
+                    //does the feature type already exist in the target?
+                    try {
+                        featureType = ds.getSchema(featureTypeName); 
+                    }
+                    catch(Exception e) {
+                        LOGGER.info(featureTypeName + " does not exist in data store " + datastore +
+                            ". Attempting to create it");
+                        
+                        //schema does not exist, create it by first creating an instance of 
+                        // the source datastore and copying over its schema
+                        ds.createSchema(source.getSchema(featureTypeName));
+                        featureType = source.getSchema(featureTypeName);
+                    }
+    
+                    FeatureSource featureSource = ds.getFeatureSource(featureTypeName);
+                    if (!(featureSource instanceof FeatureStore)) {
+                        LOGGER.warning(featureTypeName + " is not writable, skipping");
+                        continue;
+                    }
+                    
+                    Transaction tx = new DefaultTransaction();
+                    FeatureStore featureStore = (FeatureStore) featureSource;
+                    featureStore.setTransaction(tx);
+                    
+                    try {
+                        //figure out update mode, whether we should kill existing data or append
+                        String update = form.getFirstValue("update");
+                        if ("overwrite".equalsIgnoreCase(update)) {
+                            LOGGER.fine("Removing existing features from " + featureTypeName);
+                            //kill all features
+                            featureStore.removeFeatures(Filter.INCLUDE);
+                        }
+                        
+                        LOGGER.fine("Adding features to " + featureTypeName);
+                        FeatureCollection features = source.getFeatureSource(featureTypeName).getFeatures();
+                        featureStore.addFeatures(features);
+                        
+                        tx.commit();
+                    }
+                    catch(Exception e) {
+                        tx.rollback();
+                    }
+                    finally {
+                        tx.close();
+                    }
+                }
+            }
+
+            //check configure parameter, if set to none to not try to configure
+            // data feature types
+            String configure = form.getFirstValue( "configure" );
+            if ( "none".equalsIgnoreCase( configure ) ) {
+                getResponse().setStatus( Status.SUCCESS_CREATED );
+                return;
+            }
+            
+            //load the target datastore
+            //DataStore ds = (DataStore) info.getDataStore(null);
+            
+            String[] featureTypeNames = source.getTypeNames();
+            for ( int i = 0; i < featureTypeNames.length; i++ ) {
+                
+                //unless configure specified "all", only configure the first feature type
+                if ( !"all".equalsIgnoreCase( configure ) && i > 0 ) {
+                    break;
+                }
+                
+                FeatureSource fs = ds.getFeatureSource(featureTypeNames[i]); 
+                FeatureTypeInfo ftinfo = 
+                    catalog.getFeatureTypeByDataStore(info, featureTypeNames[i] );
+                if ( ftinfo == null) {
+                    //auto configure the feature type as well
+                    ftinfo = builder.buildFeatureType(fs);
+                    builder.lookupSRS(ftinfo, true);
+                    builder.setupBounds(ftinfo);
+                }
+                
+                //update the bounds
+                ReferencedEnvelope bounds = fs.getBounds();
+                ftinfo.setNativeBoundingBox( bounds );
+                
+                //TODO: set lat lon bounding box
+                
+                if ( ftinfo.getId() == null ) {
+                    
+                    //do a check for a type already named this name in the catalog, if it is already
+                    // there try to rename it
+                    if (catalog.getFeatureTypeByName(namespace, ftinfo.getName()) != null) {
+                        LOGGER.warning(String.format("Feature type %s already exists in namespace %s, " +
+                            "attempting to rename", ftinfo.getName(), namespace.getPrefix()));
+                        int x = 1;
+                        String originalName = ftinfo.getName();
+                        do {
+                            ftinfo.setName(originalName + i);
+                            i++;
+                        }
+                        while(i < 10 && catalog.getFeatureTypeByName(namespace, ftinfo.getName()) != null);
+                    }
+                    catalog.add( ftinfo );
+                    
+                    //add a layer for the feature type as well
+                    catalog.add(builder.buildLayer(ftinfo));
+                    
+                    LOGGER.info("Added feature type " + ftinfo.getName());
+                   
+                }
+                else {
+                    LOGGER.info("Updated feature type " + ftinfo.getName());
+                    catalog.save( ftinfo );
+                }
+                
+                getResponse().setStatus( Status.SUCCESS_CREATED );
+            }
+            //}
+        } 
+        catch (Exception e) {
+            //TODO: report a proper error code
+            throw new RuntimeException ( e );
+        }
+        
+        //dispose the datastore
+        source.dispose();
+        
+        //clean up the files if we can
+        if (isInlineUpload(method) && canRemoveFiles) {
+            if (uploadedFile.isFile()) uploadedFile = uploadedFile.getParentFile();
+            try {
+                FileUtils.deleteDirectory(uploadedFile);
+            } 
+            catch (IOException e) {
+                LOGGER.info("Unable to delete " + uploadedFile.getAbsolutePath());
+                if (LOGGER.isLoggable(Level.FINE)) {
+                    LOGGER.log(Level.FINE, "", e);
+                }
+            }
+        }
+    }
+    
+    void updateParameters(DataStoreInfo info, NamespaceInfo namespace, DataStoreFactorySpi factory, File uploadedFile) {
         Map connectionParameters = info.getConnectionParameters();
+        updateParameters(connectionParameters, factory, uploadedFile);
+
+        connectionParameters.put( "namespace", namespace.getURI() );
+        
+        // ensure the parameters are valid
+        if ( !factory.canProcess( connectionParameters ) ) {
+            //TODO: log the parameters at the debug level
+            throw new RestletException( "Unable to configure datastore, bad parameters.", Status.SERVER_ERROR_INTERNAL );
+        }
+    }
+    
+    void updateParameters(Map connectionParameters, DataStoreFactorySpi factory, File uploadedFile) {
+
         for ( Param p : factory.getParametersInfo() ) {
             //the nasty url / file hack
             if ( File.class == p.type || URL.class == p.type ) {
@@ -169,79 +491,27 @@ public class DataStoreFileResource extends StoreFileResource {
                 }    
             }
         }
-        
-        // set the namespace uri
-        NamespaceInfo namespace = catalog.getNamespaceByPrefix( info.getWorkspace().getName() );
-        connectionParameters.put( "namespace", namespace.getURI() );
-        
-        // ensure the parameters are valid
-        if ( !factory.canProcess( connectionParameters ) ) {
-            //TODO: log the parameters at the debug level
-            throw new RestletException( "Unable to configure datastore, bad parameters.", Status.SERVER_ERROR_INTERNAL );
+    }
+    
+    void autoCreateParameters(DataStoreInfo info, NamespaceInfo namespace, DataStoreFactorySpi factory) {
+        Map defaultParams = dataStoreFactoryToDefaultParams.get(factory.getClass().getCanonicalName());
+        if (defaultParams == null) {
+            throw new RuntimeException("Unable to auto create parameters for " + factory.getDisplayName());
         }
         
-        //add or update the datastore info
-        if ( add ) {
-            catalog.add( info );
-        }
-        else {
-            catalog.save( info );
-        }
+        HashMap params = new HashMap(defaultParams);
         
-        //check configure parameter, if set to none to not try to configure
-        // data feature types
-        String configure = form.getFirstValue( "configure" );
-        if ( "none".equalsIgnoreCase( configure ) ) {
-            getResponse().setStatus( Status.SUCCESS_CREATED );
-            return;
-        }
-        
-        //load the datastore
-        try {
-            DataStore ds = (DataStore) info.getDataStore(null);
-            
-            String[] featureTypeNames = ds.getTypeNames();
-            for ( int i = 0; i < featureTypeNames.length; i++ ) {
-                
-                //unless configure specified "all", only configure the first feature type
-                if ( !"all".equalsIgnoreCase( configure ) && i > 0 ) {
-                    break;
-                }
-                
-                FeatureSource fs = ds.getFeatureSource(featureTypeNames[i]); 
-                FeatureTypeInfo ftinfo = null;
-                if ( add ) {
-                    //auto configure the feature type as well
-                    ftinfo = builder.buildFeatureType(fs);
-                    builder.lookupSRS(ftinfo, true);
-                    builder.setupBounds(ftinfo);
-                }
-                else {
-                    ftinfo = catalog.getFeatureTypeByName( namespace.getPrefix(), featureTypeNames[i] );
-                }
-                
-                //update the bounds
-                ReferencedEnvelope bounds = fs.getBounds();
-                ftinfo.setNativeBoundingBox( bounds );
-                
-                //TODO: set lat lon bounding box
-                if ( add ) {
-                    catalog.add( ftinfo );
-                    
-                    //add a layer for the feature type as well
-                    catalog.add(builder.buildLayer(ftinfo));
-                   
-                }
-                else {
-                    catalog.save( ftinfo );
-                }
-                
-                getResponse().setStatus( Status.SUCCESS_CREATED );
+        // replace any replacable parameters
+        for (Object o : params.entrySet()) {
+            Map.Entry e = (Map.Entry)o;
+            if (e.getValue() instanceof String) {
+                e.setValue(e.getValue().toString().replace("@NAME@", info.getName()));
             }
-        } 
-        catch (Exception e) {
-            //TODO: report a proper error code
-            throw new RuntimeException ( e );
         }
+        
+        //TODO: namespace?
+        params.put("namespace", namespace.getURI());
+        info.getConnectionParameters().putAll(params);
+        
     }
 }
