@@ -4,10 +4,13 @@
  */
 package org.geoserver.catalog.rest;
 
+import java.util.List;
+
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogBuilder;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.CoverageStoreInfo;
+import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.config.util.XStreamPersister;
 import org.geoserver.rest.RestletException;
@@ -129,9 +132,25 @@ public class CoverageResource extends AbstractCatalogResource {
         String workspace = getAttribute("workspace");
         String coveragestore = getAttribute("coveragestore");
         String coverage = getAttribute("coverage");
+        boolean recurse = getQueryStringValue("recurse", Boolean.class, false);
         
         CoverageStoreInfo ds = catalog.getCoverageStoreByName(workspace, coveragestore);
         CoverageInfo c = catalog.getCoverageByCoverageStore( ds,  coverage );
+        List<LayerInfo> layers = catalog.getLayers(c);
+        
+        if (recurse) {
+            //by recurse we clear out all the layers that public this resource
+            for (LayerInfo l : layers) {
+                catalog.remove(l);
+                LOGGER.info( "DELETE layer " + l.getName());
+            }
+        }
+        else {
+            if (!layers.isEmpty()) {
+                throw new RestletException( "coverage referenced by layer(s)", Status.CLIENT_ERROR_FORBIDDEN);
+            }
+        }
+        
         catalog.remove( c );
         clear(c);
         

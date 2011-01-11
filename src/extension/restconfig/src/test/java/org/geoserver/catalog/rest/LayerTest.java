@@ -55,4 +55,28 @@ public class LayerTest extends CatalogRESTTestSupport {
         l = catalog.getLayerByName("cite:Buildings");
         assertEquals( "Forests", l.getDefaultStyle().getName() );
     }
+    
+    public void testDelete() throws Exception {
+        assertNotNull(catalog.getLayerByName( "cite:Buildings" ));
+        
+        assertEquals(200, deleteAsServletResponse("/layers/cite:Buildings").getStatusCode());
+    }
+    
+    public void testDeleteRecursive() throws Exception {
+        assertNotNull(catalog.getLayerByName( "cite:Buildings" ));
+        assertNotNull(catalog.getFeatureTypeByName( "cite", "Buildings" ));
+        
+        assertEquals(200, deleteAsServletResponse("/rest/layers/cite:Buildings").getStatusCode());
+        
+        assertNull(catalog.getLayerByName( "cite:Buildings" ));
+        assertNotNull(catalog.getFeatureTypeByName( "cite", "Buildings" ));
+        
+        assertNotNull(catalog.getLayerByName( "cite:Bridges" ));
+        assertNotNull(catalog.getFeatureTypeByName( "cite", "Bridges" ));
+        
+        assertEquals(200, deleteAsServletResponse("/rest/layers/cite:Bridges?recurse=true").getStatusCode());
+    
+        assertNull(catalog.getLayerByName( "cite:Bridges" ));
+        assertNull(catalog.getFeatureTypeByName( "cite", "Bridges" ));
+    }
 }

@@ -278,6 +278,19 @@ public class FeatureTypeTest extends CatalogRESTTestSupport {
             deleteAsServletResponse( "/rest/workspaces/sf/datastores/sf/featuretypes/NonExistant").getStatusCode());
     }
     
+    public void testDeleteRecursive() throws Exception {
+        assertNotNull(catalog.getFeatureTypeByName("sf", "PrimitiveGeoFeature"));
+        assertNotNull(catalog.getLayerByName("sf:PrimitiveGeoFeature"));
+        
+        assertEquals(403, deleteAsServletResponse( 
+            "/rest/workspaces/sf/datastores/sf/featuretypes/PrimitiveGeoFeature").getStatusCode());
+        assertEquals( 200, deleteAsServletResponse( 
+            "/rest/workspaces/sf/datastores/sf/featuretypes/PrimitiveGeoFeature?recurse=true").getStatusCode());
+
+        assertNull(catalog.getFeatureTypeByName("sf", "PrimitiveGeoFeature"));
+        assertNull(catalog.getLayerByName("sf:PrimitiveGeoFeature"));
+    }
+    
     public void testPostGeometrylessFeatureType() throws Exception {
         addGeomlessPropertyDataStore(false);
         

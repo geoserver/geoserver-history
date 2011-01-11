@@ -6,20 +6,25 @@ package org.geoserver.catalog.rest;
 
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
+import org.geoserver.catalog.CascadeDeleteVisitor;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogBuilder;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.config.util.XStreamPersister;
 import org.geoserver.rest.RestletException;
 import org.geoserver.rest.format.DataFormat;
+import org.geotools.data.DataAccessFactory;
 import org.restlet.Context;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
 import org.restlet.resource.Resource;
+import org.vfny.geoserver.util.DataStoreUtils;
 
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
@@ -72,7 +77,34 @@ public class DataStoreResource extends AbstractCatalogResource {
              ds.setWorkspace( catalog.getWorkspaceByName( workspace ) );
         } 
         ds.setEnabled(true);
+        
+        //if no namespace parameter set, set it
+        //TODO: we should really move this sort of thing to be something central
+        Map params = ds.getConnectionParameters();
+        if (!ds.getConnectionParameters().containsKey("namespace")) {
+            WorkspaceInfo ws = ds.getWorkspace();
+            NamespaceInfo ns = catalog.getNamespaceByPrefix(ws.getName());
+            if (ns == null) {
+                ns = catalog.getDefaultNamespace();
+            }
+            if (ns != null) {
+                ds.getConnectionParameters().put("namespace", ns.getURI());
+            }
+        }
 
+        //attempt to set the datastore type
+        try {
+            DataAccessFactory factory = 
+                DataStoreUtils.aquireFactory(ds.getConnectionParameters());
+            ds.setType(factory.getDisplayName());
+        }
+        catch(Exception e) {
+            LOGGER.warning("Unable to determine datastore type from connection parameters");
+            if (LOGGER.isLoggable(Level.FINE)) {
+                LOGGER.log(Level.FINE, "", e);
+            }
+        }
+        
         catalog.add( (DataStoreInfo) object );
         
         LOGGER.info( "POST data store " + ds.getName() );
@@ -118,12 +150,19 @@ public class DataStoreResource extends AbstractCatalogResource {
     protected void handleObjectDelete() throws Exception {
         String workspace = getAttribute("workspace");
         String datastore = getAttribute("datastore");
+        boolean recurse = getQueryStringValue("recurse", Boolean.class, false);
         
         DataStoreInfo ds = catalog.getDataStoreByName(workspace, datastore);
-        if ( !catalog.getFeatureTypesByDataStore(ds).isEmpty() ) {
-            throw new RestletException( "datastore not empty", Status.CLIENT_ERROR_FORBIDDEN);
+        if (!recurse) {
+            if ( !catalog.getFeatureTypesByDataStore(ds).isEmpty() ) {
+                throw new RestletException( "datastore not empty", Status.CLIENT_ERROR_FORBIDDEN);
+            }
+            catalog.remove( ds );
         }
-        catalog.remove( ds );
+        else {
+            //recursive delete
+            new CascadeDeleteVisitor(catalog).visit(ds);
+        }
         clear(ds);
         
         LOGGER.info( "DELETE data store " + workspace + "," + datastore );

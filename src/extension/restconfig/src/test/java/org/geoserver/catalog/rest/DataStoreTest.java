@@ -18,6 +18,7 @@ import net.sf.json.JSONObject;
 
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.catalog.StoreInfo;
 import org.geotools.data.DataStore;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -280,6 +281,21 @@ public class DataStoreTest extends CatalogRESTTestSupport {
     
     public void testDeleteNonEmptyForbidden() throws Exception {
         assertEquals( 403, deleteAsServletResponse("/rest/workspaces/sf/datastores/sf").getStatusCode());
+    }
+    
+    public void testDeleteRecursive() throws Exception {
+        assertNotNull(catalog.getDataStoreByName("sf", "sf"));
+        MockHttpServletResponse response =
+            deleteAsServletResponse("/rest/workspaces/sf/datastores/sf?recurse=true");
+        assertEquals(200, response.getStatusCode());
+
+        assertNull(catalog.getDataStoreByName("sf", "sf"));
+        
+        for (FeatureTypeInfo ft : catalog.getFeatureTypes()) {
+            if (ft.getStore().getName().equals("sf")) {
+                fail();
+            }
+        }
     }
     
     public void testPutNameChangeForbidden() throws Exception {

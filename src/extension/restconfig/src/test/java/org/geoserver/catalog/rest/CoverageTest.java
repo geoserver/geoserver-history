@@ -234,4 +234,17 @@ public class CoverageTest extends CatalogRESTTestSupport {
         assertEquals( 404,  
             deleteAsServletResponse( "/rest/workspaces/wcs/coveragestores/BlueMarble/coverages/NonExistant").getStatusCode());
     }
+    
+    public void testDeleteRecursive() throws Exception {
+        assertNotNull(catalog.getCoverageByName("wcs", "BlueMarble"));
+        assertNotNull(catalog.getLayerByName("wcs:BlueMarble"));
+        
+        assertEquals(403, deleteAsServletResponse( 
+            "/rest/workspaces/wcs/coveragestores/BlueMarble/coverages/BlueMarble").getStatusCode());
+        assertEquals( 200, deleteAsServletResponse( 
+            "/rest/workspaces/wcs/coveragestores/BlueMarble/coverages/BlueMarble?recurse=true").getStatusCode());
+
+        assertNull(catalog.getCoverageByName("wcs", "BlueMarble"));
+        assertNull(catalog.getLayerByName("wcs:BlueMarble"));
+    }
 }
