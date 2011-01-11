@@ -4,8 +4,14 @@ import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathExists;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import net.opengis.ows11.BoundingBoxType;
 
@@ -304,10 +310,45 @@ public class ExecuteTest extends WPSTestSupport {
   
 		MockHttpServletResponse r = postAsServletResponse("wps", xml);
 		assertEquals("application/json", r.getContentType());
-		System.out.println(r.getOutputStreamContent());
+		// System.out.println(r.getOutputStreamContent());
 		FeatureCollection fc = new FeatureJSON().readFeatureCollection(r.getOutputStreamContent());
 		assertEquals(2, fc.size());
 		
+    }
+    
+    public void testShapeZip() throws Exception {
+        String xml = "<wps:Execute service='WPS' version='1.0.0' xmlns:xlink=\"http://www.w3.org/1999/xlink\" " +
+        		"xmlns:wps='http://www.opengis.net/wps/1.0.0' xmlns:wfs='http://www.opengis.net/wfs' " + 
+        "xmlns:ows='http://www.opengis.net/ows/1.1'>" + 
+        "<ows:Identifier>gt:BufferFeatureCollection</ows:Identifier>" + 
+         "<wps:DataInputs>" + 
+         "    <wps:Input>\n" + 
+         "      <ows:Identifier>features</ows:Identifier>\n" + 
+         "      <wps:Reference mimeType=\"text/xml; subtype=wfs-collection/1.0\" xlink:href=\"http://geoserver/wfs\" method=\"POST\">\n" + 
+         "        <wps:Body>\n" + 
+         "          <wfs:GetFeature service=\"WFS\" version=\"1.0.0\">\n" + 
+         "            <wfs:Query typeName=\"cite:Streams\"/>\n" + 
+         "          </wfs:GetFeature>\n" + 
+         "        </wps:Body>\n" + 
+         "      </wps:Reference>\n" + 
+         "    </wps:Input>\n" + 
+            "<wps:Input>" + 
+               "<ows:Identifier>buffer</ows:Identifier>" + 
+               "<wps:Data>" + 
+                 "<wps:LiteralData>10</wps:LiteralData>" + 
+               "</wps:Data>" + 
+            "</wps:Input>" + 
+           "</wps:DataInputs>" +
+           "<wps:ResponseForm>" +  
+             "<wps:RawDataOutput mimeType=\"application/zip\">" + 
+                 "<ows:Identifier>result</ows:Identifier>" +
+             "</wps:RawDataOutput>" +
+           "</wps:ResponseForm>" + 
+         "</wps:Execute>";
+  
+        MockHttpServletResponse r = postAsServletResponse("wps", xml);
+        assertEquals("application/zip", r.getContentType());
+        checkShapefileIntegrity(new String[] {"Streams"}, getBinaryInputStream(r));
     }
     
     public void testPlainAddition() throws Exception { // Standard Test A.4.4.3
@@ -670,6 +711,26 @@ public class ExecuteTest extends WPSTestSupport {
     
     String urlEncode(String string) throws Exception {
         return URLEncoder.encode(string, "ASCII");
+    }
+    
+    private void checkShapefileIntegrity(String[] typeNames, final InputStream in) throws IOException {
+        ZipInputStream zis = new ZipInputStream(in);
+        ZipEntry entry = null;
+        
+        final String[] extensions = new String[] {".shp", ".shx", ".dbf", ".prj", ".cst"};
+        Set names = new HashSet();
+        for (String name : typeNames) {
+            for (String extension : extensions) {
+                names.add(name + extension);
+            }
+        }
+        while((entry = zis.getNextEntry()) != null) {
+            final String name = entry.getName();
+            assertTrue("Missing " + name, names.contains(name));
+            names.remove(name);
+            zis.closeEntry();
+        }
+        zis.close();
     }
 	
 	/* TODO Updating of Response requests A.4.4.5 */
