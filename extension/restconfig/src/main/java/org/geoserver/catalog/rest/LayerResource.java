@@ -4,6 +4,7 @@
  */
 package org.geoserver.catalog.rest;
 
+import org.geoserver.catalog.CascadeDeleteVisitor;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogBuilder;
 import org.geoserver.catalog.CoverageInfo;
@@ -80,8 +81,15 @@ public class LayerResource extends AbstractCatalogResource {
     @Override
     protected void handleObjectDelete() throws Exception {
         String l = getAttribute("layer");
+        boolean recurse = getQueryStringValue("recurse", Boolean.class, false);
+        
         LayerInfo layer = (LayerInfo) catalog.getLayerByName(l);
-        catalog.remove(layer);
+        if (!recurse) {
+            catalog.remove(layer);
+        }
+        else {
+            new CascadeDeleteVisitor(catalog).visit(layer);
+        }
 
         LOGGER.info( "DELETE layer " + l);
     }

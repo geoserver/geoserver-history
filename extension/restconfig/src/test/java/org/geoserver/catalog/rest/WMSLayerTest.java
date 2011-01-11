@@ -9,6 +9,7 @@ import net.sf.json.JSON;
 import net.sf.json.JSONObject;
 
 import org.geoserver.catalog.CatalogBuilder;
+import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.ProjectionPolicy;
 import org.geoserver.catalog.WMSLayerInfo;
 import org.geoserver.catalog.WMSStoreInfo;
@@ -222,6 +223,33 @@ public class WMSLayerTest extends CatalogRESTTestSupport {
     public void testDeleteNonExistant() throws Exception {
         assertEquals( 404,  
             deleteAsServletResponse( "/rest/workspaces/sf/wmsstores/demo/wmslayers/NonExistent").getStatusCode());
+    }
+    
+    void addLayer() {
+        LayerInfo l = catalog.getFactory().createLayer();
+        l.setResource(catalog.getResourceByName("sf", "states", WMSLayerInfo.class));
+        catalog.add(l);
+    }
+    
+    public void testDeleteNonRecursive() throws Exception {
+        addLayer();
+        
+        assertNotNull(catalog.getResourceByName("sf", "states", WMSLayerInfo.class));
+        assertEquals( 403,  
+            deleteAsServletResponse( "/rest/workspaces/sf/wmsstores/demo/wmslayers/states").getStatusCode());
+    }
+    
+    public void testDeleteRecursive() throws Exception {
+        addLayer();
+        
+        assertNotNull(catalog.getLayerByName("sf:states"));
+        assertNotNull(catalog.getResourceByName("sf", "states", WMSLayerInfo.class));
+        
+        assertEquals( 200,  
+            deleteAsServletResponse( "/rest/workspaces/sf/wmsstores/demo/wmslayers/states?recurse=true").getStatusCode());
+        
+        assertNull( catalog.getLayerByName("sf:states"));
+        assertNull( catalog.getResourceByName("sf", "states", WMSLayerInfo.class));
     }
 
 }

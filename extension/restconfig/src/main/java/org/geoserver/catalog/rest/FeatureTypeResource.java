@@ -14,6 +14,7 @@ import org.geoserver.catalog.CatalogBuilder;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.MetadataMap;
+import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.event.CatalogListener;
 import org.geoserver.config.util.XStreamPersister;
@@ -230,9 +231,25 @@ public class FeatureTypeResource extends AbstractCatalogResource {
         String workspace = getAttribute("workspace");
         String datastore = getAttribute("datastore");
         String featuretype = getAttribute("featuretype");
+        boolean recurse = getQueryStringValue("recurse", Boolean.class, false);
         
         DataStoreInfo ds = catalog.getDataStoreByName(workspace, datastore);
         FeatureTypeInfo ft = catalog.getFeatureTypeByDataStore( ds,  featuretype );
+        List<LayerInfo> layers = catalog.getLayers(ft);
+            
+        if (recurse) {
+            //by recurse we clear out all the layers that public this resource
+            for (LayerInfo l : layers) {
+                catalog.remove(l);
+                LOGGER.info( "DELETE layer " + l.getName());
+            }
+        }
+        else {
+            if (!layers.isEmpty()) {
+                throw new RestletException( "feature type referenced by layer(s)", Status.CLIENT_ERROR_FORBIDDEN);
+            }
+        }
+        
         catalog.remove( ft );
         clear(ft);
         

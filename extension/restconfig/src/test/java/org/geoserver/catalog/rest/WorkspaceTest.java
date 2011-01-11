@@ -176,10 +176,26 @@ public class WorkspaceTest extends CatalogRESTTestSupport {
             assertEquals( 404, getAsServletResponse(resource).getStatusCode() );
         }
         Document dom = getAsDOM( "/rest/workspaces.xml");
-        print(dom);
         assertEquals(0, dom.getElementsByTagName( "workspace").getLength() );
     }
     
+    public void testDeleteRecursive() throws Exception {
+        List<StoreInfo> stores = catalog.getStoresByWorkspace("sf", StoreInfo.class); 
+        assertFalse(stores.isEmpty());
+
+        MockHttpServletResponse response =
+            deleteAsServletResponse("/rest/workspaces/sf?recurse=true");
+        assertEquals(200, response.getStatusCode());
+
+        assertNull(catalog.getWorkspaceByName("sf"));
+        assertNull(catalog.getNamespaceByPrefix("sf"));
+        
+        for (StoreInfo s : stores) {
+            assertNull(catalog.getStoreByName(s.getName(), StoreInfo.class));
+        }
+        
+    }
+
     public void testPut() throws Exception {
         String xml = 
             "<workspace>" +

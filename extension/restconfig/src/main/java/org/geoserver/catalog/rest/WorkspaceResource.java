@@ -7,6 +7,7 @@ package org.geoserver.catalog.rest;
 import java.util.List;
 import java.util.Map;
 
+import org.geoserver.catalog.CascadeDeleteVisitor;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogBuilder;
 import org.geoserver.catalog.CoverageStoreInfo;
@@ -142,22 +143,31 @@ public class WorkspaceResource extends AbstractCatalogResource {
     @Override
     protected void handleObjectDelete() throws Exception {
         String workspace = getAttribute("workspace");
+        boolean recurse = getQueryStringValue("recurse", Boolean.class, false);
+        
         WorkspaceInfo ws = catalog.getWorkspaceByName( workspace );
         
-        if ( !catalog.getStoresByWorkspace(ws, StoreInfo.class).isEmpty() ) {
-            throw new RestletException( "Workspace not empty", Status.CLIENT_ERROR_FORBIDDEN );
-        }
-        
-        //check for "linked" workspace
-        NamespaceInfo ns = catalog.getNamespaceByPrefix( ws.getName() );
-        if ( ns != null ) {
-            if ( !catalog.getFeatureTypesByNamespace( ns ).isEmpty() ) {
-                throw new RestletException( "Namespace for workspace not empty.", Status.CLIENT_ERROR_FORBIDDEN );
+        if (!recurse) {
+            if ( !catalog.getStoresByWorkspace(ws, StoreInfo.class).isEmpty() ) {
+                throw new RestletException( "Workspace not empty", Status.CLIENT_ERROR_FORBIDDEN );
             }
-            catalog.remove( ns );
+            
+            //check for "linked" workspace
+            NamespaceInfo ns = catalog.getNamespaceByPrefix( ws.getName() );
+            if ( ns != null ) {
+                if ( !catalog.getFeatureTypesByNamespace( ns ).isEmpty() ) {
+                    throw new RestletException( "Namespace for workspace not empty.", Status.CLIENT_ERROR_FORBIDDEN );
+                }
+                catalog.remove( ns );
+            }
+            
+            catalog.remove( ws );
+        }
+        else {
+            //recursive delete
+            new CascadeDeleteVisitor(catalog).visit(ws);
         }
         
-        catalog.remove( ws );
         LOGGER.info( "DELETE workspace " + ws );
     }
     

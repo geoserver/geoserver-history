@@ -17,6 +17,7 @@ import net.sf.json.JSONObject;
 import org.apache.commons.io.IOUtils;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.CoverageStoreInfo;
+import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.data.test.MockData;
 import org.w3c.dom.Document;
@@ -269,5 +270,20 @@ public class CoverageStoreTest extends CatalogRESTTestSupport {
     
     public void testDeleteNonEmpty() throws Exception {
         assertEquals( 401, deleteAsServletResponse("/rest/workspaces/wcs/coveragestores/BlueMarble").getStatusCode());
+    }
+    
+    public void testDeleteRecursive() throws Exception {
+        assertNotNull(catalog.getCoverageStoreByName("wcs", "BlueMarble"));
+        MockHttpServletResponse response =
+            deleteAsServletResponse("/rest/workspaces/wcs/coveragestores/BlueMarble?recurse=true");
+        assertEquals(200, response.getStatusCode());
+
+        assertNull(catalog.getCoverageStoreByName("wcs", "BlueMarble"));
+        
+        for (CoverageInfo c : catalog.getCoverages()) {
+            if (c.getStore().getName().equals("BlueMarble")) {
+                fail();
+            }
+        }
     }
 }

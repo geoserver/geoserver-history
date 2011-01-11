@@ -4,8 +4,11 @@
  */
 package org.geoserver.catalog.rest;
 
+import java.util.List;
+
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogBuilder;
+import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.WMSLayerInfo;
 import org.geoserver.catalog.WMSStoreInfo;
@@ -148,9 +151,25 @@ public class WMSLayerResource extends AbstractCatalogResource {
         String workspace = getAttribute("workspace");
         String wmsstore = getAttribute("wmsstore");
         String wmslayer = getAttribute("wmslayer");
+        boolean recurse = getQueryStringValue("recurse", Boolean.class, false);
         
         WMSStoreInfo wms = catalog.getStoreByName(workspace, wmsstore, WMSStoreInfo.class);
         WMSLayerInfo wml = catalog.getResourceByStore( wms,  wmslayer, WMSLayerInfo.class );
+        List<LayerInfo> layers = catalog.getLayers(wml);
+        
+        if (recurse) {
+            //by recurse we clear out all the layers that public this resource
+            for (LayerInfo l : layers) {
+                catalog.remove(l);
+                LOGGER.info( "DELETE layer " + l.getName());
+            }
+        }
+        else {
+            if (!layers.isEmpty()) {
+                throw new RestletException( "wms layer referenced by layer(s)", Status.CLIENT_ERROR_FORBIDDEN);
+            }
+        }
+        
         catalog.remove( wml);
         
         LOGGER.info( "DELETE wms layer" + wmsstore + "," + wmslayer );

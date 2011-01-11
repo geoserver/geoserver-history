@@ -7,6 +7,7 @@ package org.geoserver.catalog.rest;
 import java.util.List;
 import java.util.Map;
 
+import org.geoserver.catalog.CascadeDeleteVisitor;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogBuilder;
 import org.geoserver.catalog.DataStoreInfo;
@@ -116,12 +117,19 @@ public class WMSStoreResource extends AbstractCatalogResource {
     protected void handleObjectDelete() throws Exception {
         String workspace = getAttribute("workspace");
         String wmsstore = getAttribute("wmsstore");
+        boolean recurse = getQueryStringValue("recurse", Boolean.class, false);
         
         WMSStoreInfo wms = catalog.getStoreByName(workspace, wmsstore, WMSStoreInfo.class);
-        if ( !catalog.getResourcesByStore(wms, WMSLayerInfo.class).isEmpty() ) {
-            throw new RestletException( "store not empty", Status.CLIENT_ERROR_FORBIDDEN);
+        if (!recurse) {
+            if ( !catalog.getResourcesByStore(wms, WMSLayerInfo.class).isEmpty() ) {
+                throw new RestletException( "store not empty", Status.CLIENT_ERROR_FORBIDDEN);
+            }
+            catalog.remove( wms );
         }
-        catalog.remove( wms );
+        else {
+            new CascadeDeleteVisitor(catalog).visit(wms);
+        }
+        
          
         LOGGER.info( "DELETE wms store " + workspace + "," + wmsstore );
     }

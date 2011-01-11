@@ -7,6 +7,7 @@ package org.geoserver.catalog.rest;
 import java.util.List;
 import java.util.Map;
 
+import org.geoserver.catalog.CascadeDeleteVisitor;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogBuilder;
 import org.geoserver.catalog.CoverageInfo;
@@ -97,12 +98,18 @@ public class CoverageStoreResource extends AbstractCatalogResource {
     protected void handleObjectDelete() throws Exception {
         String workspace = getAttribute("workspace");
         String coveragestore = getAttribute("coveragestore");
+        boolean recurse = getQueryStringValue("recurse", Boolean.class, false);
         
         CoverageStoreInfo cs = catalog.getCoverageStoreByName(workspace, coveragestore);
-        if ( !catalog.getCoveragesByCoverageStore(cs).isEmpty() ) {
-            throw new RestletException( "coveragestore not empty", Status.CLIENT_ERROR_UNAUTHORIZED);
+        if (!recurse) {
+            if ( !catalog.getCoveragesByCoverageStore(cs).isEmpty() ) {
+                throw new RestletException( "coveragestore not empty", Status.CLIENT_ERROR_UNAUTHORIZED);
+            }
+            catalog.remove( cs );
         }
-        catalog.remove( cs );
+        else {
+            new CascadeDeleteVisitor(catalog).visit(cs);
+        }
         clear(cs);
         
         LOGGER.info( "DELETE coverage store " + workspace + "," + coveragestore );
