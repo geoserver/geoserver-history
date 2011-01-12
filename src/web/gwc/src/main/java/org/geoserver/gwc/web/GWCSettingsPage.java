@@ -7,7 +7,6 @@ import java.util.logging.Logger;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
-import org.apache.wicket.behavior.HeaderContributor;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.CheckBox;
@@ -41,8 +40,6 @@ public class GWCSettingsPage extends GeoServerSecuredPage {
 
     @SuppressWarnings({ "unchecked", "rawtypes", "deprecation" })
     public GWCSettingsPage() {
-
-        add(HeaderContributor.forCss(GWCSettingsPage.class, "statusbar.css"));
         setHeaderPanel(headerPanel());
 
         Form form = new Form("form");
@@ -121,6 +118,14 @@ public class GWCSettingsPage extends GeoServerSecuredPage {
         CheckBox diskQuotaIntegration = checkbox("enableDiskQuota", quotaEnablementModel,
                 "GWCSettingsPage.enableDiskQuota.title");
         form.add(diskQuotaIntegration);
+
+        IModel<Integer> blockSizeModel;
+        blockSizeModel = new PropertyModel<Integer>(diskQuotaModel, "diskBlockSize");
+        TextField<Integer> diskBlockSize = new TextField<Integer>("diskBlockSize", blockSizeModel);
+        diskBlockSize.setRequired(true);
+        diskBlockSize.add(new AttributeModifier("title", true, new StringResourceModel(
+                "GWCSettingsPage.diskBlockSize.title", (Component) null, null)));
+        form.add(diskBlockSize);
 
         IModel<ExpirationPolicy> globalQuotaPolicyModel = new PropertyModel<ExpirationPolicy>(
                 diskQuotaModel, "globalExpirationPolicy");
