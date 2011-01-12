@@ -1,0 +1,16 @@
+
+.statusBarGreen{
+  position:absolute; 
+  z-index:3; 
+  background-color: green; 
+  height: 10px; 
+  width: 50px;
+}
+.statusBarRed{
+  position:absolute; 
+  z-index:4; 
+  background-color: red; 
+  height: 10px; 
+  width: 50px; 
+  left: 50px;
+}
