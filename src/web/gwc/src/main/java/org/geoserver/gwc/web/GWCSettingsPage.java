@@ -1,14 +1,21 @@
 package org.geoserver.gwc.web;
 
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
+import java.util.logging.Logger;
+
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.behavior.HeaderContributor;
-import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.CheckBox;
+import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.Radio;
 import org.apache.wicket.markup.html.form.RadioGroup;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
@@ -22,12 +29,15 @@ import org.geoserver.web.GeoServerHomePage;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.util.MapModel;
 import org.geoserver.wms.WMSInfo;
+import org.geotools.util.logging.Logging;
 import org.geowebcache.diskquota.DiskQuotaConfig;
 import org.geowebcache.diskquota.ExpirationPolicy;
 import org.geowebcache.diskquota.Quota;
 import org.geowebcache.diskquota.StorageUnit;
 
 public class GWCSettingsPage extends GeoServerSecuredPage {
+
+    private static final Logger LOGGER = Logging.getLogger(GWCSettingsPage.class);
 
     @SuppressWarnings({ "unchecked", "rawtypes", "deprecation" })
     public GWCSettingsPage() {
@@ -115,9 +125,10 @@ public class GWCSettingsPage extends GeoServerSecuredPage {
         IModel<ExpirationPolicy> globalQuotaPolicyModel = new PropertyModel<ExpirationPolicy>(
                 diskQuotaModel, "globalExpirationPolicy");
 
-        RadioGroup<ExpirationPolicy> globalQuota = new RadioGroup<ExpirationPolicy>("globalQuota",
+        RadioGroup<ExpirationPolicy> globalQuotaPolicy;
+        globalQuotaPolicy = new RadioGroup<ExpirationPolicy>("globalQuotaExpirationPolicy",
                 globalQuotaPolicyModel);
-        form.add(globalQuota);
+        form.add(globalQuotaPolicy);
 
         IModel<ExpirationPolicy> lfuModel = new LoadableDetachableModel<ExpirationPolicy>() {
             private static final long serialVersionUID = 1L;
@@ -141,46 +152,75 @@ public class GWCSettingsPage extends GeoServerSecuredPage {
         globalQuotaPolicyLFU = new Radio<ExpirationPolicy>("globalQuotaPolicyLFU", lfuModel);
         globalQuotaPolicyLRU = new Radio<ExpirationPolicy>("globalQuotaPolicyLRU", lruModel);
 
-        globalQuota.add(globalQuotaPolicyLFU);
-        globalQuota.add(globalQuotaPolicyLRU);
+        globalQuotaPolicy.add(globalQuotaPolicyLFU);
+        globalQuotaPolicy.add(globalQuotaPolicyLRU);
 
-        WebMarkupContainer green = new WebMarkupContainer("statusBarGreen");
-        WebMarkupContainer red = new WebMarkupContainer("statusBarRed");
-
-        final Quota limit = diskQuotaConfig.getGlobalQuota() == null ? new Quota(1, StorageUnit.MiB)
-                : new Quota(diskQuotaConfig.getGlobalQuota());
-        final Quota used = new Quota(diskQuotaConfig.getGlobalUsedQuota());
-        final Quota excess = used.difference(limit);
-        int usedPercentage;
-        int excessPercentage;
-
-        final int progressWidth = 200;
-
-        StorageUnit unit;
-        if (excess.getValue().doubleValue() > 0) {
-            StorageUnit excessUnits = excess.getUnits();
-            StorageUnit usedUnits = used.getUnits();
-            double usedValue = used.getValue().doubleValue();
-            double excessValue = excessUnits.convertTo(excess.getValue(), usedUnits).doubleValue();
-            excessPercentage = (int) Math.round((excessValue * progressWidth) / usedValue);
-            usedPercentage = progressWidth - excessPercentage;
-        } else {
-            unit = limit.getUnits();
-            double usedValue = used.getUnits().convertTo(used.getValue(), unit).doubleValue();
-            double limitValue = limit.getValue().doubleValue();
-            usedPercentage = (int) Math.round(usedValue * progressWidth / limitValue);
-            excessPercentage = 0;
+        if (diskQuotaConfig.getGlobalQuota() == null) {
+            LOGGER.info("There's no GWC global disk quota configured, setting a default of 100MiB");
+            diskQuotaConfig.setGlobalQuota(new Quota(100, StorageUnit.MiB));
         }
 
-        green.add(new AttributeModifier("style", true, new Model<String>("width: " + usedPercentage
-                + "px;")));
+        final IModel<Quota> globalQuotaModel = new LoadableDetachableModel<Quota>() {
+            private static final long serialVersionUID = 1L;
 
-        String redStyle = "width: " + excessPercentage + "px; left: "
-                + (1 + progressWidth - excessPercentage) + "px;";
-        red.add(new AttributeModifier("style", true, new Model<String>(redStyle)));
+            @Override
+            protected Quota load() {
+                return getGWC().getDisQuotaConfig().getGlobalQuota();
+            }
+        };
+        final IModel<Quota> globalUsedQuotaModel = new LoadableDetachableModel<Quota>() {
+            private static final long serialVersionUID = 1L;
 
-        form.add(green);
-        form.add(red);
+            @Override
+            protected Quota load() {
+                return getGWC().getDisQuotaConfig().getGlobalUsedQuota();
+            }
+        };
+
+        addGlobalQuotaStatusBar(form, globalQuotaModel, globalUsedQuotaModel);
+
+        Object[] params = { globalUsedQuotaModel.getObject().toNiceString(),
+                globalQuotaModel.getObject().toNiceString() };
+        IModel<String> usageModel = new StringResourceModel("GWCSettingsPage.usedQuotaMessage",
+                null, params);
+        form.add(new Label("globalQuotaLabel", usageModel));
+
+        IModel<BigDecimal> quotaValueModel;
+        quotaValueModel = new PropertyModel<BigDecimal>(globalQuotaModel, "value");
+        TextField<BigDecimal> quotaValue = new TextField<BigDecimal>("globalQuota", quotaValueModel);
+        quotaValue.setRequired(true);
+        form.add(quotaValue);
+
+        IModel<StorageUnit> unitModel = new PropertyModel<StorageUnit>(globalQuotaModel, "units");
+        List<? extends StorageUnit> units = Arrays.asList(StorageUnit.MiB, StorageUnit.GiB,
+                StorageUnit.TiB);
+        DropDownChoice<StorageUnit> quotaUnitChoice;
+        quotaUnitChoice = new DropDownChoice<StorageUnit>("globalQuotaUnits", unitModel, units);
+        form.add(quotaUnitChoice);
+    }
+
+    private void addGlobalQuotaStatusBar(final Form form, final IModel<Quota> globalQuotaModel,
+            final IModel<Quota> globalUsedQuotaModel) {
+
+        Quota limit = globalQuotaModel.getObject();
+        Quota used = globalUsedQuotaModel.getObject();
+
+        BigDecimal usedValue;
+        BigDecimal limitValue;
+        if (limit.min(used) == limit) {// used > limit?, use used quota units
+            limitValue = limit.getUnits().convertTo(limit.getValue(), used.getUnits());
+            usedValue = used.getValue();
+        } else {
+            limitValue = limit.getValue();
+            usedValue = used.getUnits().convertTo(used.getValue(), limit.getUnits());
+        }
+
+        final IModel<Number> usedModel = new Model<Number>(usedValue);
+        final IModel<Number> limitModel = new Model<Number>(limitValue);
+
+        StatusBar statusBar = new StatusBar("globalQuotaProgressBar", limitModel, usedModel);
+
+        form.add(statusBar);
     }
 
     private GWC getGWC() {
