@@ -37,111 +37,26 @@ public class DiskQuotaConfigPanel extends Panel {
 
     private IModel<GWC> gwcModel;
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "rawtypes" })
     public DiskQuotaConfigPanel(final String id, final Form form,
             final IModel<DiskQuotaConfig> diskQuotaModel, final IModel<GWC> gwcModel) {
         super(id);
         this.gwcModel = gwcModel;
-        // quotaConfig.getCacheCleanUpFrequency();
-        // quotaConfig.getCacheCleanUpUnits();
-        // quotaConfig.getDiskBlockSize();
-        // quotaConfig.getGlobalExpirationPolicy();
-        // quotaConfig.getGlobalExpirationPolicyName();
-        // quotaConfig.getGlobalQuota();
-        // quotaConfig.getGlobalUsedQuota();
-        // quotaConfig.getMaxConcurrentCleanUps();
-        // quotaConfig.getNumLayers();
 
+        addDiskQuotaIntegrationEnablement(diskQuotaModel);
+
+        addDiskBlockSizeConfig(diskQuotaModel);
+
+        addCleanUpFrequencyConfig(diskQuotaModel);
+
+        addGlobalQuotaConfig(form, diskQuotaModel);
+
+        addGlobalExpirationPolicyConfig(diskQuotaModel);
+    }
+
+    @SuppressWarnings("rawtypes")
+    private void addGlobalQuotaConfig(final Form form, final IModel<DiskQuotaConfig> diskQuotaModel) {
         final DiskQuotaConfig diskQuotaConfig = diskQuotaModel.getObject();
-
-        IModel<Boolean> quotaEnablementModel = new PropertyModel<Boolean>(diskQuotaModel, "enabled");
-        CheckBox diskQuotaIntegration = GWCSettingsPage.checkbox("enableDiskQuota",
-                quotaEnablementModel, "GWCSettingsPage.enableDiskQuota.title");
-        add(diskQuotaIntegration);
-
-        IModel<Integer> blockSizeModel;
-        blockSizeModel = new PropertyModel<Integer>(diskQuotaModel, "diskBlockSize");
-        TextField<Integer> diskBlockSize = new TextField<Integer>("diskBlockSize", blockSizeModel);
-        diskBlockSize.setRequired(true);
-        diskBlockSize.add(new AttributeModifier("title", true, new StringResourceModel(
-                "GWCSettingsPage.diskBlockSize.title", (Component) null, null)));
-        add(diskBlockSize);
-
-        int frequency = diskQuotaConfig.getCacheCleanUpFrequency();
-        TimeUnit unit = diskQuotaConfig.getCacheCleanUpUnits();
-        if (TimeUnit.SECONDS != unit) {
-            frequency = (int) TimeUnit.SECONDS.convert(frequency, unit);
-            diskQuotaConfig.setCacheCleanUpFrequency(frequency);
-            diskQuotaConfig.setCacheCleanUpUnits(TimeUnit.SECONDS);
-        }
-
-        IModel<Integer> cleanUpFreqModel;
-        cleanUpFreqModel = new PropertyModel<Integer>(diskQuotaModel, "cacheCleanUpFrequency");
-        TextField<Integer> cleanUpFreq = new TextField<Integer>("cleanUpFreq", cleanUpFreqModel);
-        cleanUpFreq.setRequired(true);
-        cleanUpFreq.add(new AttributeModifier("title", true, new StringResourceModel(
-                "GWCSettingsPage.cleanUpFreq.title", (Component) null, null)));
-        add(cleanUpFreq);
-        {
-            Date lastRun = diskQuotaConfig.getLastCleanUpTime();
-            String resourceId;
-            HashMap<String, String> params = new HashMap<String, String>();
-            if (lastRun == null) {
-                resourceId = "GWCSettingsPage.cleanUpLastRunNever";
-            } else {
-                resourceId = "GWCSettingsPage.cleanUpLastRun";
-                long timeAgo = (System.currentTimeMillis() - lastRun.getTime()) / 1000;
-                String timeUnits = "s";
-                if (timeAgo > 60 * 60 * 24) {
-                    timeUnits = "d";
-                    timeAgo /= 60 * 60 * 24;
-                } else if (timeAgo > 60 * 60) {
-                    timeUnits = "h";
-                    timeAgo /= 60 * 60;
-                } else if (timeAgo > 60) {
-                    timeUnits = "m";
-                    timeAgo /= 60;
-                }
-                params.put("x", String.valueOf(timeAgo));
-                params.put("timeUnit", timeUnits);
-            }
-            IModel<String> lastRunModel = new StringResourceModel(resourceId, this, new Model(
-                    params));
-            add(new Label("GWCSettingsPage.cleanUpLastRun", lastRunModel));
-        }
-        IModel<ExpirationPolicy> globalQuotaPolicyModel = new PropertyModel<ExpirationPolicy>(
-                diskQuotaModel, "globalExpirationPolicy");
-
-        RadioGroup<ExpirationPolicy> globalQuotaPolicy;
-        globalQuotaPolicy = new RadioGroup<ExpirationPolicy>("globalQuotaExpirationPolicy",
-                globalQuotaPolicyModel);
-        add(globalQuotaPolicy);
-
-        IModel<ExpirationPolicy> lfuModel = new LoadableDetachableModel<ExpirationPolicy>() {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            protected ExpirationPolicy load() {
-                return getGWC().getExpirationPolicy("LFU");
-            }
-        };
-        IModel<ExpirationPolicy> lruModel = new LoadableDetachableModel<ExpirationPolicy>() {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            protected ExpirationPolicy load() {
-                return getGWC().getExpirationPolicy("LRU");
-            }
-        };
-
-        Radio<ExpirationPolicy> globalQuotaPolicyLFU;
-        Radio<ExpirationPolicy> globalQuotaPolicyLRU;
-        globalQuotaPolicyLFU = new Radio<ExpirationPolicy>("globalQuotaPolicyLFU", lfuModel);
-        globalQuotaPolicyLRU = new Radio<ExpirationPolicy>("globalQuotaPolicyLRU", lruModel);
-
-        globalQuotaPolicy.add(globalQuotaPolicyLFU);
-        globalQuotaPolicy.add(globalQuotaPolicyLRU);
-
         if (diskQuotaConfig.getGlobalQuota() == null) {
             LOGGER.info("There's no GWC global disk quota configured, setting a default of 100MiB");
             diskQuotaConfig.setGlobalQuota(new Quota(100, StorageUnit.MiB));
@@ -186,6 +101,108 @@ public class DiskQuotaConfigPanel extends Panel {
         add(quotaUnitChoice);
     }
 
+    private void addGlobalExpirationPolicyConfig(final IModel<DiskQuotaConfig> diskQuotaModel) {
+        IModel<ExpirationPolicy> globalQuotaPolicyModel = new PropertyModel<ExpirationPolicy>(
+                diskQuotaModel, "globalExpirationPolicy");
+
+        RadioGroup<ExpirationPolicy> globalQuotaPolicy;
+        globalQuotaPolicy = new RadioGroup<ExpirationPolicy>("globalQuotaExpirationPolicy",
+                globalQuotaPolicyModel);
+        add(globalQuotaPolicy);
+
+        IModel<ExpirationPolicy> lfuModel = new LoadableDetachableModel<ExpirationPolicy>() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            protected ExpirationPolicy load() {
+                return getGWC().getExpirationPolicy("LFU");
+            }
+        };
+        IModel<ExpirationPolicy> lruModel = new LoadableDetachableModel<ExpirationPolicy>() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            protected ExpirationPolicy load() {
+                return getGWC().getExpirationPolicy("LRU");
+            }
+        };
+
+        Radio<ExpirationPolicy> globalQuotaPolicyLFU;
+        Radio<ExpirationPolicy> globalQuotaPolicyLRU;
+        globalQuotaPolicyLFU = new Radio<ExpirationPolicy>("globalQuotaPolicyLFU", lfuModel);
+        globalQuotaPolicyLRU = new Radio<ExpirationPolicy>("globalQuotaPolicyLRU", lruModel);
+
+        globalQuotaPolicy.add(globalQuotaPolicyLFU);
+        globalQuotaPolicy.add(globalQuotaPolicyLRU);
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    private void addCleanUpFrequencyConfig(final IModel<DiskQuotaConfig> diskQuotaModel) {
+
+        final DiskQuotaConfig diskQuotaConfig = diskQuotaModel.getObject();
+
+        int frequency = diskQuotaConfig.getCacheCleanUpFrequency();
+        TimeUnit unit = diskQuotaConfig.getCacheCleanUpUnits();
+        if (TimeUnit.SECONDS != unit) {
+            frequency = (int) TimeUnit.SECONDS.convert(frequency, unit);
+            diskQuotaConfig.setCacheCleanUpFrequency(frequency);
+            diskQuotaConfig.setCacheCleanUpUnits(TimeUnit.SECONDS);
+        }
+
+        IModel<Integer> cleanUpFreqModel;
+        cleanUpFreqModel = new PropertyModel<Integer>(diskQuotaModel, "cacheCleanUpFrequency");
+        TextField<Integer> cleanUpFreq = new TextField<Integer>("cleanUpFreq", cleanUpFreqModel);
+        cleanUpFreq.setRequired(true);
+        cleanUpFreq.add(new AttributeModifier("title", true, new StringResourceModel(
+                "GWCSettingsPage.cleanUpFreq.title", (Component) null, null)));
+        add(cleanUpFreq);
+        {
+            Date lastRun = diskQuotaConfig.getLastCleanUpTime();
+            String resourceId;
+            HashMap<String, String> params = new HashMap<String, String>();
+            if (lastRun == null) {
+                resourceId = "GWCSettingsPage.cleanUpLastRunNever";
+            } else {
+                resourceId = "GWCSettingsPage.cleanUpLastRun";
+                long timeAgo = (System.currentTimeMillis() - lastRun.getTime()) / 1000;
+                String timeUnits = "s";
+                if (timeAgo > 60 * 60 * 24) {
+                    timeUnits = "d";
+                    timeAgo /= 60 * 60 * 24;
+                } else if (timeAgo > 60 * 60) {
+                    timeUnits = "h";
+                    timeAgo /= 60 * 60;
+                } else if (timeAgo > 60) {
+                    timeUnits = "m";
+                    timeAgo /= 60;
+                }
+                params.put("x", String.valueOf(timeAgo));
+                params.put("timeUnit", timeUnits);
+            }
+            IModel<String> lastRunModel = new StringResourceModel(resourceId, this, new Model(
+                    params));
+            add(new Label("GWCSettingsPage.cleanUpLastRun", lastRunModel));
+        }
+    }
+
+    private void addDiskBlockSizeConfig(final IModel<DiskQuotaConfig> diskQuotaModel) {
+        IModel<Integer> blockSizeModel;
+        blockSizeModel = new PropertyModel<Integer>(diskQuotaModel, "diskBlockSize");
+        TextField<Integer> diskBlockSize = new TextField<Integer>("diskBlockSize", blockSizeModel);
+        diskBlockSize.setRequired(true);
+        diskBlockSize.add(new AttributeModifier("title", true, new StringResourceModel(
+                "GWCSettingsPage.diskBlockSize.title", (Component) null, null)));
+        add(diskBlockSize);
+    }
+
+    private void addDiskQuotaIntegrationEnablement(IModel<DiskQuotaConfig> diskQuotaModel) {
+        IModel<Boolean> quotaEnablementModel = new PropertyModel<Boolean>(diskQuotaModel, "enabled");
+        CheckBox diskQuotaIntegration = GWCSettingsPage.checkbox("enableDiskQuota",
+                quotaEnablementModel, "GWCSettingsPage.enableDiskQuota.title");
+        add(diskQuotaIntegration);
+    }
+
+    @SuppressWarnings("rawtypes")
     private void addGlobalQuotaStatusBar(final Form form, final IModel<Quota> globalQuotaModel,
             final IModel<Quota> globalUsedQuotaModel) {
 
