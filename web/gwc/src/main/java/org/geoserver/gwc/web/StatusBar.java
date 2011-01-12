@@ -38,10 +38,10 @@ public class StatusBar extends Panel {
         }
 
         usageBar.add(new AttributeModifier("style", true, new Model<String>("width: "
-                + usedPercentage + "px;")));
+                + usedPercentage + "px; left: 5px; border-left: inherit;")));
 
-        String redStyle = "width: " + excessPercentage + "px; left: "
-                + (1 + progressWidth - excessPercentage) + "px;";
+        String redStyle = "width: " + excessPercentage + "px; left: " + (5 + usedPercentage)
+                + "px;";
         excessBar.add(new AttributeModifier("style", true, new Model<String>(redStyle)));
 
         add(usageBar);
