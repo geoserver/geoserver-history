@@ -26,6 +26,9 @@ import org.geotools.referencing.CRS;
 import org.geotools.util.logging.Logging;
 import org.geowebcache.GeoWebCacheException;
 import org.geowebcache.conveyor.ConveyorTile;
+import org.geowebcache.diskquota.DiskQuotaConfig;
+import org.geowebcache.diskquota.DiskQuotaMonitor;
+import org.geowebcache.diskquota.ExpirationPolicy;
 import org.geowebcache.grid.BoundingBox;
 import org.geowebcache.grid.GridMismatchException;
 import org.geowebcache.grid.GridSet;
@@ -41,7 +44,11 @@ import org.geowebcache.storage.StorageBroker;
 import org.geowebcache.storage.StorageException;
 import org.geowebcache.storage.TileRange;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.DisposableBean;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.util.Assert;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -53,7 +60,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * @version $Id$
  * 
  */
-public class GWC implements DisposableBean {
+public class GWC implements DisposableBean, ApplicationContextAware {
 
     public static final String WMS_INTEGRATION_ENABLED_KEY = "GWC_WMS_Integration";
 
@@ -68,6 +75,8 @@ public class GWC implements DisposableBean {
     private final TileBreeder tileBreeder;
 
     private final GeoServer geoserver;
+
+    private ApplicationContext appContext;
 
     public GWC(final StorageBroker sb, final TileLayerDispatcher tld,
             final TileBreeder tileBreeder, final CatalogConfiguration config, GeoServer geoserver) {
@@ -391,4 +400,34 @@ public class GWC implements DisposableBean {
 
         return filteredLayers;
     }
+
+    public DiskQuotaConfig getDisQuotaConfig() {
+        DiskQuotaMonitor monitor = getDiskQuotaMonitor();
+        return monitor.getConfig();
+    }
+
+    private DiskQuotaMonitor getDiskQuotaMonitor() {
+        DiskQuotaMonitor monitor = (DiskQuotaMonitor) appContext.getBean("DiskQuotaMonitor");
+        Assert.notNull(monitor);
+        return monitor;
+    }
+
+    public void saveDiskQuotaConfig() {
+        DiskQuotaMonitor monitor = getDiskQuotaMonitor();
+        monitor.saveConfig();
+    }
+
+    /**
+     * @see org.springframework.context.ApplicationContextAware#setApplicationContext(org.springframework.context.ApplicationContext)
+     */
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.appContext = applicationContext;
+    }
+
+    public ExpirationPolicy getExpirationPolicy(final String expirationPoliciName) {
+        DiskQuotaMonitor monitor = getDiskQuotaMonitor();
+        ExpirationPolicy policy = monitor.findExpirationPolicy(expirationPoliciName);
+        return policy;
+    }
+
 }
