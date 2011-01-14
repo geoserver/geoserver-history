@@ -852,8 +852,8 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
         delegate.add(unwrap(layerGroup));
     }
 
-    public void validate(LayerGroupInfo layerGroup, boolean isNew) {
-        delegate.validate(unwrap(layerGroup), isNew);
+    public List<RuntimeException> validate(LayerGroupInfo layerGroup, boolean isNew) {
+        return delegate.validate(unwrap(layerGroup), isNew);
     }
 
     public LayerGroupInfo detach(LayerGroupInfo layerGroup) {
@@ -864,8 +864,8 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
         delegate.add(unwrap(layer));
     }
 
-    public void validate(LayerInfo layer, boolean isNew) {
-        delegate.validate(unwrap(layer), isNew);
+    public List<RuntimeException> validate(LayerInfo layer, boolean isNew) {
+        return delegate.validate(unwrap(layer), isNew);
     }
 
     public LayerInfo detach(LayerInfo layer) {
@@ -884,8 +884,8 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
         delegate.add(namespace);
     }
 
-    public void validate(NamespaceInfo namespace, boolean isNew) {
-        delegate.validate(namespace, isNew);
+    public List<RuntimeException> validate(NamespaceInfo namespace, boolean isNew) {
+        return delegate.validate(namespace, isNew);
     }
 
     public NamespaceInfo detach(NamespaceInfo namespace) {
@@ -896,8 +896,8 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
         delegate.add(unwrap(resource));
     }
 
-    public void validate(ResourceInfo resource, boolean isNew) {
-        delegate.validate(unwrap(resource), isNew);
+    public List<RuntimeException> validate(ResourceInfo resource, boolean isNew) {
+        return delegate.validate(unwrap(resource), isNew);
     }
 
     public <T extends ResourceInfo> T detach(T resource) {
@@ -908,8 +908,8 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
         delegate.add(unwrap(store));
     }
 
-    public void validate(StoreInfo store, boolean isNew) {
-        delegate.validate(unwrap(store), isNew);
+    public List<RuntimeException> validate(StoreInfo store, boolean isNew) {
+        return delegate.validate(unwrap(store), isNew);
     }
 
     
@@ -921,8 +921,8 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
         delegate.add(style);
     }
 
-    public void validate(StyleInfo style, boolean isNew) {
-        delegate.validate(style, isNew);
+    public List<RuntimeException> validate(StyleInfo style, boolean isNew) {
+        return delegate.validate(style, isNew);
     }
 
     public StyleInfo detach(StyleInfo style) {
@@ -933,8 +933,8 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
         delegate.add(workspace);
     }
 
-    public void validate(WorkspaceInfo workspace, boolean isNew) {
-        delegate.validate(workspace, isNew);
+    public List<RuntimeException> validate(WorkspaceInfo workspace, boolean isNew) {
+        return delegate.validate(workspace, isNew);
     }
 
     public WorkspaceInfo detach(WorkspaceInfo workspace) {

@@ -397,11 +397,16 @@ public class DataStoreFileResource extends StoreFileResource {
                     //add a layer for the feature type as well
                     LayerInfo layer = builder.buildLayer(ftinfo);
 
+                    boolean valid = true;
                     try { 
-                        catalog.validate(layer, true);
+                        if (!catalog.validate(layer, true).isEmpty()) {
+                            valid = false;
+                        }
                     } catch (Exception e) {
-                        layer.setEnabled(false);
+                        valid = false;
                     }
+                    
+                    layer.setEnabled(valid);
                     catalog.add(layer);
                     
                     LOGGER.info("Added feature type " + ftinfo.getName());
