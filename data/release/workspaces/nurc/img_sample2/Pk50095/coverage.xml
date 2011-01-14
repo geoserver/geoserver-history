@@ -47,7 +47,7 @@
     <maxy>46.91359611878293</maxy>
     <crs>EPSG:4326</crs>
   </latLonBoundingBox>
-  <enabled>true</enabled>
+  <enabled>false</enabled>
   <metadata>
     <entry key="dirName">img_sample</entry>
   </metadata>
