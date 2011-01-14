@@ -40,6 +40,7 @@ public class DataStoreFileUploadTest extends GeoServerTestSupport {
         
         //JD: temporary measure until the h2 dependency problem gets sorted
         DeleteDbFiles.execute(".", "foo", true);
+        DeleteDbFiles.execute(".", "pds", true);
     }
     
     public void testPropertyFileUpload() throws Exception {
