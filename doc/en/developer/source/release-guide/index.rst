@@ -160,7 +160,7 @@ Build release artifacts
 
 #. Build javadocs::
 
-     mvn javadoc:javadoc
+     mvn javadoc:aggregate
 
 #. Build artifacts::
 
