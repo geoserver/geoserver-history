@@ -1371,6 +1371,7 @@
   <module>ows</module>
   <module>gwc</module>
   <module>rest</module>
+  <module>restconfig</module>
   <module>web</module>
   <module>community</module>
   <module>extension</module>
