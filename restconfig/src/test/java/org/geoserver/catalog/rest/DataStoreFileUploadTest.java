@@ -27,12 +27,21 @@ import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.data.test.MockData;
 import org.geoserver.rest.util.RESTUtils;
 import org.geoserver.test.GeoServerTestSupport;
+import org.h2.tools.DeleteDbFiles;
 import org.w3c.dom.Document;
 
 import com.mockrunner.mock.web.MockHttpServletResponse;
 
 public class DataStoreFileUploadTest extends GeoServerTestSupport {
 
+    @Override
+    protected void setUpInternal() throws Exception {
+        super.setUpInternal();
+        
+        //JD: temporary measure until the h2 dependency problem gets sorted
+        DeleteDbFiles.execute(".", "foo", true);
+    }
+    
     public void testPropertyFileUpload() throws Exception {
         /*
         Properties p = new Properties();
