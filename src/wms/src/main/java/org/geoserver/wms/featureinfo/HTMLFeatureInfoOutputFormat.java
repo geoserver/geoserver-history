@@ -15,6 +15,8 @@ import net.opengis.wfs.FeatureCollectionType;
 
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.catalog.ResourceInfo;
+import org.geoserver.catalog.WMSLayerInfo;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.template.FeatureWrapper;
 import org.geoserver.template.GeoServerTemplateLoader;
@@ -162,20 +164,13 @@ public class HTMLFeatureInfoOutputFormat extends GetFeatureInfoOutputFormat {
         if (featureType != null) {
             final Name name = featureType.getName();
 
-            FeatureTypeInfo featureTypeInfo = wms.getFeatureTypeInfo(name);
-
-            if (featureTypeInfo == null) {
-                // It may be a wrapped coverage
-                CoverageInfo cInfo = wms.getCoverageInfo(name);
-                if (cInfo != null) {
-                    templateLoader.setCoverage(cInfo);
-                } else {
-                    throw new IllegalArgumentException("Can't find neither a FeatureType nor "
-                            + "a CoverageInfo named " + name);
-                }
+            ResourceInfo ri = wms.getResourceInfo(name);
+            if (ri != null) {
+                templateLoader.setResource(ri);
             } else {
-                templateLoader.setFeatureType(featureType);
-            }
+                throw new IllegalArgumentException("Can't find neither a FeatureType nor "
+                        + "a CoverageInfo or WMSLayerInfo named " + name);
+            }                        
         }
 
         synchronized (templateConfig) {

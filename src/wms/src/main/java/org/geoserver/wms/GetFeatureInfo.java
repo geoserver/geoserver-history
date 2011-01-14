@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -40,6 +41,7 @@ import org.geotools.data.Query;
 import org.geotools.data.ows.Layer;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.store.FilteringFeatureCollection;
+import org.geotools.data.store.ReTypingFeatureCollection;
 import org.geotools.data.wms.WebMapServer;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
@@ -591,6 +593,28 @@ public class GetFeatureInfo {
             if (result instanceof FeatureCollectionType) {
                 FeatureCollectionType fcList = (FeatureCollectionType) result;
                 results = fcList.getFeature();
+                
+                List<FeatureCollection> retypedResults = 
+                    new ArrayList<FeatureCollection>(results.size());
+                
+                // retyping feature collections to replace name and namespace 
+                // from cascading server with our local WMSLayerInfo
+                for (Iterator it = results.iterator(); it.hasNext();) {
+                    SimpleFeatureCollection fc = (SimpleFeatureCollection) it.next();                       
+                    SimpleFeatureType ft = fc.getSchema();
+                                    
+                    SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();                    
+                    builder.init(ft);                                                                       
+                    
+                    builder.setName(info.getName());
+                    builder.setNamespaceURI(info.getNamespace().getURI());
+                   
+                    FeatureCollection rfc = 
+                        new ReTypingFeatureCollection(fc, builder.buildFeatureType());
+                    
+                    retypedResults.add(rfc);
+                }
+                results = retypedResults;                
             }
         } catch (Throwable t) {
             LOGGER.log(Level.SEVERE, "Tried to parse GML2 response, but failed", t);
