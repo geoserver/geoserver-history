@@ -157,9 +157,9 @@ public interface Catalog extends CatalogInfo {
      * @param isNew a boolean; if true then an existing store with the same
      *     name and workspace will cause a validation error.
      * 
-     * @throws RuntimeError if validation fails
+     * @returns List<RuntimeException> non-empty if validation fails
      */
-    void validate(StoreInfo store, boolean isNew);
+    List<RuntimeException> validate(StoreInfo store, boolean isNew);
 
     /**
      * Removes an existing store.
@@ -623,9 +623,9 @@ public interface Catalog extends CatalogInfo {
      * @param isNew a boolean; if true then an existing resource with the same
      *     name and store will cause a validation error.
      * 
-     * @throws RuntimeError if validation fails
+     * @returns List<RuntimeException> non-empty if validation fails
      */
-    void validate(ResourceInfo resource, boolean isNew);
+    List<RuntimeException> validate(ResourceInfo resource, boolean isNew);
 
     /**
      * Removes an existing resource.
@@ -1061,9 +1061,9 @@ public interface Catalog extends CatalogInfo {
      * @param isNew a boolean; if true then an existing layer with the same
      *     name will cause a validation error.
      * 
-     * @throws RuntimeError if validation fails
+     * @returns List<RuntimeException> non-empty if validation fails
      */
-    void validate(LayerInfo layer, boolean isNew);
+    List<RuntimeException> validate(LayerInfo layer, boolean isNew);
 
     /**
      * Removes an existing layer.
@@ -1201,9 +1201,9 @@ public interface Catalog extends CatalogInfo {
      * @param isNew a boolean; if true then an existing layergroup with the same
      *     name will cause a validation error.
      * 
-     * @throws RuntimeError if validation fails
+     * @returns List<RuntimeException> non-empty if validation fails
      */
-    void validate(LayerGroupInfo layerGroup, boolean isNew);
+    List<RuntimeException> validate(LayerGroupInfo layerGroup, boolean isNew);
     
     /**
      * Removes a layer group from the catalog.
@@ -1258,9 +1258,9 @@ public interface Catalog extends CatalogInfo {
      * @param isNew a boolean; if true then an existing style with the same
      *     name will cause a validation error.
      * 
-     * @throws RuntimeError if validation fails
+     * @returns List<RuntimeException> non-empty if validation fails
      */
-    void validate(StyleInfo style, boolean isNew);
+    List<RuntimeException> validate(StyleInfo style, boolean isNew);
 
     /**
      * Removes a style.
@@ -1322,9 +1322,9 @@ public interface Catalog extends CatalogInfo {
      * @param isNew a boolean; if true then an existing namespace with the same
      *     prefix will cause a validation error.
      * 
-     * @throws RuntimeError if validation fails
+     * @returns List<RuntimeException> non-empty if validation fails
      */
-    void validate(NamespaceInfo namespace, boolean isNew);
+    List<RuntimeException> validate(NamespaceInfo namespace, boolean isNew);
 
     /**
      * Removes an existing namespace.
@@ -1407,9 +1407,9 @@ public interface Catalog extends CatalogInfo {
      * @param isNew a boolean; if true then an existing workspace with the same
      *     name will cause a validation error.
      * 
-     * @throws RuntimeError if validation fails
+     * @returns List<RuntimeException> non-empty if validation fails
      */
-    void validate(WorkspaceInfo workspace, boolean isNew);
+    List<RuntimeException> validate(WorkspaceInfo workspace, boolean isNew);
 
     /**
      * Removes an existing workspace.
