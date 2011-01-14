@@ -1,3 +1,19 @@
+GeoServer 2.1-RC1 (January 16, 2011)
+------------------------------------
+
+The first GeoServer 2.1 release candidate. Some notable changes from beta3 
+include:
+
+  * RESTConfig api improvements
+  * Security framework enhancements
+  * GWC disk quota feature
+
+The entire changelog is available here:
+
+  http://jira.codehaus.org/browse/GEOS/fixforversion/16982
+ 
+This release is based on GeoTools 2.7-beta1.
+
 GeoServer 2.1-beta3 (December 17, 2010)
 ---------------------------------------
 
