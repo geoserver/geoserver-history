@@ -21,6 +21,7 @@ import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.MetadataMap;
 import org.geoserver.catalog.NamespaceInfo;
+import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.catalog.WMSLayerInfo;
 import org.geoserver.config.GeoServer;
@@ -282,6 +283,18 @@ public class WMS implements ApplicationContextAware {
     public CoverageInfo getCoverageInfo(final Name name) {
         Catalog catalog = getCatalog();
         CoverageInfo resource = catalog.getResourceByName(name, CoverageInfo.class);
+        return resource;
+    }    
+
+    public WMSLayerInfo getWMSLayerInfo(final Name name) {
+        Catalog catalog = getCatalog();
+        WMSLayerInfo resource = catalog.getResourceByName(name, WMSLayerInfo.class);
+        return resource;
+    }
+    
+    public ResourceInfo getResourceInfo(final Name name) {
+        Catalog catalog = getCatalog();
+        ResourceInfo resource = catalog.getResourceByName(name, ResourceInfo.class);
         return resource;
     }
 

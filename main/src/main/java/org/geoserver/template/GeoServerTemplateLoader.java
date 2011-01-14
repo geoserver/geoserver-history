@@ -15,6 +15,7 @@ import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.ResourceInfo;
+import org.geoserver.catalog.WMSLayerInfo;
 import org.geoserver.config.GeoServerDataDirectory;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.GeoServerResourceLoader;
@@ -82,20 +83,20 @@ public class GeoServerTemplateLoader implements TemplateLoader {
     /**
      * Feature type directory to load template against. Its presence is mutually
      * exclusive with coverageName
-     * @deprecated Keeping this around for backwards compatability
      */
     ResourceInfo resource;
     
     /**
      * Feature type directory to load template against. Its presence is mutually
      * exclusive with coverageName
-     * @deprecated Keeping this around for backwards compatability
+     * @deprecated Keeping this around for backwards compatibility, use resource
      */
     SimpleFeatureType featureType;
 
     /**
      * Coverage info directory to load template against. Its presence is mutually
      * exclusive with featureTypeInfo
+     * @deprecated Keeping this around for backwards compatibility, use resource
      */
     private String coverageName;
 
@@ -160,6 +161,10 @@ public class GeoServerTemplateLoader implements TemplateLoader {
         this.resource = ft;
     }
 
+    public void setWMSLayer(WMSLayerInfo wms){
+        this.resource = wms;
+    }
+    
     /**
      * Sets the coverage info
      * @deprecated use {@link #setCoverage(CoverageInfo)}
@@ -176,6 +181,10 @@ public class GeoServerTemplateLoader implements TemplateLoader {
     
     public void setCoverage(CoverageInfo c) {
         this.resource = c;
+    }
+    
+    public void setResource(ResourceInfo resource){
+        this.resource = resource;
     }
     
     public Object findTemplateSource(String path) throws IOException {
