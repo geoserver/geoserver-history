@@ -200,6 +200,12 @@ public class CoverageStoreFileResource extends StoreFileResource {
                 }
                 */
 
+                try {
+                    catalog.validate(layerInfo, true);
+                } catch (Exception e) {
+                    layerInfo.setEnabled(false);
+                }
+
                 catalog.add(layerInfo);
             }
             else {

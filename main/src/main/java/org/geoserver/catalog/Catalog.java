@@ -151,6 +151,17 @@ public interface Catalog extends CatalogInfo {
     void add(StoreInfo store);
 
     /**
+     * Validate a store.
+     *
+     * @param store the StoreInfo to be validated
+     * @param isNew a boolean; if true then an existing store with the same
+     *     name and workspace will cause a validation error.
+     * 
+     * @throws RuntimeError if validation fails
+     */
+    void validate(StoreInfo store, boolean isNew);
+
+    /**
      * Removes an existing store.
      */
     void remove(StoreInfo store);
@@ -606,6 +617,17 @@ public interface Catalog extends CatalogInfo {
     void add(ResourceInfo resource);
 
     /**
+     * Validate a resource.
+     *
+     * @param resource the ResourceInfo to be validated
+     * @param isNew a boolean; if true then an existing resource with the same
+     *     name and store will cause a validation error.
+     * 
+     * @throws RuntimeError if validation fails
+     */
+    void validate(ResourceInfo resource, boolean isNew);
+
+    /**
      * Removes an existing resource.
      */
     void remove(ResourceInfo resource);
@@ -1033,6 +1055,17 @@ public interface Catalog extends CatalogInfo {
     void add(LayerInfo layer);
 
     /**
+     * Validate a layer.
+     *
+     * @param layer the LayerInfo to be validated
+     * @param isNew a boolean; if true then an existing layer with the same
+     *     name will cause a validation error.
+     * 
+     * @throws RuntimeError if validation fails
+     */
+    void validate(LayerInfo layer, boolean isNew);
+
+    /**
      * Removes an existing layer.
      */
     void remove(LayerInfo layer);
@@ -1160,6 +1193,17 @@ public interface Catalog extends CatalogInfo {
      * Adds a layer group to the catalog.
      */
     void add(LayerGroupInfo layerGroup);
+
+    /**
+     * Validate a layergroup.
+     *
+     * @param layerGroup the LayerGroupInfo to be validated
+     * @param isNew a boolean; if true then an existing layergroup with the same
+     *     name will cause a validation error.
+     * 
+     * @throws RuntimeError if validation fails
+     */
+    void validate(LayerGroupInfo layerGroup, boolean isNew);
     
     /**
      * Removes a layer group from the catalog.
@@ -1206,6 +1250,17 @@ public interface Catalog extends CatalogInfo {
      * 
      */
     void add(StyleInfo style);
+
+    /**
+     * Validate a style.
+     *
+     * @param style the StyleInfo to be validated
+     * @param isNew a boolean; if true then an existing style with the same
+     *     name will cause a validation error.
+     * 
+     * @throws RuntimeError if validation fails
+     */
+    void validate(StyleInfo style, boolean isNew);
 
     /**
      * Removes a style.
@@ -1259,6 +1314,17 @@ public interface Catalog extends CatalogInfo {
      * Adds a new namespace.
      */
     void add(NamespaceInfo namespace);
+
+    /**
+     * Validate a namespace.
+     *
+     * @param namespace the NamespaceInfo to be validated
+     * @param isNew a boolean; if true then an existing namespace with the same
+     *     prefix will cause a validation error.
+     * 
+     * @throws RuntimeError if validation fails
+     */
+    void validate(NamespaceInfo namespace, boolean isNew);
 
     /**
      * Removes an existing namespace.
@@ -1334,6 +1400,17 @@ public interface Catalog extends CatalogInfo {
      */
     void add(WorkspaceInfo workspace);
     
+    /**
+     * Validate a workspace.
+     *
+     * @param workspace the WorkspaceInfo to be validated
+     * @param isNew a boolean; if true then an existing workspace with the same
+     *     name will cause a validation error.
+     * 
+     * @throws RuntimeError if validation fails
+     */
+    void validate(WorkspaceInfo workspace, boolean isNew);
+
     /**
      * Removes an existing workspace.
      */

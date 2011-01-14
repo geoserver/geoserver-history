@@ -103,6 +103,12 @@ public class CoverageTest extends CatalogRESTTestSupport {
                 "<title>usa is a A raster file accompanied by a spatial data file</title>" + 
                 "<description>Generated from WorldImage</description>" + 
                 "<srs>EPSG:4326</srs>" + 
+                "<latLonBoundingBox>"+
+                  "<minx>-130.85168</minx>"+
+                  "<maxx>-62.0054</maxx>"+
+                  "<miny>20.7052</miny>"+
+                  "<maxy>54.1141</maxy>"+
+                "</latLonBoundingBox>"+
                 "<nativeBoundingBox>"+
                   "<minx>-130.85168</minx>"+
                   "<maxx>-62.0054</maxx>"+

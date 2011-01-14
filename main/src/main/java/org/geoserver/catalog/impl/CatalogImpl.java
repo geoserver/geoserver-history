@@ -30,6 +30,7 @@ import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.catalog.CatalogValidator;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.MapInfo;
@@ -53,6 +54,7 @@ import org.geoserver.catalog.event.impl.CatalogPostModifyEventImpl;
 import org.geoserver.catalog.event.impl.CatalogRemoveEventImpl;
 import org.geoserver.ows.util.ClassProperties;
 import org.geoserver.ows.util.OwsUtils;
+import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.GeoServerResourceLoader;
 import org.geotools.util.logging.Logging;
 import org.opengis.feature.type.Name;
@@ -98,6 +100,10 @@ public class CatalogImpl implements Catalog {
     public CatalogFacade getFacade() {
         return facade;
     }
+
+    public Iterable<CatalogValidator> getValidators() {
+        return GeoServerExtensions.extensions(CatalogValidator.class);
+    }
     
     public void setFacade(CatalogFacade facade) {
         this.facade = facade;
@@ -120,7 +126,7 @@ public class CatalogImpl implements Catalog {
         }
 
         validate(store, true);
-        
+
         //TODO: remove synchronized block, need transactions
         synchronized (facade) {
             facade.add(resolve(store));
@@ -133,7 +139,7 @@ public class CatalogImpl implements Catalog {
         added(store);
     }
 
-    void validate(StoreInfo store, boolean isNew) {
+    public void validate(StoreInfo store, boolean isNew) {
         if ( isNull(store.getName()) ) {
             throw new IllegalArgumentException( "Store name must not be null");
         }
@@ -147,6 +153,10 @@ public class CatalogImpl implements Catalog {
             String msg = "Store '"+ store.getName() +"' already exists in workspace '"+workspace.getName()+"'";
             throw new IllegalArgumentException( msg );
         }    
+
+        for (CatalogValidator constraint : getValidators()) {
+            constraint.validate(store, isNew);
+        }
     }
     
     public void remove(StoreInfo store) {
@@ -350,7 +360,7 @@ public class CatalogImpl implements Catalog {
         added(resource);
     }
 
-    void validate(ResourceInfo resource, boolean isNew) {
+    public void validate(ResourceInfo resource, boolean isNew) {
         if ( isNull(resource.getName()) ) {
             throw new NullPointerException( "Resource name must not be null");
         }
@@ -378,6 +388,9 @@ public class CatalogImpl implements Catalog {
             throw new IllegalArgumentException( msg );
         }
         
+        for (CatalogValidator constraint : getValidators()) {
+            constraint.validate(resource, isNew);
+        }
     }
     
     public void remove(ResourceInfo resource) {
@@ -602,7 +615,7 @@ public class CatalogImpl implements Catalog {
         added(layer);
     }
 
-    void validate( LayerInfo layer, boolean isNew) {
+    public void validate( LayerInfo layer, boolean isNew) {
         // TODO: bring back when the layer/publishing split is in act
 //        if ( isNull(layer.getName()) ) {
 //            throw new NullPointerException( "Layer name must not be null" );
@@ -625,6 +638,10 @@ public class CatalogImpl implements Catalog {
         //if ( layer.getDefaultStyle() == null ){
         //    throw new NullPointerException( "Layer default style must not be null" );
         //}
+
+        for (CatalogValidator constraint : getValidators()) {
+            constraint.validate(layer, isNew);
+        }
     }
    
     public void remove(LayerInfo layer) {
@@ -731,7 +748,7 @@ public class CatalogImpl implements Catalog {
         added( layerGroup );
     }
     
-    void validate( LayerGroupInfo layerGroup, boolean isNew ) {
+    public void validate( LayerGroupInfo layerGroup, boolean isNew ) {
         if( isNull(layerGroup.getName()) ) {
             throw new NullPointerException( "Layer group name must not be null");
         }
@@ -748,6 +765,10 @@ public class CatalogImpl implements Catalog {
         if ( layerGroup.getStyles() != null && !layerGroup.getStyles().isEmpty() && 
                 !(layerGroup.getStyles().size() == layerGroup.getLayers().size()) ) {
             throw new IllegalArgumentException( "Layer group has different number of styles than layers");
+        }
+
+        for (CatalogValidator constraint : getValidators()) {
+            constraint.validate(layerGroup, isNew);
         }
     }
     
@@ -834,7 +855,7 @@ public class CatalogImpl implements Catalog {
         added(namespace);
     }
 
-    void validate(NamespaceInfo namespace, boolean isNew) {
+    public void validate(NamespaceInfo namespace, boolean isNew) {
         if ( isNull(namespace.getPrefix()) ) {
             throw new NullPointerException( "Namespace prefix must not be null");
         }
@@ -862,6 +883,10 @@ public class CatalogImpl implements Catalog {
         } catch(Exception e) {
             throw new IllegalArgumentException("Invalid URI syntax for '" + namespace.getURI() 
                     + "' in namespace '" + namespace.getPrefix() + "'");
+        }
+
+        for (CatalogValidator constraint : getValidators()) {
+            constraint.validate(namespace, isNew);
         }
     }
     
@@ -916,7 +941,7 @@ public class CatalogImpl implements Catalog {
         added( workspace );
     }
     
-    void validate(WorkspaceInfo workspace, boolean isNew) {
+    public void validate(WorkspaceInfo workspace, boolean isNew) {
         if ( isNull(workspace.getName()) ) {
             throw new NullPointerException( "workspace name must not be null");
         }
@@ -930,6 +955,9 @@ public class CatalogImpl implements Catalog {
             throw new IllegalArgumentException( "Workspace named '"+ workspace.getName() +"' already exists.");
         }
         
+        for (CatalogValidator constraint : getValidators()) {
+            constraint.validate(workspace, isNew);
+        }
     }
     
     public void remove(WorkspaceInfo workspace) {
@@ -1021,7 +1049,7 @@ public class CatalogImpl implements Catalog {
         added(style);
     }
 
-    void validate( StyleInfo style, boolean isNew ) {
+    public void validate( StyleInfo style, boolean isNew ) {
         if ( isNull(style.getName()) ) {
             throw new NullPointerException( "Style name must not be null");
         }
@@ -1032,6 +1060,10 @@ public class CatalogImpl implements Catalog {
         StyleInfo existing = getStyleByName( style.getName() );
         if ( existing != null && !existing.getId().equals( style.getId() )) {
             throw new IllegalArgumentException( "Style named '" +  style.getName() +"' already exists.");
+        }
+
+        for (CatalogValidator constraint : getValidators()) {
+            constraint.validate(style, isNew);
         }
     }
     

@@ -609,4 +609,6 @@
     <bean id="wmsLifecycleHandler" class="org.geoserver.wms.WMSLifecycleHandler">
       <constructor-arg index="0" ref="dataDirectory"/>
     </bean>
+      
+    <bean id="wmsCatalogValidator" class="org.geoserver.wms.WMSValidator"/>
 </beans>
