@@ -11,11 +11,14 @@ import java.util.logging.Logger;
 
 import org.geoserver.catalog.AttributionInfo;
 import org.geoserver.catalog.CatalogVisitor;
+import org.geoserver.catalog.CoverageInfo;
+import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.LegendInfo;
 import org.geoserver.catalog.MetadataMap;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.StyleInfo;
+import org.geotools.factory.GeoTools;
 import org.geotools.util.logging.Logging;
 
 public class LayerInfoImpl implements LayerInfo {

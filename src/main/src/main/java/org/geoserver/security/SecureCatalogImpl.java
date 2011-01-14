@@ -852,12 +852,20 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
         delegate.add(unwrap(layerGroup));
     }
 
+    public void validate(LayerGroupInfo layerGroup, boolean isNew) {
+        delegate.validate(unwrap(layerGroup), isNew);
+    }
+
     public LayerGroupInfo detach(LayerGroupInfo layerGroup) {
         return delegate.detach(layerGroup);
     }
     
     public void add(LayerInfo layer) {
         delegate.add(unwrap(layer));
+    }
+
+    public void validate(LayerInfo layer, boolean isNew) {
+        delegate.validate(unwrap(layer), isNew);
     }
 
     public LayerInfo detach(LayerInfo layer) {
@@ -876,12 +884,20 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
         delegate.add(namespace);
     }
 
+    public void validate(NamespaceInfo namespace, boolean isNew) {
+        delegate.validate(namespace, isNew);
+    }
+
     public NamespaceInfo detach(NamespaceInfo namespace) {
         return delegate.detach(namespace);
     }
 
     public void add(ResourceInfo resource) {
         delegate.add(unwrap(resource));
+    }
+
+    public void validate(ResourceInfo resource, boolean isNew) {
+        delegate.validate(unwrap(resource), isNew);
     }
 
     public <T extends ResourceInfo> T detach(T resource) {
@@ -891,6 +907,11 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
     public void add(StoreInfo store) {
         delegate.add(unwrap(store));
     }
+
+    public void validate(StoreInfo store, boolean isNew) {
+        delegate.validate(unwrap(store), isNew);
+    }
+
     
     public <T extends StoreInfo> T detach(T store) {
         return delegate.detach(store);
@@ -900,12 +921,20 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
         delegate.add(style);
     }
 
+    public void validate(StyleInfo style, boolean isNew) {
+        delegate.validate(style, isNew);
+    }
+
     public StyleInfo detach(StyleInfo style) {
         return delegate.detach(style);
     }
 
     public void add(WorkspaceInfo workspace) {
         delegate.add(workspace);
+    }
+
+    public void validate(WorkspaceInfo workspace, boolean isNew) {
+        delegate.validate(workspace, isNew);
     }
 
     public WorkspaceInfo detach(WorkspaceInfo workspace) {

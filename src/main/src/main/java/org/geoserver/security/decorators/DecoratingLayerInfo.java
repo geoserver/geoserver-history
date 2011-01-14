@@ -106,7 +106,7 @@ public class DecoratingLayerInfo extends AbstractDecorator<LayerInfo> implements
     public void accept(CatalogVisitor visitor) {
         delegate.accept(visitor);
     }
-    
+
     @Override
     public String toString() {
         return new StringBuilder(getClass().getSimpleName()).append('[').append(delegate).append(
