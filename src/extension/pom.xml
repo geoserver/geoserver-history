@@ -145,15 +145,6 @@
     </profile>
 
     <profile>
-      <id>restconfig</id>
-      <modules>
-        <!-- h2 used for testing, drag it in -->
-        <module>h2</module>
-        <module>restconfig</module>
-      </modules>
-    </profile>
-
-    <profile>
       <id>control-flow</id>
       <modules>
         <module>control-flow</module>
@@ -186,7 +177,6 @@
         <module>excel</module>
         <module>validation</module>
         <module>charts</module>
-        <module>restconfig</module>
         <module>feature-pregeneralized</module>
         <module>imagemosaic-jdbc</module>
         <module>control-flow</module>
@@ -213,7 +203,6 @@
         <module>excel</module>
         <module>validation</module>
         <module>charts</module>
-        <module>restconfig</module>
         <module>feature-pregeneralized</module>
         <module>imagemosaic-jdbc</module>
         <module>control-flow</module>
