@@ -1,4 +1,4 @@
-. _rest_config_api_ref:
+.. _rest_config_api_ref:
 
 REST Configuration API Reference
 ================================
