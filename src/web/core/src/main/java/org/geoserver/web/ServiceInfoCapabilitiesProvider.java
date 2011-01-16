@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.wicket.Component;
-import org.apache.wicket.model.IModel;
 import org.geoserver.config.ServiceInfo;
 import org.geoserver.web.CapabilitiesHomePagePanel.CapsInfo;
 import org.geotools.util.Version;
@@ -25,15 +24,14 @@ public class ServiceInfoCapabilitiesProvider implements CapabilitiesHomePageLink
 
     /**
      * 
-     * @see org.geoserver.web.CapabilitiesHomePageLinkProvider#getCapabilitiesComponent(java.lang.String,
-     *      org.apache.wicket.model.IModel)
+     * @see org.geoserver.web.CapabilitiesHomePageLinkProvider#getCapabilitiesComponent
      */
-    public Component getCapabilitiesComponent(final String id,
-            final IModel<GeoServerApplication> app) {
+    public Component getCapabilitiesComponent(final String id) {
 
         List<CapsInfo> serviceInfoLinks = new ArrayList<CapabilitiesHomePagePanel.CapsInfo>();
 
-        for (ServiceInfo si : app.getObject().getGeoServer().getServices()) {
+        GeoServerApplication app = GeoServerApplication.get();
+        for (ServiceInfo si : app.getGeoServer().getServices()) {
             for (Version v : si.getVersions()) {
                 String serviceId = si.getId();
                 String capsLink = "../ows?service=" + serviceId + "&version=" + v.toString()

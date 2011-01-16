@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.wicket.Component;
-import org.apache.wicket.model.IModel;
 import org.geoserver.web.CapabilitiesHomePageLinkProvider;
 import org.geoserver.web.CapabilitiesHomePagePanel;
 import org.geoserver.web.CapabilitiesHomePagePanel.CapsInfo;
@@ -28,16 +27,14 @@ public class GWCCapabilitiesHomePageProvider implements CapabilitiesHomePageLink
     /**
      * Adds capabilities links for WMS-C, WMTS and TMS, as long as they're available.
      * 
-     * @see org.geoserver.web.CapabilitiesHomePageLinkProvider#getCapabilitiesComponent(java.lang.String,
-     *      org.apache.wicket.model.IModel)
+     * @see org.geoserver.web.CapabilitiesHomePageLinkProvider#getCapabilitiesComponent
      * @see CapabilitiesHomePagePanel
      */
-    public Component getCapabilitiesComponent(final String id,
-            final IModel<GeoServerApplication> appModel) {
+    public Component getCapabilitiesComponent(final String id) {
 
         List<CapsInfo> gwcCaps = new ArrayList<CapsInfo>();
 
-        GeoServerApplication app = appModel.getObject();
+        GeoServerApplication app = GeoServerApplication.get();
         try {
             app.getBean("gwcServiceWMS");
             gwcCaps.add(new CapsInfo("WMS-C", new Version("1.1.1"),

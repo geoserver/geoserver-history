@@ -88,23 +88,17 @@ public class GeoServerHomePage extends GeoServerBasePage {
             placeHolder.setVisible(false);
             add(placeHolder);
         }
-        
-        IModel<List<CapabilitiesHomePageLinkProvider>> capsProviders = getCapsProviders();
-        final IModel<GeoServerApplication> app = new LoadableDetachableModel<GeoServerApplication>() {
-            private static final long serialVersionUID = 1L;
 
-            @Override
-            protected GeoServerApplication load() {
-                return getGeoServerApplication();
-            }
-        };
-        ListView<CapabilitiesHomePageLinkProvider> view = new ListView<CapabilitiesHomePageLinkProvider>("providedCaps", capsProviders) {
+        IModel<List<CapabilitiesHomePageLinkProvider>> capsProviders = getCapsProviders();
+
+        ListView<CapabilitiesHomePageLinkProvider> view = new ListView<CapabilitiesHomePageLinkProvider>(
+                "providedCaps", capsProviders) {
             private static final long serialVersionUID = 1L;
 
             @Override
             protected void populateItem(ListItem<CapabilitiesHomePageLinkProvider> item) {
                 CapabilitiesHomePageLinkProvider provider = item.getModelObject();
-                Component capsList = provider.getCapabilitiesComponent("capsList", app);
+                Component capsList = provider.getCapabilitiesComponent("capsList");
                 item.add(capsList);
             }
         };
