@@ -336,7 +336,9 @@
     <property name="icon" value="img/icons/geosilk/server_vector.png"/>
   </bean>
  
- 
+  <bean id="ServiceInfoCapabilitiesProvider" class="org.geoserver.web.ServiceInfoCapabilitiesProvider">
+  </bean>
+   
   <!-- since the following ones are not part of the standard build at least their respective profiles
        are enabled, I'm commenting them out, or the bean creation fails due to the factoryClass not not
        being around. Yet, it would be useful to find a way of being able to define them even if the

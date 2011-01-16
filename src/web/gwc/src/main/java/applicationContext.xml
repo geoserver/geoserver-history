@@ -13,4 +13,6 @@
     <property name="order" value="35"/>
   </bean>
   
+  <bean id="GWCCapabilitiesHomePageProvider" class="org.geoserver.gwc.web.GWCCapabilitiesHomePageProvider">
+  </bean>
 </beans>
