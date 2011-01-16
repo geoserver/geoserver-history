@@ -7,28 +7,39 @@ package org.geoserver.wcs.web.demo;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.wicket.Component;
+import org.apache.wicket.Page;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormSubmitBehavior;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.protocol.http.WebRequest;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CoverageInfo;
+import org.geoserver.ows.URLMangler.URLType;
+import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.wcs.web.demo.GetCoverageRequest.Version;
 import org.geoserver.web.GeoServerApplication;
+import org.geoserver.web.demo.DemoRequest;
+import org.geoserver.web.demo.DemoRequestResponse;
 import org.geoserver.web.wicket.CRSPanel;
 import org.geoserver.web.wicket.EnvelopePanel;
+import org.geoserver.web.wicket.GeoServerAjaxFormLink;
 import org.geotools.coverage.grid.GridEnvelope2D;
 import org.geotools.coverage.grid.GridGeometry2D;
 import org.geotools.geometry.jts.JTS;
@@ -85,6 +96,8 @@ public class WCSRequestBuilderPanel extends Panel {
     private WebMarkupContainer targetlayoutContainer;
 
     private WebMarkupContainer sourceGridContainer;
+
+    private GeoServerAjaxFormLink describeLink;
 
     public WCSRequestBuilderPanel(String id, GetCoverageRequest getCoverage) {
         super(id);
@@ -153,6 +166,7 @@ public class WCSRequestBuilderPanel extends Panel {
                 gc.bounds = ri;
                 gc.targetCRS = ri.getCoordinateReferenceSystem();
                 gc.sourceGridRange = null;
+                describeLink.setEnabled(true);
                 target.addComponent(WCSRequestBuilderPanel.this);
             }
         });
@@ -182,6 +196,67 @@ public class WCSRequestBuilderPanel extends Panel {
         
         // the target grid to world (for WCS 1.1 ones)
         buildAffinePanel();
+        
+        // the describe response window
+        responseWindow = new ModalWindow("responseWindow");
+        add(responseWindow);
+        
+        responseWindow.setPageCreator(new ModalWindow.PageCreator() {
+
+            public Page createPage() {
+                DemoRequest request = new DemoRequest(null);
+                HttpServletRequest http = ((WebRequest) WCSRequestBuilderPanel.this.getRequest())
+                        .getHttpServletRequest();
+                String url = ResponseUtils.buildURL(ResponseUtils.baseURL(http), "ows", Collections
+                        .singletonMap("strict", "true"), URLType.SERVICE);
+                request.setRequestUrl(url);
+                request.setRequestBody((String) responseWindow.getDefaultModelObject());
+                return new DemoRequestResponse(new Model(request));
+            }
+        });
+
+        // the describe coverage link
+        describeLink = new GeoServerAjaxFormLink("describeCoverage") {
+
+            @Override
+            protected void onClick(AjaxRequestTarget target, Form form) {
+                version.processInput();
+                coverage.processInput();
+                final String coverageName = WCSRequestBuilderPanel.this.getCoverage.coverage;
+                if (coverageName != null) {
+                    responseWindow.setDefaultModel(new Model(getDescribeXML(coverageName)));
+                    responseWindow.show(target);
+                }
+            }
+        };
+        describeLink.setEnabled(false);
+        describeLink.setOutputMarkupId(true);
+        add(describeLink);
+    }
+    
+    protected String getDescribeXML(String processId) {
+        if(getCoverage.version == Version.v1_0_0) {
+            return "<DescribeCoverage\n" + 
+            		"  version=\"1.0.0\"\n" + 
+            		"  service=\"WCS\"\n" + 
+            		"  xmlns=\"http://www.opengis.net/wcs\"\n" + 
+            		"  xmlns:nurc=\"http://www.nurc.nato.int\"\n" + 
+            		"  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" + 
+            		"  xsi:schemaLocation=\"http://www.opengis.net/wcs http://schemas.opengis.net/wcs/1.0.0/describeCoverage.xsd\">\n" + 
+            		"  \n" + 
+            		"    <Coverage>" + getCoverage.coverage + "</Coverage>\n" + 
+            		"    \n" + 
+            		"</DescribeCoverage>";
+        } else {
+            return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n" + // 
+            "<wcs:DescribeCoverage service=\"WCS\" " + //
+            "xmlns:ows=\"http://www.opengis.net/ows/1.1\"\r\n" + // 
+            "  xmlns:wcs=\"http://www.opengis.net/wcs/1.1.1\"\r\n" + // 
+            "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \r\n" + // 
+            "  version=\"1.1.1\" >\r\n" + //
+            "  <wcs:Identifier>" + getCoverage.coverage + "</wcs:Identifier>\r\n" + // 
+            "</wcs:DescribeCoverage>";
+        }
     }
 
     private void buildAffinePanel() {

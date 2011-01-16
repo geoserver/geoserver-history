@@ -8,7 +8,8 @@
             </li>
             <li>
               <label for="name"><wicket:message key="name">coverage</wicket:message></label>
-              <select wicket:id="coverage"></select> 
+              <select wicket:id="coverage"></select>&nbsp;&nbsp;
+              <a href="#" wicket:id="describeCoverage"><wicket:message key="describe">describe</wicket:message></a> 
             </li>
           </ul>
           <ul wicket:id="details">
@@ -50,6 +51,7 @@
           </ul>
     
     <div wicket:id="feedback"></div>
+    <div wicket:id="responseWindow"></div>
 </wicket:panel>
 </body>
 </html>
