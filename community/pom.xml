@@ -31,7 +31,7 @@
           <descriptor>release/ext-ftp.xml</descriptor>
           <descriptor>release/ext-printing.xml</descriptor>
           <descriptor>release/ext-monitor.xml</descriptor>
-          <descriptor>release/ext-python.xml</descriptor>
+          <!--descriptor>release/ext-python.xml</descriptor-->
           <descriptor>release/ext-spatialite.xml</descriptor>
           <descriptor>release/ext-dbconfig.xml</descriptor>
           <descriptor>release/ext-inspire.xml</descriptor>
