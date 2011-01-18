@@ -67,7 +67,7 @@ Running TEAMEngine Webapp
 
  To log into the teamengine use the username "geoserver" and the password 
  "geoserver". This default password can be changed by modifying the 
- `engine/realm.properties` file.
+ `realm.properties` file and rebuilding the engine.
 
 Cleaning Up
 -----------
