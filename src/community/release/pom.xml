@@ -30,19 +30,14 @@
    </dependency>
    <dependency>
      <groupId>org.geoserver.community</groupId>
-     <artifactId>wps</artifactId>
-     <version>${project.version}</version>
-   </dependency>
-   <dependency>
-     <groupId>org.geoserver.community</groupId>
      <artifactId>monitoring</artifactId>
      <version>${project.version}</version>
    </dependency>
-   <dependency>
+   <!--dependency>
      <groupId>org.geoserver.community</groupId>
      <artifactId>python</artifactId>
      <version>${project.version}</version>
-   </dependency>
+   </dependency-->
    <dependency>
      <groupId>org.geoserver.community</groupId>
      <artifactId>spatialite</artifactId>
