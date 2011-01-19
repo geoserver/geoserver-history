@@ -166,6 +166,25 @@ The next page contains configuration options for the ArcSDE vector data store.  
   
 You may now add featuretypes as you would normally do, by navigating to the :guilabel:`New Layer` page, accessed from the :ref:`webadmin_layers` page in the :ref:`web_admin`.
 
+Configuring an ArcSDE vector data store with Direct Connect
+-----------------------------------------------------------
+
+ESRI Direct Connect[ESRI DC] allows clients to directly connect to an SDE GEODB 9.2+ without a need of an SDE server instance, and is recommended for high availability environments, as it removes the ArcSDE gateway server as a single point of failure.
+ESRI DC needs additional platform dependent binary drivers and a working Oracle Client ENVIRONMENT (if connecting to an ORACLE DB). See `Properties of a direct connection to an ArcSDE geodatabase <http://webhelp.esri.com/arcgisserver/9.3/java/index.htm#geodatabases/setting1995868008.htm>`_ in the ESRI ArcSDE documentation for more information on Direct Connect, and `Setting up clients for a direct connection <http://webhelp.esri.com/arcgisserver/9.3/java/index.htm#geodatabases/setting1995868008.htm>`_ for information about connecting to the different databases supported by ArcSDE.
+
+The GeoServer configuration parameters are the same as in the `Configuring an ArcSDE vector data store` section above, with a couple differences in how to format the parameters:
+
+ * server: In ESRI Direct Connect Mode a value must be given or the Direct Connect Driver will throw an error, so just put a 'none' there - any String will work!
+ * port: In ESRI Direct Connect Mode the port has a String representation: `sde:oracle10g`, `sde:oracle11g:/:test`, etc. For further information check `ArcSDE connection syntax <http://webhelp.esri.com/arcgisserver/9.3/java/geodatabases/arcsde-2034353163.htm>`_ at the official ArcSDE documentation from ESRI.
+ * instance: In ESRI Direct Connect Mode a value must be given or the Direct Connect Driver will throw an error, so just put a 'none' there - any String will work!
+ * user: The username to authenticate with the geo database.
+ * password: The password associated with the above username for authentication with the geo database.
+
+.. note:: Be sure to assemble the password like: password@<Oracle Net Service name> for Oracle
+
+You may now add featuretypes as you would normally do, by navigating to the New Layer page, accessed from the Layers page in the Web Administration Interface.
+
+
 Adding an ArcSDE vector data store with JNDI
 --------------------------------------------
 
