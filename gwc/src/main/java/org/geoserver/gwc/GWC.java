@@ -264,6 +264,9 @@ public class GWC implements DisposableBean, ApplicationContextAware {
             int epsgId = Integer.parseInt(srs.substring(srs.indexOf(':') + 1));
             SRS srs2 = SRS.getSRS(epsgId);
             gridSubset = tileLayer.getGridSubsetForSRS(srs2);
+            if (gridSubset == null) {
+                return null;
+            }
         } catch (Exception e) {
             return null;
         }
