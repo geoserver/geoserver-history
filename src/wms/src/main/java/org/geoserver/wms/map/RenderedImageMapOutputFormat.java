@@ -1170,7 +1170,7 @@ public class RenderedImageMapOutputFormat extends AbstractMapOutputFormat {
                     // add the correct read geometry to the supplied
                     // params since we did not find anything
                     final int size =length+(!foundGG&&!foundInterpolation?2:1);
-                    GeneralParameterValue[] readParams2 = new GeneralParameterValue[length + size];
+                    GeneralParameterValue[] readParams2 = new GeneralParameterValue[size];
                     System.arraycopy(readParams, 0, readParams2, 0, length);
                     if(!foundGG)
                         readParams2[length] = readGG;
