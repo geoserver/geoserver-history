@@ -196,7 +196,7 @@
                         EXCEPTIONS: "application/vnd.ogc.se_xml",
                         BBOX: map.getExtent().toBBOX(),
                         SERVICE: "WMS",
-                        VERSION: "1.1.0",
+                        VERSION: "1.1.1",
                         X: e.xy.x,
                         Y: e.xy.y,
                         INFO_FORMAT: 'text/html',

@@ -126,7 +126,7 @@ public class GetFeatureInfoKvpReader extends KvpRequestReader {
         //JD: most wms 1.3 client implementations still use x/y rather than i/j, so we support those
         // too when i/j not specified when not running in strict cite compliance mode
         String colPixel, rowPixel;
-        if(WMS.VERSION_1_3_0.compareTo(version) >= 0) {
+        if(version.compareTo(WMS.VERSION_1_3_0) >= 0) {
             colPixel = "I";
             rowPixel = "J";
             
