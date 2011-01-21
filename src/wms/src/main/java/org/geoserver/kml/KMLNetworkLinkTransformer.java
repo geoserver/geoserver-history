@@ -1,17 +1,31 @@
 package org.geoserver.kml;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.wms.GetMapRequest;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
+import org.geoserver.wms.WMSMapContext;
 import org.geoserver.wms.WMSRequests;
+import org.geotools.data.FeatureSource;
+import org.geotools.data.Query;
+import org.geotools.feature.FeatureCollection;
+import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.map.MapLayer;
+import org.geotools.referencing.CRS;
 import org.geotools.styling.Style;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
+import org.opengis.filter.Filter;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.TransformException;
 import org.xml.sax.ContentHandler;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -23,7 +37,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * </p>
  * 
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
- *
+ * 
  */
 public class KMLNetworkLinkTransformer extends TransformerBase {
 
@@ -31,85 +45,205 @@ public class KMLNetworkLinkTransformer extends TransformerBase {
      * logger
      */
     static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.kml");
-    
+
     /**
      * flag controlling whether the network link should be a super overlay.
      */
     boolean encodeAsRegion = false;
-    
+
     /**
      * flag controlling whether the network link should be a direct GWC one when possible
      */
     boolean cachedMode = false;
 
     private WMS wms;
- 
-    public KMLNetworkLinkTransformer(WMS wms){
+
+    public KMLNetworkLinkTransformer(WMS wms) {
         this.wms = wms;
     }
-    
+
     public void setCachedMode(boolean cachedMode) {
         this.cachedMode = cachedMode;
     }
 
     public Translator createTranslator(ContentHandler handler) {
-        return new KMLNetworkLinkTranslator( handler );
+        return new KMLNetworkLinkTranslator(handler);
     }
-    
+
     public void setEncodeAsRegion(boolean encodeAsRegion) {
         this.encodeAsRegion = encodeAsRegion;
     }
-    
+
     class KMLNetworkLinkTranslator extends TranslatorSupport {
 
         public KMLNetworkLinkTranslator(ContentHandler contentHandler) {
-            super(contentHandler, null,null);
+            super(contentHandler, null, null);
         }
-        
+
         public void encode(Object o) throws IllegalArgumentException {
-            GetMapRequest request = (GetMapRequest) o;
-            
-            start( "kml" );
-            start( "Folder" );
-        
-            if ( encodeAsRegion ) {
-                encodeAsSuperOverlay( request );
+            final WMSMapContext context = (WMSMapContext) o;
+            final GetMapRequest request = context.getRequest();
+            // restore target mime type for the network links
+            if (NetworkLinkMapOutputFormat.KML_MIME_TYPE.equals(request.getFormat())) {
+                request.setFormat(KMLMapOutputFormat.MIME_TYPE);
+            } else {
+                request.setFormat(KMZMapOutputFormat.MIME_TYPE);
             }
-            else {
-                encodeAsOverlay( request );
+
+            start("kml");
+            start("Folder");
+
+            final List<MapLayerInfo> layers = request.getLayers();
+
+            final KMLLookAt lookAt = parseLookAtOptions(request);
+
+            ReferencedEnvelope aggregatedBounds;
+            List<ReferencedEnvelope> layerBounds;
+            layerBounds = new ArrayList<ReferencedEnvelope>(layers.size());
+
+            aggregatedBounds = computePerLayerQueryBounds(context, layerBounds, lookAt);
+
+            if (encodeAsRegion) {
+                encodeAsSuperOverlay(request, lookAt, layerBounds);
+            } else {
+                encodeAsOverlay(request, lookAt, layerBounds);
             }
-            
-            //look at
-            encodeLookAt( request );
-            
-            end( "Folder" );
-            end( "kml" );
+
+            // look at
+            encodeLookAt(aggregatedBounds, lookAt);
+
+            end("Folder");
+            end("kml");
         }
-        
-        protected void encodeAsSuperOverlay(GetMapRequest request) {
+
+        /**
+         * @return the aggregated bounds for all the requested layers, taking into account whether
+         *         the whole layer or filtered bounds is used for each layer
+         */
+        private ReferencedEnvelope computePerLayerQueryBounds(final WMSMapContext context,
+                final List<ReferencedEnvelope> target, final KMLLookAt lookAt) {
+
+            // no need to compute queried bounds if request explicitly specified the view area
+            final boolean computeQueryBounds = lookAt.getLookAt() == null;
+
+            ReferencedEnvelope aggregatedBounds;
+            try {
+                aggregatedBounds = new ReferencedEnvelope(CRS.decode("EPSG:4326"));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            aggregatedBounds.setToNull();
+
+            final MapLayer[] mapLayers = context.getLayers();
+            final List<MapLayerInfo> layerInfos = context.getRequest().getLayers();
+            for (int i = 0; i < mapLayers.length; i++) {
+                final MapLayer mapLayer = mapLayers[i];
+                final MapLayerInfo layerInfo = layerInfos.get(i);
+
+                ReferencedEnvelope layerLatLongBbox;
+                layerLatLongBbox = computeLayerBounds(mapLayer, layerInfo, computeQueryBounds);
+                try {
+                    layerLatLongBbox = layerLatLongBbox.transform(aggregatedBounds.getCoordinateReferenceSystem(), true);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                } 
+                target.add(layerLatLongBbox);
+                aggregatedBounds.expandToInclude(layerLatLongBbox);
+            }
+            return aggregatedBounds;
+        }
+
+        @SuppressWarnings("rawtypes")
+        private ReferencedEnvelope computeLayerBounds(MapLayer mapLayer, MapLayerInfo layerInfo,
+                boolean computeQueryBounds) {
+
+            final Query layerQuery = mapLayer.getQuery();
+            // make sure if layer is gonna be filtered, the resulting bounds are obtained instead of
+            // the whole bounds
+            final Filter filter = layerQuery.getFilter();
+            if (layerQuery.getFilter() == null || Filter.INCLUDE.equals(filter)) {
+                computeQueryBounds = false;
+            }
+            if (!computeQueryBounds && !layerQuery.isMaxFeaturesUnlimited()) {
+                computeQueryBounds = true;
+            }
+
+            ReferencedEnvelope layerLatLongBbox = null;
+            if (computeQueryBounds) {
+                FeatureSource featureSource = mapLayer.getFeatureSource();
+                try {
+                    CoordinateReferenceSystem targetCRS = CRS.decode("EPSG:4326");
+                    FeatureCollection features = featureSource.getFeatures(layerQuery);
+                    layerLatLongBbox = features.getBounds();
+                    layerLatLongBbox = layerLatLongBbox.transform(targetCRS, true);
+                } catch (Exception e) {
+                    LOGGER.info("Error computing bounds for " + featureSource.getName() + " with "
+                            + layerQuery);
+                }
+
+            }
+            if (layerLatLongBbox == null) {
+                try {
+                    layerLatLongBbox = layerInfo.getLatLongBoundingBox();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            return layerLatLongBbox;
+        }
+
+        @SuppressWarnings("unchecked")
+        private KMLLookAt parseLookAtOptions(final GetMapRequest request) {
+            final KMLLookAt lookAt;
+            if (request.getFormatOptions() == null) {
+                // use a default LookAt properties
+                lookAt = new KMLLookAt();
+            } else {
+                // use the requested LookAt properties
+                Map<String, Object> formatOptions;
+                formatOptions = new HashMap<String, Object>(request.getFormatOptions());
+                lookAt = new KMLLookAt(formatOptions);
+                /*
+                 * remove LOOKATBBOX and LOOKATGEOM from format options so KMLUtils.getMapRequest
+                 * does not include them in the network links, but do include the other options such
+                 * as tilt, range, etc.
+                 */
+                request.getFormatOptions().remove("LOOKATBBOX");
+                request.getFormatOptions().remove("LOOKATGEOM");
+            }
+            return lookAt;
+        }
+
+        protected void encodeAsSuperOverlay(GetMapRequest request, KMLLookAt lookAt,
+                List<ReferencedEnvelope> layerBounds) {
+
             List<MapLayerInfo> layers = request.getLayers();
             List<Style> styles = request.getStyles();
-            for ( int i = 0; i < layers.size(); i++ ) {
-                if("cached".equals(KMLUtils.getSuperoverlayMode(request, wms)) &&
-                        KMLUtils.isRequestGWCCompatible(request, i, wms)) {
-                    encodeGWCLink(request, layers.get(i));
+            for (int i = 0; i < layers.size(); i++) {
+                MapLayerInfo layer = layers.get(i);
+                if ("cached".equals(KMLUtils.getSuperoverlayMode(request, wms))
+                        && KMLUtils.isRequestGWCCompatible(request, i, wms)) {
+                    encodeGWCLink(request, layer);
                 } else {
-                    encodeLayerSuperOverlay(request, layers, styles, i);
+                    String styleName = i < styles.size() ? styles.get(i).getName() : null;
+                    ReferencedEnvelope bounds = layerBounds.get(i);
+                    encodeLayerSuperOverlay(request, layer, styleName, i, bounds, lookAt);
                 }
             }
         }
-        
+
         public void encodeGWCLink(GetMapRequest request, MapLayerInfo mapLayer) {
             start("NetworkLink");
             String prefixedName = mapLayer.getResource().getPrefixedName();
             element("name", "GWC-" + prefixedName);
-            
+
             start("Link");
 
             String baseURL = request.getBaseUrl();
             String type = mapLayer.getType() == MapLayerInfo.TYPE_RASTER ? "png" : "kml";
-            String url = ResponseUtils.appendPath(baseURL, "gwc/service/kml/" 
-                    + prefixedName + "." + type + ".kml");
+            String url = ResponseUtils.appendPath(baseURL, "gwc/service/kml/" + prefixedName + "."
+                    + type + ".kml");
             element("href", url);
             element("viewRefreshMode", "never");
 
@@ -118,166 +252,102 @@ public class KMLNetworkLinkTransformer extends TransformerBase {
             end("NetworkLink");
         }
 
-        private void encodeLayerSuperOverlay(GetMapRequest request, List<MapLayerInfo> layers,
-                List<Style> styles, int i) {
+        private void encodeLayerSuperOverlay(GetMapRequest request, MapLayerInfo layer,
+                String styleName, int layerIndex, ReferencedEnvelope bounds, KMLLookAt lookAt) {
             start("NetworkLink");
-            element( "name", layers.get(i).getName() );
-            element( "open", "1" );
-            element( "visibility", "1" );
-          
-            //region
-            start( "Region" );
-            
+            element("name", layer.getName());
+            element("open", "1");
+            element("visibility", "1");
+
+            // look at for the network link for this single layer
+            if (bounds != null) {
+                encodeLookAt(bounds, lookAt);
+            }
+
+            // region
+            start("Region");
+
             Envelope bbox = request.getBbox();
-            start( "LatLonAltBox" );
-            element( "north", ""+bbox.getMaxY() );
-            element( "south", ""+bbox.getMinY() );
-            element( "east", ""+bbox.getMaxX() );
-            element( "west", ""+bbox.getMinX() );
-            end( "LatLonAltBox");
-            
-            start( "Lod" );
-            element( "minLodPixels", "128" );
-            element( "maxLodPixels", "-1" );
-            end( "Lod" );
-            
-            end( "Region" );
-            
-            //link
-            start("Link" );
-  
-            String style = i < styles.size()? styles.get(i).getName() : null;
-            String href = WMSRequests.getGetMapUrl(request, layers.get(i).getName(), i, style, null, null);
-            start( "href" );
-            cdata( href );
-            end( "href" );
-            
-//                element( "viewRefreshMode", "onRegion" );
-            end( "Link" );
-            
-            end( "NetworkLink");
+            start("LatLonAltBox");
+            element("north", "" + bbox.getMaxY());
+            element("south", "" + bbox.getMinY());
+            element("east", "" + bbox.getMaxX());
+            element("west", "" + bbox.getMinX());
+            end("LatLonAltBox");
+
+            start("Lod");
+            element("minLodPixels", "128");
+            element("maxLodPixels", "-1");
+            end("Lod");
+
+            end("Region");
+
+            // link
+            start("Link");
+
+            String href = WMSRequests.getGetMapUrl(request, layer.getName(), layerIndex, styleName,
+                    null, null);
+            start("href");
+            cdata(href);
+            end("href");
+
+            // element( "viewRefreshMode", "onRegion" );
+            end("Link");
+
+            end("NetworkLink");
         }
-        
-        protected void encodeAsOverlay( GetMapRequest request ) {
-            List<MapLayerInfo> layers = request.getLayers();
-            List<Style> styles = request.getStyles();
-            for ( int i = 0; i < layers.size(); i++ ) {
+
+        protected void encodeAsOverlay(GetMapRequest request, KMLLookAt lookAt,
+                List<ReferencedEnvelope> layerBounds) {
+
+            final List<MapLayerInfo> layers = request.getLayers();
+            final List<Style> styles = request.getStyles();
+            for (int i = 0; i < layers.size(); i++) {
+                MapLayerInfo layerInfo = layers.get(i);
                 start("NetworkLink");
-                element( "name", layers.get(i).getName() );
-                element( "open", "1" );
-                element( "visibility", "1" );
-                
-                start( "Url" );
-                
-                //set bbox to null so its not included in the request, google 
+                element("name", layerInfo.getName());
+                element("visibility", "1");
+                element("open", "1");
+
+                // look at for the network link for this single layer
+                ReferencedEnvelope latLongBoundingBox = layerBounds.get(i);
+                if (latLongBoundingBox != null) {
+                    encodeLookAt(latLongBoundingBox, lookAt);
+                }
+
+                start("Url");
+
+                // set bbox to null so its not included in the request, google
                 // earth will append it for us
                 request.setBbox(null);
-                
-                String style = i < styles.size()? styles.get(i).getName() : null;
-                String href = WMSRequests.getGetMapUrl(request, layers.get(i).getName(), i, style, null, null);
-                start( "href" );
-                cdata( href );
-                end( "href" );
-                
-                element( "viewRefreshMode", "onStop" );
-                element( "viewRefreshTime", "1" );
-                end( "Url" );
-                
-                end( "NetworkLink" );
+
+                String style = i < styles.size() ? styles.get(i).getName() : null;
+                String href = WMSRequests.getGetMapUrl(request, layers.get(i).getName(), i, style,
+                        null, null);
+                start("href");
+                cdata(href);
+                end("href");
+
+                element("viewRefreshMode", "onStop");
+                element("viewRefreshTime", "1");
+                end("Url");
+
+                end("NetworkLink");
             }
         }
-        
-        private void encodeLookAt(GetMapRequest request){
-            
-            Envelope e = new Envelope();
-            e.setToNull();
-            
-            for ( int i = 0; i < request.getLayers().size(); i++ ) {
-                MapLayerInfo layer = request.getLayers().get(i);
-                
-                Envelope b = null;
-                try {
-                    b = request.getLayers().get(i).getLatLongBoundingBox();
-                } catch (IOException e1) {
-                    LOGGER.warning( "Unable to calculate bounds for " + layer.getName() );
-                    continue;
-                } 
-                if ( e.isNull() ) {
-                    e.init( b );
-                }
-                else {
-                    e.expandToInclude( b );
-                }
+
+        private void encodeLookAt(Envelope bounds, KMLLookAt lookAt) {
+
+            Envelope lookAtEnvelope = null;
+            if (lookAt.getLookAt() == null) {
+                lookAtEnvelope = bounds;
             }
-            
-            if ( e.isNull() ) {
-                return;
-            }
-            
-            double lon1 = e.getMinX();
-            double lat1 = e.getMinY();
-            double lon2 = e.getMaxX();
-            double lat2 = e.getMaxY();
-            
-            double R_EARTH = 6.371 * 1000000; // meters
-            double VIEWER_WIDTH = 22 * Math.PI / 180; // The field of view of the google maps camera, in radians
-            double[] p1 = getRect(lon1, lat1, R_EARTH);
-            double[] p2 = getRect(lon2, lat2, R_EARTH);
-            double[] midpoint = new double[]{
-              (p1[0] + p2[0])/2,
-                (p1[1] + p2[1])/2,
-                (p1[2] + p2[2])/2
-            };
-            
-            midpoint = getGeographic(midpoint[0], midpoint[1], midpoint[2]);
-            
-            double distance = distance(p1, p2);
-            
-            double height = distance/ (2 * Math.tan(VIEWER_WIDTH));
-            
-            LOGGER.fine("lat1: " + lat1 + "; lon1: " + lon1);
-            LOGGER.fine("lat2: " + lat2 + "; lon2: " + lon2);
-            LOGGER.fine("latmid: " + midpoint[1] + "; lonmid: " + midpoint[0]);
-            
-            
-            start( "LookAt" );
-            element( "longitude", ""+midpoint[0] );
-            element( "latitude", "" +midpoint[1] );
-            element( "altitude", "0" );
-            element( "range", ""+ distance );
-            element( "tilt", "0" );
-            element( "heading", "0" );
-            element( "altitudeMode", "clampToGround" );
-            end( "LookAt" );
-          }
-          
-          private double[] getRect(double lat, double lon, double radius){
-            double theta = (90 - lat) * Math.PI/180;
-            double phi   = (90 - lon) * Math.PI/180;
-            
-            double x = radius * Math.sin(phi) * Math.cos(theta);
-            double y = radius * Math.sin(phi) * Math.sin(theta);
-            double z = radius * Math.cos(phi);
-            return new double[]{x, y, z};
-          }
-          
-          private double[] getGeographic(double x, double y, double z){
-            double theta, phi, radius;
-            radius = distance(new double[]{x, y, z}, new double[]{0,0,0});
-            theta = Math.atan2(Math.sqrt(x * x + y * y) , z);
-            phi = Math.atan2(y , x);
-            
-            double lat = 90 - (theta * 180 / Math.PI);
-            double lon = 90 - (phi * 180 / Math.PI);
-            
-            return new double[]{(lon > 180 ? lon - 360 : lon), lat, radius};
-          }
-          
-          private double distance(double[] p1, double[] p2){
-            double dx = p1[0] - p2[0];
-            double dy = p1[1] - p2[1];
-            double dz = p1[2] - p2[2];
-            return Math.sqrt(dx * dx + dy * dy + dz * dz);
-          }
+
+            KMLLookAtTransformer tr;
+            tr = new KMLLookAtTransformer(lookAtEnvelope, getIndentation(), getEncoding());
+            Translator translator = tr.createTranslator(contentHandler);
+            translator.encode(lookAt);
+        }
+
     }
 }

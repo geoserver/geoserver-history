@@ -13,6 +13,7 @@ import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSMapContext;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
 import org.geotools.styling.FeatureTypeStyle;
 import org.geotools.styling.Symbolizer;
@@ -22,28 +23,35 @@ import org.opengis.feature.simple.SimpleFeatureType;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
-
 /**
- * Transforms a feature collection to a kml document consisting of nested
- * "Style" and "Placemark" elements for each feature in the collection.
- * A new transfomer must be instantianted for each feature collection, 
- * the feature collection provided to the translator is supposed to be
- * the one coming out of the MapLayer 
+ * Transforms a feature collection to a kml document consisting of nested "Style" and "Placemark"
+ * elements for each feature in the collection. A new transfomer must be instantianted for each
+ * feature collection, the feature collection provided to the translator is supposed to be the one
+ * coming out of the MapLayer
  * <p>
  * Usage:
  * </p>
+ * 
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
- *
+ * 
  */
 public class KMLVectorTransformer extends KMLMapTransformer {
-    
+
+    private KMLLookAt lookAtOpts;
+
     public KMLVectorTransformer(WMS wms, WMSMapContext mapContext, MapLayer mapLayer) {
+        this(wms, mapContext, mapLayer, null);
+    }
+
+    public KMLVectorTransformer(WMS wms, WMSMapContext mapContext, MapLayer mapLayer,
+            KMLLookAt lookAtOpts) {
         super(wms, mapContext, mapLayer);
 
         setNamespaceDeclarationEnabled(false);
+        this.lookAtOpts = lookAtOpts;
     }
 
-   /**
+    /**
      * Sets the scale denominator.
      */
     public void setScaleDenominator(double scaleDenominator) {
@@ -64,39 +72,48 @@ public class KMLVectorTransformer extends KMLMapTransformer {
             super(contentHandler);
 
             KMLGeometryTransformer geometryTransformer = new KMLGeometryTransformer();
-            //geometryTransformer.setUseDummyZ( true );
+            // geometryTransformer.setUseDummyZ( true );
             geometryTransformer.setOmitXMLDeclaration(true);
             geometryTransformer.setNamespaceDeclarationEnabled(true);
 
             GeoServer config = wms.getGeoServer();
             geometryTransformer.setNumDecimals(config.getGlobal().getNumDecimals());
 
-            geometryTranslator = 
-                (KMLGeometryTransformer.KMLGeometryTranslator)
-                geometryTransformer.createTranslator(contentHandler, mapContext);
+            geometryTranslator = (KMLGeometryTransformer.KMLGeometryTranslator) geometryTransformer
+                    .createTranslator(contentHandler, mapContext);
         }
 
-        public void setRegionatingStrategy(RegionatingStrategy rs){
+        public void setRegionatingStrategy(RegionatingStrategy rs) {
             myStrategy = rs;
         }
 
         public void encode(Object o) throws IllegalArgumentException {
             SimpleFeatureCollection features = (SimpleFeatureCollection) o;
             SimpleFeatureType featureType = features.getSchema();
-            
+
             if (isStandAlone()) {
-                start( "kml" );
+                start("kml");
             }
 
-            //start the root document, name it the name of the layer
-            start("Document", KMLUtils.attributes(
-                    new String[] {"xmlns:atom", "http://purl.org/atom/ns#" }));
+            // start the root document, name it the name of the layer
+            start("Document",
+                    KMLUtils.attributes(new String[] { "xmlns:atom", "http://purl.org/atom/ns#" }));
             element("name", mapLayer.getTitle());
 
-            String relLinks = (String)mapContext.getRequest().getFormatOptions().get("relLinks");
+            if(lookAtOpts != null){
+                ReferencedEnvelope bounds = features.getBounds();
+                if(bounds != null){
+                    KMLLookAtTransformer tx;
+                    tx = new KMLLookAtTransformer(bounds, getIndentation(), getEncoding());
+                    Translator translator = tx.createTranslator(contentHandler);
+                    translator.encode(lookAtOpts);
+                }
+            }
+            
+            String relLinks = (String) mapContext.getRequest().getFormatOptions().get("relLinks");
             // Add prev/next links if requested
-            if (mapContext.getRequest().getMaxFeatures() != null &&
-                relLinks != null && relLinks.equalsIgnoreCase("true") ){
+            if (mapContext.getRequest().getMaxFeatures() != null && relLinks != null
+                    && relLinks.equalsIgnoreCase("true")) {
 
                 String linkbase = "";
                 try {
@@ -107,50 +124,48 @@ public class KMLVectorTransformer extends KMLMapTransformer {
                 }
 
                 int maxFeatures = mapContext.getRequest().getMaxFeatures();
-                int startIndex =
-                    (mapContext.getRequest().getStartIndex() == null)
-                    ? 0 
-                    : mapContext.getRequest().getStartIndex().intValue();
+                int startIndex = (mapContext.getRequest().getStartIndex() == null) ? 0 : mapContext
+                        .getRequest().getStartIndex().intValue();
                 int prevStart = startIndex - maxFeatures;
                 int nextStart = startIndex + maxFeatures;
 
                 // Previous page, if any
                 if (prevStart >= 0) {
-                    String prevLink = linkbase + "?startindex=" 
-                        + prevStart + "&maxfeatures=" + maxFeatures;
-                    element("atom:link", null, KMLUtils.attributes(new String[] {
-                                "rel", "prev", "href", prevLink }));
-                    encodeSequentialNetworkLink(linkbase, prevStart,
-                            maxFeatures, "prev", "Previous page");
+                    String prevLink = linkbase + "?startindex=" + prevStart + "&maxfeatures="
+                            + maxFeatures;
+                    element("atom:link", null,
+                            KMLUtils.attributes(new String[] { "rel", "prev", "href", prevLink }));
+                    encodeSequentialNetworkLink(linkbase, prevStart, maxFeatures, "prev",
+                            "Previous page");
                 }
 
                 // Next page, if any
                 if (features.size() >= maxFeatures) {
-                    String nextLink = linkbase + "?startindex=" + nextStart
-                        + "&maxfeatures=" + maxFeatures;
-                    element("atom:link", null, KMLUtils.attributes(new String[] {
-                                "rel", "next", "href", nextLink }));
-                    encodeSequentialNetworkLink(linkbase, nextStart,
-                            maxFeatures, "next", "Next page");
+                    String nextLink = linkbase + "?startindex=" + nextStart + "&maxfeatures="
+                            + maxFeatures;
+                    element("atom:link", null,
+                            KMLUtils.attributes(new String[] { "rel", "next", "href", nextLink }));
+                    encodeSequentialNetworkLink(linkbase, nextStart, maxFeatures, "next",
+                            "Next page");
                 }
             }
 
-            //get the styles for the layer
-            FeatureTypeStyle[] featureTypeStyles = KMLUtils.filterFeatureTypeStyles(mapLayer.getStyle(),
-                    featureType);
+            // get the styles for the layer
+            FeatureTypeStyle[] featureTypeStyles = KMLUtils.filterFeatureTypeStyles(
+                    mapLayer.getStyle(), featureType);
 
             // encode the schemas (kml 2.2)
             encodeSchemas(features);
 
             // encode the layers
             encode(features, featureTypeStyles);
-            
-            //encode the legend
-            //encodeLegendScreenOverlay();
+
+            // encode the legend
+            // encodeLegendScreenOverlay();
             end("Document");
-            
-            if ( isStandAlone() ) {
-                end( "kml" );
+
+            if (isStandAlone()) {
+                end("kml");
             }
         }
 
@@ -159,70 +174,70 @@ public class KMLVectorTransformer extends KMLMapTransformer {
          * Encodes a networklink for previous or next document in a sequence
          * 
          * Note that in KML 2.2 atom:link is supported and may be better.
-         *
-         * @param linkbase the base fore creating URLs
-         * @param prevStart previous start value
-         * @param maxFeatures maximum number of features to return
-         * @param id attribute to use for this NetworkLink
-         * @param readableName goes into linkName
+         * 
+         * @param linkbase
+         *            the base fore creating URLs
+         * @param prevStart
+         *            previous start value
+         * @param maxFeatures
+         *            maximum number of features to return
+         * @param id
+         *            attribute to use for this NetworkLink
+         * @param readableName
+         *            goes into linkName
          */
-        private void encodeSequentialNetworkLink(String linkbase, int prevStart,
-                int maxFeatures, String id, String readableName) {
-            String link = linkbase + "?startindex=" + prevStart
-                    + "&maxfeatures=" + maxFeatures;
-            start("NetworkLink", KMLUtils.attributes(new String[] {"id", id}));
-            element("description",readableName);
+        private void encodeSequentialNetworkLink(String linkbase, int prevStart, int maxFeatures,
+                String id, String readableName) {
+            String link = linkbase + "?startindex=" + prevStart + "&maxfeatures=" + maxFeatures;
+            start("NetworkLink", KMLUtils.attributes(new String[] { "id", id }));
+            element("description", readableName);
             start("Link");
-            element("href",link);
+            element("href", link);
             end("Link");
             end("NetworkLink");
         }
 
         /**
          * Encodes the <Schema> element in kml 2.2
+         * 
          * @param featureTypeStyles
          */
         protected void encodeSchemas(SimpleFeatureCollection featureTypeStyles) {
             // the code is at the moment in KML3VectorTransformer
         }
 
-        protected void encode(SimpleFeatureCollection features,
-                FeatureTypeStyle[] styles) {
-           //grab a reader and process
+        protected void encode(SimpleFeatureCollection features, FeatureTypeStyle[] styles) {
+            // grab a reader and process
             SimpleFeatureIterator reader = null;
 
             try {
-                //grab a reader and process
+                // grab a reader and process
                 reader = features.features();
-                
+
                 // Write Styles
                 while (reader.hasNext()) {
                     SimpleFeature feature = (SimpleFeature) reader.next();
                     try {
                         List<Symbolizer> symbolizers = filterSymbolizers(feature, styles);
                         if (symbolizers.size() > 0) {
-                            encodePlacemark(feature, symbolizers);    
+                            encodePlacemark(feature, symbolizers, lookAtOpts);
                         }
                     } catch (RuntimeException t) {
                         // if the stream has been closed by the client don't keep on going forward,
                         // this is not a feature local issue
                         //
-                        if(t.getCause() instanceof SAXException)
+                        if (t.getCause() instanceof SAXException)
                             throw t;
                         else
-                            LOGGER.log(
-                                    Level.WARNING,
-                                    "Failure tranforming feature to KML:" + feature.getID(),
-                                    t
-                                );
-                    } 
+                            LOGGER.log(Level.WARNING, "Failure tranforming feature to KML:"
+                                    + feature.getID(), t);
+                    }
                 }
             } finally {
-                //make sure we always close
+                // make sure we always close
                 features.close(reader);
             }
         }
     }
 
-    
 }

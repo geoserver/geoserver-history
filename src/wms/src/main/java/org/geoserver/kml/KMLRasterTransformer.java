@@ -31,46 +31,51 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Polygon;
 
-
 /**
- * Tranforms a feature colleciton to a kml "Document" element which contains a
- * "Folder" element consisting of "GroundOverlay" elements.
+ * Tranforms a feature colleciton to a kml "Document" element which contains a "Folder" element
+ * consisting of "GroundOverlay" elements.
  * <p>
  * Usage:
+ * 
  * <pre>
  *  <code>
  *  //have a reference to a map context and output stream
  *  WMSMapContext context = ...
  *  OutputStream output = ...;
- *
+ * 
  *  KMLRasterTransformer tx = new KMLRasterTransformer( context );
  *  for ( int i = 0; i < context.getLayerCount(); i++ ) {
  *    MapLayer mapLayer = mapConext.getMapLayer( i );
- *
+ * 
  *    //transform
  *    tx.transform( mapLayer, output );
  *  }
  *  </code>
  * </pre>
+ * 
  * </p>
  * <p>
- * The inline parameter {@link #setInline(boolean)} controls wether the images
- * for the request are refernces "inline" as local images, or remoteley as wms
- * requests.
+ * The inline parameter {@link #setInline(boolean)} controls wether the images for the request are
+ * refernces "inline" as local images, or remoteley as wms requests.
  * </p>
- *
+ * 
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
- *
+ * 
  */
 public class KMLRasterTransformer extends KMLMapTransformer {
     /**
      * Flag controlling wether images are refernces inline or as remote wms calls.
      */
     boolean inline = false;
+    private KMLLookAt lookAtOpts;
 
     public KMLRasterTransformer(WMS wms, WMSMapContext mapContext) {
-        super(wms, mapContext, null);
+        this(wms, mapContext, null);
+    }
 
+    public KMLRasterTransformer(WMS wms, WMSMapContext mapContext, KMLLookAt lookAtOpts) {
+        super(wms, mapContext, null);
+        this.lookAtOpts = lookAtOpts;
         setNamespaceDeclarationEnabled(false);
     }
 
@@ -91,37 +96,15 @@ public class KMLRasterTransformer extends KMLMapTransformer {
             MapLayer mapLayer = (MapLayer) o;
             int mapLayerOrder = mapContext.indexOf(mapLayer);
 
-            if ( isStandAlone() ) {
-                start( "kml" );
+            if (isStandAlone()) {
+                start("kml");
             }
-            
-            //start("Document");
-            //element("name", mapLayer.getTitle());
 
-            //start the folder naming it 'layer_<mapLayerOrder>', this is 
-            // necessary for a GroundOverlay
-            start("Folder");
-            element("name", "layer_" + mapLayerOrder);
-            element("description", mapLayer.getTitle());
-
-            start("GroundOverlay");
-            //element( "name", feature.getID() );
-            element("name", mapLayer.getTitle());
-            element("drawOrder", Integer.toString(mapLayerOrder));
-
-            //encode the icon
-            start("Icon");
-
-            encodeHref(mapLayer);
-
-            element("viewRefreshMode", "never");
-            element("viewBoundScale", "0.75");
-            end("Icon");
-
-            //encde the bounding box
+            //get the lat lon bbox
             ReferencedEnvelope box = new ReferencedEnvelope(mapContext.getAreaOfInterest());
             boolean reprojectBBox = (box.getCoordinateReferenceSystem() != null)
-            && !CRS.equalsIgnoreMetadata(box.getCoordinateReferenceSystem(), DefaultGeographicCRS.WGS84); 
+                    && !CRS.equalsIgnoreMetadata(box.getCoordinateReferenceSystem(),
+                            DefaultGeographicCRS.WGS84);
             if (reprojectBBox) {
                 try {
                     box = box.transform(DefaultGeographicCRS.WGS84, true);
@@ -130,6 +113,40 @@ public class KMLRasterTransformer extends KMLMapTransformer {
                             "ReprojectionError", "");
                 }
             }
+            
+            // start("Document");
+            // element("name", mapLayer.getTitle());
+
+            // start the folder naming it 'layer_<mapLayerOrder>', this is
+            // necessary for a GroundOverlay
+            start("Folder");
+            element("name", "layer_" + mapLayerOrder);
+            element("description", mapLayer.getTitle());
+
+            if (lookAtOpts != null) {
+                if (box != null) {
+                    KMLLookAtTransformer tx;
+                    tx = new KMLLookAtTransformer(box, getIndentation(), getEncoding());
+                    Translator translator = tx.createTranslator(contentHandler);
+                    translator.encode(lookAtOpts);
+                }
+            }
+            
+            start("GroundOverlay");
+            // element( "name", feature.getID() );
+            element("name", mapLayer.getTitle());
+            element("drawOrder", Integer.toString(mapLayerOrder));
+
+            // encode the icon
+            start("Icon");
+
+            encodeHref(mapLayer);
+
+            element("viewRefreshMode", "never");
+            element("viewBoundScale", "0.75");
+            end("Icon");
+
+            // encde the bounding box
             start("LatLonBox");
             element("north", Double.toString(box.getMaxY()));
             element("south", Double.toString(box.getMinY()));
@@ -144,11 +161,9 @@ public class KMLRasterTransformer extends KMLMapTransformer {
             if (kmplacemark) {
                 SimpleFeatureCollection features = null;
                 try {
-                    features = KMLUtils
-                            .loadFeatureCollection(
-                                    (SimpleFeatureSource) mapLayer
-                                            .getFeatureSource(), mapLayer,
-                                    mapContext, wms, scaleDenominator);
+                    features = KMLUtils.loadFeatureCollection(
+                            (SimpleFeatureSource) mapLayer.getFeatureSource(), mapLayer,
+                            mapContext, wms, scaleDenominator);
                 } catch (Exception ex) {
                     String msg = "Error getting features.";
                     LOGGER.log(Level.WARNING, msg, ex);
@@ -161,14 +176,13 @@ public class KMLRasterTransformer extends KMLMapTransformer {
                     // get geometry of the area of interest
                     Envelope aoi = mapContext.getAreaOfInterest();
                     GeometryFactory factory = new GeometryFactory();
-                    Geometry displayGeom = factory.toGeometry(new Envelope(aoi
-                            .getMinX(), aoi.getMaxX(), aoi.getMinY(), aoi
-                            .getMaxY()));
+                    Geometry displayGeom = factory.toGeometry(new Envelope(aoi.getMinX(), aoi
+                            .getMaxX(), aoi.getMinY(), aoi.getMaxY()));
 
                     // get the styles for this feature
                     SimpleFeatureType featureType = features.getSchema();
-                    FeatureTypeStyle[] fts = KMLUtils.filterFeatureTypeStyles(
-                            mapLayer.getStyle(), featureType);
+                    FeatureTypeStyle[] fts = KMLUtils.filterFeatureTypeStyles(mapLayer.getStyle(),
+                            featureType);
 
                     Iterator<SimpleFeature> iter = features.iterator();
                     while (iter.hasNext()) {
@@ -176,7 +190,8 @@ public class KMLRasterTransformer extends KMLMapTransformer {
                         geom = (Geometry) ftr.getDefaultGeometry();
 
                         List<Symbolizer> symbolizers = filterSymbolizers(ftr, fts);
-                        if (symbolizers.size() != 0) encodeStyle(ftr, symbolizers);
+                        if (symbolizers.size() != 0)
+                            encodeStyle(ftr, symbolizers);
 
                         // if this is a multipolygon, get the largest polygon
                         // that intersects the AOI
@@ -198,39 +213,31 @@ public class KMLRasterTransformer extends KMLMapTransformer {
                         if (g1.isEmpty())
                             continue;
                         centroidGeom = g1.getCentroid();
-                        encodePlacemark(ftr, symbolizers, centroidGeom);
+                        encodePlacemark(ftr, symbolizers, centroidGeom, lookAtOpts);
                     }
                 }
             }
 
             end("Folder");
 
-            //end("Document");
+            // end("Document");
             if (isStandAlone()) {
-                end( "kml" );
+                end("kml");
             }
         }
 
         protected void encodeHref(MapLayer mapLayer) {
             if (inline) {
-                //inline means reference the image "inline" as in kmz
+                // inline means reference the image "inline" as in kmz
                 // use the mapLayerOrder
                 int mapLayerOrder = mapContext.indexOf(mapLayer);
                 element("href", "layer_" + mapLayerOrder + ".png");
             } else {
-                //reference the image as a remote wms call
-                element("href",  
-                        WMSRequests.getGetMapUrl(
-                            mapContext.getRequest(),
-                            mapLayer,
-                            0,
-                            mapContext.getAreaOfInterest(),
-                            new String[]{
-                                "format", "image/png",
-                                "transparent", "true"
-                            }
-                            )
-                       );
+                // reference the image as a remote wms call
+                element("href",
+                        WMSRequests.getGetMapUrl(mapContext.getRequest(), mapLayer, 0,
+                                mapContext.getAreaOfInterest(), new String[] { "format",
+                                        "image/png", "transparent", "true" }));
             }
         }
     }

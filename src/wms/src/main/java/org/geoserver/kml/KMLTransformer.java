@@ -35,7 +35,7 @@ public class KMLTransformer extends TransformerBase {
      * logger
      */
     static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.kml");
-        
+
     /**
      * Flag controlling wether kmz was requested.
      */
@@ -57,88 +57,90 @@ public class KMLTransformer extends TransformerBase {
     }
 
     protected class KMLTranslator extends TranslatorSupport {
-    	/**
+        /**
          * Tolerance used to compare doubles for equality
          */
         static final double TOLERANCE = 1e-6;
-        
+
         static final int RULES = 0;
+
         static final int ELSE_RULES = 1;
-    	
+
         private double scaleDenominator;
 
-		public KMLTranslator(ContentHandler handler) {
+        public KMLTranslator(ContentHandler handler) {
             super(handler, null, null);
         }
 
         public void encode(Object o) throws IllegalArgumentException {
-            //start("kml");
-            start("kml", KMLUtils.attributes(
-                    new String[] {
-                            "xmlns", "http://www.opengis.net/kml/2.2",
+
+            final WMSMapContext mapContext = (WMSMapContext) o;
+            final GetMapRequest request = mapContext.getRequest();
+            final MapLayer[] layers = mapContext.getLayers();
+
+            final KMLLookAt lookAtOpts = new KMLLookAt(request.getFormatOptions());
+            // start("kml");
+            start("kml",
+                    KMLUtils.attributes(new String[] { "xmlns", "http://www.opengis.net/kml/2.2",
                             "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance",
-                            "xsi:schemaLocation", "http://www.opengis.net/kml/2.2 http://schemas.opengis.net/kml/2.2.0/ogckml22.xsd"
-                    }));
-            
-            WMSMapContext mapContext = (WMSMapContext) o;
-            GetMapRequest request = mapContext.getRequest();
-            MapLayer[] layers = mapContext.getLayers();
-            
-            //calculate scale denominator
-            scaleDenominator = 1; 
+                            "xsi:schemaLocation",
+                            "http://www.opengis.net/kml/2.2 http://schemas.opengis.net/kml/2.2.0/ogckml22.xsd" }));
+
+            // calculate scale denominator
+            scaleDenominator = 1;
             try {
-               scaleDenominator = 
-                       RendererUtilities.calculateScale(mapContext.getAreaOfInterest(), mapContext.getMapWidth(), mapContext.getMapHeight(), null);
-            } 
-            catch( Exception e ) {
-               LOGGER.log(Level.WARNING, "Error calculating scale denominator", e);
+                scaleDenominator = RendererUtilities.calculateScale(mapContext.getAreaOfInterest(),
+                        mapContext.getMapWidth(), mapContext.getMapHeight(), null);
+            } catch (Exception e) {
+                LOGGER.log(Level.WARNING, "Error calculating scale denominator", e);
             }
             LOGGER.log(Level.FINE, "scale denominator = " + scaleDenominator);
 
-            //if we have more than one layer ( or a legend was requested ),
-            //use the name "GeoServer" to group them
+            // if we have more than one layer ( or a legend was requested ),
+            // use the name "GeoServer" to group them
             boolean group = (layers.length > 1) || request.getLegend();
 
             if (group) {
                 StringBuffer sb = new StringBuffer();
-                for ( int i = 0; i < layers.length; i++ ) {
-                    sb.append( layers[i].getTitle() + "," );
+                for (int i = 0; i < layers.length; i++) {
+                    sb.append(layers[i].getTitle() + ",");
                 }
-                sb.setLength(sb.length()-1);
-               
+                sb.setLength(sb.length() - 1);
+
                 start("Document");
-                element("name", sb.toString() );
+                element("name", sb.toString());
             }
 
-            //for every layer specified in the request
+            // for every layer specified in the request
             for (int i = 0; i < layers.length; i++) {
-                //layer and info
+                // layer and info
                 MapLayer layer = layers[i];
                 MapLayerInfo layerInfo = mapContext.getRequest().getLayers().get(i);
 
-                //was a super overlay requested?
-                Boolean superoverlay = (Boolean)mapContext.getRequest().getFormatOptions().get("superoverlay");
+                // was a super overlay requested?
+                Boolean superoverlay = (Boolean) mapContext.getRequest().getFormatOptions()
+                        .get("superoverlay");
                 superoverlay = (superoverlay == null ? Boolean.FALSE : superoverlay);
                 if (superoverlay) {
-                    //encode as super overlay
+                    // encode as super overlay
                     encodeSuperOverlayLayer(mapContext, layer);
                 } else {
-                    //figure out which type of layer this is, raster or vector
+                    // figure out which type of layer this is, raster or vector
                     if (layerInfo.getType() != MapLayerInfo.TYPE_RASTER) {
-                        //vector 
-                        encodeVectorLayer(mapContext, layer);
+                        // vector
+                        encodeVectorLayer(mapContext, layer, lookAtOpts);
                     } else {
-                        //encode as normal ground overlay
-                        encodeRasterLayer(mapContext, layer);
+                        // encode as normal ground overlay
+                        encodeRasterLayer(mapContext, layer, lookAtOpts);
                     }
                 }
             }
 
-            //legend suppoer
+            // legend suppoer
             if (request.getLegend()) {
-                //for every layer specified in the request
+                // for every layer specified in the request
                 for (int i = 0; i < layers.length; i++) {
-                    //layer and info
+                    // layer and info
                     MapLayer layer = layers[i];
                     encodeLegend(mapContext, layer);
                 }
@@ -154,15 +156,16 @@ public class KMLTransformer extends TransformerBase {
         /**
          * Encodes a vector layer as kml.
          */
-        @SuppressWarnings("unchecked")
-        protected void encodeVectorLayer(WMSMapContext mapContext, MapLayer layer) {
-            //get the data
+        protected void encodeVectorLayer(WMSMapContext mapContext, MapLayer layer,
+                KMLLookAt lookAtOpts) {
+            // get the data
             SimpleFeatureSource featureSource = (SimpleFeatureSource) layer.getFeatureSource();
             SimpleFeatureCollection features = null;
 
             try {
-                features = KMLUtils.loadFeatureCollection(featureSource, layer, mapContext, wms, scaleDenominator);
-                if(features == null) {
+                features = KMLUtils.loadFeatureCollection(featureSource, layer, mapContext, wms,
+                        scaleDenominator);
+                if (features == null) {
                     // it means no features need to be depicted with this style/scale denominator
                     return;
                 }
@@ -172,35 +175,35 @@ public class KMLTransformer extends TransformerBase {
                 throw new RuntimeException(e);
             }
 
-            //was kmz requested?
+            // was kmz requested?
             if (kmz) {
-                //calculate kmscore to determine if we shoud write as vectors
+                // calculate kmscore to determine if we shoud write as vectors
                 // or pre-render
                 int kmscore = wms.getKmScore();
                 Object kmScoreObj = mapContext.getRequest().getFormatOptions().get("kmscore");
-                if(kmScoreObj != null) {
+                if (kmScoreObj != null) {
                     kmscore = (Integer) kmScoreObj;
                 }
                 boolean useVector = useVectorOutput(kmscore, features.size());
 
                 if (useVector) {
-                    //encode
-                    KMLVectorTransformer tx = createVectorTransformer(mapContext, layer);
+                    // encode
+                    KMLVectorTransformer tx = createVectorTransformer(mapContext, layer, lookAtOpts);
                     initTransformer(tx);
                     tx.setScaleDenominator(scaleDenominator);
                     tx.createTranslator(contentHandler).encode(features);
                 } else {
-                    KMLRasterTransformer tx = createRasterTransfomer(mapContext);
+                    KMLRasterTransformer tx = createRasterTransfomer(mapContext, lookAtOpts);
                     initTransformer(tx);
-                    
-                    //set inline to true to have the transformer reference images
+
+                    // set inline to true to have the transformer reference images
                     // inline in the zip file
                     tx.setInline(true);
                     tx.createTranslator(contentHandler).encode(layer);
                 }
             } else {
-                //kmz not selected, just do straight vector
-                KMLVectorTransformer tx = createVectorTransformer(mapContext, layer);
+                // kmz not selected, just do straight vector
+                KMLVectorTransformer tx = createVectorTransformer(mapContext, layer, lookAtOpts);
                 initTransformer(tx);
                 tx.setScaleDenominator(scaleDenominator);
                 tx.createTranslator(contentHandler).encode(features);
@@ -209,30 +212,36 @@ public class KMLTransformer extends TransformerBase {
 
         /**
          * Factory method, allows subclasses to inject their own version of the raster transfomer
+         * 
          * @param mapContext
+         * @param lookAtOpts
          * @return
          */
-        protected KMLRasterTransformer createRasterTransfomer(WMSMapContext mapContext) {
-            return new KMLRasterTransformer(wms, mapContext);
+        protected KMLRasterTransformer createRasterTransfomer(WMSMapContext mapContext,
+                KMLLookAt lookAtOpts) {
+            return new KMLRasterTransformer(wms, mapContext, lookAtOpts);
         }
 
         /**
          * Factory method, allows subclasses to inject their own version of the vector transfomer
+         * 
          * @param mapContext
+         * @param lookAtOpts
          * @return
          */
         protected KMLVectorTransformer createVectorTransformer(WMSMapContext mapContext,
-                MapLayer layer) {
-            return new KMLVectorTransformer(wms, mapContext, layer);
+                MapLayer layer, KMLLookAt lookAtOpts) {
+            return new KMLVectorTransformer(wms, mapContext, layer, lookAtOpts);
         }
 
         /**
          * Encodes a raster layer as kml.
          */
-        protected void encodeRasterLayer(WMSMapContext mapContext, MapLayer layer) {
-            KMLRasterTransformer tx = createRasterTransfomer(mapContext);
+        protected void encodeRasterLayer(WMSMapContext mapContext, MapLayer layer,
+                KMLLookAt lookAtOpts) {
+            KMLRasterTransformer tx = createRasterTransfomer(mapContext, lookAtOpts);
             initTransformer(tx);
-            
+
             tx.setInline(kmz);
             tx.createTranslator(contentHandler).encode(layer);
         }
@@ -254,47 +263,47 @@ public class KMLTransformer extends TransformerBase {
             initTransformer(tx);
             tx.createTranslator(contentHandler).encode(layer);
         }
-        
+
         protected void initTransformer(KMLTransformerBase delegate) {
-            delegate.setIndentation( getIndentation() );
+            delegate.setIndentation(getIndentation());
             delegate.setEncoding(getEncoding());
             delegate.setStandAlone(false);
         }
 
         double computeScaleDenominator(MapLayer layer, WMSMapContext mapContext) {
             Rectangle paintArea = new Rectangle(mapContext.getMapWidth(), mapContext.getMapHeight());
-            AffineTransform worldToScreen = RendererUtilities.worldToScreenTransform(mapContext
-                    .getAreaOfInterest(), paintArea);
+            AffineTransform worldToScreen = RendererUtilities.worldToScreenTransform(
+                    mapContext.getAreaOfInterest(), paintArea);
 
             try {
-                //90 = OGC standard DPI (see SLD spec page 37)
+                // 90 = OGC standard DPI (see SLD spec page 37)
                 return RendererUtilities.calculateScale(mapContext.getAreaOfInterest(),
-                    mapContext.getCoordinateReferenceSystem(), paintArea.width, paintArea.height, 90);
+                        mapContext.getCoordinateReferenceSystem(), paintArea.width,
+                        paintArea.height, 90);
             } catch (Exception e) {
-                //probably either (1) no CRS (2) error xforming, revert to
+                // probably either (1) no CRS (2) error xforming, revert to
                 // old method - the best we can do (DJB)
                 return 1 / worldToScreen.getScaleX();
             }
         }
 
         /**
-         * Determines whether to return a vector (KML) result of the data or to
-         * return an image instead.
-         * If the kmscore is 100, then the output should always be vector. If
-         * the kmscore is 0, it should always be raster. In between, the number of
-         * features is weighed against the kmscore value.
-         * kmscore determines whether to return the features as vectors, or as one
-         * raster image. It is the point, determined by the user, where X number of
-         * features is "too many" and the result should be returned as an image instead.
-         *
-         * kmscore is logarithmic. The higher the value, the more features it takes
-         * to make the algorithm return an image. The lower the kmscore, the fewer
-         * features it takes to force an image to be returned.
-         * (in use, the formula is exponential: as you increase the KMScore value,
-         * the number of features required increases exponentially).
-         *
-         * @param kmscore the score, between 0 and 100, use to determine what output to use
-         * @param numFeatures how many features are being rendered
+         * Determines whether to return a vector (KML) result of the data or to return an image
+         * instead. If the kmscore is 100, then the output should always be vector. If the kmscore
+         * is 0, it should always be raster. In between, the number of features is weighed against
+         * the kmscore value. kmscore determines whether to return the features as vectors, or as
+         * one raster image. It is the point, determined by the user, where X number of features is
+         * "too many" and the result should be returned as an image instead.
+         * 
+         * kmscore is logarithmic. The higher the value, the more features it takes to make the
+         * algorithm return an image. The lower the kmscore, the fewer features it takes to force an
+         * image to be returned. (in use, the formula is exponential: as you increase the KMScore
+         * value, the number of features required increases exponentially).
+         * 
+         * @param kmscore
+         *            the score, between 0 and 100, use to determine what output to use
+         * @param numFeatures
+         *            how many features are being rendered
          * @return true: use just kml vectors, false: use raster result
          */
         boolean useVectorOutput(int kmscore, int numFeatures) {
@@ -310,7 +319,8 @@ public class KMLTransformer extends TransformerBase {
             // 10^(kmscore/15)
             // This results in exponential growth.
             // The lowest bound is 1 feature and the highest bound is 3.98 million features
-            // The most useful kmscore values are between 20 and 70 (21 and 46000 features respectively)
+            // The most useful kmscore values are between 20 and 70 (21 and 46000 features
+            // respectively)
             // A good default kmscore value is around 40 (464 features)
             double magic = Math.pow(10, kmscore / 15);
 
