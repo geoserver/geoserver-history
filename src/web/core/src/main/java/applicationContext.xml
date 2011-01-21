@@ -182,6 +182,12 @@
     <property name="titleKey" value="demo.title"/>
     <property name="descriptionKey" value="demo.description"/>
     <property name="componentClass" value="org.geoserver.web.DemoPage"/>
+    <property name="authorizer">
+      <bean class="org.geoserver.web.EmptyPageLinksAuthorizer">
+        <property name="linkClasses" value="org.geoserver.web.DemoLinkInfo"/>
+      </bean>
+    </property>
+
   </bean>
   
   <!-- 
@@ -192,6 +198,16 @@
     <property name="titleKey" value="tools.title"/>
     <property name="descriptionKey" value="tools.description"/>
     <property name="componentClass" value="org.geoserver.web.ToolPage"/>
+    <property name="authorizer">
+      <bean class="org.geoserver.web.EmptyPageLinksAuthorizer">
+        <property name="linkClasses">
+          <list>
+            <value>org.geoserver.web.ToolLinkInfo</value>
+            <value>org.geoserver.web.ToolLinkExternalInfo</value>
+          </list>
+        </property>
+      </bean>
+    </property>
   </bean>
   
   <!-- 
