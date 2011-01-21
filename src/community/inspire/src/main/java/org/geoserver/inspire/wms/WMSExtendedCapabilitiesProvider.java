@@ -58,7 +58,7 @@ public class WMSExtendedCapabilitiesProvider implements ExtendedCapabilitiesProv
         tx.start("inspire_vs:ResourceLocator");
         tx.start("gmd:linkage");
         tx.start("gmd:URL");
-        tx.chars("http://inspire.europa.eu/info</gmd:URL");
+        tx.chars("http://inspire.europa.eu/info");
         tx.end("gmd:URL");
         tx.end("gmd:linkage");
         tx.end("inspire_vs:ResourceLocator");
