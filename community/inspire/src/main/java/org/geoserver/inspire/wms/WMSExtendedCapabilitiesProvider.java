@@ -1,5 +1,8 @@
 package org.geoserver.inspire.wms;
 
+import static org.geoserver.inspire.wms.InspireMetadata.LANGUAGE;
+import static org.geoserver.inspire.wms.InspireMetadata.METADATA_URL;
+
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
@@ -14,14 +17,12 @@ import org.xml.sax.Attributes;
 import org.xml.sax.helpers.AttributesImpl;
 import org.xml.sax.helpers.NamespaceSupport;
 
-import static org.geoserver.inspire.wms.InspireMetadata.*;
-
 public class WMSExtendedCapabilitiesProvider implements ExtendedCapabilitiesProvider {
 
-    public static final String NAMESPACE =  "http://inspire.europa.eu/networkservice/view/1.0";
-    
+    public static final String NAMESPACE = "http://inspire.europa.eu/networkservice/view/1.0";
+
     public String[] getSchemaLocations() {
-        return new String[]{NAMESPACE, "www/inspire/inspire_vs.xsd"};
+        return new String[] { NAMESPACE, "www/inspire/inspire_vs.xsd" };
     }
 
     /**
@@ -43,26 +44,30 @@ public class WMSExtendedCapabilitiesProvider implements ExtendedCapabilitiesProv
     public void registerNamespaces(NamespaceSupport namespaces) {
         namespaces.declarePrefix("inspire_vs", NAMESPACE);
         namespaces.declarePrefix("gml", "http://schemas.opengis.net/gml");
-        namespaces.declarePrefix("gmd", "http://schemas.opengis.net/iso/19139/20060504/gmd/gmd.xsd");
-        namespaces.declarePrefix("gco", "http://schemas.opengis.net/iso/19139/20060504/gco/gco.xsd");
-        namespaces.declarePrefix("srv", "http://schemas.opengis.net/iso/19139/20060504/srv/srv.xsd");
+        namespaces
+                .declarePrefix("gmd", "http://schemas.opengis.net/iso/19139/20060504/gmd/gmd.xsd");
+        namespaces
+                .declarePrefix("gco", "http://schemas.opengis.net/iso/19139/20060504/gco/gco.xsd");
+        namespaces
+                .declarePrefix("srv", "http://schemas.opengis.net/iso/19139/20060504/srv/srv.xsd");
     }
 
-    public void encode(Translator tx, WMSInfo wms, GetCapabilitiesRequest request) throws IOException {
+    public void encode(Translator tx, WMSInfo wms, GetCapabilitiesRequest request)
+            throws IOException {
         Version requestVersion = WMS.version(request.getVersion());
         if (!WMS.VERSION_1_3_0.equals(requestVersion)) {
             return;
         }
         tx.start("inspire_vs:ExtendedCapabilities");
-    
+
         tx.start("inspire_vs:ResourceLocator");
         tx.start("gmd:linkage");
         tx.start("gmd:URL");
-        tx.chars("http://inspire.europa.eu/info</gmd:URL");
+        tx.chars("http://inspire.europa.eu/info");
         tx.end("gmd:URL");
         tx.end("gmd:linkage");
         tx.end("inspire_vs:ResourceLocator");
-        
+
         String metadataURL = (String) wms.getMetadata().get(METADATA_URL.key);
         if (metadataURL != null) {
             tx.start("inspire_vs:MetadataUrl");
@@ -73,14 +78,14 @@ public class WMSExtendedCapabilitiesProvider implements ExtendedCapabilitiesProv
             tx.end("gmd:linkage");
             tx.end("inspire_vs:MetadataUrl");
         }
-        
+
         tx.start("inspire_vs:ResourceType");
-        tx.start("gmd:MD_ScopeCode", atts("codeList", "http://standards.iso.org/ittf/" +
-            "PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/" +
-            "gmxCodelists.xml#MD_ScopeCode", "codeListValue", "dataset"));
+        tx.start("gmd:MD_ScopeCode", atts("codeList", "http://standards.iso.org/ittf/"
+                + "PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/"
+                + "gmxCodelists.xml#MD_ScopeCode", "codeListValue", "dataset"));
         tx.end("gmd:MD_ScopeCod");
         tx.end("inspire_vs:ResourceType");
-        
+
         tx.start("inspire_vs:TemporalReference");
         tx.start("gmd:EX_Extent");
         tx.start("gmd:temporalElement");
@@ -97,9 +102,9 @@ public class WMSExtendedCapabilitiesProvider implements ExtendedCapabilitiesProv
         tx.end("gmd:extent");
         tx.end("gmd:EX_TemporalExtent");
         tx.end("gmd:temporalElement");
-        tx.end("gmd:EX_Extent"); 
+        tx.end("gmd:EX_Extent");
         tx.end("inspire_vs:TemporalReference");
-        
+
         tx.start("inspire_vs:Conformity");
         tx.start("gmd:DQ_ConformanceResult");
         tx.start("gmd:specification");
@@ -117,9 +122,9 @@ public class WMSExtendedCapabilitiesProvider implements ExtendedCapabilitiesProv
         tx.end("gco:Date");
         tx.end("gmd:date");
         tx.start("gmd:dateType");
-        tx.start("gmd:CI_DateTypeCode", atts("codeList", "http://standards.iso.org/ittf/" +
-            "PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/" +
-            "ML_gmxCodelists.xml#CI_DateTypeCode", "codeListValue", "publication"));
+        tx.start("gmd:CI_DateTypeCode", atts("codeList", "http://standards.iso.org/ittf/"
+                + "PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/"
+                + "ML_gmxCodelists.xml#CI_DateTypeCode", "codeListValue", "publication"));
         tx.chars("publication");
         tx.end("gmd:CI_DateTypeCode");
         tx.end("gmd:dateType");
@@ -139,7 +144,7 @@ public class WMSExtendedCapabilitiesProvider implements ExtendedCapabilitiesProv
         tx.end("gmd:pass");
         tx.end("gmd:DQ_ConformanceResult");
         tx.end("inspire_vs:Conformity");
-        
+
         ContactInfo contact = wms.getGeoServer().getGlobal().getContact();
         tx.start("inspire_vs:MetadataPointOfContact");
         tx.start("gmd:CI_ResponsibleParty");
@@ -165,59 +170,59 @@ public class WMSExtendedCapabilitiesProvider implements ExtendedCapabilitiesProv
             tx.end("gmd:CI_Contact");
             tx.end("gmd:contactInfo");
         }
-         tx.start("gmd:role");
-          tx.start("gmd:CI_RoleCode", atts("codeList", "http://standards.iso.org/ittf/" +
-              "PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/" +
-              "gmxCodelists.xml#CI_RoleCode", "codeListValue", "pointOfContact"));
-          tx.chars("pointOfContact");
-          tx.end("gmd:CI_RoleCode");
-         tx.end("gmd:role");
+        tx.start("gmd:role");
+        tx.start("gmd:CI_RoleCode", atts("codeList", "http://standards.iso.org/ittf/"
+                + "PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/"
+                + "gmxCodelists.xml#CI_RoleCode", "codeListValue", "pointOfContact"));
+        tx.chars("pointOfContact");
+        tx.end("gmd:CI_RoleCode");
+        tx.end("gmd:role");
         tx.end("gmd:CI_ResponsibleParty");
-       tx.end("inspire_vs:MetadataPointOfContact");
+        tx.end("inspire_vs:MetadataPointOfContact");
 
-       tx.start("inspire_vs:MetadataDate");
-       tx.start("gco:Date");
-       tx.chars("2005-04-18");
-       tx.end("gco:Date");
-       tx.end("inspire_vs:MetadataDate");
-       
-       tx.start("inspire_vs:SpatialDataServiceType");
-       tx.start("srv:serviceType");
-       tx.start("gco:LocalName");
-       tx.chars("view");
-       tx.end("gco:LocalName");
-       tx.end("srv:serviceType");
-       tx.end("inspire_vs:SpatialDataServiceType");
-       
-       tx.start("inspire_vs:InspireKeywords");
-       for(String kw : wms.getKeywords()) {
-           tx.start("keyword");
-           tx.start("gco:CharacterString");
-           tx.chars(kw);
-           tx.end("gco:CharacterString");
-           tx.end("keyword");
-       }
-       tx.end("inspire_vs:InspireKeywords");
-       
-       String language = (String) wms.getMetadata().get(LANGUAGE.key);
-       language = language != null ? language : "eng";
-      
-       tx.start("inspire_vs:Languages");
-       tx.start("inspire_vs:Language", atts("default", "true"));
-       tx.chars(language);
-       tx.end("inspire_vs:Language");
-       tx.start("inspire_vs:CurrentLanguage");
-       tx.chars(language);
-       tx.end("inspire_vs:CurrentLanguage");
-       tx.end("inspire_vs:Languages");
+        tx.start("inspire_vs:MetadataDate");
+        tx.start("gco:Date");
+        tx.chars("2005-04-18");
+        tx.end("gco:Date");
+        tx.end("inspire_vs:MetadataDate");
 
-       tx.end("inspire_vs:ExtendedCapabilities");
+        tx.start("inspire_vs:SpatialDataServiceType");
+        tx.start("srv:serviceType");
+        tx.start("gco:LocalName");
+        tx.chars("view");
+        tx.end("gco:LocalName");
+        tx.end("srv:serviceType");
+        tx.end("inspire_vs:SpatialDataServiceType");
+
+        tx.start("inspire_vs:InspireKeywords");
+        for (String kw : wms.getKeywords()) {
+            tx.start("keyword");
+            tx.start("gco:CharacterString");
+            tx.chars(kw);
+            tx.end("gco:CharacterString");
+            tx.end("keyword");
+        }
+        tx.end("inspire_vs:InspireKeywords");
+
+        String language = (String) wms.getMetadata().get(LANGUAGE.key);
+        language = language != null ? language : "eng";
+
+        tx.start("inspire_vs:Languages");
+        tx.start("inspire_vs:Language", atts("default", "true"));
+        tx.chars(language);
+        tx.end("inspire_vs:Language");
+        tx.start("inspire_vs:CurrentLanguage");
+        tx.chars(language);
+        tx.end("inspire_vs:CurrentLanguage");
+        tx.end("inspire_vs:Languages");
+
+        tx.end("inspire_vs:ExtendedCapabilities");
     }
-    
+
     Attributes atts(String... atts) {
         AttributesImpl attributes = new AttributesImpl();
         for (int i = 0; i < atts.length; i += 2) {
-            attributes.addAttribute(null, atts[i], atts[i], null, atts[i+1]);
+            attributes.addAttribute(null, atts[i], atts[i], null, atts[i + 1]);
         }
         return attributes;
     }
