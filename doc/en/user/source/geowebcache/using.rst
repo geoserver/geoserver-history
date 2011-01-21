@@ -8,16 +8,26 @@ Using GeoWebCache
 GeoWebCache integration with GeoServer WMS
 ------------------------------------------
 
-GeoWebCache (as of GeoServer 2.1.0) is transparently integrated with the GeoServer WMS, and so requires no special endpoint or custom URL in order to be used.  In this way one can get the simplicity of a standard WMS endpoint with the performance of a tiled client.
+GeoWebCache (as of GeoServer 2.1.0) is transparently integrated with the GeoServer WMS, and so requires no special endpoint or custom URL in order to be used.  In this way one can have the simplicity of a standard WMS endpoint with the performance of a tiled client.
 
-This direct integration is turned off by default.  To turn on, please see the section on the :ref:`webadmin_gwc` page in the :ref:`web_admin`.
+This direct integration is turned off by default.  It can be enabled by going to the :ref:`webadmin_gwc` page in the :ref:`web_admin`.
+
+When this feature is enabled, GeoServer WMS will cache and retrieve tiles from GeoWebCache (via a GetMap request) **only if the following conditions apply**:
+
+#. ``TILED=true`` is included in the request.
+#. All other request parameters (tile height and width) match up with a tile in the layer's gridset.
+#. There are no vendor-specific parameters (such as ``cql_filter``).
+
+In addition, when direct integration is enabled, the WMS capabilities document (via a GetCapabilties request) will only return the WMS-C vendor-specific capabilities elements (such as a ``<TileSet>`` element for each cached layer/CRS/format combination) if ``TILED=true`` is appended to the GetCapabilities request.
+
+.. note:: GeoWebCache integration is not compatible with the OpenLayers-based :ref:`layerpreview`, as the preview does not usually align with the GeoWebCache layer gridset.  This is because the OpenLayers application calculates the tileorigin based on the layer's bounding box, which is different from the gridset.  It is, however, very possible to create an OpenLayers application that caches tiles; just make sure that the tileorigin aligns with the gridset.
 
 GeoWebCache endpoint URL
 ------------------------
 
 When not using direct integration, you can point your client directly to GeoWebCache.
 
-.. warning:: GeoWebCache is not a true WMS, and so the following is an oversimplification.  If you encounter errors, check the :ref:`gwc_troubleshooting` page for help. 
+.. warning:: GeoWebCache is not a true WMS, and so the following is an oversimplification.  If you encounter errors, see the :ref:`gwc_troubleshooting` page for help. 
 
 To direct your client to GeoWebCache (and thus receive cached tiles) you need to change the WMS URL.
 
