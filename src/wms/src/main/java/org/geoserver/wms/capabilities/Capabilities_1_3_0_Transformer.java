@@ -145,6 +145,7 @@ public class Capabilities_1_3_0_Transformer extends TransformerBase {
             String[] locations = cp.getSchemaLocations();
             try {
                 for (int i = 0; i < locations.length-1; i+=2) {
+                    schemaLocation.append(" ");
                     schemaLocation.append(schemaLocation(locations[i], locations[i+1]));
                 }
             }
