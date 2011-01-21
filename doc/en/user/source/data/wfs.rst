@@ -43,7 +43,7 @@ To connect to an external WFS, it is necessary to load it as a new datastore.  T
    * - :guilabel:`BUFFER_SIZE`
      - Specifies a buffer size (in number of features).  Default is ``10`` features.
    * - :guilabel:`TRY_GZIP`
-     - Specifies that the server should use GZIP to transfer data if supported by the server. 
+     - Specifies that the server should transfer data using compressed HTTP if supported by the server. 
    * - :guilabel:`LENIENT`
      - When checked, will try to render features that don't match the appropriate schema.  Errors will be logged. 
    * - :guilabel:`MAXFEATURES`
@@ -55,3 +55,27 @@ Configuring external WFS layers
 -------------------------------
 
 When properly loaded, all layers served by the external WFS will be available to GeoServer.  Before they can be served, however, they will need to be individually configured as new layers.  See the section on :ref:`webadmin_layers` for how to add and edit new layers.
+
+Connecting to an external WFS layer via a proxy server
+------------------------------------------------------
+
+In a corporate environment it may be necessary to connect to an external WFS through a proxy server. To achieve this, various java variables need to be set.
+
+For a Windows install running Geoserver as a service, this is done by modifying the wrapper.conf file. For a default Windows install, modify :file:`C:\\Program Files\\GeoServer x.x.x\\wrapper\\wrapper.conf` similarly to the following.
+
+   # Java Additional Parameters
+
+   wrapper.java.additional.1=-Djetty.home=.
+   wrapper.java.additional.2=-DGEOSERVER_DATA_DIR="%GEOSERVER_DATA_DIR%"
+   wrapper.java.additional.3=-Dhttp.proxySet=true
+   wrapper.java.additional.4=-Dhttp.proxyHost=maitproxy
+   wrapper.java.additional.5=-Dhttp.proxyPort=8080
+   wrapper.java.additional.6=-Dhttps.proxyHost=maitproxy
+   wrapper.java.additional.7=-Dhttps.proxyPort=8080
+   wrapper.java.additional.8=-Dhttp.nonProxyHosts="mait*|dpi*|localhost"
+
+Note that the :command:`http.proxySet=true` parameter is required. Also, the parameter numbers must be consecutive - ie. no gaps.
+
+For a Windows install not running Geoserver as a service, modify :file:`startup.bat` so that the :command:`java` command runs with similar -D parameters.
+
+For a Linux/UNIX install, modify :file:`startup.sh` so that the :command:`java` command runs with similar -D parameters.
