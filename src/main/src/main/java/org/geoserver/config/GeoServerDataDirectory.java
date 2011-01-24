@@ -218,6 +218,11 @@ public class GeoServerDataDirectory {
         return null;
     }
     
+    File workspacesDir( boolean create ) throws IOException {
+        return create ? resourceLoader.findOrCreateDirectory( "workspaces" ) 
+                : resourceLoader.find( "workspaces" );
+    }
+    
     /**
      * Returns the configuration file for the specified workspace, if the file does not exist null 
      * is returned.
@@ -227,7 +232,7 @@ public class GeoServerDataDirectory {
     }
     
     /**
-     * Returns the configuration file for the specified workspace, if the file does nost exist a 
+     * Returns the configuration file for the specified workspace, if the file does not exist a 
      * file object will still be returned.
      * 
      */
@@ -250,6 +255,19 @@ public class GeoServerDataDirectory {
     }
     
     /**
+     * Returns a supplementary configuration file in the workspaces directory, if the file 
+     * does not exist null is returned.
+     */
+    public File findSuppWorkspacesFile( WorkspaceInfo ws, String filename ) throws IOException {
+        File workspaces = resourceLoader.find( "workspaces" );
+        if(workspaces == null) {
+            return null;
+        } else {
+            return file(new File(workspaces, filename), false);
+        }
+    }
+    
+    /**
      * Copies a file into a workspace configuration directory.
      * <p>
      * If the workspace configuration directory does exist it will be created.
@@ -268,6 +286,17 @@ public class GeoServerDataDirectory {
     public void copyToWorkspaceDir( WorkspaceInfo ws, InputStream data, String filename ) 
         throws IOException {
         copy( data, workspaceDir( true, ws ), filename );
+    }
+    
+    /**
+     * Copies data into the root workspaces configuration directory.
+     * <p>
+     * If the workspace configuration directory does exist it will be created
+     * </p>
+     */
+    public void copyToWorkspacesDir( InputStream data, String filename ) 
+        throws IOException {
+        copy( data, workspacesDir( true ), filename );
     }
     
     /**

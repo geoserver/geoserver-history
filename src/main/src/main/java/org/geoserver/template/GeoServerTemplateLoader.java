@@ -210,6 +210,11 @@ public class GeoServerTemplateLoader implements TemplateLoader {
                 //next try relative to the workspace
                 template = dd.findSuppWorkspaceFile( resource.getStore().getWorkspace(), path);
             }
+            
+            if ( template == null) {
+                // try global supplementary files
+                template = dd.findSuppWorkspacesFile( resource.getStore().getWorkspace(), path);
+            }
 
             if ( template != null ) {
                 return template;

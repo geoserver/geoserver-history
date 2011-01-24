@@ -69,6 +69,17 @@ public class GeoServerTemplateLoader2Test extends GeoServerTestSupport {
         assertNotNull(tl.findTemplateSource( "dummy.ftl"));
     }
     
+    public void testGlobal() throws IOException {
+        assertNull(tl.findTemplateSource( "dummy.ftl"));
+        
+        FeatureTypeInfo ft = cat.getFeatureTypeByName( "PrimitiveGeoFeature");
+        tl.setFeatureType( ft );
+        assertNull(tl.findTemplateSource( "dummy.ftl"));
+        
+        dd.copyToWorkspacesDir( template(), "dummy.ftl" );
+        assertNotNull(tl.findTemplateSource( "dummy.ftl"));
+    }
+    
     public void testRemoteType() throws Exception {
         SimpleFeatureType ft = DataUtilities.createType("remoteType", "the_geom:MultiPolygon,FID:String,ADDRESS:String");
         tl.setFeatureType(ft);
