@@ -883,4 +883,137 @@ public abstract class DataReferenceWfsOnlineTest extends AbstractDataReferenceWf
 
     }
 
+    /**
+     * Test if we can filter on nested client properties
+     */
+    public void testFilterOnNestedAttribute() {
+        String xml = //
+        "<wfs:GetFeature " //
+                + "service=\"WFS\" " //
+                + "version=\"1.1.0\" " //
+                + "xmlns:cdf=\"http://www.opengis.net/cite/data\" " //
+                + "xmlns:ogc=\"http://www.opengis.net/ogc\" " //
+                + "xmlns:wfs=\"http://www.opengis.net/wfs\" " //
+                + "xmlns:gml=\"http://www.opengis.net/gml\" " //
+                + "xmlns:gsml=\""
+                + AbstractAppSchemaMockData.GSML_URI
+                + "\" " //
+                + ">" //
+                + "    <wfs:Query typeName=\"gsml:GeologicUnit\">" //
+                + "        <ogc:Filter>" //
+                + "            <ogc:PropertyIsEqualTo>" //
+                + "                <ogc:PropertyName>gsml:GeologicUnit/gsml:composition/gsml:CompositionPart/gsml:proportion/gsml:CGI_TermValue/gsml:value</ogc:PropertyName>" //
+                + "                <ogc:Literal>significant</ogc:Literal>" //
+                + "            </ogc:PropertyIsEqualTo>" //
+                + "        </ogc:Filter>" //
+                + "    </wfs:Query> " //
+                + "</wfs:GetFeature>";
+        Document doc = postAsDOM("wfs", xml);
+        LOGGER.info("WFS filter GetFeature response:\n" + prettyString(doc));
+        assertXpathCount(3, "//gsml:GeologicUnit", doc);
+        assertXpathCount(1, "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.167775491107848330']",
+                doc);
+        assertXpathCount(1, "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.16777549126930540']",
+                doc);
+        assertXpathCount(1, "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.16777549126932776']",
+                doc);
+
+        assertXpathEvaluatesTo(
+                "significant",
+                "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.16777549126930540']/gsml:composition/gsml:CompositionPart/gsml:proportion/gsml:CGI_TermValue/gsml:value",
+                doc);
+        assertXpathEvaluatesTo(
+                "urn:cgi:classifierScheme:GSV:Proportion",
+                "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.16777549126930540']/gsml:composition/gsml:CompositionPart/gsml:proportion/gsml:CGI_TermValue/gsml:value/@codeSpace",
+                doc);
+        this.checkGU16777549126930540(doc);
+        this.checkGU16777549126932776(doc);
+
+        xml = //
+        "<wfs:GetFeature " //
+                + "service=\"WFS\" " //
+                + "version=\"1.1.0\" " //
+                + "xmlns:cdf=\"http://www.opengis.net/cite/data\" " //
+                + "xmlns:ogc=\"http://www.opengis.net/ogc\" " //
+                + "xmlns:wfs=\"http://www.opengis.net/wfs\" " //
+                + "xmlns:gml=\"http://www.opengis.net/gml\" " //
+                + "xmlns:gsml=\""
+                + AbstractAppSchemaMockData.GSML_URI
+                + "\" " //
+                + ">" //
+                + "    <wfs:Query typeName=\"gsml:GeologicUnit\">" //
+                + "        <ogc:Filter>" //
+                + "            <ogc:PropertyIsEqualTo>" //
+                + "                <ogc:PropertyName>gsml:GeologicUnit/gsml:composition/gsml:CompositionPart/gsml:proportion/gsml:CGI_TermValue/gsml:value/@codeSpace</ogc:PropertyName>" //
+                + "                <ogc:Literal>urn:cgi:classifierScheme:GSV:Proportion</ogc:Literal>" //
+                + "            </ogc:PropertyIsEqualTo>" //
+                + "        </ogc:Filter>" //
+                + "    </wfs:Query> " //
+                + "</wfs:GetFeature>";
+        doc = postAsDOM("wfs", xml);
+        LOGGER.info("WFS filter GetFeature response:\n" + prettyString(doc));
+        assertXpathCount(7, "//gsml:GeologicUnit", doc);
+
+        assertXpathCount(1, "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.167775491107838594']",
+                doc);
+        assertXpathCount(1, "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.167775491107838781']",
+                doc);
+        assertXpathCount(1, "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.167775491107838810']",
+                doc);
+        assertXpathCount(1, "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.167775491107848330']",
+                doc);
+        assertXpathCount(1, "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.1677754911513315832']",
+                doc);
+        assertXpathCount(1, "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.16777549126930540']",
+                doc);
+        assertXpathCount(1, "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.16777549126932776']",
+                doc);
+
+        assertXpathEvaluatesTo(
+                "urn:cgi:classifierScheme:GSV:Proportion",
+                "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.1677754911513315832']/gsml:composition/gsml:CompositionPart/gsml:proportion/gsml:CGI_TermValue/gsml:value/@codeSpace",
+                doc);
+        assertXpathEvaluatesTo(
+                "all",
+                "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.1677754911513315832']/gsml:composition/gsml:CompositionPart/gsml:proportion/gsml:CGI_TermValue/gsml:value",
+                doc);
+    }
+
+    public void testFilterOnPolymorphicFeatures() {
+        String xml = "<wfs:GetFeature service=\"WFS\" version=\"1.1.0\" xmlns:cdf=\"http://www.opengis.net/cite/data\" "
+                + "xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:wfs=\"http://www.opengis.net/wfs\" "
+                + "xmlns:gml=\"http://www.opengis.net/gml\" xmlns:gsml=\""
+                + AbstractAppSchemaMockData.GSML_URI
+                + "\">"
+                + "<wfs:Query typeName=\"gsml:GeologicUnit\">"
+                + "    <ogc:Filter>"
+                + "        <ogc:Or>"
+                + "            <ogc:PropertyIsEqualTo>"
+                + "                <ogc:Literal>900.0</ogc:Literal>"
+                + "                <ogc:PropertyName>gsml:GeologicUnit/gsml:physicalProperty/gsml:PhysicalDescription/gsml:magneticSusceptibility/gsml:CGI_NumericValue/gsml:principalValue</ogc:PropertyName>"
+                + "            </ogc:PropertyIsEqualTo>"
+                + "            <ogc:PropertyIsEqualTo>"
+                + "                 <ogc:Literal>urn:ogc:def:uom:UCUM::SI</ogc:Literal>"
+                + "                 <ogc:PropertyName>gsml:GeologicUnit/gsml:physicalProperty/gsml:PhysicalDescription/gsml:magneticSusceptibility/gsml:CGI_NumericRange/gsml:upper/gsml:CGI_NumericValue/gsml:principalValue/@uom</ogc:PropertyName>"
+                + "            </ogc:PropertyIsEqualTo>"
+                + "        </ogc:Or>"
+                + "    </ogc:Filter>" + "</wfs:Query> " + "</wfs:GetFeature>";
+        //
+        Document doc = postAsDOM("wfs", xml);
+        LOGGER.info("WFS filter GetFeature response:\n" + prettyString(doc));
+
+        assertXpathEvaluatesTo(
+                "900.0",
+                "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.167775491110573732']/gsml:physicalProperty/gsml:PhysicalDescription/gsml:magneticSusceptibility/gsml:CGI_NumericValue/gsml:principalValue",
+                doc);
+        assertXpathEvaluatesTo(
+                "urn:ogc:def:uom:UCUM::SI",
+                "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.16777549126932776']/gsml:physicalProperty/gsml:PhysicalDescription/gsml:magneticSusceptibility/gsml:CGI_NumericRange/gsml:upper/gsml:CGI_NumericValue/gsml:principalValue/@uom",
+                doc);
+        assertXpathEvaluatesTo(
+                "2700.0",
+                "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.16777549126932776']/gsml:physicalProperty/gsml:PhysicalDescription/gsml:magneticSusceptibility/gsml:CGI_NumericRange/gsml:upper/gsml:CGI_NumericValue/gsml:principalValue",
+                doc);
+    }
+
 }
