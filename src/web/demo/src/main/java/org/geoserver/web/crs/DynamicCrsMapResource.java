@@ -92,7 +92,7 @@ public class DynamicCrsMapResource extends WebResource {
         }
 
         public long length() {
-            return 0;
+            return content == null? 0 : content.length;
         }
 
         public Locale getLocale() {
