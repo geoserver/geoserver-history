@@ -153,18 +153,9 @@ public class NewLayerPage extends GeoServerSecuredPage {
         selectLayersContainer.add(createWMSLayerImportContainer);
         
         // case where the store is selected, or we have just created new one
-        // we might move this into seperate method, and also include 
-        // createTypeContainer and createSQLViewContainer as well?
         if(storeId != null) {
             StoreInfo store = getCatalog().getStore(storeId, StoreInfo.class);
-            if(store instanceof WMSStoreInfo) {
-                try {
-                    WebMapServer wms = ((WMSStoreInfo)store).getWebMapServer(null);
-                    createWMSLayerImportContainer.setVisible(wms != null);
-                } catch (IOException e) {
-                    
-                }
-            }
+            updateSpecialFunctionPanels(store);
         }
     }
     
@@ -230,26 +221,7 @@ public class NewLayerPage extends GeoServerSecuredPage {
                         selectLayers.setVisible(false);
                     }
                     
-                    // at the moment just assume every store can create types
-                    // TODO: actually use some new caps code to support selective enabling
-                    createTypeContainer.setVisible(store instanceof DataStoreInfo);
-                    if(store instanceof DataStoreInfo) {
-                        try {
-                            DataAccess da = ((DataStoreInfo) store).getDataStore(null);
-                            createSQLViewContainer.setVisible(da instanceof JDBCDataStore);
-                        } catch(IOException e) {
-                            
-                        }
-                    }
-                    
-                    if(store instanceof WMSStoreInfo) {
-                        try {
-                            WebMapServer wms = ((WMSStoreInfo)store).getWebMapServer(null);
-                            createWMSLayerImportContainer.setVisible(wms != null);
-                        } catch (IOException e) {
-                            
-                        }
-                    }
+                    updateSpecialFunctionPanels(store);
                     
                 } else {
                     selectLayers.setVisible(false);
@@ -275,6 +247,28 @@ public class NewLayerPage extends GeoServerSecuredPage {
             }
 
         };
+    }
+    
+    void updateSpecialFunctionPanels(StoreInfo store) {
+        // at the moment just assume every store can create types
+        createTypeContainer.setVisible(store instanceof DataStoreInfo);
+        if(store instanceof DataStoreInfo) {
+            try {
+                DataAccess da = ((DataStoreInfo) store).getDataStore(null);
+                createSQLViewContainer.setVisible(da instanceof JDBCDataStore);
+            } catch(IOException e) {
+                
+            }
+        }
+        
+        if(store instanceof WMSStoreInfo) {
+            try {
+                WebMapServer wms = ((WMSStoreInfo)store).getWebMapServer(null);
+                createWMSLayerImportContainer.setVisible(wms != null);
+            } catch (IOException e) {
+                
+            }
+        }
     }
 
     /**
