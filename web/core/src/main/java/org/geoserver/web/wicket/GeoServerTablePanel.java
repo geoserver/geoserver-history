@@ -25,6 +25,8 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.markup.repeater.DefaultItemReuseStrategy;
+import org.apache.wicket.markup.repeater.IItemReuseStrategy;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.ReuseIfModelsEqualStrategy;
 import org.apache.wicket.markup.repeater.data.DataView;
@@ -199,6 +201,14 @@ public abstract class GeoServerTablePanel<T> extends Panel {
     }
     
     /**
+     * Sets the item reuse strategy for the table. Should be {@link ReuseIfModelsEqualStrategy} if
+     * you're building an editable table, {@link DefaultItemReuseStrategy} otherwise
+     */
+    public void setItemReuseStrategy(IItemReuseStrategy strategy) {
+        dataView.setItemReuseStrategy(strategy);
+    }
+    
+    /**
      * Whether this table will have sortable headers, or not 
      * @param sortable
      */
@@ -261,6 +271,7 @@ public abstract class GeoServerTablePanel<T> extends Panel {
         int i = 0;
         for (Iterator it = dataView.iterator(); it.hasNext();) {
             Item  item = (Item) it.next();
+            System.out.println(item.getModelObject());
             if(selection[i]) {
                 result.add((T) item.getModelObject());
             }
@@ -411,6 +422,15 @@ public abstract class GeoServerTablePanel<T> extends Panel {
         target.addComponent(navigatorTop);
         target.addComponent(navigatorBottom);
     }
+    
+    /**
+     * Sets back to the first page, clears the selection and 
+     */
+    public void reset() {
+        dataView.setCurrentPage(0);
+        clearSelection();
+        dataProvider.setSort(null);
+    }
 
     /**
      * Turns filtering abilities on/off.
@@ -557,5 +577,7 @@ public abstract class GeoServerTablePanel<T> extends Panel {
             dataView.setItemsPerPage(DEFAULT_ITEMS_PER_PAGE);
         }
     }
+    
+    
     
 }

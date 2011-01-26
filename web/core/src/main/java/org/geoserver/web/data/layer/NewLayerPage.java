@@ -40,12 +40,14 @@ import org.geoserver.catalog.WMSLayerInfo;
 import org.geoserver.catalog.WMSStoreInfo;
 import org.geoserver.web.CatalogIconFactory;
 import org.geoserver.web.GeoServerSecuredPage;
+import org.geoserver.web.data.importer.WMSLayerImporterPage;
 import org.geoserver.web.data.resource.ResourceConfigurationPage;
+import org.geoserver.web.wicket.GeoServerDataProvider.Property;
 import org.geoserver.web.wicket.GeoServerTablePanel;
 import org.geoserver.web.wicket.ParamResourceModel;
 import org.geoserver.web.wicket.SimpleAjaxLink;
-import org.geoserver.web.wicket.GeoServerDataProvider.Property;
 import org.geotools.data.DataAccess;
+import org.geotools.data.wms.WebMapServer;
 import org.geotools.jdbc.JDBCDataStore;
 
 /**
@@ -66,6 +68,7 @@ public class NewLayerPage extends GeoServerSecuredPage {
     private Label storeName;
     private WebMarkupContainer createTypeContainer;
     private WebMarkupContainer createSQLViewContainer;
+    private WebMarkupContainer createWMSLayerImportContainer;
     
     public NewLayerPage() {
         this(null);
@@ -143,6 +146,26 @@ public class NewLayerPage extends GeoServerSecuredPage {
         createSQLViewContainer.setVisible(false);
         createSQLViewContainer.add(newSQLViewLink());
         selectLayersContainer.add(createSQLViewContainer);
+        
+        createWMSLayerImportContainer = new WebMarkupContainer("createWMSLayerImportContainer");
+        createWMSLayerImportContainer.setVisible(false);
+        createWMSLayerImportContainer.add(newWMSImportLink());
+        selectLayersContainer.add(createWMSLayerImportContainer);
+        
+        // case where the store is selected, or we have just created new one
+        // we might move this into seperate method, and also include 
+        // createTypeContainer and createSQLViewContainer as well?
+        if(storeId != null) {
+            StoreInfo store = getCatalog().getStore(storeId, StoreInfo.class);
+            if(store instanceof WMSStoreInfo) {
+                try {
+                    WebMapServer wms = ((WMSStoreInfo)store).getWebMapServer(null);
+                    createWMSLayerImportContainer.setVisible(wms != null);
+                } catch (IOException e) {
+                    
+                }
+            }
+        }
     }
     
     Component newFeatureTypeLink() {
@@ -164,7 +187,19 @@ public class NewLayerPage extends GeoServerSecuredPage {
             public void onClick(AjaxRequestTarget target) {
                 DataStoreInfo ds = getCatalog().getStore(storeId, DataStoreInfo.class);
                 PageParameters pp = new PageParameters("wsName=" + ds.getWorkspace().getName() + ",storeName=" + ds.getName());
-                setResponsePage(SQLViewNewPage.class, pp);                
+                setResponsePage(SQLViewNewPage.class, pp);
+            }
+        };
+    }
+    
+    Component newWMSImportLink() {
+        return new AjaxLink("createWMSImport") {
+            
+            @Override
+            public void onClick(AjaxRequestTarget target) {
+                WMSStoreInfo wms = getCatalog().getStore(storeId, WMSStoreInfo.class);
+                PageParameters pp = new PageParameters("storeId=" + storeId);
+                setResponsePage(WMSLayerImporterPage.class, pp);
             }
         };
     }
@@ -207,6 +242,14 @@ public class NewLayerPage extends GeoServerSecuredPage {
                         }
                     }
                     
+                    if(store instanceof WMSStoreInfo) {
+                        try {
+                            WebMapServer wms = ((WMSStoreInfo)store).getWebMapServer(null);
+                            createWMSLayerImportContainer.setVisible(wms != null);
+                        } catch (IOException e) {
+                            
+                        }
+                    }
                     
                 } else {
                     selectLayers.setVisible(false);
