@@ -8,8 +8,17 @@ import static org.geoserver.ows.util.ResponseUtils.buildSchemaURL;
 import static org.geoserver.ows.util.ResponseUtils.buildURL;
 import static org.geoserver.ows.util.ResponseUtils.params;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -20,6 +29,13 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.xml.namespace.QName;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 import net.opengis.wfs.BaseRequestType;
 import net.opengis.wfs.FeatureCollectionType;
@@ -41,11 +57,13 @@ import org.geoserver.wfs.xml.v1_1_0.WFS;
 import org.geoserver.wfs.xml.v1_1_0.WFSConfiguration;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.NameImpl;
+import org.geotools.feature.simple.SimpleFeatureTypeImpl;
 import org.geotools.gml3.GMLConfiguration;
 import org.geotools.xml.Configuration;
 import org.geotools.xml.Encoder;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.Name;
+import org.w3c.dom.Document;
 
 
 public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
@@ -54,6 +72,21 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
     Catalog catalog;
     GeoServerInfo global;
     WFSConfiguration configuration;
+    private static DOMSource xslt;
+    
+    static {
+        DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+        docFactory.setNamespaceAware(true);
+        Document xsdDocument = null;
+        try {
+            xsdDocument = docFactory.newDocumentBuilder().parse(
+                    GML3OutputFormat.class.getResourceAsStream("/ChangeNumberOfFeature.xslt"));
+            xslt = new DOMSource(xsdDocument);
+        } catch (Exception e) {
+            xslt = null;
+        }
+    }
+    
 
     public GML3OutputFormat(GeoServer geoServer, WFSConfiguration configuration) {
         this(new HashSet(Arrays.asList(new Object[] {"gml3", "text/xml; subtype=gml/3.1.1"})), 
@@ -79,7 +112,7 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
     }
 
     protected void write(FeatureCollectionType results, OutputStream output, Operation getFeature)
-        throws ServiceException, IOException {
+            throws ServiceException, IOException, UnsupportedEncodingException {
         List featureCollections = results.getFeature();
 
         // round up the info objects for each feature collection
@@ -204,8 +237,12 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
                 encoder.setSchemaLocation(namespaceURI, schemaLocation);
             }
         }
-
-        encode(results, output, encoder);
+        if (this.isComplexFeature(results)) {
+            complexFeatureStreamIntercept(results, output, encoder);
+        } else {
+            encode(results, output, encoder);
+        }
+        
     }
 
     protected Encoder createEncoder(Configuration configuration, 
@@ -216,5 +253,51 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
     protected void encode(FeatureCollectionType results, OutputStream output, Encoder encoder)
         throws IOException {
         encoder.encode(results, org.geoserver.wfs.xml.v1_1_0.WFS.FEATURECOLLECTION, output);
+    }
+    
+    private void complexFeatureStreamIntercept(FeatureCollectionType results, OutputStream output,
+            Encoder encoder) throws IOException {
+        if (xslt == null) {
+            throw new IOException("Unable to locate xslt resource file");
+        }
+
+        // Create a temporary file for the xml dump. _dump is added to ensure the hash create is
+        // more then 3 char.
+        File featureOut = File.createTempFile(output.hashCode() + "_dump", ".xml");
+        // create a buffered output stream to write the output from encode to disk first
+        BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(featureOut));
+        // create a buffered input stream to read the dumped xml file in
+        BufferedInputStream in = new BufferedInputStream(new FileInputStream(featureOut));
+        try {
+            // the output file has to be unique with each Class object to ensure concurrency
+            encode(results, out, encoder);
+            this.transform(in, xslt, output);
+        } catch (TransformerException e) {
+            throw new IOException("Error in xslt transformation");
+        } finally {
+            out.close();
+            in.close();
+            featureOut.delete();
+        }
+    }
+
+    private boolean isComplexFeature(FeatureCollectionType results) {
+        boolean hasComplex = false;
+        for (int fcIndex = 0; fcIndex < results.getFeature().size(); fcIndex++) {
+            if (!(((FeatureCollection) results.getFeature().get(0)).getSchema() instanceof SimpleFeatureTypeImpl)) {
+                hasComplex = true;
+                break;
+            }
+        }
+        return hasComplex;
+    }
+
+    public void transform(InputStream in, DOMSource xslt, OutputStream out)
+            throws TransformerException {
+        TransformerFactory factory = TransformerFactory.newInstance();
+        Transformer transformer = (xslt == null ? factory.newTransformer() : factory
+                .newTransformer(xslt));
+
+        transformer.transform(new StreamSource(in), new StreamResult(out));
     }
 }
