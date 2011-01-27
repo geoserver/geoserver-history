@@ -7,12 +7,9 @@ package org.geoserver;
 import java.beans.Introspector;
 import java.sql.Driver;
 import java.sql.DriverManager;
-import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.Formattable;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -35,19 +32,16 @@ import org.geoserver.platform.GeoServerExtensions;
 import org.geotools.data.DataAccessFinder;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.factory.CommonFactoryFinder;
-import org.geotools.factory.GeoTools;
 import org.geotools.factory.Hints;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.ReferencingFactoryFinder;
 import org.geotools.referencing.factory.AbstractAuthorityFactory;
 import org.geotools.referencing.factory.DeferredAuthorityFactory;
-import org.geotools.referencing.operation.DefaultMathTransformFactory;
 import org.geotools.resources.image.ImageUtilities;
 import org.geotools.util.WeakCollectionCleaner;
 import org.geotools.util.logging.Logging;
 import org.opengis.referencing.AuthorityFactory;
 import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.operation.MathTransformFactory;
 
 /**
  * Listens for GeoServer startup and tries to configure axis order, logging
