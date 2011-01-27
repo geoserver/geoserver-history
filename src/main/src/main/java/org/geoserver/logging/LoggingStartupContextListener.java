@@ -70,8 +70,9 @@ public class LoggingStartupContextListener implements ServletContextListener {
                     BufferedInputStream in = new BufferedInputStream( new FileInputStream( f ) );
                     try {
                         LoggingInfo loginfo = xp.load(in,LoggingInfo.class);
+                        final String location = getLogFileLocation(loginfo.getLocation());
                         LoggingUtils.initLogging(loader, loginfo.getLevel(), !loginfo.isStdOutLogging(),
-                            loginfo.getLocation());
+                            location);
                     }
                     finally {
                         in.close();
@@ -83,8 +84,9 @@ public class LoggingStartupContextListener implements ServletContextListener {
                     if ( f != null ) {
                         LegacyLoggingImporter loggingImporter = new LegacyLoggingImporter();
                         loggingImporter.imprt(baseDir);
+                        final String location = getLogFileLocation(loggingImporter.getLogFile());
                         LoggingUtils.initLogging(loader, loggingImporter.getConfigFileName(), loggingImporter
-                                .getSuppressStdOutLogging(), loggingImporter.getLogFile());
+                                .getSuppressStdOutLogging(), location);
                     }
                     else {
                         getLogger().log(Level.WARNING, "Could not find configuration file for logging");
@@ -93,6 +95,21 @@ public class LoggingStartupContextListener implements ServletContextListener {
             } catch (Exception e) {
                 getLogger().log(Level.SEVERE, "Could not configure log4j overrides", e);
             }
+        }
+    }
+
+    /**
+     * Finds the log location in the "context" (system variable, env variable, servlet context)
+     * or uses the provided base location otherwise 
+     * @param loginfo
+     * @return
+     */
+    private String getLogFileLocation(String baseLocation) {
+        String location = GeoServerExtensions.getProperty(LoggingUtils.GEOSERVER_LOG_LOCATION);
+        if(location == null) {
+            return baseLocation;
+        } else {
+            return location;
         }
     }
     
