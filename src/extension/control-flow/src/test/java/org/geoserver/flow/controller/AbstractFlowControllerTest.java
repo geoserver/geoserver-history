@@ -64,7 +64,7 @@ public abstract class AbstractFlowControllerTest extends TestCase {
             while (t.isAlive()) {
                 if (System.currentTimeMillis() > (start + maxWait)) {
                     // forcefully destroy the thread
-                    t.destroy();
+                    t.interrupt();
                 }
 
                 Thread.currentThread().sleep(20);
