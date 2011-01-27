@@ -22,6 +22,7 @@ public class LoggingUtils {
     
     public static final String RELINQUISH_LOG4J_CONTROL = "RELINQUISH_LOG4J_CONTROL";  
     public static final String GT2_LOGGING_REDIRECTION = "GT2_LOGGING_REDIRECTION";
+    public static final String GEOSERVER_LOG_LOCATION = "GEOSERVER_LOG_LOCATION";
     public static enum GeoToolsLoggingRedirection {
         JavaLogging, CommonsLogging, Log4J;
         
