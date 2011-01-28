@@ -33,8 +33,9 @@ public interface ExtendedCapabilitiesProvider {
      * case the path will be appended to the base url from which the capabilities document is being
      * requested from.
      * </p>
+     * @param schemaBaseURL 
      */
-    String[] getSchemaLocations();
+    String[] getSchemaLocations(String schemaBaseURL);
 
     /**
      * Returns the element names that are direct children of {@code VendorSpecificCapabilities}
