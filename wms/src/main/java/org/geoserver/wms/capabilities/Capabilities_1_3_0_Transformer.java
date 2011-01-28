@@ -138,42 +138,10 @@ public class Capabilities_1_3_0_Transformer extends TransformerBase {
 
     @Override
     public Translator createTranslator(ContentHandler handler) {
-        StringBuffer schemaLocation = new StringBuffer();
-        schemaLocation.append(schemaLocation(NAMESPACE, "wms/1.3.0/capabilities_1_3_0.xsd"));
-
-        for (ExtendedCapabilitiesProvider cp : extCapsProviders) {
-            String[] locations = cp.getSchemaLocations();
-            try {
-                for (int i = 0; i < locations.length-1; i+=2) {
-                    schemaLocation.append(" ");
-                    schemaLocation.append(schemaLocation(locations[i], locations[i+1]));
-                }
-            }
-            catch(ArrayIndexOutOfBoundsException e) {
-                throw new ServiceException("Extended capabilities provider returned improper " +
-                    "set of namespace,location pairs from getSchemaLocations()", e);
-            }
-        }
-        
-        return new Capabilities_1_3_0_Translator(
-            handler, wmsConfig, getMapFormats, extCapsProviders, schemaLocation.toString());
+        return new Capabilities_1_3_0_Translator(handler, wmsConfig, getMapFormats,
+                extCapsProviders, schemaBaseURL);
     }
 
-    String schemaLocation(String namespace, String uri) {
-        String location = null;
-        try {
-            new URL(uri);
-            
-            //external location
-            location = uri;
-        }
-        catch(MalformedURLException e) {
-            //means the url is relative
-            location = buildSchemaURL(schemaBaseURL, uri);
-        }
-        
-        return namespace + " " + location;
-    }
     /**
      * @author Gabriel Roldan
      * @version $Id
@@ -200,26 +168,27 @@ public class Capabilities_1_3_0_Transformer extends TransformerBase {
 
         private WMS wmsConfig;
 
-        private String schemaLocation;
+        private String schemaBaseURL;
 
         /**
          * Creates a new CapabilitiesTranslator object.
          * 
          * @param handler
          *            content handler to send sax events to.
+         * @param schemaBaseURL 
          * @param schemaLoc
          * 
          */
         public Capabilities_1_3_0_Translator(ContentHandler handler, WMS wmsConfig,
-                Collection<GetMapOutputFormat> getMapFormats, 
-                Collection<ExtendedCapabilitiesProvider> extCapsProviders, String schemaLocation) {
+                Collection<GetMapOutputFormat> getMapFormats,
+                Collection<ExtendedCapabilitiesProvider> extCapsProviders, String schemaBaseURL) {
             super(handler, null, null);
             this.wmsConfig = wmsConfig;
             this.getMapFormats = getMapFormats;
             this.extCapsProviders = extCapsProviders;
-            this.schemaLocation = schemaLocation;
+            this.schemaBaseURL = schemaBaseURL;
             
-            //register namespaces provided by extended capabilities
+            // register namespaces provided by extended capabilities
             for (ExtendedCapabilitiesProvider cp : extCapsProviders) {
                 cp.registerNamespaces(getNamespaceSupport());
             }
@@ -254,6 +223,7 @@ public class Capabilities_1_3_0_Transformer extends TransformerBase {
                         request).toString());
             }
 
+            String schemaLocation = buildSchemaLocation();
             String updateSequence = String.valueOf(wmsConfig.getUpdateSequence());
             AttributesImpl rootAtts = attributes("version", "1.3.0", "updateSequence",
                     updateSequence, "xmlns", NAMESPACE, "xmlns:xlink", XLINK_NS, "xmlns:xsi",
@@ -265,6 +235,41 @@ public class Capabilities_1_3_0_Transformer extends TransformerBase {
             end("WMS_Capabilities");
         }
 
+        private String buildSchemaLocation() {
+            StringBuffer schemaLocation = new StringBuffer();
+            schemaLocation.append(schemaLocation(NAMESPACE, "wms/1.3.0/capabilities_1_3_0.xsd"));
+
+            for (ExtendedCapabilitiesProvider cp : extCapsProviders) {
+                String[] locations = cp.getSchemaLocations(schemaBaseURL);
+                try {
+                    for (int i = 0; i < locations.length - 1; i += 2) {
+                        schemaLocation.append(" ");
+                        schemaLocation.append(schemaLocation(locations[i], locations[i + 1]));
+                    }
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    throw new ServiceException("Extended capabilities provider returned improper "
+                            + "set of namespace,location pairs from getSchemaLocations()", e);
+                }
+            }
+
+            return schemaLocation.toString();
+        }
+
+        String schemaLocation(String namespace, String uri) {
+            String location = null;
+            try {
+                new URL(uri);
+
+                // external location
+                location = uri;
+            } catch (MalformedURLException e) {
+                // means the url is relative
+                location = buildSchemaURL(schemaBaseURL, uri);
+            }
+
+            return namespace + " " + location;
+        }
+        
         /**
          * Encodes the service metadata section of a WMS capabilities document.
          */

@@ -42,7 +42,7 @@ public class CachingExtendedCapabilitiesProvider implements ExtendedCapabilities
     /**
      * @see org.geoserver.wms.ExtendedCapabilitiesProvider#getSchemaLocations()
      */
-    public String[] getSchemaLocations() {
+    public String[] getSchemaLocations(String schemaBaseURL) {
         return new String[0];
     }
 

@@ -8,6 +8,8 @@ import java.util.Collections;
 import java.util.List;
 
 import org.geoserver.config.ContactInfo;
+import org.geoserver.ows.URLMangler.URLType;
+import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.wms.ExtendedCapabilitiesProvider;
 import org.geoserver.wms.GetCapabilitiesRequest;
 import org.geoserver.wms.WMS;
@@ -21,8 +23,10 @@ public class WMSExtendedCapabilitiesProvider implements ExtendedCapabilitiesProv
 
     public static final String NAMESPACE = "http://inspire.europa.eu/networkservice/view/1.0";
 
-    public String[] getSchemaLocations() {
-        return new String[] { NAMESPACE, "www/inspire/inspire_vs.xsd" };
+    public String[] getSchemaLocations(String schemaBaseURL) {
+        String schemaLocation = ResponseUtils.buildURL(schemaBaseURL, "www/inspire/inspire_vs.xsd",
+                null, URLType.RESOURCE);
+        return new String[] { NAMESPACE, schemaLocation };
     }
 
     /**
