@@ -247,7 +247,7 @@ public class GetCapabilitiesTransformerTest extends TestCase {
     public void testVendorSpecificCapabilities() throws Exception {
         ExtendedCapabilitiesProvider vendorCapsProvider = new ExtendedCapabilitiesProvider() {
 
-            public String[] getSchemaLocations() {
+            public String[] getSchemaLocations(String schemaBaseURL) {
                 throw new UnsupportedOperationException();
             }
 
