@@ -195,7 +195,7 @@ public abstract class AbstractDataReferenceWfsTest extends AbstractAppSchemaWfsT
                         // no fixture file, if no profile was specified write out a template
                         // fixture using the offline fixture properties
                         if (profile == null) {
-                            Properties exampleFixture = null;
+                            Properties exampleFixture = createExampleFixture();
                             if (exampleFixture != null) {
                                 File exFixtureFile = new File(fixtureFile.getAbsolutePath()
                                         + ".example");
@@ -219,13 +219,17 @@ public abstract class AbstractDataReferenceWfsTest extends AbstractAppSchemaWfsT
         }
     }
 
+    protected Properties createExampleFixture() {
+        return this.setup.createExampleFixture();
+    }
+
     /**
      * Creates Example Fixture
      * 
      * @param exFixtureFile
      * @param exampleFixture
      */
-    void createExampleFixture(File exFixtureFile, Properties exampleFixture) {
+    protected void createExampleFixture(File exFixtureFile, Properties exampleFixture) {
         try {
             exFixtureFile.getParentFile().mkdirs();
             exFixtureFile.createNewFile();

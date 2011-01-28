@@ -7,6 +7,7 @@ package org.geoserver.test.onlineTest.support;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.Statement;
+import java.util.Properties;
 
 import org.geotools.jdbc.JDBCDataStoreFactory;
 import org.geotools.jdbc.JDBCTestSetup;
@@ -27,6 +28,8 @@ public abstract class AbstractReferenceDataSetup extends JDBCTestSetup {
 
     // Setup the data.
     public abstract void setUp() throws Exception;
+    
+    protected abstract Properties createExampleFixture();
 
     public void setUpData() throws Exception {
         super.setUpData();

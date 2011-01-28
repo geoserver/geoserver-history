@@ -68,19 +68,21 @@ public class ReferenceDataPostgisSetup extends AbstractReferenceDataSetup {
 
     @Override
     public void setUp() throws Exception {
-        runSqlInsertScript();       
+        runSqlInsertScript();
     }
 
     @Override
     protected Properties createExampleFixture() {
         Properties fixture = new Properties();
-        fixture.put("driver", "org.postgresql.Driver");
-        fixture.put("url", "jdbc:postgresql://localhost/mydbname");
-        fixture.put("host", "localhost");
-        fixture.put("database", "mydbname");
+        fixture.put("password", "MyPassword");
+        fixture.put("passwd", "MyPassword");
+        fixture.put("user", "user");
         fixture.put("port", "5432");
-        fixture.put("user", "myuser");
-        fixture.put("password", "mypassword");
+        fixture.put("url", "jdbc:postgresql://MyHost/MyDatabase");
+        fixture.put("host", "MyHost");
+        fixture.put("database", "MyDatabase");
+        fixture.put("driver", "org.postgresql.Driver");
+        fixture.put("dbtype", "postgisng");
         return fixture;
     }
 

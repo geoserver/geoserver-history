@@ -47,13 +47,14 @@ public class ReferenceDataOracleSetup extends AbstractReferenceDataSetup {
     @Override
     protected Properties createExampleFixture() {
         Properties fixture = new Properties();
-        fixture.put("driver", "oracle.jdbc.driver.OracleDriver");
-        fixture.put("url", "jdbc:oracle:thin:@192.168.1.200:1521:xe");
-        fixture.put("host", "192.168.1.200");
+        fixture.put("password", "MyPassword");
+        fixture.put("passwd", "MyPassword");
+        fixture.put("user", "user");
         fixture.put("port", "1521");
-        fixture.put("database", "xe");
-        fixture.put("username", "geoserver");
-        fixture.put("password", "postgis");
+        fixture.put("url", "jdbc:oracle:thin:@MyHost:1521:MyDatabase");
+        fixture.put("host", "MyHost");
+        fixture.put("database", "MyDatabase");
+        fixture.put("driver", "oracle.jdbc.driver.OracleDriver");
         fixture.put("dbtype", "Oracle");
         return fixture;
     }
