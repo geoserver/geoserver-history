@@ -7,6 +7,7 @@ package org.geoserver.ows;
 import java.util.Map;
 
 import org.geoserver.config.GeoServer;
+import org.geoserver.platform.GeoServerExtensions;
 
 /**
  * A URL mangler that replaces the base URL with the proxied one
@@ -21,7 +22,13 @@ public class ProxifyingURLMangler implements URLMangler {
 
     public void mangleURL(StringBuilder baseURL, StringBuilder path, Map<String, String> kvp,
             URLType type) {
-        String proxyBase = geoServer.getGlobal().getProxyBaseUrl();
+        
+        //first check the system property
+        String proxyBase = GeoServerExtensions.getProperty("PROXY_BASE_URL");
+        if (proxyBase == null) {
+            //if no system property fall back to configuration
+            proxyBase = geoServer.getGlobal().getProxyBaseUrl();
+        }
 
         // perform the replacement if the proxy base is set
         if (proxyBase != null && proxyBase.trim().length() > 0) {
