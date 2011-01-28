@@ -1,5 +1,6 @@
 package org.geoserver.data.util;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -19,6 +20,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 import org.geotools.util.logging.Logging;
@@ -290,6 +292,30 @@ public class IOUtils {
             }
         }
         zipout.flush();
+    }
+    
+    public static void decompress(InputStream input, File destDir) throws IOException {
+        ZipInputStream zin = new ZipInputStream(input);
+        ZipEntry entry = null;
+        
+        byte[] buffer = new byte[1024];
+        while((entry = zin.getNextEntry()) != null) {
+            File f = new File(destDir, entry.getName()); 
+            if (entry.isDirectory()) {
+                f.mkdirs();
+                continue;
+            }
+            
+            BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(f));
+            
+            int n = -1;
+            while((n = zin.read(buffer)) != -1) {
+                out.write(buffer, 0, n);
+            }
+            
+            out.flush();
+            out.close();
+        }
     }
     
     public static void decompress(final File inputFile, final File destDir)
