@@ -53,7 +53,7 @@ Var PortHWND
 ;Version Information (Version tab for EXE properties)
 ;VIProductVersion ${LONGVERSION}
 ;VIAddVersionKey ProductName "${APPNAME}"
-;VIAddVersionKey LegalCopyright "Copyright (c) 1999 - 2010 The Open Planning Project"
+;VIAddVersionKey LegalCopyright "Copyright (c) 1999 - 2011 The Open Planning Project"
 ;VIAddVersionKey FileDescription "GeoServer Installer"
 ;VIAddVersionKey ProductVersion "${VERSION}"
 ;VIAddVersionKey FileVersion "${VERSION}"
@@ -215,10 +215,10 @@ Function JRE
 
   ${NSD_CreateLabel} 0 0 100% 36u "Please select the path to your Java Runtime Environment (JRE).\
                                    $\r$\n$\r$\nIf you don't have a JRE installed, you can use the \
-                                   link below to go to Sun's website to download and install the \
+                                   link below to go to Oracle's website to download and install the \
                                    correct JRE for your system."
 
-  ${NSD_CreateLink} 12u 40u 100% 12u "http://java.sun.com/javase/downloads"
+  ${NSD_CreateLink} 12u 40u 100% 12u "http://www.oracle.com/technetwork/java/javase/downloads/index.html"
   Pop $LinkHWND
   ${NSD_OnClick} $LinkHWND Link
 
@@ -253,7 +253,7 @@ FunctionEnd
 Function Link
 
   Pop $0
-  ExecShell "open" "http://java.sun.com/javase/downloads"
+  ExecShell "open" "http://www.oracle.com/technetwork/java/javase/downloads/index.html"
 
 FunctionEnd
 
