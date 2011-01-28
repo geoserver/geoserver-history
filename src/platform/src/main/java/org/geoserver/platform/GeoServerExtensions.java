@@ -270,6 +270,22 @@ public class GeoServerExtensions implements ApplicationContextAware, Application
     }
     
     /**
+     * Looks up for a named string property in the order defined by 
+     * {@link #getProperty(String, ApplicationContext)} using the internally cached spring 
+     * application context.
+     * <p>
+     * Care should be taken when using this method. It should not be called during startup or from 
+     * tests cases as the internal context will not have been set.
+     * </p>
+     * @param propertyName The property name to lookup.
+     * 
+     * @return The property value, or null if not found 
+     */
+    public static String getProperty(String propertyName) {
+        return getProperty(propertyName, context);
+    }
+    
+    /**
      * Looks up for a named string property into the following contexts (in order):
      * <ul>
      * <li>System Property</li>
