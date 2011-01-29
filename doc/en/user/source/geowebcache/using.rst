@@ -18,7 +18,9 @@ When this feature is enabled, GeoServer WMS will cache and retrieve tiles from G
 #. All other request parameters (tile height and width) match up with a tile in the layer's gridset.
 #. There are no vendor-specific parameters (such as ``cql_filter``).
 
-In addition, when direct integration is enabled, the WMS capabilities document (via a GetCapabilties request) will only return the WMS-C vendor-specific capabilities elements (such as a ``<TileSet>`` element for each cached layer/CRS/format combination) if ``TILED=true`` is appended to the GetCapabilities request.
+In addition, when direct integration is enabled, the WMS capabilities document (via a GetCapabilities request) will only return the WMS-C vendor-specific capabilities elements (such as a ``<TileSet>`` element for each cached layer/CRS/format combination) if ``TILED=true`` is appended to the GetCapabilities request.
+
+.. note:: For more information on WMS-C, please see the `WMS Tiling Client Recommendation <http://wiki.osgeo.org/wiki/WMS_Tiling_Client_Recommendation>`_ from OSGeo.
 
 .. note:: GeoWebCache integration is not compatible with the OpenLayers-based :ref:`layerpreview`, as the preview does not usually align with the GeoWebCache layer gridset.  This is because the OpenLayers application calculates the tileorigin based on the layer's bounding box, which is different from the gridset.  It is, however, very possible to create an OpenLayers application that caches tiles; just make sure that the tileorigin aligns with the gridset.
 

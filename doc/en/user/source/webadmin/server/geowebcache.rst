@@ -15,24 +15,6 @@ GeoWebCache acts as a proxy between GeoServer and map client.  By default, GeoWe
 
 Enabling direct WMS integration allows WMS requests served through GeoServer to be cached as if they were received and processed by GeoWebCache.  This yields the flexibility of a WMS with the speed of a tile server.  See the section on :ref:`gwc_using` for more details about this feature.
 
-.. note::
-
-   To enable WMS integration without going through the UI, edit the :file:`wms.xml` file inside the :ref:`data_directory`.  Locate the following line:
-
-   .. code-block:: xml
-
-     <wms>
-       ...
-       <metadata>
-         ...
-         <entry key="GWC_WMS_Integration">false</entry>
-         ...
-       </metadata>
-       ...
-     </wms>
-
-   and change the value to ``true``. 
-
 Disk quota
 ----------
 
