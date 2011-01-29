@@ -9,4 +9,5 @@ GeoServer provides a variety of options to customize your service for different 
    :maxdepth: 2
 
    crshandling/index
+   logging
    wmsdecoration
