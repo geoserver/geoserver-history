@@ -41,7 +41,7 @@ public class LoggingStartupContextListener implements ServletContextListener {
         // setup GeoTools logging redirection (to log4j by default, but so that it can be overridden)
         final ServletContext context = event.getServletContext();
         GeoToolsLoggingRedirection logging = GeoToolsLoggingRedirection.findValue(
-                GeoServerExtensions.getProperty(LoggingUtils.RELINQUISH_LOG4J_CONTROL, 
+                GeoServerExtensions.getProperty(LoggingUtils.GT2_LOGGING_REDIRECTION, 
                 context));
         try {
             if(logging == GeoToolsLoggingRedirection.JavaLogging) {
