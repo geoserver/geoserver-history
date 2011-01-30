@@ -7,6 +7,8 @@ package org.geoserver.catalog.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.MetadataLinkInfo;
@@ -18,6 +20,7 @@ import org.geoserver.catalog.StoreInfo;
 import org.geotools.feature.NameImpl;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
+import org.geotools.util.logging.Logging;
 import org.opengis.feature.type.Name;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
@@ -27,6 +30,8 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
  */
 @SuppressWarnings("serial")
 public abstract class ResourceInfoImpl implements ResourceInfo {
+    
+    static final Logger LOGGER = Logging.getLogger(ResourceInfoImpl.class);
 
     protected String id;
 
@@ -190,8 +195,8 @@ public abstract class ResourceInfoImpl implements ResourceInfo {
           //back project from lat lon
           try {
               nativeBox = getLatLonBoundingBox().transform( declaredCRS , true );
-          }
-          catch( Exception e ) {
+          } catch( Exception e ) {
+              LOGGER.log(Level.WARNING, "Failed to derive native bbox from declared one", e);
               return null;
           }
       }
