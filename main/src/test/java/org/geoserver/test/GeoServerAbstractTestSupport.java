@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.Reader;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
@@ -766,15 +767,13 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
      * @return The result parsed as json.
      */
     protected JSON getAsJSON(final String path) throws Exception {
-        BufferedReader in = new BufferedReader( new InputStreamReader ( get( path ) ) );
-        StringBuffer json = new StringBuffer();
-        String line = null;
-        while( ( line = in.readLine() ) != null ) {
-            json.append( line );
-        }
-        in.close();
-        
-        return JSONSerializer.toJSON( json.toString() );
+        MockHttpServletResponse response = getAsServletResponse(path);
+        return json(response);
+    }
+    
+    protected JSON json(MockHttpServletResponse response) {
+        String content = response.getOutputStreamContent();
+        return JSONSerializer.toJSON(content);
     }
 
     /**
