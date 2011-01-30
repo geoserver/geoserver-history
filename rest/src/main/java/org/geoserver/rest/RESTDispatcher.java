@@ -91,6 +91,7 @@ public class RESTDispatcher extends AbstractController {
                 String reStr = re.getRepresentation().getText();
                 if ( reStr != null ) {
                     LOG.severe( reStr );
+                    resp.setContentType("text/plain");
                     resp.getOutputStream().write(reStr.getBytes());    
                 }
                 
