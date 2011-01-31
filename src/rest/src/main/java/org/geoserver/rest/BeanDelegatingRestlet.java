@@ -33,8 +33,11 @@ public class BeanDelegatingRestlet extends Restlet{
     }
 
     public void handle(Request req, Response res){
-        Object bean = context.getBean(beanName);
-        Restlet restlet = (Restlet)bean;
+        Restlet restlet = (Restlet)getBean();
         restlet.handle(req, res);
+    }
+    
+    public Restlet getBean() {
+        return (Restlet)context.getBean(beanName);
     }
 }
