@@ -45,7 +45,7 @@ An example GET request (again, assuming a GeoServer at ``http://localhost:8080/g
 
 Here, the important parameter here is the ``identifier=JTS:buffer``, as this defines what process to describe.  Multiple processes can be requested, separated by commas (for example, ``identifier=JTS:buffer,gs:Clip``), but at least one process must be specified.
 
-.. warning:: The names of processes are case sensitive.
+.. warning:: As with all OGC parameters, the keys (``request``, ``version``, etc) are case insensitive, and the values (``GetCapabilities``, ``JTS:buffer``, etc.) are case sensitive.  GeoServer is generally more relaxed about case, but it is good to be aware of the specification.
 
 The response to this request contains the following information:
 

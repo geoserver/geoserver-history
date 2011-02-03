@@ -13,14 +13,14 @@ GeoServer implements processes from two different categories:
 JTS Topology Suite processes
 ----------------------------
 
-`JTS Topology Suite <http://tsusiatsoftware.net/jts/main.html>`_ is a Java library of functions for processing geometries in two dimensions.  JTS conforms to the Simple Features Specification for SQL published by the Open Geospatial Consortium (OGC), similar to PostGIS.  JTS includes common spatial functions such as area, buffer, intersection, simplify and more.
+`JTS Topology Suite <http://tsusiatsoftware.net/jts/main.html>`_ is a Java library of functions for processing geometries in two dimensions.  JTS conforms to the Simple Features Specification for SQL published by the Open Geospatial Consortium (OGC), similar to PostGIS.  JTS includes common spatial functions such as area, buffer, intersection, and simplify.
 
 GeoServer WPS implements some of these functions as processes.  The names and definitions of these processes are subject to change, so they have not been included here.  For a full list of JTS processes, please see the GeoServer :ref:`WPS capabilities document <wps_getcaps>`.
 
 GeoServer processes
 -------------------
 
-GeoServer WPS includes a few processes created especially for use with GeoServer.  These are usually GeoServer-specific functions, such as bounds and reprojection.  These functions have the added bonus of being able to operate on existing layers in GeoServer, and can even write the output to a new GeoServer layer.  In this way, it is possible to perform full geospatial analysis remotely and via the web.
+GeoServer WPS includes a few processes created especially for use with GeoServer.  These are usually GeoServer-specific functions, such as bounds and reprojection.  They use an internal connection to the GeoServer WFS/WCS, not part of the WPS specification, for reading and writing data.
 
 As with JTS, the names and definitions of these processes are subject to change, so they have not been included here.  For a full list of GeoServer-specific processes, please see the GeoServer :ref:`WPS capabilities document <wps_getcaps>`.
 
