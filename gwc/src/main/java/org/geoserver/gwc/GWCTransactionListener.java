@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
@@ -110,7 +111,15 @@ public class GWCTransactionListener implements TransactionPlugin {
      *      boolean)
      */
     public void afterTransaction(final TransactionType request, boolean committed) {
+        try {
+            afterTransactionInternal(request, committed);
+        } catch (RuntimeException e) {
+            // Do never make the transaction fail due to a GWC error. Yell on the logs though
+            log.log(Level.WARNING, "Error trying to truncate the transaction affected area", e);
+        }
+    }
 
+    private void afterTransactionInternal(final TransactionType request, boolean committed) {
         final List<EObject> transactionElements = getTransactionElements(request);
 
         ReferencedEnvelope affectedBounds;
@@ -162,6 +171,16 @@ public class GWCTransactionListener implements TransactionPlugin {
      */
     public void dataStoreChange(final TransactionEvent event) throws WFSException {
 
+        try {
+            dataStoreChangeInternal(event);
+        } catch (RuntimeException e) {
+            // Do never make the transaction fail due to a GWC error. Yell on the logs though
+            log.log(Level.WARNING, "Error pre computing the transaction's affected area", e);
+        }
+
+    }
+
+    private void dataStoreChangeInternal(final TransactionEvent event) {
         final Object source = event.getSource();
         Assert.isTrue(source instanceof InsertElementType || source instanceof UpdateElementType
                 || source instanceof DeleteElementType);
@@ -204,7 +223,6 @@ public class GWCTransactionListener implements TransactionPlugin {
         } else {
             throw new IllegalArgumentException("Unrecognized transaction event type: " + type);
         }
-
     }
 
     private boolean isIgnorablePostEvent(final Object originatingTransactionRequest,
