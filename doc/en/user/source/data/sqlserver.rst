@@ -28,18 +28,20 @@ GeoServer files
 
 #. Extract the contents of the archive into the ``WEB-INF/lib`` directory of the GeoServer installation.
 
-Required external files
-```````````````````````
+Microsoft files
+```````````````
 
 #. Navigate to `Microsoft's JDBC driver download page <http://msdn.microsoft.com/en-us/data/aa937724.aspx>`_.
 
-#. Click the `` Download SQL Server JDBC Driver 2.0`` link.
+#. Download using the ``Download SQL Server JDBC Driver 3.0`` link.
 
-#. Click the ``Download`` button.
+#. Accept the license and download the appropriate archive for your operating system.
 
-# Accept the license and download the appropriate archive for your operating system.
+#. Extract the contents of the archive
 
-# Extract the contents of the archive and copy the file ``sqljdbc.jar`` to the ``WEB-INF/lib`` directory of the GeoServer instance.
+#. Copy the file ``sqljdbc4.jar`` to the ``WEB-INF/lib`` directory of the GeoServer installation.
+
+#. For GeoServer installed on Windows, copy ``\x86\sqljdbc_auth.dll`` and ``\x86\sqljdbc_xa.dll`` to ``C:\Windows\System32``
 
 Adding a SQL Server database
 ----------------------------
@@ -63,13 +65,13 @@ Configuring a SQL Server data store
    :widths: 20 80
 
    * - ``host``
-     - The sql server instance host name or ip address.
+     - The sql server instance host name or ip address, only. Note that ``server\instance`` notation is not accepted - specify the port below, instead, if you have a non-default instance.
    * - ``port``
-     - The port on which the SQL server instance is accepting connections.
+     - The port on which the SQL server instance is accepting connections.  See the :ref:`note <port_notes>` below.
    * - ``database``
      - The name of the database to connect to.
    * - ``schema``
-     - The database schema to access tables from.
+     - The database schema to access tables from (optional).
    * - ``user``
      - The name of the user to connect to the oracle database as.
    * - ``password``     
@@ -79,6 +81,17 @@ Configuring a SQL Server data store
        ``min connections``
 
      - Connection pool configuration parameters. See the :ref:`connection_pooling` section for details.
+
+.. _port_notes:
+
+Determining the port used by the SQL Server instance
+````````````````````````````````````````````````````
+
+You can determine the port in use by connecting to your SQL server instance using some other software, and then using :command:`netstat` to display details on network connections.  In the following example on a Windows PC, the port is 2646 ..
+::
+  C:\>netstat -a | find "sql1"
+  TCP   DPI908194:1918   maittestsql1.dpi.nsw.gov.au:2646   ESTABLISHED
+
 
 Adding a SQL Server database with JNDI
 --------------------------------------
