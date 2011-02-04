@@ -63,6 +63,8 @@ public class SpringBeanProcessFactory extends AnnotationDrivenProcessFactory imp
                 }
             }
         };
+        
+        Processors.addProcessFactory(this);
 
     }
 

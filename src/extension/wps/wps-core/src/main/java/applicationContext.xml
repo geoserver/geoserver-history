@@ -146,6 +146,9 @@
     <bean id="countProcess" class="org.geoserver.wps.gs.CountProcess"/>
     <bean id="uniqueProcess" class="org.geoserver.wps.gs.UniqueProcess"/>
     <bean id="simplifyProcess" class="org.geoserver.wps.gs.SimplifyProcess"/>
+    <bean id="rasterAsPointCollectionProcess" class="org.geoserver.wps.gs.RasterAsPointCollectionProcess"/>
+    <bean id="contourProcess" class="org.geoserver.wps.gs.ContourProcess"/>
+    <bean id="polygonExtractionProcess" class="org.geoserver.wps.gs.PolygonExtractionProcess"/>
     <bean id="rclipProcess" class="org.geoserver.wps.gs.RectangularClipProcess"/>
     <bean id="collectGeometriesProcess" class="org.geoserver.wps.gs.CollectGeometries" />
     <bean id="cropCoverageProcess" class="org.geoserver.wps.gs.CropCoverage" />
