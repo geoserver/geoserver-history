@@ -11,7 +11,7 @@
 # All configuration values have a default value; values that are commented out
 # serve to show the default value.
 
-import sys, os
+import sys, os, string
 
 # If your extensions are in another directory, add it here. If the directory
 # is relative to the documentation root, use os.path.abspath to make it
@@ -39,7 +39,7 @@ master_doc = 'index'
 # General substitutions.
 project = u'GeoServer'
 manual = u'User Manual'
-copyright = u'2009 GeoServer'
+copyright = u'2011 GeoServer'
 
 # The default replacements for |version| and |release|, also used in various
 # other places throughout the built documents.
@@ -48,6 +48,9 @@ copyright = u'2009 GeoServer'
 version = '2.1'
 # The full version, including alpha/beta/rc tags.
 release = '2.1-SNAPSHOT'
+# Users don't need to see the "SNAPSHOT" notation when it's there
+if release.find('SNAPSHOT') != -1:
+   release = '2.1.x'
 
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:
