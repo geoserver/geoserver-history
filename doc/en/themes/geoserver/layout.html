@@ -4,7 +4,7 @@
 <ul id="breadcrumbs">
   {% if pagename != 'index' %}
   {%- block rootrellink %}
-  <li><a href="{{ pathto('index') }}">{{ project }} {{ release }} Home</a>{{ breadcrumbdelim }}</li>
+  <li><a href="{{ pathto('index') }}">{{ project }} {{ release }} User Manual</a>{{ breadcrumbdelim }}</li>
   {%- endblock %}
 
   {%- for parent in parents %}
@@ -12,7 +12,7 @@
   {%- endfor %}
   <li>{{ title|striptags }}</li>
   {%- else %}
-  <li>{{ project }} {{ release }} Home</li>
+  <li>{{ project }} {{ release }} User Manual</li>
   {%- endif %}
 </ul>
 {%- endmacro %}
