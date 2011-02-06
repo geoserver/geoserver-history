@@ -234,18 +234,7 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
                 for (Symbolizer sym : symbolizers) {
                     if (sym instanceof TextSymbolizer) {
                         Expression e = SLD.textLabel((TextSymbolizer) sym);
-                        Object object = null;
-                        if (e != null)
-                            object = e.evaluate(feature);
-                        String value = null;
-
-                        if (object instanceof String) {
-                            value = (String) object;
-                        } else {
-                            if (object != null) {
-                                value = object.toString();
-                            }
-                        }
+                        String value = e.evaluate(feature, String.class); 
 
                         if ((value != null) && !"".equals(value.trim())) {
                             label.append(value);
@@ -525,10 +514,9 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
             // fill
             if (symbolizer.getFill() != null) {
                 // get opacity
-                double opacity = ((Number) symbolizer.getFill().getOpacity().evaluate(feature))
-                        .doubleValue();
+                Double opacity = symbolizer.getFill().getOpacity().evaluate(feature, Double.class);
 
-                if (Double.isNaN(opacity)) {
+                if (opacity == null || Double.isNaN(opacity)) {
                     // none specified, default to full opacity
                     opacity = 1.0;
                 }
@@ -554,10 +542,9 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
                 start("LineStyle");
 
                 // opacity
-                double opacity = ((Number) symbolizer.getStroke().getOpacity().evaluate(feature))
-                        .doubleValue();
+                Double opacity = symbolizer.getStroke().getOpacity().evaluate(feature, Double.class);
 
-                if (Double.isNaN(opacity)) {
+                if (opacity == null || Double.isNaN(opacity)) {
                     // none specified, default to full opacity
                     opacity = 1.0;
                 }
@@ -568,10 +555,9 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
                 }
 
                 // width
-                int width = ((Number) symbolizer.getStroke().getWidth().evaluate(feature))
-                        .intValue();
+                Integer width = symbolizer.getStroke().getWidth().evaluate(feature, Integer.class);
 
-                if (width != SLD.NOTFOUND) {
+                if (width != null) {
                     element("width", Integer.toString(width));
                 }
 
@@ -589,10 +575,9 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
             // stroke
             if (symbolizer.getStroke() != null) {
                 // opacity
-                double opacity = ((Number) symbolizer.getStroke().getOpacity().evaluate(feature))
-                        .doubleValue();
+                Double opacity = symbolizer.getStroke().getOpacity().evaluate(feature, Double.class);
 
-                if (Double.isNaN(opacity)) {
+                if (opacity == null || Double.isNaN(opacity)) {
                     // default to full opacity
                     opacity = 1.0;
                 }
@@ -631,10 +616,9 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
                 Mark mark = SLD.mark(symbolizer);
 
                 if (mark != null) {
-                    double opacity = ((Number) mark.getFill().getOpacity().evaluate(feature))
-                            .doubleValue();
+                    Double opacity = mark.getFill().getOpacity().evaluate(feature, Double.class);
 
-                    if (Double.isNaN(opacity)) {
+                    if (opacity == null || Double.isNaN(opacity)) {
                         // default to full opacity
                         opacity = 1.0;
                     }
@@ -742,7 +726,7 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
                 location = ff.literal(strLocation);
             }
 
-            return location.evaluate(feature).toString();
+            return location.evaluate(feature, String.class);
         }
 
         /**
@@ -753,10 +737,9 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
             start("LabelStyle");
 
             if (symbolizer.getFill() != null) {
-                double opacity = ((Number) symbolizer.getFill().getOpacity().evaluate(feature))
-                        .doubleValue();
+                Double opacity = symbolizer.getFill().getOpacity().evaluate(feature, Double.class);
 
-                if (Double.isNaN(opacity)) {
+                if (opacity == null || Double.isNaN(opacity)) {
                     // default to full opacity
                     opacity = 1.0;
                 }
