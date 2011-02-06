@@ -17,8 +17,9 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.geoserver.catalog.impl.FeatureTypeInfoImpl;
 import org.geoserver.catalog.util.ReaderUtils;
+import org.geoserver.config.GeoServer;
+import org.geoserver.config.GeoServerInfo;
 import org.geoserver.data.test.MockData;
 import org.geoserver.test.GeoServerTestSupport;
 import org.geotools.data.DataAccess;
@@ -201,5 +202,15 @@ public class ResourcePoolTest extends GeoServerTestSupport {
         lakes = cat.getFeatureTypeByName(MockData.LAKES.getNamespaceURI(),
                 MockData.LAKES.getLocalPart());
         assertEquals("foo", lakes.getTitle());
+    }
+    
+    public void testConfigureFeatureTypeCacheSize() {
+        GeoServer gs = getGeoServer();
+        GeoServerInfo global = gs.getGlobal();
+        global.setFeatureTypeCacheSize(200);
+        gs.save(global);
+
+        Catalog catalog = getCatalog();
+        assertEquals(200, catalog.getResourcePool().featureTypeCache.maxSize());
     }
 }
