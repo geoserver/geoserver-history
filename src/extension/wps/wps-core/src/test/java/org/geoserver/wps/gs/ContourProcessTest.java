@@ -70,33 +70,31 @@ public class ContourProcessTest extends BaseRasterToVectorTest {
 		return gc;
 	}
 	
-// this one fails due to http://code.google.com/p/jai-tools/issues/detail?id=81, re-enable
-// once we have a fixed contour process
-//	/**
-//	 * Test basic capabilities for the contour process. It works on the DEM tiff
-//	 * and produces a shapefile. Nothing more nothing less.
-//	 * 
-//	 * @throws Exception
-//	 */
-//	public void testProcessStandaloneBasicInterval() throws Exception {
-//		final GridCoverage2D gc = extractCoverageSubset();
-//
-//		final double step = 100;
-//		final ContourProcess process = new ContourProcess();
-//		final SimpleFeatureCollection fc = process.execute(gc, 0, null,
-//				Double.valueOf(step), false, false, null,
-//				new NullProgressListener());
-//
-//		assertNotNull(fc);
-//		assertTrue(fc.size() > 0);
-//
-//		SimpleFeatureIterator fi = fc.features();
-//		while (fi.hasNext()) {
-//			SimpleFeature sf = fi.next();
-//			Double value = (Double) sf.getAttribute("value");
-//			assertTrue(value > 0);
-//		}
-//		fi.close();
-//	}
+ 	/**
+	 * Test basic capabilities for the contour process. It works on the DEM tiff
+	 * and produces a shapefile. Nothing more nothing less.
+	 * 
+	 * @throws Exception
+	 */
+	public void testProcessStandaloneBasicInterval() throws Exception {
+		final GridCoverage2D gc = extractCoverageSubset();
+
+		final double step = 100;
+		final ContourProcess process = new ContourProcess();
+		final SimpleFeatureCollection fc = process.execute(gc, 0, null,
+				Double.valueOf(step), false, false, null,
+				new NullProgressListener());
+
+		assertNotNull(fc);
+		assertTrue(fc.size() > 0);
+
+		SimpleFeatureIterator fi = fc.features();
+		while (fi.hasNext()) {
+			SimpleFeature sf = fi.next();
+			Double value = (Double) sf.getAttribute("value");
+			assertTrue(value > 0);
+		}
+		fi.close();
+	}
 
 }
