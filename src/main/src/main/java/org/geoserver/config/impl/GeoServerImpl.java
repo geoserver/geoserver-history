@@ -154,7 +154,7 @@ public class GeoServerImpl implements GeoServer {
                 l.handlePostGlobalChange( facade.getGlobal() );
             }
             catch( Exception e ) {
-                //log this
+                LOGGER.log(Level.SEVERE, "Error occurred processing a configuration change listener", e);
             }
         }
     }
@@ -167,7 +167,7 @@ public class GeoServerImpl implements GeoServer {
                 l.handleGlobalChange( global, changed, oldValues, newValues);
             }
             catch( Exception e ) {
-                //log this
+                LOGGER.log(Level.SEVERE, "Error occurred processing a configuration change listener", e);
             }
         }
     }
@@ -180,7 +180,7 @@ public class GeoServerImpl implements GeoServer {
                 l.handleLoggingChange( logging, changed, oldValues, newValues);
             }
             catch( Exception e ) {
-                //log this
+                LOGGER.log(Level.SEVERE, "Error occurred processing a configuration change listener", e);
             }
         }
     }
@@ -191,7 +191,7 @@ public class GeoServerImpl implements GeoServer {
                 l.handlePostLoggingChange( facade.getLogging() );
             }
             catch( Exception e ) {
-                //log this
+                LOGGER.log(Level.SEVERE, "Error occurred processing a configuration change listener", e);
             }
         }
     }
@@ -211,7 +211,7 @@ public class GeoServerImpl implements GeoServer {
                 l.handleServiceChange( service, changed, oldValues, newValues);
             }
             catch( Exception e ) {
-                //log this
+                LOGGER.log(Level.SEVERE, "Error occurred processing a configuration change listener", e);
             }
         }
     }
@@ -222,7 +222,7 @@ public class GeoServerImpl implements GeoServer {
                 l.handlePostServiceChange( service );
             }
             catch( Exception e ) {
-                //log this
+                LOGGER.log(Level.SEVERE, "Error occurred processing a configuration change listener", e);
             }
         }
     }

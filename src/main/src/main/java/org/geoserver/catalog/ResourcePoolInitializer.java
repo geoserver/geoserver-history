@@ -48,7 +48,8 @@ public class ResourcePoolInitializer implements GeoServerInitializer {
                     List<Object> oldValues, List<Object> newValues) {
                 int i = propertyNames.indexOf( "featureTypeCacheSize" );
                 if (i > -1) {
-                    gs.getCatalog().getResourcePool().setFeatureTypeCacheSize(i);
+                    Number featureTypeCacheSize = (Number) newValues.get(i);
+                    gs.getCatalog().getResourcePool().setFeatureTypeCacheSize(featureTypeCacheSize.intValue());
                 }
                 gs.getCatalog().getResourcePool().setCoverageExecutor(global.getCoverageAccess().getThreadPoolExecutor());
             }
