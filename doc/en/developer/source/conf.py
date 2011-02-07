@@ -11,7 +11,7 @@
 # All configuration values have a default value; values that are commented out
 # serve to show the default value.
 
-import sys, os
+import sys, os, string
 
 # If your extensions are in another directory, add it here. If the directory
 # is relative to the documentation root, use os.path.abspath to make it
@@ -24,6 +24,7 @@ import sys, os
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = ['sphinx.ext.todo']
+
 todo_include_todos = True
 
 # Add any paths that contain templates here, relative to this directory.
@@ -38,7 +39,7 @@ master_doc = 'index'
 # General substitutions.
 project = u'GeoServer'
 manual = u'Developer Manual'
-copyright = u'2009, GeoServer'
+copyright = u'2011 GeoServer'
 
 # The default replacements for |version| and |release|, also used in various
 # other places throughout the built documents.
@@ -47,6 +48,9 @@ copyright = u'2009, GeoServer'
 version = '2.2'
 # The full version, including alpha/beta/rc tags.
 release = '2.2-SNAPSHOT'
+# Users don't need to see the "SNAPSHOT" notation when it's there
+if release.find('SNAPSHOT') != -1:
+   release = '2.2.x'
 
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:
@@ -94,7 +98,7 @@ if os.environ.get('HTML_THEME_PATH'):
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
-#html_title = html_title = project + " " + release + " " + manual
+html_title = project + " " + release + " " + manual
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
 #html_short_title = None
@@ -129,10 +133,10 @@ html_last_updated_fmt = '%b %d, %Y'
 #html_additional_pages = {}
 
 # If false, no module index is generated.
-#html_use_modindex = True
+html_use_modindex = False
 
 # If false, no index is generated.
-#html_use_index = True
+html_use_index = False
 
 # If true, the index is split into individual pages for each letter.
 #html_split_index = False
@@ -170,14 +174,31 @@ latex_documents = [
 
 # The name of an image file (relative to this directory) to place at the top of
 # the title page.
-#latex_logo = None
+latex_logo = '../../themes/geoserver/static/GeoServer_500.png'
 
 # For "manual" documents, if this is true, then toplevel headings are parts,
 # not chapters.
 #latex_use_parts = False
 
 # Additional stuff for the LaTeX preamble.
-#latex_preamble = ''
+latex_elements = {
+  'fontpkg': '\\usepackage{palatino}',
+  'fncychap': '\\usepackage[Sonny]{fncychap}',
+  'preamble': #"""\\usepackage[parfill]{parskip}
+  """
+	\\hypersetup{
+		colorlinks = true,
+    linkcolor = [rgb]{0,0.46,0.63},
+    anchorcolor = [rgb]{0,0.46,0.63},
+    citecolor = blue,
+    filecolor = [rgb]{0,0.46,0.63},
+    pagecolor = [rgb]{0,0.46,0.63},
+    urlcolor = [rgb]{0,0.46,0.63}
+	}
+
+	
+"""
+}
 
 # Documents to append as an appendix to all manuals.
 #latex_appendices = []

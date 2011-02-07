@@ -64,9 +64,10 @@ Bulleted lists can sometimes be cumbersome and hard to follow.  When dealing wit
 
 .. list-table::
    :widths: 20 80
+   :header-rows: 1
    
-   * - **Shapes**
-     - **Description**
+   * - Shapes
+     - Description
    * - Square
      - Four sides of equal length, 90 degree angles
    * - Rectangle
@@ -76,9 +77,10 @@ This is done with the following code::
 
    .. list-table::
       :widths: 20 80
+      :header-rows: 1
       
-      * - **Shapes**
-        - **Description**
+      * - Shapes
+        - Description
       * - Square
         - Four sides of equal length, 90 degree angles
       * - Rectangle
