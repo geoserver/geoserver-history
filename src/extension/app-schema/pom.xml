@@ -20,6 +20,11 @@
       <artifactId>gt-app-schema</artifactId>
       <version>${gt.version}</version>
     </dependency>
+	<dependency>
+	  <groupId>org.geotools</groupId>
+      <artifactId>gt-webservice</artifactId>
+      <version>${gt.version}</version>			
+    </dependency>
   </dependencies>
 
   <modules>
