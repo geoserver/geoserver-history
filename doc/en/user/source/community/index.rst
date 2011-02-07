@@ -19,3 +19,4 @@ This section is devoted to GeoServer community modules. Community modules are co
    monitoring/index
    python/index
    spatialite/index
+   dxf/index
