@@ -37,6 +37,7 @@ import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.SchemaException;
 import org.geotools.filter.expression.AbstractExpressionVisitor;
 import org.geotools.filter.visitor.AbstractFilterVisitor;
+import org.geotools.filter.visitor.SimplifyingFilterVisitor;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.jts.LiteCoordinateSequenceFactory;
 import org.geotools.referencing.CRS;
@@ -505,6 +506,10 @@ public class GetFeature {
 
         if (filter == null) {
             filter = Filter.INCLUDE;
+        } else {
+            // Gentlemen, we can rebuild it. We have the technology!
+            SimplifyingFilterVisitor visitor = new SimplifyingFilterVisitor();
+            filter = (Filter) filter.accept(visitor, null);
         }
         
         //figure out the crs the data is in
