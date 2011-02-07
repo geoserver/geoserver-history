@@ -13,7 +13,7 @@ import javax.xml.namespace.QName;
 import junit.framework.Test;
 
 import org.geoserver.data.test.MockData;
-import org.geoserver.kml.KMZMapOutputFormat.KMZMap;
+import org.geoserver.kml.KMZMapResponse.KMZMap;
 import org.geoserver.wms.GetMapRequest;
 import org.geoserver.wms.WMSMapContext;
 import org.geoserver.wms.WMSTestSupport;
