@@ -26,7 +26,7 @@ import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.data.test.MockData;
 import org.geoserver.data.util.IOUtils;
-import org.geoserver.kml.KMZMapOutputFormat.KMZMap;
+import org.geoserver.kml.KMZMapResponse.KMZMap;
 import org.geoserver.wms.GetMapRequest;
 import org.geoserver.wms.WMSMapContext;
 import org.geoserver.wms.WMSTestSupport;

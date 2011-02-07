@@ -7,13 +7,11 @@ package org.geoserver.kml;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
+import org.geoserver.kml.KMZMapResponse.KMZMap;
 import org.geoserver.platform.ServiceException;
-import org.geoserver.wms.GetMapOutputFormat;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSMapContext;
 import org.geoserver.wms.map.AbstractMapOutputFormat;
-import org.geoserver.wms.map.XMLTransformerMap;
-import org.geotools.xml.transform.TransformerBase;
 
 /**
  * Handles a GetMap request that spects a map in KMZ format.
@@ -38,12 +36,6 @@ public class KMZMapOutputFormat extends AbstractMapOutputFormat {
             "kmz", "application/vnd.google-earth.kmz xml" };
 
     private WMS wms;
-
-    public static class KMZMap extends XMLTransformerMap {
-        public KMZMap(final WMSMapContext mapContext, TransformerBase transformer, String mimeType) {
-            super(mapContext, transformer, mapContext, mimeType);
-        }
-    }
 
     public KMZMapOutputFormat(WMS wms) {
         super(MIME_TYPE, OUTPUT_FORMATS);
