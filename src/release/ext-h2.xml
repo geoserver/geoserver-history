@@ -19,7 +19,8 @@
         <include>gt-jdbc-core-*.jar</include>
         <include>gt-jdbc-h2-*.jar</include>
         <include>h2-*.jar</include>
-        <include>spatialdbbox-*.jar</include>
+        <include>geodb-*.jar</include>
+        <include>hatbox-*.jar</include>
       </includes>
       <excludes>
         <exclude>*-tests-*.jar</exclude>
