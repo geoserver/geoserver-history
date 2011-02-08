@@ -97,6 +97,11 @@
       <constructor-arg ref="monitor"/>
     </bean>
     
+    <!-- rest dispatcher callback -->
+    <bean id="monitorRestCallback" class="org.geoserver.monitor.rest.RESTMonitorCallback">
+       <constructor-arg ref="monitor"/>
+    </bean>
+    
     <!--
      web stuff
      -->
@@ -134,4 +139,4 @@
         <constructor-arg ref="catalog"/>
     </bean>
     
-</beans>
+    </beans>

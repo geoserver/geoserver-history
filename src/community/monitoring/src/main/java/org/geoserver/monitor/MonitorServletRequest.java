@@ -24,6 +24,14 @@ public class MonitorServletRequest extends HttpServletRequestWrapper {
         return input.getData();
     }
     
+    public long getBytesRead() {
+        if (input == null) {
+            return -1;
+        }
+        
+        return input.getBytesRead();
+    }
+    
     @Override
     public MonitorInputStream getInputStream() throws IOException {
         if (input == null) {
@@ -36,6 +44,7 @@ public class MonitorServletRequest extends HttpServletRequestWrapper {
 
         ByteBuffer buffer;
         ServletInputStream delegate;
+        long nbytes = 0;
         
         public MonitorInputStream(ServletInputStream delegate) {
             this.delegate = delegate;
@@ -64,6 +73,7 @@ public class MonitorServletRequest extends HttpServletRequestWrapper {
         }
 
         public long skip(long n) throws IOException {
+            nbytes += n;
             return delegate.skip(n);
         }
 
@@ -73,6 +83,8 @@ public class MonitorServletRequest extends HttpServletRequestWrapper {
             if (!bufferIsFull()) {
                 buffer.put((byte)b);
             }
+            
+            nbytes += 1;
             return b;
         }
         
@@ -80,6 +92,8 @@ public class MonitorServletRequest extends HttpServletRequestWrapper {
         public int read(byte[] b) throws IOException {
             int n = delegate.read(b);
             fill(b, 0, n);
+            
+            nbytes += n;
             return n;
         }
         
@@ -87,6 +101,8 @@ public class MonitorServletRequest extends HttpServletRequestWrapper {
         public int read(byte[] b, int off, int len) throws IOException {
             int n = delegate.read(b, off, len);
             fill(b, off, n);
+            
+            nbytes += n;
             return n;
         }
         
@@ -94,6 +110,8 @@ public class MonitorServletRequest extends HttpServletRequestWrapper {
         public int readLine(byte[] b, int off, int len) throws IOException {
             int n = delegate.readLine(b, off, len);
             fill(b, off, n);
+            
+            nbytes += n;
             return n;
         }
         
@@ -119,6 +137,9 @@ public class MonitorServletRequest extends HttpServletRequestWrapper {
             return data;
         }
         
+        public long getBytesRead() {
+            return nbytes;
+        }
         
         public void dispose() {
             buffer = null;

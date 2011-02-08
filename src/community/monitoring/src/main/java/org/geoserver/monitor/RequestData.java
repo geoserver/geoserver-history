@@ -21,10 +21,20 @@ public class RequestData implements Serializable {
 
     private static AtomicLong COUNTER = new AtomicLong();
     
+    /**
+     * Enumeration describing the status of a request.
+     */
     public static enum Status {
         WAITING, RUNNING, CANCELLING, FAILED, FINISHED
     };
 
+    /**
+     * Enumeration describing the category of a request.
+     */
+    public static enum Category {
+        OWS, REST, OTHER
+    };
+    
     public long internalid = COUNTER.getAndIncrement();
     
     /**
@@ -36,7 +46,12 @@ public class RequestData implements Serializable {
      * Request status / state
      */
     private Status status = Status.WAITING;
-
+    
+    /**
+     * Request category
+     */
+    private Category category = Category.OTHER;
+    
     /**
      * The path of the request URL.
      */
@@ -52,6 +67,16 @@ public class RequestData implements Serializable {
      * The body of the request in the case of a PUT or POST
      */
     private byte[] body;
+    
+    /**
+     * The length of the request body in teh case of a PUT or POST
+     */
+    private long bodyContentLength;
+    
+    /**
+     * The mime type of the request body
+     */
+    private String bodyContentType;
     
     /**
      * The HTTP method of the request
@@ -117,21 +142,20 @@ public class RequestData implements Serializable {
      */
     private String host;
 
-    
     /**
-     * The OWS name (such as WMS, WFS, WCS, WPS, etc.)
+     * The service name, in the case of ows this is WMS, WFS, WCS, WPS, etc...
      */
-    private String owsService;
+    private String service;
 
     /**
-     * The OWS version
+     * The operation name, such as GetMap, GetFeature, etc...
+     */
+    private String operation;
+
+    /**
+     * The OWS service version, specific to ows requests
      */
     private String owsVersion;
-
-    /**
-     * The OWS operation name (such as GetMap, GetFeature, etc.)
-     */
-    private String owsOperation;
 
     /**
      * The sub operation, example for WFS transaction being INSERT, UPDATE, etc... 
@@ -139,9 +163,9 @@ public class RequestData implements Serializable {
     private String subOperation;
     
     /**
-     * The layers requested
+     * The requested resources
      */
-    private List<String> layers = new ArrayList<String>(1);
+    private List<String> resources = new ArrayList<String>(1);
 
     /**
      * The HTTP response length, in bytes
@@ -179,6 +203,14 @@ public class RequestData implements Serializable {
         this.status = status;
     }
 
+    public Category getCategory() {
+        return category;
+    }
+    
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+    
     public String getPath() {
         return path;
     }
@@ -203,6 +235,22 @@ public class RequestData implements Serializable {
         this.body = body;
     }
 
+    public long getBodyContentLength() {
+        return bodyContentLength;
+    }
+    
+    public void setBodyContentLength(long bodyContentLength) {
+        this.bodyContentLength = bodyContentLength;
+    }
+    
+    public String getBodyContentType() {
+        return bodyContentType;
+    }
+    
+    public void setBodyContentType(String bodyContentType) {
+        this.bodyContentType = bodyContentType;
+    }
+    
     public String getHttpMethod() {
         return httpMethod;
     }
@@ -299,28 +347,28 @@ public class RequestData implements Serializable {
         this.remoteLon = remoteLon;
     }
     
-    public String getOwsService() {
-        return owsService;
+    public String getService() {
+        return service;
+    }
+    
+    public void setService(String service) {
+        this.service = service;
     }
 
-    public void setOwsService(String owsService) {
-        this.owsService = owsService;
+    public String getOperation() {
+        return operation;
     }
-
+    
+    public void setOperation(String operation) {
+        this.operation = operation;
+    }
+    
     public String getOwsVersion() {
         return owsVersion;
     }
 
     public void setOwsVersion(String owsVersion) {
         this.owsVersion = owsVersion;
-    }
-
-    public String getOwsOperation() {
-        return owsOperation;
-    }
-
-    public void setOwsOperation(String owsOperation) {
-        this.owsOperation = owsOperation;
     }
 
     public String getSubOperation() {
@@ -331,14 +379,14 @@ public class RequestData implements Serializable {
         this.subOperation = subOperation;
     }
     
-    public List<String> getLayers() {
-        return layers;
+    public List<String> getResources() {
+        return resources;
     }
-
-    public void setLayers(List<String> layers) {
-        this.layers = layers;
+    
+    public void setResources(List<String> resources) {
+        this.resources = resources;
     }
-
+    
     public long getResponseLength() {
         return responseLength;
     }
@@ -386,11 +434,11 @@ public class RequestData implements Serializable {
         clone.setRemoteHost(remoteHost);
         clone.setHost(host);
         clone.setRemoteUser(remoteUser);
-        clone.setOwsService(owsService);
-        clone.setOwsOperation(owsOperation);
+        clone.setService(service);
+        clone.setOperation(operation);
         clone.setSubOperation(subOperation);
         clone.setOwsVersion(owsVersion);
-        clone.setLayers(new ArrayList(layers));
+        clone.setResources(new ArrayList(resources));
         clone.setResponseLength(responseLength);
         clone.setResponseContentType(responseContentType);
         clone.setErrorMessage(errorMessage);

@@ -21,7 +21,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.geoserver.monitor.Monitor;
-import org.geoserver.monitor.MonitorQuery;
+import org.geoserver.monitor.Query;
 import org.geoserver.monitor.RequestData;
 import org.geoserver.monitor.RequestDataVisitor;
 import org.geoserver.web.GeoServerApplication;
@@ -96,7 +96,7 @@ public abstract class ActivityChartBasePanel extends Panel {
     }
     
     BufferedDynamicImageResource queryAndRenderChart(Monitor monitor, Date[] range) {
-        MonitorQuery q = new MonitorQuery();
+        Query q = new Query();
         q.properties("startTime").between(range[0], range[1]);
         
         DataGatherer gatherer = new DataGatherer();
@@ -150,7 +150,7 @@ public abstract class ActivityChartBasePanel extends Panel {
 
         HashMap<RegularTimePeriod,Integer> data = new HashMap<RegularTimePeriod, Integer>();
         
-        public void visit(RequestData r) {
+        public void visit(RequestData r, Object... aggregates) {
             RegularTimePeriod period = getTimePeriod(r.getStartTime());
             Integer count = data.get(period);
        

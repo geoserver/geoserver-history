@@ -82,6 +82,8 @@ public class MonitorFilter implements Filter {
         }
         
         data.setHttpMethod(req.getMethod());
+        data.setBodyContentLength(req.getContentLength());
+        data.setBodyContentType(req.getContentType());
         
         String serverName = System.getProperty("http.serverName");
         if (serverName == null) {
@@ -116,6 +118,7 @@ public class MonitorFilter implements Filter {
         
         data = monitor.current();
         data.setBody(((MonitorServletRequest)request).getBodyContent());
+        data.setBodyContentLength(((MonitorServletRequest)request).getBytesRead());
         data.setResponseContentType(response.getContentType());
         data.setResponseLength(((MonitorServletResponse)response).getContentLength());
         

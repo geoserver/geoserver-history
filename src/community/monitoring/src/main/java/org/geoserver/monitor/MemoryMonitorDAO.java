@@ -11,8 +11,8 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.geoserver.monitor.MonitorQuery.Comparison;
-import org.geoserver.monitor.MonitorQuery.SortOrder;
+import org.geoserver.monitor.Query.Comparison;
+import org.geoserver.monitor.Query.SortOrder;
 import org.geoserver.ows.util.OwsUtils;
 
 public class MemoryMonitorDAO implements MonitorDAO {
@@ -59,13 +59,13 @@ public class MemoryMonitorDAO implements MonitorDAO {
         return requests;
     }
         
-    public List<RequestData> getRequests(MonitorQuery q) {
+    public List<RequestData> getRequests(Query q) {
         List<RequestData> requests = getRequests();
        
         List<Predicate> predicates = new ArrayList();
-        if (q.getFilterProperty() != null) {
-            predicates.add(new PropertyCompare(q.getFilterProperty(), q.getFilterCompare(), 
-                q.getFilterValue()));
+        if (q.getFilter() != null) {
+            Filter f = q.getFilter();
+            predicates.add(new PropertyCompare(f.getLeft(), f.getType(), f.getRight()));
         }
         if (q.getFromDate() != null || q.getToDate() != null) {
             predicates.add(new DateRange(q.getFromDate(), q.getToDate()));
@@ -102,10 +102,38 @@ O:      for (Iterator<RequestData> it = requests.iterator(); it.hasNext();) {
         return requests;
     }
     
-    public void getRequests(MonitorQuery query, RequestDataVisitor visitor) {
+    public void getRequests(Query query, RequestDataVisitor visitor) {
         for (RequestData r : getRequests(query)) {
             visitor.visit(r);
         }
+    }
+    
+    public long getCount(Query query) {
+        return getRequests(query).size();
+    }
+    
+    public Iterator<RequestData> getIterator(Query query) {
+        return getRequests(query).iterator();
+    }
+    
+    public ResourceData getLayer(String name) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
+    public List<ResourceData> getLayers() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
+    public List<ResourceData> getLayers(Query query) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
+    public void getLayers(Query query, MonitorVisitor<ResourceData> visitor) {
+        // TODO Auto-generated method stub
+        
     }
     
     public List<RequestData> getOwsRequests() {
@@ -162,17 +190,30 @@ O:      for (Iterator<RequestData> it = requests.iterator(); it.hasNext();) {
     
     static class PropertyCompare implements Predicate{
 
-        String property;
+        Object left, right;
         Comparison compare;
-        Object value;
         
-        public PropertyCompare(String property, Comparison compare, Object value) {
-            this.property = property;
+        public PropertyCompare(Object left, Comparison compare, Object right) {
+            this.left = left;
+            this.right = right;
             this.compare = compare;
-            this.value = value;
         }
         
         public boolean matches(RequestData data) {
+            String property = null;
+            Object value = null;
+            if (left instanceof String && OwsUtils.has(data, (String)left)) {
+                property = (String) left;
+                value = right;
+            }
+            else if (right instanceof String && OwsUtils.has(data, (String)right)) {
+                property = (String) right;
+                value = left;
+            }
+            if (property == null) {
+                throw new IllegalArgumentException("Could not find property");
+            }
+            
             Object o = OwsUtils.get(data, property);
             if (o == null) {
                 return value == null && compare == Comparison.EQ; 

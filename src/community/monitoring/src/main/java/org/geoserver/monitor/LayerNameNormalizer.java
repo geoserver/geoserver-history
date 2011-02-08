@@ -25,7 +25,7 @@ public class LayerNameNormalizer implements RequestPostProcessor {
     public void run(RequestData data, HttpServletRequest request, HttpServletResponse response)
             throws Exception {
 
-            List<String> layers = data.getLayers();
+            List<String> layers = data.getResources();
             for (int i = 0; i < layers.size(); i++) {
                 String layer = layers.get(i);
                 int colon = layer.lastIndexOf(':');

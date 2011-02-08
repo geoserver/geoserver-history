@@ -81,7 +81,7 @@ public class Monitor {
         return dao;
     }
     
-    public void query(MonitorQuery q, RequestDataVisitor visitor) {
+    public void query(Query q, RequestDataVisitor visitor) {
         dao.getRequests(q, visitor);
     }
 

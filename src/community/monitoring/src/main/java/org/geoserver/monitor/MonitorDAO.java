@@ -1,5 +1,6 @@
 package org.geoserver.monitor;
 
+import java.util.Iterator;
 import java.util.List;
 
 public interface MonitorDAO {
@@ -16,9 +17,21 @@ public interface MonitorDAO {
     
     List<RequestData> getRequests();
     
-    List<RequestData> getRequests(MonitorQuery query);
+    List<RequestData> getRequests(Query query);
     
-    void getRequests(MonitorQuery query, RequestDataVisitor visitor);
+    void getRequests(Query query, RequestDataVisitor visitor);
+    
+    long getCount(Query query);
+    
+    Iterator<RequestData> getIterator(Query query);
+    
+//    ResourceData getLayer(String name);
+//    
+//    List<ResourceData> getLayers();
+//    
+//    List<ResourceData> getLayers(MonitorQuery query);
+//    
+//    void getLayers(MonitorQuery query, MonitorVisitor<ResourceData> visitor);
     
     List<RequestData> getOwsRequests();
     

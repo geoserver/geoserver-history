@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.geoserver.monitor.Monitor;
 import org.geoserver.monitor.RequestData;
+import org.geoserver.monitor.RequestData.Category;
 import org.geoserver.monitor.RequestData.Status;
 import org.geoserver.monitor.ows.wcs10.DescribeCoverageHandler;
 import org.geoserver.monitor.ows.wcs10.GetCoverageHandler;
@@ -74,8 +75,9 @@ public class MonitorCallback implements DispatcherCallback {
             return operation;
         }
         
-        data.setOwsService(operation.getService().getId().toUpperCase());
-        data.setOwsOperation(normalizedOpId(operation));
+        data.setCategory(Category.OWS);
+        data.setService(operation.getService().getId().toUpperCase());
+        data.setOperation(normalizedOpId(operation));
         data.setOwsVersion(operation.getService().getVersion().toString());
         
         if (operation.getParameters().length > 0) {

@@ -31,7 +31,7 @@ public abstract class RequestObjectHandler {
     }
     
     public void handle(Object request, RequestData data) {
-        data.setLayers(getLayers(request));
+        data.setResources(getLayers(request));
     }
     
     protected abstract List<String> getLayers(Object request);

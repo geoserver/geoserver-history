@@ -2,6 +2,7 @@ package org.geoserver.monitor;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 class DummyMonitorDAO implements MonitorDAO {
@@ -29,15 +30,39 @@ class DummyMonitorDAO implements MonitorDAO {
         return Arrays.asList(request);
     }
     
-    public List<RequestData> getRequests(MonitorQuery query) {
+    public List<RequestData> getRequests(Query query) {
         return null;
     }
     
-    public void getRequests(MonitorQuery query, RequestDataVisitor visitor) {
+    public void getRequests(Query query, RequestDataVisitor visitor) {
     }
     
     public RequestData getRequest(long id) {
         return null;
+    }
+    
+    public long getCount(Query query) {
+        return 0;
+    }
+    
+    public Iterator<RequestData> getIterator(Query query) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
+    public ResourceData getLayer(String name) {
+        return null;
+    }
+    
+    public List<ResourceData> getLayers() {
+        return null;
+    }
+    
+    public List<ResourceData> getLayers(Query query) {
+        return null;
+    }
+    
+    public void getLayers(Query query, MonitorVisitor<ResourceData> visitor) {
     }
     
     public List<RequestData> getHistory() {

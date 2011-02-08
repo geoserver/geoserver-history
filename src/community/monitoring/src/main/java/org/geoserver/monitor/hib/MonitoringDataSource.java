@@ -62,9 +62,12 @@ public class MonitoringDataSource extends BasicDataSource {
                 setPassword(db.getProperty("password"));
             }
             
+            setDefaultAutoCommit(Boolean.valueOf(db.getProperty("defaultAutoCommit", "true")));
+            
             //TODO: make other parameters configurable
             setMinIdle(1);
             setMaxActive(4);
+            
         } catch (Exception e) {
             throw new RuntimeException("Unexpected error setting up the monitoring H2 database", e);
         }
