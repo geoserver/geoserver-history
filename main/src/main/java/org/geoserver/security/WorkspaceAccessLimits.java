@@ -30,4 +30,10 @@ public class WorkspaceAccessLimits extends AccessLimits {
         return writable;
     }
 
+    @Override
+    public String toString() {
+        return "WorkspaceAccessLimits [readable=" + readable + ", writable=" + writable + ", mode="
+                + mode + "]";
+    }
+    
 }
