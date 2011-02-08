@@ -356,4 +356,11 @@ public class MapDecorationLayout {
 
         return null;
     }
+    
+    /**
+     * Returns true if the layout is not going to paint anything
+     */
+    public boolean isEmpty() {
+        return blocks.isEmpty();
+    }
 }
