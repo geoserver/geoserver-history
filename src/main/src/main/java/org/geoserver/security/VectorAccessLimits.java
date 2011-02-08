@@ -130,4 +130,11 @@ public class VectorAccessLimits extends DataAccessLimits {
         return result;
     }
 
+    @Override
+    public String toString() {
+        return "VectorAccessLimits [readAttributes=" + readAttributes + ", writeAttributes="
+                + writeAttributes + ", writeFilter=" + writeFilter + ", readFilter=" + readFilter
+                + ", mode=" + mode + "]";
+    }
+
 }

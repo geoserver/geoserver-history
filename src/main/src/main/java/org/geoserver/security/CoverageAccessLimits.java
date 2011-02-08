@@ -4,6 +4,8 @@
  */
 package org.geoserver.security;
 
+import java.util.Arrays;
+
 import org.opengis.filter.Filter;
 import org.opengis.parameter.GeneralParameterValue;
 
@@ -52,5 +54,12 @@ public class CoverageAccessLimits extends DataAccessLimits {
     public GeneralParameterValue[] getParams() {
         return params;
     }
+
+    @Override
+    public String toString() {
+        return "CoverageAccessLimits [params=" + Arrays.toString(params) + ", rasterFilter="
+                + rasterFilter + ", readFilter=" + readFilter + ", mode=" + mode + "]";
+    }
+    
 
 }

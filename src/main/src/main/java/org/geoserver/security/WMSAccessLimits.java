@@ -58,4 +58,10 @@ public class WMSAccessLimits extends DataAccessLimits {
         return allowFeatureInfo;
     }
 
+    @Override
+    public String toString() {
+        return "WMSAccessLimits [allowFeatureInfo=" + allowFeatureInfo + ", rasterFilter="
+                + rasterFilter + ", readFilter=" + readFilter + ", mode=" + mode + "]";
+    }
+    
 }
