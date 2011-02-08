@@ -5,7 +5,9 @@
 package org.geoserver.monitor;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.URLDecoder;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -94,6 +96,7 @@ public class MonitorFilter implements Filter {
             serverName = req.getServerName();
         }
         data.setHost(serverName);
+        data.setInternalHost(InternalHostname.get());
         data.setRemoteAddr(getRemoteAddr(req));
         data.setStatus(Status.RUNNING);
         

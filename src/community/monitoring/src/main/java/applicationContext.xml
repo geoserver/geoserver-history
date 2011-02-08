@@ -32,6 +32,10 @@
       <constructor-arg ref="monitorConfig"/>
     </bean>
     
+    <bean id="monitorInitializer" class="org.geoserver.monitor.MonitorInitializer">
+      <constructor-arg ref="monitor"/>
+    </bean>
+
     <!-- the top level monitoring filter -->
     <bean id="monitorFilter" class="org.geoserver.monitor.MonitorFilter">
         <constructor-arg ref="monitor"/>

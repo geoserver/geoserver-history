@@ -29,7 +29,7 @@ public class RequestData implements Serializable {
      * Enumeration describing the status of a request.
      */
     public static enum Status {
-        WAITING, RUNNING, CANCELLING, FAILED, FINISHED
+        WAITING, RUNNING, CANCELLING, FAILED, FINISHED, CANCELLED, INTERRUPTED
     };
 
     /**
@@ -146,6 +146,11 @@ public class RequestData implements Serializable {
      */
     private String host;
 
+    /**
+     * The internal server host (to the internal network)
+     */
+    private String internalHost;
+    
     /**
      * The service name, in the case of ows this is WMS, WFS, WCS, WPS, etc...
      */
@@ -310,7 +315,15 @@ public class RequestData implements Serializable {
     public void setHost(String host) {
         this.host = host;
     }
+    
+    public String getInternalHost() {
+        return internalHost;
+    }
 
+    public void setInternalHost(String internalHost) {
+        this.internalHost = internalHost;
+    }
+    
     public String getRemoteUser() {
         return remoteUser;
     }
@@ -437,6 +450,7 @@ public class RequestData implements Serializable {
         clone.setRemoteAddr(remoteAddr);
         clone.setRemoteHost(remoteHost);
         clone.setHost(host);
+        clone.setInternalHost(internalHost);
         clone.setRemoteUser(remoteUser);
         clone.setService(service);
         clone.setOperation(operation);

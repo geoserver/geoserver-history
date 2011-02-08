@@ -25,6 +25,7 @@
     <property column="BODY_CONTENT_TYPE" name="bodyContentType"/>
     <property column="BODY_CONTENT_LENGTH" name="bodyContentLength"/>
     <property column="SERVER_HOST" name="host"/>
+    <property column="INTERNAL_SERVER_HOST" name="internalHost"/>
     <property column="HTTP_METHOD" name="httpMethod"/>
     <property column="START_TIME" name="startTime" index="REQ_START_TIME_IDX"/>
     <property column="END_TIME" name="endTime" index="REQ_END_TIME_IDX"/>
