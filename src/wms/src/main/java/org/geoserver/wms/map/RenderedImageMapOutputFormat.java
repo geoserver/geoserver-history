@@ -284,7 +284,8 @@ public class RenderedImageMapOutputFormat extends AbstractMapOutputFormat {
         // fast path for pure coverage rendering
         if (DefaultWebMapService.isDirectRasterPathEnabled() && 
                 mapContext.getLayerCount() == 1 
-                && mapContext.getAngle() == 0.0) {
+                && mapContext.getAngle() == 0.0
+                && (layout == null || layout.isEmpty())) {
             List<GridCoverage2D> renderedCoverages = new ArrayList<GridCoverage2D>(2);
             try {
                 image = directRasterRender(mapContext, 0, renderedCoverages);
