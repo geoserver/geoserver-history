@@ -3,17 +3,17 @@
 Java Considerations
 ===================
 
-Use Sun JRE
------------
+Use Oracle JRE
+--------------
 
 .. note::  As of version 2.0, a Java Runtime Environment (JRE) is sufficient to run GeoServer.  GeoServer no longer requires a Java Development Kit (JDK).
 
-GeoServer's speed depends a lot on the chosen Java Runtime Environment (JRE).  For best performance, use `Sun JRE 6 <http://java.sun.com/javase/downloads/index.jsp>`_ (also known as JRE 1.6).  If this is not possible, use Sun JRE 5 (also known as JRE 1.5).  JREs other than those released by Sun may work correctly, but are generally not tested or supported. Specifically, OpenJDK does not work with GeoServer, as it lacks sufficient support for 2D rendering.
+GeoServer's speed depends a lot on the chosen Java Runtime Environment (JRE).  For best performance, use `Oracle JRE 6 <http://www.oracle.com/technetwork/java/javase/downloads/index.html>`_ (also known as JRE 1.6).  If this is not possible, use Oracle JRE 5 (also known as JRE 1.5).  JREs other than those released by Oracle may work correctly, but are generally not tested or supported. GeoServer will work with OpenJDK, but expect reductions in 2D rendering performance.
 
 Install native JAI and JAI Image I/O extensions
 -----------------------------------------------
 
-The `Java Advanced Imaging API <http://java.sun.com/javase/technologies/desktop/media/>`_ (JAI) is an advanced image manipulation library built by Sun.  GeoServer requires JAI to work with coverages and leverages it for WMS output generation. By default, GeoServer ships with the pure Java version of JAI, but **for best performance, install the native JAI version in your JDK/JRE**.
+The `Java Advanced Imaging API <http://java.sun.com/javase/technologies/desktop/media/>`_ (JAI) is an advanced image manipulation library built by Oracle.  GeoServer requires JAI to work with coverages and leverages it for WMS output generation. By default, GeoServer ships with the pure Java version of JAI, but **for best performance, install the native JAI version in your JDK/JRE**.
 
 In particular, installing the native JAI is important for all raster processing, which is used heavily in both WMS and WCS to rescale, cut and reproject rasters. Installing the native JAI is also important for all raster reading and writing, which affects both WMS and WCS.  Finally, native JAI is very useful even if there is no raster data involved, as WMS output encoding requires writing PNG/GIF/JPEG images, which are themselves rasters.
 
