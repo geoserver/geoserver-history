@@ -17,12 +17,6 @@
       <artifactId>main</artifactId>
       <version>${project.version}</version>
     </dependency>
-    <!-- TODO: push back the collector in geotools -->
-    <dependency>
-      <groupId>org.geoserver.extension</groupId>
-      <artifactId>wps-core</artifactId>
-      <version>${project.version}</version>
-    </dependency>
 
     <!-- Test depedencies -->
     <dependency>
