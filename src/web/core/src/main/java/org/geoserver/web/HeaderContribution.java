@@ -108,7 +108,7 @@ public class HeaderContribution {
      */
     public ResourceReference getJavaScript() {
         if ( scope != null && javaScriptFilename != null ) {
-            return new ResourceReference(scope, cssFilename);
+            return new ResourceReference(scope, javaScriptFilename);
         }
         
         return null;
