@@ -246,11 +246,15 @@ public class GWC implements DisposableBean, ApplicationContextAware {
         // request.isTransparent()??
         // request.getEnv()??
         // request.getFormatOptions()??
-        final List<MapLayerInfo> layers = request.getLayers();
-        if (layers.size() != 1) {
+        final String layerName = request.getRawKvp().get("LAYERS");
+        /*
+         * This is a quick way of checking if the request was for a single layer. We can't really use request.getLayers()
+         * because in the event that a layerGroup was requested, the request parser turned it into a list of actual Layers
+         */
+        if(layerName.indexOf(',') != -1){
             return null;
         }
-        final String layerName = layers.get(0).getName();
+
         final TileLayer tileLayer;
         try {
             tileLayer = this.tld.getTileLayer(layerName);
