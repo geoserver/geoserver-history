@@ -187,8 +187,16 @@ public class StyleResource extends AbstractCatalogResource {
             catalog.save( original );
         }
         else if ( object instanceof Style ) {
+            /*
+             * Force the .sld file to be overriden and it's Style object cleared from the
+             * ResourcePool cache
+             */
             StyleInfo s = catalog.getStyleByName( style );
             catalog.getResourcePool().writeStyle( s, (Style) object, true );
+            /*
+             * make sure to save the StyleInfo so that the Catalog issues the notification events
+             */
+            catalog.save(s);
         }
         
         LOGGER.info( "PUT style " + style);
