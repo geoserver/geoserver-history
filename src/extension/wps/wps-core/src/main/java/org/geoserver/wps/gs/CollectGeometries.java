@@ -11,6 +11,7 @@ import org.geoserver.wps.jts.DescribeProcess;
 import org.geoserver.wps.jts.DescribeResult;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
+import org.geotools.geometry.jts.GeometryCollector;
 import org.opengis.util.ProgressListener;
 
 import com.vividsolutions.jts.geom.Geometry;
