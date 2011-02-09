@@ -51,7 +51,6 @@ public class WFSFilteringTest extends WFSTestSupport {
 
     public void testSingleSmallDistance() throws Exception {
         String request = QUERY_SINGLE.replace("${distance}", "0.00000001");
-        System.out.println(request);
         Document doc = postAsDOM("wfs", request);
         // print(doc);
 

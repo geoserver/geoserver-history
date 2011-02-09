@@ -6,8 +6,8 @@ package org.geoserver.filter.function;
 import java.util.Iterator;
 import java.util.List;
 
-import org.geoserver.wps.gs.GeometryCollector;
 import org.geotools.filter.FunctionImpl;
+import org.geotools.geometry.jts.GeometryCollector;
 import org.opengis.filter.expression.Expression;
 import org.opengis.filter.expression.Literal;
 
