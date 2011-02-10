@@ -35,6 +35,7 @@
           <descriptor>release/ext-spatialite.xml</descriptor>
           <descriptor>release/ext-dbconfig.xml</descriptor>
           <descriptor>release/ext-inspire.xml</descriptor>
+          <descriptor>release/ext-querylayer.xml</descriptor>
         </descriptors>
       </configuration>
      </plugin>
@@ -145,6 +146,7 @@
         <module>spatialite</module>
         <module>dbconfig</module>
         <module>inspire</module>
+        <module>querylayer</module>
       </modules>
     </profile>
     <profile>
