@@ -39,6 +39,8 @@ import javax.media.jai.ROI;
 import javax.media.jai.ROIShape;
 import javax.media.jai.operator.BandMergeDescriptor;
 import javax.media.jai.operator.BorderDescriptor;
+import javax.media.jai.operator.CompositeDescriptor;
+import javax.media.jai.operator.CompositeDestAlpha;
 import javax.media.jai.operator.ConstantDescriptor;
 import javax.media.jai.operator.CropDescriptor;
 import javax.media.jai.operator.LookupDescriptor;
@@ -1018,19 +1020,10 @@ public class RenderedImageMapOutputFormat extends AbstractMapOutputFormat {
                 }
             }
         }
-        // TODO: handle other color models, as the direct one (can we ever get it?)
-
+        
         //
-        // If we need to add a collar and/or apply a bkg color, use mosaic for fast bg color application
-        // Else check if we need to crop a larger than required image, else return it right away
-        //
-        if((!imageBounds.contains(mapRasterArea)&& !imageBounds.equals(mapRasterArea))|| alphaChannels != null){
-//        if (imageBounds.getWidth() < mapWidth
-//                || imageBounds.getHeight() <mapHeight || imageBounds.getMinX() > 0
-//                || imageBounds.getMinY() > 0 || alphaChannels != null) {
-            // setup the ROI, otherwise we won't get solid color background collars around the image
-//            Rectangle roi = new Rectangle(image.getMinX(), image.getMinY(), image.getWidth(),
-//                    image.getHeight());
+        // If we need to add a collar use mosaic
+        if((!imageBounds.contains(mapRasterArea) && !imageBounds.equals(mapRasterArea))) {
             ROI[] rois = new ROI[] { new ROIShape(imageBounds) };
 
             // build the transparency thresholds
@@ -1043,9 +1036,10 @@ public class RenderedImageMapOutputFormat extends AbstractMapOutputFormat {
                                                          // MosaicDescriptor.MOSAIC_TYPE_OVERLAY,
                     alphaChannels, rois, thresholds, bgValues, new RenderingHints(
                             JAI.KEY_IMAGE_LAYOUT, layout));
-            
-
-        } else if (imageBounds.contains(mapRasterArea)) { // the produced image does not need a final mosaicking operation but a crop!
+        }
+        
+        // Check if we need to crop a larger than required image, else return it right away
+        if (imageBounds.contains(mapRasterArea) && !imageBounds.equals(mapRasterArea)) { // the produced image does not need a final mosaicking operation but a crop!
             // reduce the image to the actually required size
             image= CropDescriptor.create(
                     image, 
@@ -1054,7 +1048,35 @@ public class RenderedImageMapOutputFormat extends AbstractMapOutputFormat {
                     (float)mapWidth,
                     (float)mapHeight,
                      null);
-        }  
+        }
+        
+        // is there any chance we have translucent pixels that we need to blend with a background?
+        if(!transparent && alphaChannels != null && cm instanceof ComponentColorModel) {
+            Byte[] bg = new Byte[bgValues.length - 1];
+            for (int i = 0; i < bg.length; i++) {
+                bg[i] = (byte) bgValues[i];
+            }
+            Byte[] bgAlpha = new Byte[] {(byte) 0xFF};
+            
+            RenderingHints hints = new RenderingHints(JAI.KEY_IMAGE_LAYOUT, layout);
+            RenderedImage background = ConstantDescriptor.create((float) image.getWidth(), 
+                    (float) image.getHeight(), bg, hints);
+            RenderedImage bgAlphaImage = ConstantDescriptor.create((float) image.getWidth(), 
+                    (float) image.getHeight(), bgAlpha, hints);
+            
+            ImageWorker iwRGB = new ImageWorker(image);
+            ImageWorker iwAlpha = new ImageWorker(image);
+            iwRGB.setRenderingHints(hints);
+            image = iwRGB.retainBands(iwRGB.getNumBands() - 1).getRenderedImage();
+            iwAlpha.setRenderingHints(hints);
+            RenderedImage alphaImage = iwAlpha.retainLastBand().getRenderedImage();
+            
+            image = CompositeDescriptor.create(image, background, alphaImage,  bgAlphaImage, false, 
+                    CompositeDescriptor.NO_DESTINATION_ALPHA, 
+                    hints);
+        }
+
+        
         return image;
     }
 
