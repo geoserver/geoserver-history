@@ -7,19 +7,24 @@ GeoServer can leverage the `ImageIO-ext <https://imageio-ext.dev.java.net>`_ GDA
 
 The following image formats can be read by GeoServer using GDAL:
 
-* DTED
-* EHdr
-* ERDASImg
-* JP2MrSID
-* MrSID
-* NITF
+* DTED, Military Elevation Data (.dt0, .dt1, .dt2): http://www.gdal.org/frmt_dted.html
+* EHdr, ESRI .hdr Labelled: <http://www.gdal.org/frmt_various.html#EHdr>
+* ENVI, ENVI .hdr Labelled Raster: <http://www.gdal.org/frmt_various.html#ENVI>
+* HFA, Erdas Imagine (.img): <http://www.gdal.org/frmt_hfa.html>
+* JP2MrSID, JPEG2000 (.jp2, .j2k): <http://www.gdal.org/frmt_jp2mrsid.html>
+* MrSID, Multi-resolution Seamless Image Database: <http://www.gdal.org/frmt_mrsid.html>
+* NITF: <http://www.gdal.org/frmt_nitf.html>
+* ECW, ERDAS Compressed Wavelets (.ecw): <http://www.gdal.org/frmt_ecw.html>
+* JP2ECW, JPEG2000 (.jp2, .j2k): http://www.gdal.org/frmt_jpeg2000.html
+* AIG, Arc/Info Binary Grid: <http://www.gdal.org/frmt_various.html#AIG>
+* JP2KAK, JPEG2000 (.jp2, .j2k): <http://www.gdal.org/frmt_jp2kak.html>
 
 Installing GDAL
 ---------------
 
 GDAL is not a standard GeoServer extension, as the GDAL library files are built into GeoServer by default.  However, in order for GeoServer to leverage these libraries, the GDAL (binary) program itself must be installed through your host system's OS.  Once this program is installed, GeoServer will be able to recognize GDAL data types. In order to install the GDAL Native libraries:
 
-#. Navigate to the `imageio-ext document and files download page <https://imageio-ext.dev.java.net/servlets/ProjectDocumentList?folderID=10435&expandFolder=10435&folderID=0>`_.
+#. Navigate to the `imageio-ext document and files download page <http://java.net/projects/imageio-ext/downloads>`_.
 #. Select the most recent stable binary release.
 #. Select "native libraries".
 #. Download and extract/install the correct version for your OS.
