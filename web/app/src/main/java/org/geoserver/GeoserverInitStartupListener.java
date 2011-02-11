@@ -12,6 +12,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.Vector;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -109,6 +112,9 @@ public class GeoserverInitStartupListener implements ServletContextListener {
         Hints.putSystemDefault(Hints.FILTER_FACTORY, CommonFactoryFinder.getFilterFactory2(null));
         Hints.putSystemDefault(Hints.STYLE_FACTORY, CommonFactoryFinder.getStyleFactory(null));
         Hints.putSystemDefault(Hints.FEATURE_FACTORY, CommonFactoryFinder.getFeatureFactory(null));
+        
+        final ThreadPoolExecutor executor = new ThreadPoolExecutor(5, 5, 30000, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
+        Hints.putSystemDefault(Hints.EXECUTOR_SERVICE, executor);
     }
     
     /**
