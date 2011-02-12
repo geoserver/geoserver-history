@@ -261,7 +261,7 @@ public class Ogr2OgrOutputFormat extends WFSGetFeatureOutputFormat {
                 // scan the output directory and zip it all
                 ZipOutputStream zipOut = new ZipOutputStream(output);
                 IOUtils.zipDirectory(tempOGR, zipOut, null);
-                zipOut.flush();
+                zipOut.finish();
             }
 
             // delete the input and output directories

@@ -68,6 +68,7 @@ public class Ogr2OgrFormatTest extends TestCase {
         // the output format (and let's add a few output formats to play with
         ogr = new Ogr2OgrOutputFormat();
         ogr.addFormat(new OgrFormat("KML", "OGR-KML", ".kml", true, "application/vnd.google-earth.kml"));
+        ogr.addFormat(new OgrFormat("KML", "OGR-KML-ZIP", ".kml", false, "application/vnd.google-earth.kml"));
         ogr.addFormat(new OgrFormat("CSV", "OGR-CSV", ".csv", true, "text/csv"));
         ogr.addFormat(new OgrFormat("SHP", "OGR-SHP", ".shp", false, null));
         ogr.addFormat(new OgrFormat("MapInfo File", "OGR-MIF", ".mif", false, null, "-dsco", "FORMAT=MIF"));
@@ -115,6 +116,30 @@ public class Ogr2OgrFormatTest extends TestCase {
         Document dom = dom(new ByteArrayInputStream(bos.toByteArray()));
         // print(dom);
 
+        // some very light assumptions on the contents, since we
+        // cannot control how ogr encodes the kml... let's just assess
+        // it's kml with the proper number of features
+        assertEquals("kml", dom.getDocumentElement().getTagName());
+        assertEquals(2, dom.getElementsByTagName("Placemark").getLength());
+    }
+    
+    public void testZippedKML() throws Exception {
+        // prepare input
+        FeatureCollection fc = dataStore.getFeatureSource("Buildings").getFeatures();
+        fct.getFeature().add(fc);
+
+        // write out
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        gft.setOutputFormat("OGR-KML-ZIP");
+        ogr.write(fct, bos, op);
+        
+        // unzip the result
+        ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(bos.toByteArray()));
+        Document dom = null;
+        ZipEntry entry = zis.getNextEntry(); 
+        assertEquals("Buildings.kml", entry.getName());
+        dom = dom(zis);
+        
         // some very light assumptions on the contents, since we
         // cannot control how ogr encodes the kml... let's just assess
         // it's kml with the proper number of features
