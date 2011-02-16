@@ -32,6 +32,13 @@
 			<groupId>org.geoserver</groupId>
 			<artifactId>wfs</artifactId>
 		</dependency>
+        <dependency>
+            <!--
+                //NC - wms package required for wms support
+            -->
+            <groupId>org.geoserver</groupId>
+            <artifactId>wms</artifactId>
+        </dependency>
 		<dependency>
 			<groupId>com.mockrunner</groupId>
 			<artifactId>mockrunner</artifactId>
@@ -132,6 +139,7 @@
 					<include>**/*.xml</include>
 					<include>**/*.xsd</include>
 					<include>**/*.sql</include>
+                    <include>**/*.sld</include>
 				</includes>
 			</testResource>
 		</testResources>
