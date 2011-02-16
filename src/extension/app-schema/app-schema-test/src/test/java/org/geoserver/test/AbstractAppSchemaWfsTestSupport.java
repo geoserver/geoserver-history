@@ -16,7 +16,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.custommonkey.xmlunit.SimpleNamespaceContext;
@@ -63,6 +62,7 @@ public abstract class AbstractAppSchemaWfsTestSupport extends GeoServerAbstractT
                     put("gml", "http://www.opengis.net/gml");
                     put("xlink", "http://www.w3.org/1999/xlink");
                     put("xsi", "http://www.w3.org/2001/XMLSchema-instance");
+                    put("wms", "http://www.opengis.net/wms"); //NC - wms added for wms tests
                 }
             });
 
@@ -148,6 +148,14 @@ public abstract class AbstractAppSchemaWfsTestSupport extends GeoServerAbstractT
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+    
+    protected InputStream getBinary(String path) {        
+        try {
+            return getBinaryInputStream(getAsServletResponse(path));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }        
     }
 
     /**

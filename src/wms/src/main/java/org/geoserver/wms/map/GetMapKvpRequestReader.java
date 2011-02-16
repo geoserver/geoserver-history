@@ -61,11 +61,10 @@ import org.geotools.styling.UserLayer;
 import org.geotools.util.Version;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.FeatureType;
-import org.opengis.feature.type.PropertyDescriptor;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
+import org.opengis.filter.expression.PropertyName;
 import org.opengis.filter.identity.FeatureId;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.util.Requests;
@@ -1032,23 +1031,18 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
         // extract attributes used in the style
         StyleAttributeExtractor sae = new StyleAttributeExtractor();
         sae.visit(style);
-        String[] styleAttributes = sae.getAttributeNames();
+        Set<PropertyName> styleAttributes = sae.getAttributes();
 
         // see if we can collect any attribute out of the provided layer
-        Set attributes = new HashSet();
+       // Set attributes = new HashSet();
+        FeatureType type = null;
         if (mapLayerInfo.getType() == MapLayerInfo.TYPE_VECTOR
                 || mapLayerInfo.getType() == MapLayerInfo.TYPE_REMOTE_VECTOR) {
-            try {
-                final FeatureType type;
+            try {                
                 if (mapLayerInfo.getType() == MapLayerInfo.TYPE_VECTOR)
                     type = mapLayerInfo.getFeature().getFeatureType();
                 else
                     type = mapLayerInfo.getRemoteFeatureSource().getSchema();
-                for (PropertyDescriptor pd : type.getDescriptors()) {
-                    if (pd instanceof AttributeDescriptor) {
-                        attributes.add(pd.getName().getLocalPart());
-                    }
-                }
             } catch (IOException ioe) {
                 throw new RuntimeException("Error getting FeatureType, this should never happen!",
                         ioe);
@@ -1056,12 +1050,9 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
         }
 
         // check all attributes required by the style are available
-        String attName;
-        final int length = styleAttributes.length;
-        for (int i = 0; i < length; i++) {
-            attName = styleAttributes[i];
-
-            if (!attributes.contains(attName)) {
+        for (PropertyName attName : styleAttributes) {
+        
+            if ( attName.evaluate(type) == null ) {
                 throw new ServiceException(
                         "The requested Style can not be used with this layer.  The style specifies "
                                 + "an attribute of " + attName + " and the layer is: "

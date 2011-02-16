@@ -112,8 +112,12 @@ public abstract class AbstractAppSchemaMockData implements NamespaceTestData {
     private final Map<String, String> datastoreNamespacePrefixes = new LinkedHashMap<String, String>();
 
     private final Map<String, String> namespaces;
+    
+    private final Map<String, String> layerStyles = new LinkedHashMap<String,String>();
 
     private File data;
+    
+    private File styles;
 
     /** the 'featureTypes' directory, under 'data' */
     private File featureTypesBaseDir;
@@ -138,6 +142,11 @@ public abstract class AbstractAppSchemaMockData implements NamespaceTestData {
         // create a featureTypes directory
         featureTypesBaseDir = new File(data, "featureTypes");
         featureTypesBaseDir.mkdir();
+        
+        // create the styles directory
+        styles = new File(data, "styles");
+        styles.mkdir();
+        
         addContent();
         setUpCatalog();
     }
@@ -230,7 +239,7 @@ public abstract class AbstractAppSchemaMockData implements NamespaceTestData {
         writer.coverageStores(new HashMap<String, Map<String, String>>(),
                 new HashMap<String, String>(), Collections.<String> emptySet());
         writer.namespaces(namespaces);
-        writer.styles(Collections.<String, String> emptyMap());
+        writer.styles(layerStyles);
         try {
             writer.write(new File(data, "catalog.xml"));
         } catch (IOException e) {
@@ -382,6 +391,25 @@ public abstract class AbstractAppSchemaMockData implements NamespaceTestData {
                     dataStoreName));
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }
+    }
+    
+    
+       
+    /**
+     * Adds the specified style to the data directory
+     * @param styleId the style id
+     * @param filename filename of SLD file in test-data to be copied into the data directory
+     * @throws IOException
+     */
+    public void addStyle(String styleId, String fileName) {
+        layerStyles.put(styleId, styleId + ".sld");
+        InputStream styleContents = getClass().getResourceAsStream(TEST_DATA + fileName);
+        File to = new File(styles, styleId + ".sld");
+        try {
+            IOUtils.copy(styleContents, to);
+        } catch (IOException e) {
+            throw new RuntimeException (e);
         }
     }
 
