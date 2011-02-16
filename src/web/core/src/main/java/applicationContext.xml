@@ -59,6 +59,8 @@
      <property name="nameKey" value="category.about"/>
      <property name="order" value="100"/>
   </bean>
+  <!-- alias for backward compatability -->
+  <alias name="aboutStatusCategory" alias="serverCategory"/>
   
   <bean id="dataCategory" class="org.geoserver.web.Category">
      <property name="nameKey" value="category.data"/>
