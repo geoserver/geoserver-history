@@ -27,7 +27,7 @@
       <version>2.1</version>
       <configuration>
         <descriptors>
-          <!--descriptor>release/ext-css.xml</descriptor-->
+          <descriptor>release/ext-css.xml</descriptor>
           <descriptor>release/ext-ftp.xml</descriptor>
           <descriptor>release/ext-printing.xml</descriptor>
           <descriptor>release/ext-monitor.xml</descriptor>
