@@ -34,6 +34,8 @@ public class MonitorConfig implements ApplicationContextAware {
     Properties props;
     PropertyFileWatcher fw;
     ApplicationContext context;
+    boolean enabled = true;
+    Exception error;
     
     public MonitorConfig() {
         props = new Properties();
@@ -57,6 +59,22 @@ public class MonitorConfig implements ApplicationContextAware {
     
     public Sync getSync() {
         return Sync.valueOf(props().getProperty("sync", "async").toUpperCase());
+    }
+    
+    public boolean isEnabled() {
+        return enabled;
+    }
+    
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+    
+    public Exception getError() {
+        return error;
+    }
+    
+    public void setError(Exception error) {
+        this.error = error;
     }
     
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {

@@ -48,7 +48,16 @@ public class MonitorFilter implements Filter {
         
         postProcessExecutor = Executors.newFixedThreadPool(2);
         
-        LOGGER.info("Monitor extension enabled");
+        if (monitor.isEnabled()) {
+            LOGGER.info("Monitor extension enabled");    
+        }
+        else {
+            String msg ="Monitor extension disabled";
+            if (monitor.getConfig().getError() != null) {
+                msg += ": " + monitor.getConfig().getError().getLocalizedMessage();
+            }
+            LOGGER.info(msg);
+        }
     }
     
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -58,8 +67,9 @@ public class MonitorFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
         
-        //ignore non http requests
-        if (!(request instanceof HttpServletRequest)) {
+        
+        //check if enabled, and ignore non http requests
+        if (!monitor.isEnabled() || !(request instanceof HttpServletRequest)) {
             chain.doFilter(request, response);
             return;
         }

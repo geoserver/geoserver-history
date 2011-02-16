@@ -68,4 +68,12 @@
      <property column="ACCESS_COUNT" name="accessCount"/>
   </class-->
   
+  <!-- hibernate only automatically creates index for mysql, added them manually -->
+  <database-object>
+     <create>CREATE INDEX REQUEST_START_TIME_IDX ON REQUEST(START_TIME)</create>
+     <drop>DROP INDEX REQUEST_START_TIME_IDX</drop>
+     <dialect-scope name="org.geoserver.monitor.hib.H2Dialect"/>
+     <dialect-scope name="org.hibernate.dialect.PostgreSQLDialect"/>
+  </database-object>
+  
 </hibernate-mapping>

@@ -11,29 +11,46 @@ import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.io.IOUtils;
 import org.geoserver.config.GeoServerDataDirectory;
+import org.geoserver.monitor.MonitorConfig;
+import org.geotools.util.logging.Logging;
 
 public class MonitoringDataSource extends BasicDataSource {
 
+    MonitorConfig config;
     GeoServerDataDirectory dataDirectory;
 
+    public void setConfig(MonitorConfig config) {
+        this.config = config;
+    }
+    
     public void setDataDirectory(GeoServerDataDirectory dataDir) {
         this.dataDirectory = dataDir;
     }
 
     @Override
     public Connection getConnection() throws SQLException {
-        if(getDriverClassName() == null) {
-            synchronized(this) {
-                if (getDriverClassName() == null) {
-                    initializeDataSource();
+        try {
+            if(getDriverClassName() == null) {
+                synchronized(this) {
+                    if (getDriverClassName() == null) {
+                        initializeDataSource();
+                    }
                 }
             }
+            return super.getConnection();
         }
-        return super.getConnection();
+        catch(SQLException e) {
+            //LOGGER.log(Level.WARNING, "Database connection error", e);
+            config.setError(e);
+            config.setEnabled(false);
+            throw e;
+        }
     }
 
     void initializeDataSource() {
@@ -71,8 +88,9 @@ public class MonitoringDataSource extends BasicDataSource {
             //TODO: make other parameters configurable
             setMinIdle(1);
             setMaxActive(4);
-        } catch (Exception e) {
-            throw new RuntimeException("Unexpected error setting up the monitoring H2 database", e);
+        } 
+        catch (Exception e) {
+            throw new RuntimeException("Error occured configuring database");
         }
     }
     

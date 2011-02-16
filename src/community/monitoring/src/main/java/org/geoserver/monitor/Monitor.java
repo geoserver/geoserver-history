@@ -49,6 +49,14 @@ public class Monitor {
         this.dao = dao;
     }
     
+    public MonitorConfig getConfig() {
+        return config;
+    }
+    
+    public boolean isEnabled() {
+        return config.isEnabled();
+    }
+    
     public RequestData start() {
         RequestData req = new RequestData();
         req = dao.init(req);

@@ -14,6 +14,7 @@
     -->
     <bean id="monitorDataSource" class="org.geoserver.monitor.hib.MonitoringDataSource" depends-on="geoServerLoader" >
       <property name="dataDirectory" ref="dataDirectory" />
+      <property name="config" ref="monitorConfig" />
     </bean>
     
     <!-- monitor daos -->
