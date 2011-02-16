@@ -44,9 +44,7 @@ public class DefaultGeoServerLoader extends GeoServerLoader {
     
     protected void loadGeoServer(final GeoServer geoServer, XStreamPersister xp) throws Exception {
         
-        readConfiguration(geoServer, xp);
-        
-      //add event listener which persists changes
+        //add event listener which persists changes
         final List<XStreamServiceLoader> loaders = 
             GeoServerExtensions.extensions( XStreamServiceLoader.class );
         geoServer.addListener( 
@@ -66,6 +64,8 @@ public class DefaultGeoServerLoader extends GeoServerLoader {
                 }
             }
         );
+        
+        readConfiguration(geoServer, xp);
         
         geoServer.addListener( new GeoServerPersister( resourceLoader, xp ) );
     }
