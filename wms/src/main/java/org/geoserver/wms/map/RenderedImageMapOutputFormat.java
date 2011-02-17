@@ -25,8 +25,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.media.jai.BorderExtender;
-import javax.media.jai.BorderExtenderConstant;
 import javax.media.jai.ImageLayout;
 import javax.media.jai.Interpolation;
 import javax.media.jai.InterpolationBicubic2;
@@ -38,14 +36,11 @@ import javax.media.jai.PlanarImage;
 import javax.media.jai.ROI;
 import javax.media.jai.ROIShape;
 import javax.media.jai.operator.BandMergeDescriptor;
-import javax.media.jai.operator.BorderDescriptor;
 import javax.media.jai.operator.CompositeDescriptor;
-import javax.media.jai.operator.CompositeDestAlpha;
 import javax.media.jai.operator.ConstantDescriptor;
 import javax.media.jai.operator.CropDescriptor;
 import javax.media.jai.operator.LookupDescriptor;
 import javax.media.jai.operator.MosaicDescriptor;
-import javax.swing.border.Border;
 
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.DefaultWebMapService;
@@ -53,9 +48,9 @@ import org.geoserver.wms.GetMapOutputFormat;
 import org.geoserver.wms.GetMapRequest;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSInfo;
-import org.geoserver.wms.WMSInfo.WMSInterpolation;
 import org.geoserver.wms.WMSMapContext;
 import org.geoserver.wms.WatermarkInfo;
+import org.geoserver.wms.WMSInfo.WMSInterpolation;
 import org.geoserver.wms.decoration.MapDecoration;
 import org.geoserver.wms.decoration.MapDecorationLayout;
 import org.geoserver.wms.decoration.MetatiledMapDecorationLayout;
@@ -65,6 +60,7 @@ import org.geotools.coverage.grid.GridEnvelope2D;
 import org.geotools.coverage.grid.GridGeometry2D;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
+import org.geotools.coverage.renderedimage.viewer.RenderedImageBrowser;
 import org.geotools.gce.imagemosaic.ImageMosaicFormat;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.image.ImageWorker;
@@ -734,8 +730,9 @@ public class RenderedImageMapOutputFormat extends AbstractMapOutputFormat {
         final boolean transparent = mapContext.isTransparent() && isTransparencySupported();
         Color bgColor = mapContext.getBgColor();
         // set transparency
-        if (transparent)
+        if (transparent) {
             bgColor = new Color(bgColor.getRed(), bgColor.getGreen(), bgColor.getBlue(), 0);
+        }
   
         //
         // grab the interpolation
@@ -805,21 +802,24 @@ public class RenderedImageMapOutputFormat extends AbstractMapOutputFormat {
         try {
             
             final GridCoverage2D coverage;
+            final Color readerBgColor = transparent ? null : bgColor;
             // SG take into account gutter for reprojection
-            if(sameCRS){
-                coverage= readBestCoverage(
+            if(sameCRS) {
+                coverage = readBestCoverage(
                         reader, 
                         params,
                         mapEnvelope,
                         mapRasterArea, 
-                        interpolation);
+                        interpolation,
+                        readerBgColor);
             }else{
-                coverage= readBestCoverage(
+                coverage = readBestCoverage(
                         reader, 
                         params,
                         bufferedEnvelope,
                         bufferedTargetArea, 
-                        interpolation);
+                        interpolation,
+                        readerBgColor);
             }
              
             
@@ -1113,7 +1113,8 @@ public class RenderedImageMapOutputFormat extends AbstractMapOutputFormat {
             final Object params,
             final ReferencedEnvelope requestedModelArea,
             final Rectangle requestedRasterArea,
-            final Interpolation interpolation) throws IOException {
+            final Interpolation interpolation,
+            final Color bgColor) throws IOException {
 
         ////
         //
@@ -1153,6 +1154,16 @@ public class RenderedImageMapOutputFormat extends AbstractMapOutputFormat {
         
         final Parameter<Interpolation> readInterpolation=(Parameter<Interpolation>) ImageMosaicFormat.INTERPOLATION.createValue(); 
         readInterpolation.setValue(interpolation);
+        
+        final Parameter<Color> bgColorParam;
+        if(bgColor != null) {
+            bgColorParam = (Parameter<Color>) AbstractGridFormat.BACKGROUND_COLOR.createValue();
+            bgColorParam.setValue(bgColor);
+        } else {
+            bgColorParam = null;
+        }
+        
+        
         // then I try to get read parameters associated with this
         // coverage if there are any.
         GridCoverage2D coverage = null;
@@ -1173,39 +1184,53 @@ public class RenderedImageMapOutputFormat extends AbstractMapOutputFormat {
                 // request.
                 final String readGGName = AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString();
                 final String readInterpolationName = ImageMosaicFormat.INTERPOLATION.getName().toString();
+                final String bgColorName = AbstractGridFormat.BACKGROUND_COLOR.getName().toString();
                 int i = 0;
-                boolean foundInterpolation=false,foundGG=false;
-                for (; i < length; i++)
-                    if (readParams[i].getDescriptor().getName().toString().equalsIgnoreCase(readGGName)){
+                boolean foundInterpolation = false;
+                boolean foundGG = false;
+                boolean foundBgColor = false;
+                for (; i < length; i++) {
+                    final String paramName = readParams[i].getDescriptor().getName().toString();
+                    if (paramName.equalsIgnoreCase(readGGName)){
                         ((Parameter) readParams[i]).setValue(readGG);
-                        foundGG=true;
-                    }else if(readParams[i].getDescriptor().getName().toString().equalsIgnoreCase(readInterpolationName)){
+                        foundGG = true;
+                    } else if(paramName.equalsIgnoreCase(readInterpolationName)){
                         ((Parameter) readParams[i]).setValue(interpolation);
-                        foundInterpolation=true;
+                        foundInterpolation = true;
+                    } else if(paramName.equalsIgnoreCase(bgColorName) && bgColor != null) {
+                        ((Parameter) readParams[i]).setValue(bgColor);
+                        foundBgColor = true;
                     }
+                }
                 
                 // did we find anything?
-                if (foundGG&&foundInterpolation) {
-                    // we found another READ_GRIDGEOMETRY2D, let's override it.
-                    
-                    coverage = (GridCoverage2D) reader.read(readParams);
-                } else {
+                if (!foundGG || !foundInterpolation || !(foundBgColor && bgColor != null)) {
                     // add the correct read geometry to the supplied
                     // params since we did not find anything
-                    final int size =length+(!foundGG&&!foundInterpolation?2:1);
-                    GeneralParameterValue[] readParams2 = new GeneralParameterValue[size];
-                    System.arraycopy(readParams, 0, readParams2, 0, length);
-                    if(!foundGG)
-                        readParams2[length] = readGG;
-                    if(!foundInterpolation)
-                        readParams2[length-(foundGG?0:-1)] = readInterpolation;
-                    coverage = (GridCoverage2D) reader.read(readParams2);
+                    List<GeneralParameterValue> paramList = new ArrayList<GeneralParameterValue>();
+                    paramList.addAll(Arrays.asList(readParams));
+                    if(!foundGG) {
+                         paramList.add(readGG);
+                    } 
+                    if(!foundInterpolation) {
+                        paramList.add(readInterpolation);
+                    } 
+                    if(!foundBgColor && bgColor != null) {
+                        paramList.add(bgColorParam);
+                    }
+                    readParams = (GeneralParameterValue[]) paramList.toArray(new GeneralParameterValue[paramList
+                            .size()]);
                 }
+                coverage = (GridCoverage2D) reader.read(readParams);
             }
-        }
+        } 
         // if for any reason the previous block did not produce a coverage (no params, empty params)
         if (coverage == null) {
-            coverage = (GridCoverage2D) reader.read(new GeneralParameterValue[] { readGG ,readInterpolation});
+            if(bgColorParam != null) {
+                coverage = (GridCoverage2D) reader.read(new GeneralParameterValue[] {readGG ,readInterpolation, bgColorParam});
+            } else {
+                coverage = (GridCoverage2D) reader.read(new GeneralParameterValue[] {readGG ,readInterpolation});
+            }
         }
 
         return coverage;
