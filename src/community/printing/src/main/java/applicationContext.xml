@@ -28,10 +28,10 @@
     </property>
   </bean>
 
-  <bean id="cssDemo" class="org.geoserver.web.MenuPageInfo">
+  <bean id="cssDemo" class="org.geoserver.web.DemoLinkInfo">
     <property name="id" value="printDemo"/>
-    <property name="titleKey" value="PrintDemoPage.title"/>
-    <property name="descriptionKey" value="PrintDemoPage.description"/>
+    <property name="titleKey" value="printing.title"/>
+    <property name="descriptionKey" value="printing.description"/>
     <property name="componentClass" value="org.geoserver.printing.PrintDemoPage"/>
   </bean>
 </beans>
