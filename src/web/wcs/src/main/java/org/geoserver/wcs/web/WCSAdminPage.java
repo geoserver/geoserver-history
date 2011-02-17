@@ -30,10 +30,10 @@ public class WCSAdminPage extends BaseServiceAdminPage<WCSInfo> {
         
         // resource limits
         TextField maxInputMemory = new TextField("maxInputMemory");
-        maxInputMemory.add(new MinimumValidator(0.0));
+        maxInputMemory.add(new MinimumValidator(0l));
         form.add(maxInputMemory);
         TextField maxOutputMemory = new TextField("maxOutputMemory");
-        maxOutputMemory.add(new MinimumValidator(0.0));
+        maxOutputMemory.add(new MinimumValidator(0l));
         form.add(maxOutputMemory);
     }
 
