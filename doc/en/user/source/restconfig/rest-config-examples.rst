@@ -12,5 +12,5 @@ REST data configuration api. The examples are grouped by environment/language.
 
    rest-config-examples-curl/
    rest-config-examples-php/
-   rest_config_examples_python/
+   rest-config-examples-python/
 
