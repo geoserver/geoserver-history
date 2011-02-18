@@ -116,7 +116,7 @@ public class Dispatcher extends AbstractController {
     boolean citeCompliant = false;
 
     /** thread local variable for the request */
-    public static final ThreadLocal<Request> REQUEST = new ThreadLocal<Request>();
+    public static final ThreadLocal<Request> REQUEST = new InheritableThreadLocal<Request>();
     
     static final Charset UTF8 = Charset.forName("UTF-8");
     
