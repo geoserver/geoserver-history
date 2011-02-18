@@ -1,3 +1,15 @@
+GeoServer 2.1-RC1 (February 18, 2011)
+-------------------------------------
+
+The second GeoServer 2.1 release candidate. The release includes
+a long list of small fixes but no new features.
+
+The entire changelog is available here:
+
+http://jira.codehaus.org/secure/ReleaseNote.jspa?projectId=10311&version=17077
+
+This release is based on GeoTools 2.7-RC2
+
 GeoServer 2.1-RC1 (January 16, 2011)
 ------------------------------------
 
