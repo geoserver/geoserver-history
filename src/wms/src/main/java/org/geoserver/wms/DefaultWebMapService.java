@@ -707,6 +707,7 @@ public class DefaultWebMapService implements WebMapService, ApplicationContextAw
         if (RENDERING_POOL != null) {
             RENDERING_POOL.shutdown();
             RENDERING_POOL.awaitTermination(10, TimeUnit.SECONDS);
+            RENDERING_POOL = null;
         }
     }
 
