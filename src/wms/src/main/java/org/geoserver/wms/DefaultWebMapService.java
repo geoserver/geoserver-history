@@ -34,7 +34,6 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.TransformException;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.DisposableBean;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
@@ -66,7 +65,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * @author Gabriel Roldan
  */
 public class DefaultWebMapService implements WebMapService, ApplicationContextAware,
-        InitializingBean, DisposableBean {
+        DisposableBean {
     /**
      * default for 'format' parameter.
      */
@@ -137,6 +136,11 @@ public class DefaultWebMapService implements WebMapService, ApplicationContextAw
      * Enable continuous map wrapping
      */
     private static Boolean ENABLE_MAP_WRAPPING = null;
+    
+    /**
+     * Use a global rendering pool, or use a new pool each time
+     */
+    private static Boolean USE_GLOBAL_RENDERING_POOL = null;
 
     private GetCapabilities getCapabilities;
 
@@ -246,6 +250,16 @@ public class DefaultWebMapService implements WebMapService, ApplicationContextAw
                 ENABLE_MAP_WRAPPING = true;
             else
                 ENABLE_MAP_WRAPPING = Boolean.valueOf(wrapping);
+        }
+        
+        // control usage of the global rendering thread pool
+        if (USE_GLOBAL_RENDERING_POOL == null) {
+            String usePool = GeoServerExtensions.getProperty("USE_GLOBAL_RENDERING_POOL", context);
+            // default to true, but allow switching off
+            if (usePool == null)
+                USE_GLOBAL_RENDERING_POOL = true;
+            else
+                USE_GLOBAL_RENDERING_POOL = Boolean.valueOf(usePool);
         }
     }
 
@@ -678,6 +692,14 @@ public class DefaultWebMapService implements WebMapService, ApplicationContextAw
      * @return
      */
     public static ExecutorService getRenderingPool() {
+        if(USE_GLOBAL_RENDERING_POOL && RENDERING_POOL == null) {
+            synchronized (DefaultWebMapService.class) {
+                if(RENDERING_POOL == null) {
+                    RENDERING_POOL = Executors.newCachedThreadPool();
+                }
+            }
+        }
+        
         return RENDERING_POOL;
     }
 
@@ -688,7 +710,4 @@ public class DefaultWebMapService implements WebMapService, ApplicationContextAw
         }
     }
 
-    public void afterPropertiesSet() throws Exception {
-        RENDERING_POOL = Executors.newCachedThreadPool();
-    }
 }
