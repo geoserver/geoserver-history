@@ -910,8 +910,8 @@ public class Capabilities_1_3_0_Transformer extends TransformerBase {
 
                     // ELEVATION DIMENSION
                     elevationMetadataExtent = reader.getMetadataValue("ELEVATION_DOMAIN");
-                    final String[] elevationLevels = elevationMetadataExtent.split(",");
                     if (elevationMetadataExtent != null) {
+                        final String[] elevationLevels = elevationMetadataExtent.split(",");
                         AttributesImpl elevDim = new AttributesImpl();
                         elevDim.addAttribute("", "name", "name", "", "elevation");
                         elevDim.addAttribute("", "units", "units", "", "EPSG:5030");
