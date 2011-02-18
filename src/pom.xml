@@ -516,11 +516,6 @@
    </dependency>
    <dependency>
     <groupId>org.geowebcache</groupId>
-    <artifactId>gwc-wfs</artifactId>
-    <version>${gwc.version}</version>
-   </dependency>
-   <dependency>
-    <groupId>org.geowebcache</groupId>
     <artifactId>gwc-wms</artifactId>
     <version>${gwc.version}</version>
     <exclusions>
@@ -1380,7 +1375,7 @@
  <properties>
   <gs.version>2.2-SNAPSHOT</gs.version>
   <gt.version>2.8-SNAPSHOT</gt.version>
-  <gwc.version>1.2-SNAPSHOT</gwc.version>
+  <gwc.version>1.2.5-SNAPSHOT</gwc.version>
   <spring.version>2.5.5</spring.version>
   <spring.security.version>2.0.6.RELEASE</spring.security.version> 
   <wicket.version>1.4.12</wicket.version>

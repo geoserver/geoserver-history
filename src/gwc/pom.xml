@@ -60,10 +60,6 @@
     </dependency>
     <dependency>
       <groupId>org.geowebcache</groupId>
-      <artifactId>gwc-wfs</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.geowebcache</groupId>
       <artifactId>gwc-wms</artifactId>
     </dependency>
     <dependency>
