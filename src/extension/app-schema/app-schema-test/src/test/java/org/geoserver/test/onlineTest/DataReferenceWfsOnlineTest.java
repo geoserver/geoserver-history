@@ -1016,4 +1016,58 @@ public abstract class DataReferenceWfsOnlineTest extends AbstractDataReferenceWf
                 doc);
     }
 
+    public void testResultHitsWithFilter() {
+        String path = "wfs?request=GetFeature&typename=gsml:Contact&resultType=hits";
+        Document doc = getAsDOM(path);
+        LOGGER.info(prettyString(doc));
+
+        assertXpathEvaluatesTo("5", "/wfs:FeatureCollection/@numberOfFeatures", doc);
+        // test filter with maxFeature
+        String xml = "<wfs:GetFeature service=\"WFS\" version=\"1.1.0\" xmlns:cdf=\"http://www.opengis.net/cite/data\" "
+                + "xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:wfs=\"http://www.opengis.net/wfs\" "
+                + "xmlns:gml=\"http://www.opengis.net/gml\" xmlns:gsml=\""
+                + AbstractAppSchemaMockData.GSML_URI
+                + "\" resultType=\"hits\" maxFeatures=\"1\">"
+                + "<wfs:Query typeName=\"gsml:GeologicUnit\">"
+                + "    <ogc:Filter>"
+                + "        <ogc:Or>"
+                + "            <ogc:PropertyIsEqualTo>"
+                + "                <ogc:Literal>900.0</ogc:Literal>"
+                + "                <ogc:PropertyName>gsml:GeologicUnit/gsml:physicalProperty/gsml:PhysicalDescription/gsml:magneticSusceptibility/gsml:CGI_NumericValue/gsml:principalValue</ogc:PropertyName>"
+                + "            </ogc:PropertyIsEqualTo>"
+                + "            <ogc:PropertyIsEqualTo>"
+                + "                 <ogc:Literal>urn:ogc:def:uom:UCUM::SI</ogc:Literal>"
+                + "                 <ogc:PropertyName>gsml:GeologicUnit/gsml:physicalProperty/gsml:PhysicalDescription/gsml:magneticSusceptibility/gsml:CGI_NumericRange/gsml:upper/gsml:CGI_NumericValue/gsml:principalValue/@uom</ogc:PropertyName>"
+                + "            </ogc:PropertyIsEqualTo>"
+                + "        </ogc:Or>"
+                + "    </ogc:Filter>" + "</wfs:Query> " + "</wfs:GetFeature>";
+        //
+        doc = postAsDOM("wfs", xml);
+        LOGGER.info("WFS filter GetFeature response:\n" + prettyString(doc));
+        assertXpathEvaluatesTo("1", "/wfs:FeatureCollection/@numberOfFeatures", doc);
+
+        // test filter without maxfeature
+        xml = "<wfs:GetFeature service=\"WFS\" version=\"1.1.0\" xmlns:cdf=\"http://www.opengis.net/cite/data\" "
+                + "xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:wfs=\"http://www.opengis.net/wfs\" "
+                + "xmlns:gml=\"http://www.opengis.net/gml\" xmlns:gsml=\""
+                + AbstractAppSchemaMockData.GSML_URI
+                + "\" resultType=\"hits\">"
+                + "<wfs:Query typeName=\"gsml:GeologicUnit\">"
+                + "    <ogc:Filter>"
+                + "        <ogc:Or>"
+                + "            <ogc:PropertyIsEqualTo>"
+                + "                <ogc:Literal>900.0</ogc:Literal>"
+                + "                <ogc:PropertyName>gsml:GeologicUnit/gsml:physicalProperty/gsml:PhysicalDescription/gsml:magneticSusceptibility/gsml:CGI_NumericValue/gsml:principalValue</ogc:PropertyName>"
+                + "            </ogc:PropertyIsEqualTo>"
+                + "            <ogc:PropertyIsEqualTo>"
+                + "                 <ogc:Literal>urn:ogc:def:uom:UCUM::SI</ogc:Literal>"
+                + "                 <ogc:PropertyName>gsml:GeologicUnit/gsml:physicalProperty/gsml:PhysicalDescription/gsml:magneticSusceptibility/gsml:CGI_NumericRange/gsml:upper/gsml:CGI_NumericValue/gsml:principalValue/@uom</ogc:PropertyName>"
+                + "            </ogc:PropertyIsEqualTo>"
+                + "        </ogc:Or>"
+                + "    </ogc:Filter>" + "</wfs:Query> " + "</wfs:GetFeature>";
+        //
+        doc = postAsDOM("wfs", xml);
+        LOGGER.info("WFS filter GetFeature response:\n" + prettyString(doc));
+        assertXpathEvaluatesTo("2", "/wfs:FeatureCollection/@numberOfFeatures", doc);
+    }
 }

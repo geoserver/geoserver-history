@@ -112,7 +112,7 @@
 		<dependency>
 			<groupId>org.geotools.data</groupId>
 			<artifactId>refdataset-1.0</artifactId>
-			<version>1.0.3</version>				
+			<version>1.0.4</version>				
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
