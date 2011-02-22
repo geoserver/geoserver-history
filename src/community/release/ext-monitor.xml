@@ -21,6 +21,9 @@
         <include>jfreechart-*jar</include>
         <include>jcommon-*jar</include>
         <include>jta-*.jar</include>
+        <include>wicket-datetime-*.jar</include>
+        <include>poi-*.jar</include>
+        <include>antlr-*.jar</include>
       </includes>
     </fileSet>
   </fileSets>
