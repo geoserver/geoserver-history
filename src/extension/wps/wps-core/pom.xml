@@ -84,27 +84,27 @@
         </dependency>
         <dependency>
           <groupId>com.googlecode.jaitools</groupId>
-          <artifactId>zonalstats</artifactId>
+          <artifactId>jt-zonalstats</artifactId>
           <version>${jt.version}</version>
         </dependency>
         <dependency>
           <groupId>com.googlecode.jaitools</groupId>
-          <artifactId>rangelookup</artifactId>
+          <artifactId>jt-rangelookup</artifactId>
           <version>${jt.version}</version>
         </dependency>
         <dependency>
           <groupId>com.googlecode.jaitools</groupId>
-          <artifactId>contour</artifactId>
+          <artifactId>jt-contour</artifactId>
           <version>${jt.version}</version>
         </dependency>    
         <dependency>
           <groupId>com.googlecode.jaitools</groupId>
-          <artifactId>vectorize</artifactId>
+          <artifactId>jt-vectorize</artifactId>
           <version>${jt.version}</version>
         </dependency>            
         <dependency>
           <groupId>com.googlecode.jaitools</groupId>
-          <artifactId>utils</artifactId>
+          <artifactId>jt-utils</artifactId>
           <version>${jt.version}</version>
         </dependency>  
         
