@@ -281,10 +281,10 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
         }
     }
 
-    private boolean isComplexFeature(FeatureCollectionType results) {
+    public static boolean isComplexFeature(FeatureCollectionType results) {
         boolean hasComplex = false;
         for (int fcIndex = 0; fcIndex < results.getFeature().size(); fcIndex++) {
-            if (!(((FeatureCollection) results.getFeature().get(0)).getSchema() instanceof SimpleFeatureTypeImpl)) {
+            if (!(((FeatureCollection) results.getFeature().get(fcIndex)).getSchema() instanceof SimpleFeatureTypeImpl)) {
                 hasComplex = true;
                 break;
             }
