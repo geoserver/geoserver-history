@@ -97,9 +97,11 @@
 					<targetAttribute>
                         gsml:DisplacementEvent
 					</targetAttribute>
-					<idExpression>
+					<!--Comment out idExpression to test cases where there isn't any idExpression set
+						and no primary on table. A random unique key should be generated for each feature-->
+					<!--<idExpression>
 						<OCQL>strConCat('gsml.displacementevent.',geologicevent_id)</OCQL>
-					</idExpression>
+					</idExpression>-->
 				</AttributeMapping>
 				<AttributeMapping>
 					<targetAttribute>gsml:eventAge</targetAttribute>

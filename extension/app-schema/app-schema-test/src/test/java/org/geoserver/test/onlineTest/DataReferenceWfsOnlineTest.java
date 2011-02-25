@@ -590,16 +590,16 @@ public abstract class DataReferenceWfsOnlineTest extends AbstractDataReferenceWf
 
         assertXpathEvaluatesTo(
                 "E",
-                "//gsml:ShearDisplacementStructure[@gml:id='gsml.sheardisplacementstructure.46216']/gsml:geologicHistory/gsml:DisplacementEvent[@gml:id='gsml.displacementevent.1000053']/gsml:incrementalDisplacement/gsml:DisplacementValue/gsml:hangingWallDirection/gsml:CGI_LinearOrientation/gsml:descriptiveOrientation/gsml:CGI_TermValue/gsml:value",
+                "//gsml:ShearDisplacementStructure[@gml:id='gsml.sheardisplacementstructure.46216']/gsml:geologicHistory/gsml:DisplacementEvent/gsml:incrementalDisplacement/gsml:DisplacementValue/gsml:hangingWallDirection/gsml:CGI_LinearOrientation/gsml:descriptiveOrientation/gsml:CGI_TermValue/gsml:value",
                 doc);
 
         assertXpathCount(
                 0,
-                "//gsml:ShearDisplacementStructure[@gml:id='gsml.sheardisplacementstructure.46220']/gsml:geologicHistory/gsml:DisplacementEvent[@gml:id='gsml.displacementevent.1000058']/gsml:incrementalDisplacement/gsml:DisplacementValue/gsml:hangingWallDirection/gsml:CGI_LinearOrientation/gsml:descriptiveOrientation/gsml:CGI_TermValue/gsml:value",
+                "//gsml:ShearDisplacementStructure[@gml:id='gsml.sheardisplacementstructure.46220']/gsml:geologicHistory/gsml:DisplacementEvent/gsml:incrementalDisplacement/gsml:DisplacementValue/gsml:hangingWallDirection/gsml:CGI_LinearOrientation/gsml:descriptiveOrientation/gsml:CGI_TermValue/gsml:value",
                 doc);
         assertXpathEvaluatesTo(
                 "urn:cgi:classifierScheme:GSV:NullValues",
-                "//gsml:ShearDisplacementStructure[@gml:id='gsml.sheardisplacementstructure.46220']/gsml:geologicHistory/gsml:DisplacementEvent[@gml:id='gsml.displacementevent.1000058']/gsml:incrementalDisplacement/gsml:DisplacementValue/gsml:movementSense/gsml:CGI_TermValue/gsml:value/@codeSpace",
+                "//gsml:ShearDisplacementStructure[@gml:id='gsml.sheardisplacementstructure.46220']/gsml:geologicHistory/gsml:DisplacementEvent/gsml:incrementalDisplacement/gsml:DisplacementValue/gsml:movementSense/gsml:CGI_TermValue/gsml:value/@codeSpace",
                 doc);
     }
 
@@ -1032,5 +1032,37 @@ public abstract class DataReferenceWfsOnlineTest extends AbstractDataReferenceWf
         doc = postAsDOM("wfs", xml);
         LOGGER.info("WFS filter GetFeature response:\n" + prettyString(doc));
         assertXpathEvaluatesTo("2", "/wfs:FeatureCollection/@numberOfFeatures", doc);
+    }
+
+    public void testNoPrimaryKey() {
+        String path = "wfs?request=GetFeature&typename=gsml:ShearDisplacementStructure&featureid=gsml.sheardisplacementstructure.46216";
+        Document doc = getAsDOM(path);
+        LOGGER.info(prettyString(doc));
+        assertXpathCount(
+                2,
+                "//gsml:ShearDisplacementStructure[@gml:id='gsml.sheardisplacementstructure.46216']/gsml:geologicHistory/gsml:DisplacementEvent",
+                doc);
+
+        String xml = "<wfs:GetFeature service=\"WFS\" version=\"1.1.0\" xmlns:cdf=\"http://www.opengis.net/cite/data\" "
+                + "xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:wfs=\"http://www.opengis.net/wfs\" "
+                + "xmlns:gml=\"http://www.opengis.net/gml\" xmlns:gsml=\""
+                + AbstractAppSchemaMockData.GSML_URI
+                + "\">"
+                + "<wfs:Query typeName=\"gsml:ShearDisplacementStructure\">"
+                + "    <ogc:Filter>"
+                + "          <ogc:PropertyIsEqualTo>"
+                + "              <ogc:Literal>E</ogc:Literal>"
+                + "              <ogc:PropertyName>gsml:ShearDisplacementStructure[@gml:id='gsml.sheardisplacementstructure.46216']/gsml:geologicHistory/gsml:DisplacementEvent/gsml:incrementalDisplacement/gsml:DisplacementValue/gsml:hangingWallDirection/gsml:CGI_LinearOrientation/gsml:descriptiveOrientation/gsml:CGI_TermValue/gsml:value</ogc:PropertyName>"
+                + "          </ogc:PropertyIsEqualTo>"
+                + "    </ogc:Filter>"
+                + "</wfs:Query> "
+                + "</wfs:GetFeature>";
+
+        doc = postAsDOM("wfs", xml);
+        LOGGER.info("WFS filter GetFeature response:\n" + prettyString(doc));
+        assertXpathEvaluatesTo(
+                "E",
+                "//gsml:ShearDisplacementStructure[@gml:id='gsml.sheardisplacementstructure.46216']/gsml:geologicHistory/gsml:DisplacementEvent/gsml:incrementalDisplacement/gsml:DisplacementValue/gsml:hangingWallDirection/gsml:CGI_LinearOrientation/gsml:descriptiveOrientation/gsml:CGI_TermValue/gsml:value",
+                doc);
     }
 }
