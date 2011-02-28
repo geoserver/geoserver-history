@@ -7,12 +7,12 @@
 	 -->
 	<bean id="DDSMapProducer"
 		singleton="false"
-		class="org.vfny.geoserver.wms.responses.map.worldwind.DDSMapProducer">
+		class="org.geoserver.wms.worldwind.DDSMapProducer">
 		<constructor-arg index="0" ref="wms"/>
 	</bean>	
 	<bean id="BilMapProducer"
 		singleton="false"
-		class="org.vfny.geoserver.wms.responses.map.worldwind.BilMapProducer">
+		class="org.geoserver.wms.worldwind.BilMapProducer">
 		<constructor-arg index="0" ref="wms"/>
 	</bean>
 </beans>
