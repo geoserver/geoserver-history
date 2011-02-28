@@ -4,6 +4,7 @@
  */
 package org.geoserver.wps.gs;
 
+import jaitools.imageutils.ROIGeometry;
 import jaitools.media.jai.zonalstats.ZonalStats;
 import jaitools.media.jai.zonalstats.ZonalStatsDescriptor;
 import jaitools.media.jai.zonalstats.ZonalStatsOpImage;
@@ -19,9 +20,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import javax.media.jai.ROI;
-import javax.media.jai.ROIShape;
 
-import org.geoserver.data.util.CoverageUtils;
 import org.geoserver.wps.WPSException;
 import org.geoserver.wps.jts.DescribeParameter;
 import org.geoserver.wps.jts.DescribeProcess;
@@ -42,7 +41,6 @@ import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.operation.transform.ProjectiveTransform;
-import org.geotools.resources.coverage.CoverageUtilities;
 import org.geotools.util.NumberRange;
 import org.opengis.coverage.processing.Operation;
 import org.opengis.feature.simple.SimpleFeature;
@@ -357,7 +355,7 @@ public class RasterZonalStatistics implements GeoServerProcess {
                 simplifiedGeometry.apply(at);
                 
                 // build a shape using a fast point in polygon wrapper
-                ROI roi = new ROIShape(new FastLiteShape(simplifiedGeometry));
+                ROI roi = new ROIGeometry(simplifiedGeometry);
 
                 // run the stats via JAI
                 Statistic[] reqStatsArr = new Statistic[] { Statistic.MAX, Statistic.MIN,
