@@ -1,5 +1,6 @@
 package org.geoserver.wps.raster;
 
+import jaitools.imageutils.ROIGeometry;
 import jaitools.media.jai.rangelookup.RangeLookupTable;
 import jaitools.numeric.Range;
 
@@ -11,12 +12,10 @@ import java.util.List;
 import javax.media.jai.ROI;
 import javax.media.jai.ROIShape;
 
-import org.geoserver.wps.gs.FastLiteShape;
 import org.geotools.coverage.GridSampleDimension;
 import org.geotools.coverage.TypeMap;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
-import org.geotools.gce.imagemosaic.Utils;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.process.ProcessException;
 import org.geotools.referencing.operation.transform.AffineTransform2D;
@@ -71,7 +70,7 @@ public class CoverageUtilities {
 	            rasterSpaceGeometry, 1);
 	
 	    // build a shape using a fast point in polygon wrapper
-		return new ROIShape(new FastLiteShape(simplifiedGeometry));
+		return new ROIGeometry(simplifiedGeometry);
 	}
 
 	/**
