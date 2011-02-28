@@ -5,11 +5,13 @@
 package org.geoserver.wps.gs;
 
 import jaitools.media.jai.contour.ContourDescriptor;
+import jaitools.numeric.Range;
 
 import java.awt.geom.AffineTransform;
 import java.awt.image.RenderedImage;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import javax.media.jai.JAI;
 import javax.media.jai.ParameterBlockJAI;
@@ -19,18 +21,22 @@ import org.geoserver.wps.jts.DescribeParameter;
 import org.geoserver.wps.jts.DescribeProcess;
 import org.geoserver.wps.jts.DescribeResult;
 import org.geoserver.wps.raster.CoverageUtilities;
+import org.geotools.coverage.Category;
+import org.geotools.coverage.GridSampleDimension;
 import org.geotools.coverage.grid.GridCoverage2D;
+import org.geotools.coverage.grid.ViewType;
 import org.geotools.data.collection.ListFeatureCollection;
-import org.geotools.data.collection.SpatialIndexFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.process.ProcessException;
+import org.geotools.resources.i18n.Vocabulary;
+import org.geotools.resources.i18n.VocabularyKeys;
+import org.geotools.util.NumberRange;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.metadata.spatial.PixelOrientation;
+import org.opengis.util.InternationalString;
 import org.opengis.util.ProgressListener;
 
-import com.vividsolutions.jts.geom.CoordinateSequence;
-import com.vividsolutions.jts.geom.CoordinateSequenceFilter;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.util.AffineTransformation;
@@ -44,7 +50,7 @@ import com.vividsolutions.jts.geom.util.AffineTransformation;
 @DescribeProcess(title = "Contour", description = "Perform the contouring on a provided raster")
 public class ContourProcess implements GeoServerProcess {
 	
-
+    private static final InternationalString NO_DATA = Vocabulary.formatInternational(VocabularyKeys.NODATA);
 	
     @DescribeResult(name = "result", description = "The contours feature collection")
     public SimpleFeatureCollection execute(
@@ -74,10 +80,41 @@ public class ContourProcess implements GeoServerProcess {
         	
         }
         
+        // switch to geophisics if necessary
+        gc2d = gc2d.view(ViewType.GEOPHYSICS);
+        
         //
         // GRID TO WORLD preparation
         //
         final AffineTransform mt2D = (AffineTransform) gc2d.getGridGeometry().getGridToCRS2D(PixelOrientation.CENTER);
+        
+        // get the list of nodata, if any
+        List<Object> noDataList = new ArrayList<Object>();
+        for (GridSampleDimension sd : gc2d.getSampleDimensions()) {
+            // grab all the explicit nodata
+            final double[] sdNoData = sd.getNoDataValues();
+            if(sdNoData != null) {
+                for (double nodata : sdNoData) {
+                    noDataList.add(nodata);
+                }
+            }
+            
+            // handle also readers setting up nodata in a category with a specific name
+            if(sd.getCategories() != null) {
+                for (Category cat : sd.getCategories()) {
+                    if(cat.getName().equals(NO_DATA)) {
+                        final NumberRange<? extends Number> catRange = cat.getRange();
+                        if(catRange.getMinimum() == catRange.getMaximum()) {
+                            noDataList.add(catRange.getMinimum());
+                        } else {
+                            Range<Double> noData = new Range<Double>(catRange.getMinimum(), catRange.isMinIncluded(), 
+                                    catRange.getMaximum(), catRange.isMaxIncluded());
+                            noDataList.add(noData);
+                        }
+                    }
+                }
+            }
+        }
         
         // get the rendered image
         final RenderedImage raster=gc2d.getRenderedImage();
@@ -105,6 +142,9 @@ public class ContourProcess implements GeoServerProcess {
         }
         if(smooth != null) {
             pb.setParameter("smooth", smooth);
+        }
+        if(noDataList != null) {
+            pb.setParameter("nodata", noDataList);
         }
 
         final RenderedOp dest = JAI.create("Contour", pb);
@@ -145,31 +185,4 @@ public class ContourProcess implements GeoServerProcess {
 
     }
     
-    /**
-     * Applies an offset to the X and Y coordinates
-     */
-    public static class OffsetOrdinateFilter implements CoordinateSequenceFilter {
-        double offsetX;
-        double offsetY;
-
-        public OffsetOrdinateFilter(double offsetX, double offsetY) {
-            this.offsetX = offsetX;
-            this.offsetY = offsetY;
-        }
-
-        public void filter(CoordinateSequence seq, int i) {
-            seq.setOrdinate(i, 0, seq.getOrdinate(i, 0) + offsetX);
-            seq.setOrdinate(i, 1, seq.getOrdinate(i, 1) + offsetY);
-        }
-
-        public boolean isDone() {
-            return false;
-        }
-
-        public boolean isGeometryChanged() {
-            return true;
-        }
-
-    }
-
 }
