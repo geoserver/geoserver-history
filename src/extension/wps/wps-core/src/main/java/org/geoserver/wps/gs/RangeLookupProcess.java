@@ -88,9 +88,10 @@ public class RangeLookupProcess implements GeoServerProcess {
         return output;
     }
 
-    private <T extends Number & Comparable> RangeLookupTable<T> getRangeLookupTable(
-            List<Range> classificationRanges, Class<T> type) {
-        RangeLookupTable<T> rlt = new RangeLookupTable<T>(convert(0d, type)); // 0 is norange
+    private <T extends Number & Comparable<? super T>, U extends Number & Comparable<? super U>>
+        RangeLookupTable<T, U> getRangeLookupTable(
+            List<Range> classificationRanges, Class<U> type) {
+        RangeLookupTable<T, U> rlt = new RangeLookupTable<T, U>(convert(0d, type)); // 0 is norange
         for (int i = 0; i < classificationRanges.size(); i++) {
             Range<T> range = convertRange(classificationRanges.get(i), type);
             rlt.add(range, convert(i + 1d, type));
@@ -98,25 +99,27 @@ public class RangeLookupProcess implements GeoServerProcess {
         return rlt;
     }
 
-    private <T extends Number & Comparable> T convert(Double val, Class<T> type) {
+    private <U extends Number & Comparable<? super U>> U convert(Double val, Class<U> type) {
+        // note: the odd casting is to allow java5 to compile this code, otherwise it would
+        // complain, oddly, that the types are inconvertible...
         if (val == null) {
             return null;
         } else if (Double.class.equals(type)) {
-            return (T) Double.valueOf(val);
+            return (U) ((Number) Double.valueOf(val));
         } else if (Float.class.equals(type)) {
-            return (T) Float.valueOf(val.floatValue());
+            return (U) ((Number) Float.valueOf(val.floatValue()));
         } else if (Integer.class.equals(type)) {
-            return (T) Integer.valueOf(val.intValue());
+            return (U) ((Number) Integer.valueOf(val.intValue()));
         } else if (Byte.class.equals(type)) {
-            return (T) Byte.valueOf(val.byteValue());
+            return (U) ((Number) Byte.valueOf(val.byteValue()));
         } else {
             throw new UnsupportedOperationException("Class " + type
                     + " can't be used in a value Range");
         }
     }
 
-    <T extends Number & Comparable> Range<T> convertRange(Range<Double> src, Class<T> type) {
-        return new Range<T>(convert(src.getMin(), type), src.isMinIncluded(), convert(src.getMax(),
+    <U extends Number & Comparable<? super U>> Range<U> convertRange(Range<Double> src, Class<U> type) {
+        return new Range<U>(convert(src.getMin(), type), src.isMinIncluded(), convert(src.getMax(),
                 type), src.isMaxIncluded());
     }
 
