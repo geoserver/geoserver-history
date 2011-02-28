@@ -17,7 +17,7 @@
     <name>Web Processing Service Module</name>
     
     <properties>
-      <jt.version>1.0-SNAPSHOT</jt.version>
+      <jt.version>1.1-M3</jt.version>
     </properties>
     
     <repositories>
@@ -84,17 +84,17 @@
         </dependency>
         <dependency>
           <groupId>com.googlecode.jaitools</groupId>
-          <artifactId>zonalstats</artifactId>
+          <artifactId>jt-zonalstats</artifactId>
           <version>${jt.version}</version>
         </dependency>
         <dependency>
           <groupId>com.googlecode.jaitools</groupId>
-          <artifactId>rangelookup</artifactId>
+          <artifactId>jt-rangelookup</artifactId>
           <version>${jt.version}</version>
         </dependency>
         <dependency>
           <groupId>com.googlecode.jaitools</groupId>
-          <artifactId>utils</artifactId>
+          <artifactId>jt-utils</artifactId>
           <version>${jt.version}</version>
         </dependency>  
         
