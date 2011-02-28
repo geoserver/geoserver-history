@@ -94,6 +94,16 @@
         </dependency>
         <dependency>
           <groupId>com.googlecode.jaitools</groupId>
+          <artifactId>jt-contour</artifactId>
+          <version>${jt.version}</version>
+        </dependency>    
+        <dependency>
+          <groupId>com.googlecode.jaitools</groupId>
+          <artifactId>jt-vectorize</artifactId>
+          <version>${jt.version}</version>
+        </dependency>            
+        <dependency>
+          <groupId>com.googlecode.jaitools</groupId>
           <artifactId>jt-utils</artifactId>
           <version>${jt.version}</version>
         </dependency>  

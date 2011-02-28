@@ -72,7 +72,7 @@ public abstract class AnnotationDrivenProcessFactory implements ProcessFactory {
         Class<?>[] paramTypes = method.getParameterTypes();
         for (int i = 0; i < paramTypes.length; i++) {
             if (!(ProgressListener.class.isAssignableFrom(paramTypes[i]))) {
-                Parameter<?> param = paramInfo(i, paramTypes[i], params[i]);
+                Parameter<?> param = paramInfo(method.getDeclaringClass(), i, paramTypes[i], params[i]);
                 input.put(param.key, param);
             }
         }
@@ -143,7 +143,7 @@ public abstract class AnnotationDrivenProcessFactory implements ProcessFactory {
     }
 
     @SuppressWarnings("unchecked")
-    Parameter<?> paramInfo(int i, Class<?> type, Annotation[] paramAnnotations) {
+    Parameter<?> paramInfo(Class process, int i, Class<?> type, Annotation[] paramAnnotations) {
         DescribeParameter info = null;
         for (Annotation annotation : paramAnnotations) {
             if (annotation instanceof DescribeParameter) {
@@ -194,6 +194,10 @@ public abstract class AnnotationDrivenProcessFactory implements ProcessFactory {
         if (min > max) {
             throw new IllegalArgumentException(
                     "Min occurrences > max occurrences for parameter at index " + i);
+        }
+        if (min == 0 && max == 1 && type.isPrimitive()) {
+            throw new IllegalArgumentException("Optional values cannot be primitives, " +
+            		"use the associated object wrapper instead: " + info.name() + " in process " + process.getName());
         }
         // finally build the parameter
         if (info != null) {
@@ -249,7 +253,8 @@ public abstract class AnnotationDrivenProcessFactory implements ProcessFactory {
                 } else {
                     // find the corresponding argument in the input
                     // map and set it
-                    Parameter p = paramInfo(i, paramTypes[i], annotations[i]);
+                    Class<? extends Object> target = targetObject == null ? null : targetObject.getClass();
+					Parameter p = paramInfo(target, i, paramTypes[i], annotations[i]);
                     Object value = input.get(p.key);
 
                     // this takes care of array/collection conversions among

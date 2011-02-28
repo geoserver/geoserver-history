@@ -12,8 +12,6 @@ import jaitools.numeric.Statistic;
 
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.RenderedImage;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -23,6 +21,7 @@ import java.util.NoSuchElementException;
 import javax.media.jai.ROI;
 import javax.media.jai.ROIShape;
 
+import org.geoserver.data.util.CoverageUtils;
 import org.geoserver.wps.WPSException;
 import org.geoserver.wps.jts.DescribeParameter;
 import org.geoserver.wps.jts.DescribeProcess;
@@ -40,11 +39,10 @@ import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.jts.JTS;
-import org.geotools.geometry.jts.LiteCoordinateSequence;
-import org.geotools.geometry.jts.LiteShape;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.operation.transform.ProjectiveTransform;
+import org.geotools.resources.coverage.CoverageUtilities;
 import org.geotools.util.NumberRange;
 import org.opengis.coverage.processing.Operation;
 import org.opengis.feature.simple.SimpleFeature;
@@ -60,11 +58,6 @@ import org.opengis.referencing.operation.TransformException;
 
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.geom.Polygon;
-import com.vividsolutions.jts.geom.prep.PreparedGeometry;
-import com.vividsolutions.jts.geom.prep.PreparedGeometryFactory;
 import com.vividsolutions.jts.geom.util.AffineTransformation;
 import com.vividsolutions.jts.simplify.DouglasPeuckerSimplifier;
 
@@ -359,6 +352,7 @@ public class RasterZonalStatistics implements GeoServerProcess {
                 // of their center, this makes for odd results if the polygon is just slightly 
                 // misaligned with the coverage
                 AffineTransformation at = new AffineTransformation();
+                
                 at.setToTranslation(-0.5, -0.5);
                 simplifiedGeometry.apply(at);
                 
@@ -380,89 +374,5 @@ public class RasterZonalStatistics implements GeoServerProcess {
             }
 
         }
-    }
-
-
-    /**
-     * A {@link LiteShape} subclass using PreparedGeometry to compute the results of the containment
-     * methods. This class is _not_ thread safe
-     * 
-     * @author Andrea Aime - GeoSolutions
-     * 
-     */
-    static class FastLiteShape extends LiteShape {
-
-        PreparedGeometry prepared;
-
-        LiteCoordinateSequence pointCS;
-
-        Point point;
-
-        LiteCoordinateSequence rectCS;
-
-        Polygon rect;
-
-        public FastLiteShape(Geometry geom) {
-            super(geom, new AffineTransform(), false);
-            this.prepared = PreparedGeometryFactory.prepare(geom);
-            GeometryFactory gf = new GeometryFactory();
-            pointCS = new LiteCoordinateSequence(1, 2);
-            point = gf.createPoint(pointCS);
-            rectCS = new LiteCoordinateSequence(5, 2);
-            rect = gf.createPolygon(gf.createLinearRing(rectCS), null);
-            // System.out.println("Crop area: " + geom);
-        }
-
-        @Override
-        public boolean contains(double x, double y) {
-            pointCS.setX(0, x);
-            pointCS.setY(0, y);
-            point.geometryChanged();
-            final boolean result = prepared.contains(point);
-            // System.out.println("Poking " + x + ", " + y + " -> " + result);
-            return result;
-        }
-
-        @Override
-        public boolean contains(Point2D p) {
-            return contains(p.getX(), p.getY());
-        }
-
-        @Override
-        public boolean contains(double x, double y, double w, double h) {
-            updateRect(x, y, w, h);
-            return prepared.contains(rect);
-        }
-
-        private void updateRect(double x, double y, double w, double h) {
-            rectCS.setX(0, x);
-            rectCS.setY(0, y);
-            rectCS.setX(1, x + w);
-            rectCS.setY(1, y);
-            rectCS.setX(2, x + w);
-            rectCS.setY(2, y + h);
-            rectCS.setX(3, x);
-            rectCS.setY(3, y + h);
-            rectCS.setX(4, x);
-            rectCS.setY(4, y);
-            rect.geometryChanged();
-        }
-
-        @Override
-        public boolean contains(Rectangle2D r) {
-            return contains(r.getX(), r.getY(), r.getWidth(), r.getHeight());
-        }
-
-        @Override
-        public boolean intersects(double x, double y, double w, double h) {
-            updateRect(x, y, w, h);
-            return prepared.intersects(rect);
-        }
-
-        @Override
-        public boolean intersects(Rectangle2D r) {
-            return contains(r.getX(), r.getY(), r.getWidth(), r.getHeight());
-        }
-
     }
 }

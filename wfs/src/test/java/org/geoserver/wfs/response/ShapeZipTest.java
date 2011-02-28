@@ -37,8 +37,11 @@ import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.filter.Filter;
 
+import com.mockrunner.mock.web.MockHttpServletResponse;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.MultiPolygon;
+
+import freemarker.template.utility.Execute;
 
 public class ShapeZipTest extends WFSTestSupport {
 
@@ -252,6 +255,36 @@ public class ShapeZipTest extends WFSTestSupport {
         byte[] zipBytes = bos.toByteArray();
         checkShapefileIntegrity(new String[] {"theshape_All_Types_DotsPoint", "theshape_All_Types_DotsMPoint", 
                 "theshape_All_Types_DotsPolygon", "theshape_All_Types_DotsLine"  }, new ByteArrayInputStream(zipBytes));
+    }
+    
+    public void testTemplatePOSTRequest10() throws Exception {
+    	String xml = "<wfs:GetFeature " + "service=\"WFS\" "
+        + "version=\"1.0.0\" "
+        + "xmlns:cdf=\"http://www.opengis.net/cite/data\" "
+        + "xmlns:ogc=\"http://www.opengis.net/ogc\" "
+        + "xmlns:wfs=\"http://www.opengis.net/wfs\" "
+        + "outputFormat=\"shape-zip\" " 
+        + "> "
+        + "<wfs:Query typeName=\"cdf:Other\"> "
+        + "</wfs:Query> "
+        + "</wfs:GetFeature>";
+    	
+    	MockHttpServletResponse response = postAsServletResponse("wfs", xml);
+    	assertEquals("application/zip", response.getContentType());
+    }
+    
+    public void testTemplatePOSTRequest11() throws Exception {
+    	String xml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" + 
+    			"<GetFeature xmlns=\"http://www.opengis.net/wfs\" xmlns:DigitalGlobe=\"http://www.digitalglobe.com\"\n" + 
+    			"    xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" + 
+    			"    xmlns:gml=\"http://www.opengis.net/gml\" service=\"WFS\" version=\"1.1.0\"\n" + 
+    			"xmlns:cdf=\"http://www.opengis.net/cite/data\" " +
+    			"    outputFormat=\"shape-zip\" maxFeatures=\"100\" handle=\"\">\n" + 
+    			"    <Query typeName=\"cdf:Other\" srsName=\"urn:ogc:def:crs:EPSG::4326\">"
+        + "</Query> " + "</GetFeature>";
+    	
+    	MockHttpServletResponse response = postAsServletResponse("wfs", xml);
+    	assertEquals("application/zip", response.getContentType());
     }
     
     /**
