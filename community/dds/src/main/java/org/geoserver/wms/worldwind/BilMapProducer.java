@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.wms.responses.map.worldwind;
+package org.geoserver.wms.worldwind;
 
 import java.awt.Rectangle;
 import java.awt.image.DataBuffer;
@@ -23,9 +23,12 @@ import javax.media.jai.TiledImage;
 import javax.media.jai.operator.FormatDescriptor;
 
 import org.geoserver.data.util.CoverageUtils;
+import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
+import org.geoserver.wms.GetMapRequest;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
+import org.geoserver.wms.map.AbstractMapResponse;
 import org.geotools.coverage.CoverageFactoryFinder;
 import org.geotools.coverage.grid.GeneralGridEnvelope;
 import org.geotools.coverage.grid.GridCoverage2D;
@@ -44,11 +47,6 @@ import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
 import org.vfny.geoserver.util.WCSUtils;
 import org.vfny.geoserver.wcs.WcsException;
-import org.vfny.geoserver.wms.GetMapProducer;
-import org.vfny.geoserver.wms.WmsException;
-import org.vfny.geoserver.wms.requests.GetMapRequest;
-import org.vfny.geoserver.wms.responses.AbstractGetMapProducer;
-
 
 import com.sun.media.imageioimpl.plugins.raw.RawImageWriterSpi;
 import com.sun.media.imageioimpl.plugins.tiff.TIFFImageWriterSpi;
@@ -60,10 +58,9 @@ import com.sun.media.imageioimpl.plugins.tiff.TIFFImageWriterSpi;
  * @since 2.0.x
  * 
  */
-public final class BilMapProducer extends AbstractGetMapProducer implements
-GetMapProducer {
+public final class BilMapProducer extends AbstractMapResponse {
 	/** A logger for this class. */
-	private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.responses.wms.map.bil");
+	private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.wms.worldwind.BilMapProducer");
 	
 	/** Raw Image Writer **/
 	private final static ImageWriterSpi writerSPI = new RawImageWriterSpi();
@@ -99,7 +96,7 @@ GetMapProducer {
 		}
 	}
 
-	public void writeTo(OutputStream out) throws ServiceException, IOException {
+	public void write(Object value,OutputStream out,Operation operation) throws ServiceException, IOException {
 		// TODO Get request tile size
 		GetMapRequest request = mapContext.getRequest();
 		
