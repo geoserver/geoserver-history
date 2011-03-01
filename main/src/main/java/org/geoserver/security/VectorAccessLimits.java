@@ -4,11 +4,16 @@
  */
 package org.geoserver.security;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.geotools.data.Query;
+import org.geotools.factory.CommonFactoryFinder;
 import org.opengis.filter.Filter;
+import org.opengis.filter.FilterFactory2;
 import org.opengis.filter.expression.PropertyName;
 
 /**
@@ -17,21 +22,23 @@ import org.opengis.filter.expression.PropertyName;
  * @author Andrea Aime - GeoSolutions
  */
 public class VectorAccessLimits extends DataAccessLimits {
-    
+    private static final long serialVersionUID = 1646981660625898503L;
+    private static FilterFactory2 FF = CommonFactoryFinder.getFilterFactory2(null); 
+
     /**
      * The list of attributes the user is allowed to read (will be band names for raster data)
      */
-    List<PropertyName> readAttributes;
+    transient List<PropertyName> readAttributes;
     
     /**
      * The set of attributes the user is allowed to write on
      */
-    List<PropertyName> writeAttributes;
+    transient List<PropertyName> writeAttributes;
 
     /**
      * Limits the features that can actually be written
      */
-    Filter writeFilter;
+    transient Filter writeFilter;
 
     /**
      * Builds a new vector access limits
@@ -136,5 +143,90 @@ public class VectorAccessLimits extends DataAccessLimits {
                 + writeAttributes + ", writeFilter=" + writeFilter + ", readFilter=" + readFilter
                 + ", mode=" + mode + "]";
     }
+    
+    
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        readAttributes = readProperties(in);
+        readFilter = readFilter(in);
+        writeAttributes = readProperties(in);
+        writeFilter = readFilter(in);
+    }
+
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+        writeProperties(readAttributes, out);
+        writeFilter(readFilter, out);
+        writeProperties(writeAttributes, out);
+        writeFilter(writeFilter, out);
+    }
+
+    private void writeProperties(List<PropertyName> attributes, ObjectOutputStream oos)
+            throws IOException {
+        if (attributes == null) {
+            oos.writeInt(-1);
+        } else {
+            oos.writeInt(attributes.size());
+            for (PropertyName property : attributes) {
+                oos.writeObject(property.getPropertyName());
+                // TODO: write out the namespace support as well
+            }
+        }
+    }
+
+    private List<PropertyName> readProperties(ObjectInputStream ois)
+            throws IOException, ClassNotFoundException {
+        int size = ois.readInt();
+        if (size == -1) {
+            return null;
+        } else {
+            List<PropertyName> properties = new ArrayList<PropertyName>();
+            for (int i = 0; i < size; i++) {
+                String name = (String) ois.readObject();
+                properties.add(FF.property(name));
+                // TODO: read out the namespace support as well
+            }
+            return properties;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + ((readAttributes == null) ? 0 : readAttributes.hashCode());
+        result = prime * result + ((writeAttributes == null) ? 0 : writeAttributes.hashCode());
+        result = prime * result + ((writeFilter == null) ? 0 : writeFilter.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (!super.equals(obj))
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        VectorAccessLimits other = (VectorAccessLimits) obj;
+        if (readAttributes == null) {
+            if (other.readAttributes != null)
+                return false;
+        } else if (!readAttributes.equals(other.readAttributes))
+            return false;
+        if (writeAttributes == null) {
+            if (other.writeAttributes != null)
+                return false;
+        } else if (!writeAttributes.equals(other.writeAttributes))
+            return false;
+        if (writeFilter == null) {
+            if (other.writeFilter != null)
+                return false;
+        } else if (!writeFilter.equals(other.writeFilter))
+            return false;
+        return true;
+    }
+    
+    
 
 }

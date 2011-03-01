@@ -14,6 +14,8 @@ import com.vividsolutions.jts.geom.MultiPolygon;
  * @author Andrea Aime - GeoSolutions
  */
 public class WMSAccessLimits extends DataAccessLimits {
+    private static final long serialVersionUID = -6566842877723378894L;
+
     /**
      * ROI on the returned images
      */
@@ -63,5 +65,35 @@ public class WMSAccessLimits extends DataAccessLimits {
         return "WMSAccessLimits [allowFeatureInfo=" + allowFeatureInfo + ", rasterFilter="
                 + rasterFilter + ", readFilter=" + readFilter + ", mode=" + mode + "]";
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + (allowFeatureInfo ? 1231 : 1237);
+        result = prime * result + ((rasterFilter == null) ? 0 : rasterFilter.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (!super.equals(obj))
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        WMSAccessLimits other = (WMSAccessLimits) obj;
+        if (allowFeatureInfo != other.allowFeatureInfo)
+            return false;
+        if (rasterFilter == null) {
+            if (other.rasterFilter != null)
+                return false;
+        } else if (!rasterFilter.equals(other.rasterFilter))
+            return false;
+        return true;
+    }
+    
+    
     
 }
