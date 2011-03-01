@@ -1,4 +1,4 @@
-package org.vfny.geoserver.wms.responses.map.worldwind;
+package org.geoserver.wms.worldwind;
 
 import java.util.logging.Logger;
 
