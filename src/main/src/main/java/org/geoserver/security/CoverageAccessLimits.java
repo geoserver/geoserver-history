@@ -17,6 +17,9 @@ import com.vividsolutions.jts.geom.MultiPolygon;
  * @author Andrea Aime - GeoSolutions
  */
 public class CoverageAccessLimits extends DataAccessLimits {
+
+    private static final long serialVersionUID = -4269595923034528171L;
+
     /**
      * Used as a ROI filter on raster data
      */
@@ -25,7 +28,7 @@ public class CoverageAccessLimits extends DataAccessLimits {
     /**
      * Param overrides when grabbing a reader
      */
-    GeneralParameterValue[] params;
+    transient GeneralParameterValue[] params;
 
     /**
      * Builds a raster limit
@@ -59,6 +62,34 @@ public class CoverageAccessLimits extends DataAccessLimits {
     public String toString() {
         return "CoverageAccessLimits [params=" + Arrays.toString(params) + ", rasterFilter="
                 + rasterFilter + ", readFilter=" + readFilter + ", mode=" + mode + "]";
+    }
+    
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + Arrays.hashCode(params);
+        result = prime * result + ((rasterFilter == null) ? 0 : rasterFilter.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (!super.equals(obj))
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        CoverageAccessLimits other = (CoverageAccessLimits) obj;
+        if (!Arrays.equals(params, other.params))
+            return false;
+        if (rasterFilter == null) {
+            if (other.rasterFilter != null)
+                return false;
+        } else if (!rasterFilter.equals(other.rasterFilter))
+            return false;
+        return true;
     }
     
 
