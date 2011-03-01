@@ -455,16 +455,3 @@ This would be the encoded result for gsml:GeologicUnit::
 .. note::
    * In the example above, we use *strConcat('urn:cgi:feature:MappedFeature:', getId())* as Client Property value. The function *getId()* would return the id value from the nested feature table (gsml:MappedFeature). You can use other column names from the nested feature data store. 
    * Lastly, don't forget to add *XLink* in your mapping file namespaces section, or you could end up with a StackOverflowException as the *xlink:href* client property won't be recognized and the mappings would chain endlessly.
-
-Troubleshooting
----------------
-#. Error message:"java.lang.RuntimeException: org.geotools.data.DataSourceException: Feature type ... not found. Has the data access been registered in DataAccessRegistry? Available:...".
-      * Check that the nested feature type mapping file exists. 
-      * Check that the nested feature type name is consistent with the linkElement in the containing feature type.
-#. The nested features aren't shown.
-      * Check that the OCQL tag in the "container" type points to the right column in the data store.
-      * If the nested type uses getID() as the OCQL source expression for the referenced field, ensure it's wrapped in String converting functions such as strTrim() or strConcat(). 
-#. Error message:"java.lang.IllegalArgumentException: Don't know how to map ..."
-      * Check that the linkField tag in the "container" type points to the right field on the nested type. 
-#. Wrong nested features (too many) appeared inside the "container" features.
-      * If the relationship is many-to-many, make sure you are not using the same (denormalized) view for both sides of the nesting.
