@@ -24,6 +24,7 @@ import org.geoserver.wms.GetMapRequest;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMSMapContext;
 import org.geoserver.wms.WebMap;
+import org.geoserver.wms.worldwind.util.BilWCSUtils;
 import org.geotools.coverage.CoverageFactoryFinder;
 import org.geotools.coverage.grid.GeneralGridEnvelope;
 import org.geotools.coverage.grid.GridCoverage2D;
@@ -330,27 +331,27 @@ public class BilMap extends WebMap {
 	    /**
 	     * Crop
 	     */
-	    //final GridCoverage2D croppedGridCoverage = WCSUtils.crop(coverage,
-	    //        (GeneralEnvelope) coverage.getEnvelope(), cvCRS, destinationEnvelopeInSourceCRS,
-	    //        Boolean.TRUE);
+	    final GridCoverage2D croppedGridCoverage = BilWCSUtils.crop(coverage,
+	            (GeneralEnvelope) coverage.getEnvelope(), cvCRS, destinationEnvelopeInSourceCRS,
+	            Boolean.TRUE);
 	    
 	    /**
 	     * Scale/Resampling (if necessary)
 	     */
-	    GridCoverage2D subCoverage = null;
-	    //GridCoverage2D subCoverage = croppedGridCoverage;
+	    //GridCoverage2D subCoverage = null;
+	    GridCoverage2D subCoverage = croppedGridCoverage;
 	    final GeneralGridEnvelope newGridrange = new GeneralGridEnvelope(destinationSize);
 	
 	    /*if (!newGridrange.equals(croppedGridCoverage.getGridGeometry()
 	                    .getGridRange())) {*/
-	    //subCoverage = WCSUtils.scale(croppedGridCoverage, newGridrange, croppedGridCoverage, cvCRS,
-	    //        destinationEnvelopeInSourceCRS);
+	    subCoverage = BilWCSUtils.scale(croppedGridCoverage, newGridrange, croppedGridCoverage, cvCRS,
+	            destinationEnvelopeInSourceCRS);
 	    //}
 	
 	    /**
 	     * Reproject
 	     */
-	    //subCoverage = WCSUtils.reproject(subCoverage, sourceCRS, targetCRS, interpolation);
+	    subCoverage = BilWCSUtils.reproject(subCoverage, sourceCRS, targetCRS, interpolation);
 	    
 	    return subCoverage;
 	}

@@ -52,18 +52,29 @@ public class BilTest extends WMSTestSupport {
     @Override
     protected void populateDataDirectory(MockData dataDirectory) throws Exception {
         super.populateDataDirectory(dataDirectory);
+        
         dataDirectory.addStyle("raster", BilTest.class.getResource("raster.sld"));
         dataDirectory.addCoverage(AUS_DEM, BilTest.class.getResource("aus_dem.tif"),
                 "tiff", "raster");
+        
     }
 
 
 	public void testStandardRequest() throws Exception {
 	    String layer = getLayerId(AUS_DEM);
+	    
 	    String request = "wms?service=wms&request=GetMap&version=1.1.1" +
+		"&layers=" + layer + "&styles=&bbox=108.3,-46.3,160.3,-4.2&width=64&height=64" + 
+		"&format=image/bil&srs=EPSG:4326";
+		String response = getAsString(request);
+		// Check response length in bytes
+		assertEquals("testStandardRequest",4092,response.getBytes().length);
+	    
+	    
+	    request = "wms?service=wms&request=GetMap&version=1.1.1" +
 	    		"&layers=" + layer + "&styles=&bbox=108.3,-46.3,160.3,-4.2&width=64&height=64" + 
 	    		"&format=application/bil8&srs=EPSG:4326";
-	    String response = getAsString(request);
+	    response = getAsString(request);
 	    // Check response length in bytes
 	    assertEquals("testStandardRequest",4092,response.getBytes().length);
 	    
@@ -89,7 +100,7 @@ public class BilTest extends WMSTestSupport {
 	    		"&format=image/bil&srs=EPSG:4326";
 	    
 	    String exceptstr  = getAsString(request);
-	    assertTrue("testLargeRequest",exceptstr.contains("ServiceException"));
+	    assertTrue("testLargeRequest",exceptstr.contains("512x512"));
 	}
 	
 	/**
