@@ -4,17 +4,14 @@
  */
 package org.geoserver.security;
 
+import java.io.Serializable;
+
 
 /** 
  * The combination of access level granted and response policy (lists only possible cases)
  */
-public class WrapperPolicy {
-//    HIDE(AccessLevel.HIDDEN, Response.HIDE),
-//    METADATA(AccessLevel.METADATA, Response.CHALLENGE),
-//    RO_CHALLENGE(AccessLevel.READ_ONLY, Response.CHALLENGE),
-//    RO_HIDE(AccessLevel.READ_ONLY, Response.HIDE),
-//    RW(AccessLevel.READ_WRITE, Response.HIDE);
-    
+public class WrapperPolicy implements Serializable {
+    private static final long serialVersionUID = -7490634837165130290L;
     
     // TODO: turn these into private fields
     public final AccessLevel level; // needed, depends on catalog mode and request type

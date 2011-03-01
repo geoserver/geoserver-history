@@ -11,6 +11,7 @@ package org.geoserver.security;
  *
  */
 public class WorkspaceAccessLimits extends AccessLimits {
+    private static final long serialVersionUID = -1852838160677767466L;
 
     boolean readable;
 
@@ -35,5 +36,31 @@ public class WorkspaceAccessLimits extends AccessLimits {
         return "WorkspaceAccessLimits [readable=" + readable + ", writable=" + writable + ", mode="
                 + mode + "]";
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (readable ? 1231 : 1237);
+        result = prime * result + (writable ? 1231 : 1237);
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        WorkspaceAccessLimits other = (WorkspaceAccessLimits) obj;
+        if (readable != other.readable)
+            return false;
+        if (writable != other.writable)
+            return false;
+        return true;
+    }
+    
     
 }
