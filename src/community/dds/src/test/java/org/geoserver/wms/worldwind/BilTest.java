@@ -1,11 +1,14 @@
 package org.geoserver.wms.worldwind;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
 
 import junit.framework.Test;
 
+import org.apache.commons.io.FileUtils;
 import org.geoserver.data.test.MockData;
 import org.geoserver.wms.WMSInfo;
 import org.geoserver.wms.WMSTestSupport;
@@ -88,4 +91,12 @@ public class BilTest extends WMSTestSupport {
 	    String exceptstr  = getAsString(request);
 	    assertTrue("testLargeRequest",exceptstr.contains("ServiceException"));
 	}
+	
+	/**
+	 * Need to override since we are in the community folder
+	 */
+	protected void copySchemaFile(String file) throws IOException {
+        File f = new File("../../web/app/src/main/webapp/schemas/" + file);
+        FileUtils.copyFile(f, getResourceLoader().createFile("WEB-INF/schemas/"+file));
+    }
 }
