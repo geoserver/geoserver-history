@@ -24,6 +24,7 @@
         <include>wicket-datetime-*.jar</include>
         <include>poi-*.jar</include>
         <include>antlr-*.jar</include>
+        <include>joda-time-*.jar</include>
       </includes>
     </fileSet>
   </fileSets>
