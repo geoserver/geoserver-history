@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.xml.namespace.QName;
+
 import org.geoserver.feature.ReprojectingFeatureCollection;
 import org.geoserver.wms.WMSMapContext;
 import org.geotools.data.Query;
@@ -18,27 +20,44 @@ import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.gml3.GMLConfiguration;
 import org.geotools.map.MapLayer;
 import org.geotools.referencing.CRS;
+import org.geotools.xml.Configuration;
+import org.geotools.xml.Encoder;
 import org.geotools.xml.transform.TransformerBase;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
+import org.xml.sax.Locator;
+import org.xml.sax.SAXException;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.MultiLineString;
+import com.vividsolutions.jts.geom.MultiPoint;
+import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 
-
+/**
+ * Base class for RSS/Atom xml transformers
+ * 
+ * 
+ * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
+ * @author Andrea Aime - GeoSolutions
+ */
 public abstract class GeoRSSTransformerBase extends TransformerBase {
     /** logger */
     protected static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.georss");
+    
+    static final Configuration GML_CONFIGURATION = new GMLConfiguration();
 
     /**
      * Enumeration for geometry encoding.
@@ -131,6 +150,34 @@ public abstract class GeoRSSTransformerBase extends TransformerBase {
                 public String getNamespaceURI() {
                     return "http://www.opengis.net/gml";
                 }
+                
+                public void encode(Geometry g, final GeoRSSTranslatorSupport translator) {
+                    try {
+                        // get the proper element name
+                        QName elementName = null;
+                        if (g instanceof Point) {
+                            elementName = org.geotools.gml2.GML.Point;
+                        } else if (g instanceof LineString) {
+                            elementName = org.geotools.gml2.GML.LineString;
+                        } else if (g instanceof Polygon) {
+                            elementName = org.geotools.gml2.GML.Polygon;
+                        } else if (g instanceof MultiPoint) {
+                            elementName = org.geotools.gml2.GML.MultiPoint;
+                        } else if (g instanceof MultiLineString) {
+                            elementName = org.geotools.gml2.GML.MultiLineString;
+                        } else if (g instanceof MultiPolygon) {
+                            elementName = org.geotools.gml2.GML.MultiPolygon;
+                        } else {
+                            elementName = org.geotools.gml2.GML._Geometry;
+                        }
+                        
+                        // encode in GML3
+                        Encoder encoder = new Encoder(GML_CONFIGURATION);
+                        encoder.encode(g, elementName, translator);
+                    } catch(Exception e) {
+                        throw new RuntimeException("Cannot transform the specified geometry in GML", e);
+                    }
+                };
             };
 
         /**
@@ -169,7 +216,7 @@ public abstract class GeoRSSTransformerBase extends TransformerBase {
         this.geometryEncoding = geometryEncoding;
     }
 
-    abstract class GeoRSSTranslatorSupport extends TranslatorSupport {
+    abstract class GeoRSSTranslatorSupport extends TranslatorSupport implements ContentHandler {
         public GeoRSSTranslatorSupport(ContentHandler contentHandler, String prefix, String nsURI) {
             super(contentHandler, prefix, nsURI);
 
@@ -270,5 +317,58 @@ public abstract class GeoRSSTransformerBase extends TransformerBase {
             return featureCollections;
         }
         
+        public void characters(char[] ch, int start, int length) throws SAXException {
+            String string = new String(ch, start, length);
+            chars(string);
+        }
+        
+        public void endElement(String uri, String localName, String qName) throws SAXException {
+            // working around a bug in the GML encoder, it won't properly setup the qName
+            end("gml:" + localName);            
+        }
+        
+        public void startElement(String uri, String localName, String qName, Attributes atts)
+                throws SAXException {
+            start(qName, atts);
+        }
+
+
+        public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException {
+            if(getIndentation() > 0) {
+                characters(ch, start, length);
+            }
+        }
+
+        public void endDocument() throws SAXException {
+            // nothing to do
+        }
+        
+        public void endPrefixMapping(String prefix) throws SAXException {
+            // nothing to do
+        }
+
+        public void processingInstruction(String target, String data) throws SAXException {
+            // nothing do do
+        }
+
+        public void setDocumentLocator(Locator locator) {
+            // nothing do do
+        }
+
+        public void skippedEntity(String name) throws SAXException {
+            // nothing to do
+            
+        }
+
+        public void startDocument() throws SAXException {
+            // nothing to do
+            
+        }
+
+        public void startPrefixMapping(String prefix, String uri) throws SAXException {
+            // nothing to do
+        }
+        
     }
+
 }

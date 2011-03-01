@@ -135,4 +135,26 @@ public class AtomGeoRSSTransformerTest extends WMSTestSupport {
             assertEquals(1, entry.getElementsByTagName("georss:polygon").getLength());
         }
     }
+    
+    public void testGmlWMS() throws Exception {
+        Document document = getAsDOM(
+                "wms/reflect?format_options=encoding:gml&format=application/atom+xml&layers=" 
+                + MockData.BASIC_POLYGONS.getPrefix() + ":" + MockData.BASIC_POLYGONS.getLocalPart()
+                );
+
+        Element element = document.getDocumentElement();
+        assertEquals("feed", element.getNodeName());
+
+        NodeList entries = element.getElementsByTagName("entry");
+
+        int n = getFeatureSource(MockData.BASIC_POLYGONS).getCount(Query.ALL);
+
+        assertEquals(n, entries.getLength());
+
+        for (int i = 0; i < entries.getLength(); i++) {
+            Element entry = (Element) entries.item(i);
+            assertEquals(1, entry.getElementsByTagName("georss:where").getLength());
+            assertEquals(1, entry.getElementsByTagName("gml:Polygon").getLength());
+        }
+    }
 }

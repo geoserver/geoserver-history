@@ -136,6 +136,27 @@ public class RSSGeoRSSTransformerTest extends WMSTestSupport {
             assertEquals(1, entry.getElementsByTagName("georss:polygon").getLength());
         }
     }
+    
+    public void testGmlWMS() throws Exception {
+        Document document = getAsDOM(
+                "wms/reflect?format_options=encoding:gml&format=application/rss+xml&layers=" 
+                + MockData.BASIC_POLYGONS.getPrefix() + ":" + MockData.BASIC_POLYGONS.getLocalPart()
+                );
+
+        Element element = document.getDocumentElement();
+        assertEquals("rss", element.getNodeName());
+
+        NodeList entries = element.getElementsByTagName("item");
+
+        int n = getFeatureSource(MockData.BASIC_POLYGONS).getCount(Query.ALL);
+
+        assertEquals(n, entries.getLength());
+
+        for (int i = 0; i < entries.getLength(); i++) {
+            Element entry = (Element) entries.item(i);
+            assertEquals(1, entry.getElementsByTagName("gml:Polygon").getLength());
+        }
+    }
 
     public void testFilter() throws Exception {
         // Set up a map context with a filtered layer
