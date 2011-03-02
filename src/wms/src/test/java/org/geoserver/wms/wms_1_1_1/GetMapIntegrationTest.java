@@ -141,6 +141,14 @@ public class GetMapIntegrationTest extends WMSTestSupport {
                 + STATES_SLD11.replaceAll("=", "%3D"));
         checkImage(response);
     }
+    
+    public void testSldBodyNoVersion() throws Exception {
+        MockHttpServletResponse response = getAsServletResponse("wms?bbox=" + bbox + "&styles="
+                + "&layers=" + layers + "&Format=image/png" + "&request=GetMap" + "&width=550"
+                + "&height=250" + "&srs=EPSG:4326" + "&SLD_BODY="
+                + STATES_SLD.replace(" version=\"1.1.0\"", "").replaceAll("=", "%3D"));
+        checkImage(response);
+    }
 
     public void testSldBodyPost() throws Exception {
         MockHttpServletResponse response = postAsServletResponse("wms?bbox=" + bbox
