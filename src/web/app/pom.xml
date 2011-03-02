@@ -647,6 +647,16 @@
         </dependency>
       </dependencies>
     </profile>
+     <profile>
+      <id>sfs-store</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.geotools</groupId>
+          <artifactId>gt-sfs</artifactId>
+          <version>${gt.version}</version>
+        </dependency>
+      </dependencies>
+    </profile>
 
  </profiles>
 </project>
