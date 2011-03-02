@@ -14,6 +14,7 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.xml.transform.TransformerException;
 
@@ -29,6 +30,7 @@ import org.geotools.styling.StyleFactory;
 import org.geotools.styling.StyledLayerDescriptor;
 import org.geotools.styling.UserLayer;
 import org.geotools.util.Version;
+import org.geotools.util.logging.Logging;
 import org.geotools.xml.Parser;
 import org.vfny.geoserver.util.SLDValidator;
 import org.xml.sax.InputSource;
@@ -45,6 +47,9 @@ import org.xmlpull.v1.XmlPullParserFactory;
  */
 public class Styles {
 
+    /** logger */
+    static Logger LOGGER = Logging.getLogger("org.geoserver.wms");
+    
     /**
      * number of bytes to "look ahead" when pre parsing xml document.
      * TODO: make this configurable, and possibley link it to the same value 
@@ -240,7 +245,8 @@ public class Styles {
         reader.reset();
         
         if (version == null) {
-            throw new IllegalArgumentException("Could not determine version from content");
+            LOGGER.warning("Could not determine SLD version from content. Assuming 1.0.0");
+            version = "1.0.0";
         }
         
         return new Object[]{new Version(version), reader};
