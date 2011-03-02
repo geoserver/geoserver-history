@@ -12,7 +12,7 @@ import org.geoserver.wms.map.RenderedImageMapOutputFormatTest;
 public class DDSMapProducerTest extends RenderedImageMapOutputFormatTest {
 
 	private String mapFormat = "image/dds";
-	private RenderedImageMapOutputFormat rasterMapProducer;
+	protected RenderedImageMapOutputFormat rasterMapProducer;
 
 	/**
      * This is a READ ONLY TEST so we can use one time setup
@@ -22,13 +22,15 @@ public class DDSMapProducerTest extends RenderedImageMapOutputFormatTest {
     }
 
     protected RenderedImageMapOutputFormat getProducerInstance() {
-        return new RenderedImageMapOutputFormat(mapFormat, getWMS());
+        return new RenderedImageMapOutputFormat(this.mapFormat, getWMS());
     }
     
     public void setUpInternal() throws Exception {
 	    super.setUpInternal();
-	    this.rasterMapProducer = getProducerInstance();
+	    this.rasterMapProducer = this.getProducerInstance();
 	}
+    
+    
 	
 	public String getMapFormat()
 	{
