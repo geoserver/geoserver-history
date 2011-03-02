@@ -12,6 +12,7 @@ import org.apache.commons.io.FileUtils;
 import org.geoserver.data.test.MockData;
 import org.geoserver.wms.WMSInfo;
 import org.geoserver.wms.WMSTestSupport;
+import org.geoserver.wms.map.RenderedImageMapOutputFormat;
 
 
 /**
@@ -31,7 +32,7 @@ public class BilTest extends WMSTestSupport {
     public static String WCS_URI = "http://www.opengis.net/wcs/1.1.1";
     public static QName AUS_DEM = new QName(WCS_URI, "Ausdem", WCS_PREFIX);
     
-
+    private RenderedImageMapOutputFormat rasterMapProducer;
     
     /**
      * This is a READ ONLY TEST so we can use one time setup
@@ -65,10 +66,10 @@ public class BilTest extends WMSTestSupport {
 	    
 	    String request = "wms?service=wms&request=GetMap&version=1.1.1" +
 		"&layers=" + layer + "&styles=&bbox=108.3,-46.3,160.3,-4.2&width=64&height=64" + 
-		"&format=image/bil&srs=EPSG:4326";
+		"&format=application/bil&srs=EPSG:4326";
 		String response = getAsString(request);
 		// Check response length in bytes
-		assertEquals("testStandardRequest",4092,response.getBytes().length);
+		assertEquals("testStandardRequest",8193,response.getBytes().length);
 	    
 	    
 	    request = "wms?service=wms&request=GetMap&version=1.1.1" +
@@ -76,21 +77,21 @@ public class BilTest extends WMSTestSupport {
 	    		"&format=application/bil8&srs=EPSG:4326";
 	    response = getAsString(request);
 	    // Check response length in bytes
-	    assertEquals("testStandardRequest",4092,response.getBytes().length);
+	    assertEquals("testStandardRequest",4097,response.getBytes().length);
 	    
 	    request = "wms?service=wms&request=GetMap&version=1.1.1" +
 		"&layers=" + layer + "&styles=&bbox=108.3,-46.3,160.3,-4.2&width=64&height=64" + 
 		"&format=application/bil16&srs=EPSG:4326";
 	    response = getAsString(request);
 	    // Check response length in bytes
-	    assertEquals("testStandardRequest",8178,response.getBytes().length);
+	    assertEquals("testStandardRequest",8193,response.getBytes().length);
 	    
 	    request = "wms?service=wms&request=GetMap&version=1.1.1" +
 		"&layers=" + layer + "&styles=&bbox=108.3,-46.3,160.3,-4.2&width=64&height=64" + 
 		"&format=application/bil32&srs=EPSG:4326";
 	    response = getAsString(request);
 	    // Check response length in bytes
-	    assertEquals("testStandardRequest",16361,response.getBytes().length);
+	    assertEquals("testStandardRequest",16385,response.getBytes().length);
 	}
 	
 	public void testLargeRequest() throws Exception {

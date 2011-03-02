@@ -209,7 +209,7 @@ public class BilWCSUtils extends WCSUtils {
             final ParameterValueGroup param = (ParameterValueGroup) cropParams.clone();
             param.parameter("Source").setValue(coverage);
             param.parameter("Envelope").setValue(intersectionEnvelope);
-            param.parameter("ConserveEnvelope").setValue(conserveEnvelope);
+            //param.parameter("ConserveEnvelope").setValue(conserveEnvelope);
 
             croppedGridCoverage = (GridCoverage2D) cropFactory.doOperation(param, hints);
         } else {
