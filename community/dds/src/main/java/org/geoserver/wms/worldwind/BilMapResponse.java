@@ -60,9 +60,9 @@ import com.sun.media.imageioimpl.plugins.raw.RawImageWriterSpi;
  * @since 2.0.x
  * 
  */
-public final class BilMapProducer extends RenderedImageMapResponse {
+public final class BilMapResponse extends RenderedImageMapResponse {
 	/** A logger for this class. */
-	private static final Logger LOGGER = Logging.getLogger(BilMapProducer.class);
+	private static final Logger LOGGER = Logging.getLogger(BilMapResponse.class);
 
 	/** the only MIME type this map producer supports */
     static final String MIME_TYPE = "image/bil";
@@ -79,12 +79,12 @@ public final class BilMapProducer extends RenderedImageMapResponse {
 	private final static ImageWriterSpi writerSPI = new RawImageWriterSpi();
     
     /**
-     * Constructor for a {@link BilMapProducer}.
+     * Constructor for a {@link BilMapResponse}.
      *
      * @param wms
      *            that is asking us to encode the image.
      */
-    public BilMapProducer(final WMS wms) {
+    public BilMapResponse(final WMS wms) {
         super(OUTPUT_FORMATS,wms);
         this.wmsConfig = wms;
     }
