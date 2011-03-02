@@ -1,4 +1,4 @@
-package org.vfny.geoserver.wms.responses.map.worldwind;
+package org.geoserver.wms.worldwind;
 
 import gov.nasa.worldwind.formats.dds.DDSConverter;
 import gov.nasa.worldwind.util.Logging;
@@ -11,11 +11,12 @@ import java.nio.ByteBuffer;
 import java.util.Collections;
 import java.util.Set;
 
+import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.WMS;
-import org.vfny.geoserver.wms.WmsException;
-import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
+import org.geoserver.wms.WMSMapContext;
+import org.geoserver.wms.map.RenderedImageMapResponse;
 
-public class DDSMapProducer extends DefaultRasterMapProducer {
+public class DDSMapProducer extends RenderedImageMapResponse {
 
 	/** the only MIME type this map producer supports */
 	static final String MIME_TYPE = "image/dds";
@@ -31,8 +32,9 @@ public class DDSMapProducer extends DefaultRasterMapProducer {
 		super(MIME_TYPE, wms);		
 	}
 
-	public void formatImageOutputStream(RenderedImage img, OutputStream os)
-			throws WmsException, IOException {
+	public void formatImageOutputStream(RenderedImage img, OutputStream os, 
+			WMSMapContext mapContext)
+			throws ServiceException, IOException {
 		if (img instanceof BufferedImage) {
 			BufferedImage bimg = (BufferedImage) img;
 			ByteBuffer bb = DDSConverter.convertToDxt3(bimg);

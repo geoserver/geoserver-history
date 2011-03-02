@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.wms.responses.map.worldwind;
+package org.geoserver.wms.worldwind;
 
 import java.awt.Rectangle;
 import java.awt.image.DataBuffer;
@@ -10,6 +10,7 @@ import java.awt.image.RenderedImage;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -24,8 +25,12 @@ import javax.media.jai.operator.FormatDescriptor;
 
 import org.geoserver.data.util.CoverageUtils;
 import org.geoserver.platform.ServiceException;
+import org.geoserver.wms.GetMapRequest;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
+import org.geoserver.wms.WMSMapContext;
+import org.geoserver.wms.map.RenderedImageMapResponse;
+import org.geoserver.wms.worldwind.util.BilWCSUtils;
 import org.geotools.coverage.CoverageFactoryFinder;
 import org.geotools.coverage.grid.GeneralGridEnvelope;
 import org.geotools.coverage.grid.GridCoverage2D;
@@ -35,6 +40,7 @@ import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
+import org.geotools.util.logging.Logging;
 import org.opengis.coverage.grid.GridCoverage;
 import org.opengis.coverage.grid.GridCoverageReader;
 import org.opengis.referencing.FactoryException;
@@ -42,32 +48,21 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.cs.AxisDirection;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
-import org.vfny.geoserver.util.WCSUtils;
 import org.vfny.geoserver.wcs.WcsException;
-import org.vfny.geoserver.wms.GetMapProducer;
-import org.vfny.geoserver.wms.WmsException;
-import org.vfny.geoserver.wms.requests.GetMapRequest;
-import org.vfny.geoserver.wms.responses.AbstractGetMapProducer;
-
 
 import com.sun.media.imageioimpl.plugins.raw.RawImageWriterSpi;
-import com.sun.media.imageioimpl.plugins.tiff.TIFFImageWriterSpi;
 
 /**
  * Map producer for producing Raw bil images out of an elevation model.
- * 
+ * Modelled after the GeoTIFFMapResponse, relying on Geotools and the
+ * RawImageWriterSpi
  * @author Tishampati Dhar
  * @since 2.0.x
  * 
  */
-public final class BilMapProducer extends AbstractGetMapProducer implements
-GetMapProducer {
+public final class BilMapProducer extends RenderedImageMapResponse {
 	/** A logger for this class. */
-	private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.responses.wms.map.bil");
-	
-	/** Raw Image Writer **/
-	private final static ImageWriterSpi writerSPI = new RawImageWriterSpi();
-	private final static ImageWriterSpi twriterSPI = new TIFFImageWriterSpi();
+	private static final Logger LOGGER = Logging.getLogger(BilMapProducer.class);
 
 	/** the only MIME type this map producer supports */
     static final String MIME_TYPE = "image/bil";
@@ -77,9 +72,11 @@ GetMapProducer {
     
     private WMS wmsConfig;
 
-    /** GridCoverageFactory. */
-    private final static GridCoverageFactory factory = CoverageFactoryFinder.getGridCoverageFactory(null);
-    
+	/** GridCoverageFactory. - Where do we use this again ?*/
+	private final static GridCoverageFactory factory = CoverageFactoryFinder.getGridCoverageFactory(null);
+
+	/** Raw Image Writer **/
+	private final static ImageWriterSpi writerSPI = new RawImageWriterSpi();
     
     /**
      * Constructor for a {@link BilMapProducer}.
@@ -87,19 +84,15 @@ GetMapProducer {
      * @param wms
      *            that is asking us to encode the image.
      */
-    public BilMapProducer(WMS wms) {
-        super(MIME_TYPE, OUTPUT_FORMATS);
+    public BilMapProducer(final WMS wms) {
+        super(OUTPUT_FORMATS,wms);
         this.wmsConfig = wms;
     }
-
-	public void produceMap() throws WmsException {
-		// TODO Auto-generated method stub
-		if (mapContext == null) {
-			throw new WmsException("The map context is not set");
-		}
-	}
-
-	public void writeTo(OutputStream out) throws ServiceException, IOException {
+    
+	@Override
+	public void formatImageOutputStream(RenderedImage image, OutputStream outStream,
+			WMSMapContext mapContext) throws ServiceException, IOException {
+		//TODO: Write reprojected terrain tile
 		// TODO Get request tile size
 		GetMapRequest request = mapContext.getRequest();
 		
@@ -113,14 +106,14 @@ GetMapProducer {
 					" tiles bigger than 512x512, try WCS");
 		}
 		
-		MapLayerInfo[] reqlayers = request.getLayers();
+		List<MapLayerInfo> reqlayers = request.getLayers();
 		
 		//Can't fetch bil for more than 1 layer
-		if (reqlayers.length > 1) 
+		if (reqlayers.size() > 1) 
 		{
 			throw new ServiceException("Cannot combine layers into BIL output");
 		}
-		MapLayerInfo mapLayerInfo = reqlayers[0];
+		MapLayerInfo mapLayerInfo = reqlayers.get(0);
 		
 		/*
 		final ParameterValueGroup writerParams = format.getWriteParameters();
@@ -134,7 +127,7 @@ GetMapProducer {
 		 */
 		GridCoverage2D subCov = null;
 		try {
-			subCov = BilMapProducer.getFinalCoverage(request,
+			subCov = getFinalCoverage(request,
 					mapLayerInfo, (AbstractGridCoverage2DReader)coverageReader);
 		} catch (IndexOutOfBoundsException e) {
 			// TODO Auto-generated catch block
@@ -154,7 +147,7 @@ GetMapProducer {
 			writer.flush();
 			writer.close();
 			*/
-	        RenderedImage image = subCov.getRenderedImage();
+	        image = subCov.getRenderedImage();
 	        if(image!=null)
 	        {
 	        	int dtype = image.getData().getDataBuffer().getDataType();
@@ -193,7 +186,7 @@ GetMapProducer {
 	        		tiled = new TiledImage(formcov,width,height);
 	        	else
 	        		tiled = new TiledImage(image,width,height);
-	        	final ImageOutputStream imageOutStream = ImageIO.createImageOutputStream(out);
+	        	final ImageOutputStream imageOutStream = ImageIO.createImageOutputStream(outStream);
 		        final ImageWriter writer = writerSPI.createWriterInstance();
 		        writer.setOutput(imageOutStream);
 		        writer.write(tiled);
@@ -214,7 +207,7 @@ GetMapProducer {
 	}
 
 	/**
-	 * GetCroppedCoverage
+	 * getFinalCoverage - message the RenderedImage into Bil
 	 *
 	 * @param request CoverageRequest
 	 * @param meta CoverageInfo
@@ -229,7 +222,7 @@ GetMapProducer {
 	 */
 	private static GridCoverage2D getFinalCoverage(GetMapRequest request, MapLayerInfo meta,
 	    AbstractGridCoverage2DReader coverageReader /*GridCoverage coverage*/)
-	    throws WmsException, IOException, IndexOutOfBoundsException, FactoryException,
+	    throws WcsException, IOException, IndexOutOfBoundsException, FactoryException,
 	        TransformException {
 	    // This is the final Response CRS
 	    final String responseCRS = request.getSRS();
@@ -369,26 +362,27 @@ GetMapProducer {
 	    /**
 	     * Crop
 	     */
-	    final GridCoverage2D croppedGridCoverage = WCSUtils.crop(coverage,
+	    final GridCoverage2D croppedGridCoverage = BilWCSUtils.crop(coverage,
 	            (GeneralEnvelope) coverage.getEnvelope(), cvCRS, destinationEnvelopeInSourceCRS,
 	            Boolean.TRUE);
-	
+	    
 	    /**
 	     * Scale/Resampling (if necessary)
 	     */
+	    //GridCoverage2D subCoverage = null;
 	    GridCoverage2D subCoverage = croppedGridCoverage;
 	    final GeneralGridEnvelope newGridrange = new GeneralGridEnvelope(destinationSize);
 	
 	    /*if (!newGridrange.equals(croppedGridCoverage.getGridGeometry()
 	                    .getGridRange())) {*/
-	    subCoverage = WCSUtils.scale(croppedGridCoverage, newGridrange, croppedGridCoverage, cvCRS,
+	    subCoverage = BilWCSUtils.scale(croppedGridCoverage, newGridrange, croppedGridCoverage, cvCRS,
 	            destinationEnvelopeInSourceCRS);
 	    //}
 	
 	    /**
 	     * Reproject
 	     */
-	    subCoverage = WCSUtils.reproject(subCoverage, sourceCRS, targetCRS, interpolation);
+	    subCoverage = BilWCSUtils.reproject(subCoverage, sourceCRS, targetCRS, interpolation);
 	    
 	    return subCoverage;
 	}
