@@ -960,7 +960,7 @@ public class RenderedImageMapOutputFormat extends AbstractMapOutputFormat {
 
             // if we have a grayscale image see if we have to expand to RGB
             if (ccm.getNumColorComponents() == 1) {
-                if(!isLevelOfGray(bgColor) || (ccm.getTransferType() == DataBuffer.TYPE_DOUBLE || 
+                if((!isLevelOfGray(bgColor) && !transparent) || (ccm.getTransferType() == DataBuffer.TYPE_DOUBLE || 
                         ccm.getTransferType() == DataBuffer.TYPE_FLOAT 
                         || ccm.getTransferType() == DataBuffer.TYPE_UNDEFINED)) {
                     // expand to RGB, this is not a case we can optimize
@@ -978,7 +978,13 @@ public class RenderedImageMapOutputFormat extends AbstractMapOutputFormat {
                     }
                 } else if(!hasAlpha) {
                     // no transparency in the original data, so no need to expand to RGB
-                    bgValues = new double[] { mapToGrayColor(bgColor, ccm) };
+                    if(transparent) {
+                        // we need to expand the image with an alpha channel
+                        image = addAlphaChannel(image);
+                        bgValues = new double[] { mapToGrayColor(bgColor, ccm), 0 };
+                    } else {
+                        bgValues = new double[] { mapToGrayColor(bgColor, ccm) };
+                    }
                 } else {
                     // extract the alpha channel
                     final ImageWorker iw = new ImageWorker(image);
@@ -1014,15 +1020,7 @@ public class RenderedImageMapOutputFormat extends AbstractMapOutputFormat {
                     }
                 } else {
                     if (transparent) {
-                        // we need to expand the image with an alpha channel
-                        final ImageLayout tempLayout= new ImageLayout(image);
-                        tempLayout.unsetValid(ImageLayout.COLOR_MODEL_MASK).unsetValid(ImageLayout.SAMPLE_MODEL_MASK);                    
-                        RenderedImage alpha = ConstantDescriptor.create(
-                                Float.valueOf( image.getWidth()),
-                                Float.valueOf(image.getHeight()),
-                                new Byte[] { Byte.valueOf((byte) 255) }, 
-                                new RenderingHints(JAI.KEY_IMAGE_LAYOUT,tempLayout));
-                        image = BandMergeDescriptor.create(image, alpha, null);
+                        image = addAlphaChannel(image);
                         // this will work fine for all situation where the color components are <= 3
                         // e.g., one band rasters with no colormap will have only one usually
                         bgValues = new double[] { 0, 0, 0, 0 };
@@ -1095,6 +1093,18 @@ public class RenderedImageMapOutputFormat extends AbstractMapOutputFormat {
 
         // RenderedImageBrowser.showChain(image);
         
+        return image;
+    }
+
+    private RenderedImage addAlphaChannel(RenderedImage image) {
+        final ImageLayout tempLayout= new ImageLayout(image);
+        tempLayout.unsetValid(ImageLayout.COLOR_MODEL_MASK).unsetValid(ImageLayout.SAMPLE_MODEL_MASK);                    
+        RenderedImage alpha = ConstantDescriptor.create(
+                Float.valueOf( image.getWidth()),
+                Float.valueOf(image.getHeight()),
+                new Byte[] { Byte.valueOf((byte) 255) }, 
+                new RenderingHints(JAI.KEY_IMAGE_LAYOUT,tempLayout));
+        image = BandMergeDescriptor.create(image, alpha, null);
         return image;
     }
 
