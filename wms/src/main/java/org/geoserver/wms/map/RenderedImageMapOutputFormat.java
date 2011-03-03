@@ -13,6 +13,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.ComponentColorModel;
+import java.awt.image.DataBuffer;
 import java.awt.image.IndexColorModel;
 import java.awt.image.RenderedImage;
 import java.io.File;
@@ -86,6 +87,7 @@ import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.datum.PixelInCell;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
+
 
 /**
  * A {@link GetMapOutputFormat} that produces {@link RenderedImageMap} instances to be encoded in
@@ -952,70 +954,86 @@ public class RenderedImageMapOutputFormat extends AbstractMapOutputFormat {
         // in case of component color model
         if (cm instanceof ComponentColorModel) {
 
-            // convert to RGB if GRAY
-            final ComponentColorModel ccm = (ComponentColorModel) cm;
-            final boolean hasAlpha = cm.hasAlpha();
+            // convert to RGB if necessary
+            ComponentColorModel ccm = (ComponentColorModel) cm;
+            boolean hasAlpha = cm.hasAlpha();
 
-            // if we have a grayscale image expand to rgb
+            // if we have a grayscale image see if we have to expand to RGB
             if (ccm.getNumColorComponents() == 1) {
-                // aaime TODO: the original color model might be able to produce the requested bg
-                // color
-                // we should find a way to avoid the band expansion in that case
-                // aaime TODO: what do we do if the number of color components is not 1, 3 or 4?
-
-                // simone: keep into account alpha band
-                final ImageWorker iw = new ImageWorker(image);
-                if (hasAlpha) {
+                if(!isLevelOfGray(bgColor) || (ccm.getTransferType() == DataBuffer.TYPE_DOUBLE || 
+                        ccm.getTransferType() == DataBuffer.TYPE_FLOAT 
+                        || ccm.getTransferType() == DataBuffer.TYPE_UNDEFINED)) {
+                    // expand to RGB, this is not a case we can optimize
+                    final ImageWorker iw = new ImageWorker(image);
+                    if (hasAlpha) {
+                        final RenderedImage alpha = iw.retainLastBand().getRenderedImage();
+                        // get first band
+                        final RenderedImage gray = new ImageWorker(image).retainFirstBand()
+                                .getRenderedImage();
+                        image = new ImageWorker(gray).bandMerge(3).addBand(alpha, false)
+                                .forceComponentColorModel().forceColorSpaceRGB().getRenderedImage();
+                    } else {
+                        image = iw.bandMerge(3).forceComponentColorModel().forceColorSpaceRGB()
+                                .getRenderedImage();
+                    }
+                } else if(!hasAlpha) {
+                    // no transparency in the original data, so no need to expand to RGB
+                    bgValues = new double[] { mapToGrayColor(bgColor, ccm) };
+                } else {
+                    // extract the alpha channel
+                    final ImageWorker iw = new ImageWorker(image);
                     final RenderedImage alpha = iw.retainLastBand().getRenderedImage();
-                    // get first band
-                    final RenderedImage gray = new ImageWorker(image).retainFirstBand()
-                            .getRenderedImage();
-                    image = new ImageWorker(gray).bandMerge(3).addBand(alpha, false)
-                            .forceComponentColorModel().forceColorSpaceRGB().getRenderedImage();
-                } else
-                    image = iw.bandMerge(3).forceComponentColorModel().forceColorSpaceRGB()
-                            .getRenderedImage();
+                    alphaChannels = new PlanarImage[] { PlanarImage.wrapRenderedImage(alpha) };
+                    
+                    if (transparent) {
+                        bgValues = new double[] { mapToGrayColor(bgColor, ccm), 0 };
+                    } else {
+                        bgValues = new double[] { mapToGrayColor(bgColor, ccm), 255 };
+                    }
+                } 
 
                 // get back the ColorModel
                 cm = image.getColorModel();
+                ccm = (ComponentColorModel) cm;
+                hasAlpha = cm.hasAlpha();
             }
 
-            if (hasAlpha) {
-                // get alpha
-	            final ImageWorker iw = new ImageWorker(image);
-                final RenderedImage alpha = iw.retainLastBand().getRenderedImage();
-                alphaChannels = new PlanarImage[] { PlanarImage.wrapRenderedImage(alpha) };
-
-                // TODO: are there cases other than RGBA here? I guess
-                // if the cm does not have 4 bands we should expand to RGB first?
-                if (transparent) {
-                    bgValues = new double[] { bgColor.getRed(), bgColor.getGreen(),
-                            bgColor.getBlue(), 0 };
+            if(bgValues == null) {
+                if (hasAlpha) {
+                    // get alpha
+    	            final ImageWorker iw = new ImageWorker(image);
+                    final RenderedImage alpha = iw.retainLastBand().getRenderedImage();
+                    alphaChannels = new PlanarImage[] { PlanarImage.wrapRenderedImage(alpha) };
+    
+                    if (transparent) {
+                        bgValues = new double[] { bgColor.getRed(), bgColor.getGreen(),
+                                bgColor.getBlue(), 0 };
+                    } else {
+                        bgValues = new double[] { bgColor.getRed(), bgColor.getGreen(),
+                                bgColor.getBlue(), 255 };
+                    }
                 } else {
-                    bgValues = new double[] { bgColor.getRed(), bgColor.getGreen(),
-                            bgColor.getBlue(), 255 };
-                }
-            } else {
-                if (transparent) {
-                    // we need to expand the image with an alpha channel
-                    final ImageLayout tempLayout= new ImageLayout(image);
-                    tempLayout.unsetValid(ImageLayout.COLOR_MODEL_MASK).unsetValid(ImageLayout.SAMPLE_MODEL_MASK);                    
-                    RenderedImage alpha = ConstantDescriptor.create(
-                            Float.valueOf( image.getWidth()),
-                            Float.valueOf(image.getHeight()),
-                            new Byte[] { Byte.valueOf((byte) 255) }, 
-                            new RenderingHints(JAI.KEY_IMAGE_LAYOUT,tempLayout));
-                    image = BandMergeDescriptor.create(image, alpha, null);
-                    // this will work fine for all situation where the color components are <= 3
-                    // e.g., one band rasters with no colormap will have only one usually
-                    bgValues = new double[] { 0, 0, 0, 0 };
-                } else {
-                    // TODO: handle the case where the component color model is not RGB
-                    // We cannot use ImageWorker as is because it basically seems to assume
-                    // component -> 3 band in forceComponentColorModel()
-                    // but I guess we'll need to turn the image into a 3 band RGB one.
-                    bgValues = new double[] { bgColor.getRed(), bgColor.getGreen(),
-                            bgColor.getBlue() };
+                    if (transparent) {
+                        // we need to expand the image with an alpha channel
+                        final ImageLayout tempLayout= new ImageLayout(image);
+                        tempLayout.unsetValid(ImageLayout.COLOR_MODEL_MASK).unsetValid(ImageLayout.SAMPLE_MODEL_MASK);                    
+                        RenderedImage alpha = ConstantDescriptor.create(
+                                Float.valueOf( image.getWidth()),
+                                Float.valueOf(image.getHeight()),
+                                new Byte[] { Byte.valueOf((byte) 255) }, 
+                                new RenderingHints(JAI.KEY_IMAGE_LAYOUT,tempLayout));
+                        image = BandMergeDescriptor.create(image, alpha, null);
+                        // this will work fine for all situation where the color components are <= 3
+                        // e.g., one band rasters with no colormap will have only one usually
+                        bgValues = new double[] { 0, 0, 0, 0 };
+                    } else {
+                        // TODO: handle the case where the component color model is not RGB
+                        // We cannot use ImageWorker as is because it basically seems to assume
+                        // component -> 3 band in forceComponentColorModel()
+                        // but I guess we'll need to turn the image into a 3 band RGB one.
+                        bgValues = new double[] { bgColor.getRed(), bgColor.getGreen(),
+                                bgColor.getBlue() };
+                    }
                 }
             }
         }
@@ -1075,8 +1093,37 @@ public class RenderedImageMapOutputFormat extends AbstractMapOutputFormat {
                     hints);
         }
 
+        // RenderedImageBrowser.showChain(image);
         
         return image;
+    }
+
+    /**
+     * Given a one band (plus eventual alpha) color model and the red part of a gray
+     * color returns the appropriate background color to be used in the mosaic operation
+     * @param red
+     * @param cm
+     * @return
+     */
+    double mapToGrayColor(Color gray, ComponentColorModel cm) {
+        double[] rescaleFactors = new double[DataBuffer.TYPE_UNDEFINED + 1];
+        rescaleFactors[DataBuffer.TYPE_BYTE] = 1;
+        rescaleFactors[DataBuffer.TYPE_SHORT] = 255;
+        rescaleFactors[DataBuffer.TYPE_INT] = Integer.MAX_VALUE / 255;
+        rescaleFactors[DataBuffer.TYPE_USHORT] = 512;
+        rescaleFactors[DataBuffer.TYPE_DOUBLE] = 1 / 255.0;
+        rescaleFactors[DataBuffer.TYPE_FLOAT] = 1 / 255.0;
+        rescaleFactors[DataBuffer.TYPE_UNDEFINED] = 1;
+        return gray.getRed() / rescaleFactors[cm.getTransferType()];
+    }
+
+    /**
+     * Returns true if the color is a level of gray
+     * @param color
+     * @return
+     */
+    private boolean isLevelOfGray(Color color) {
+        return color.getRed() == color.getBlue() && color.getRed() == color.getGreen();
     }
 
     /**
