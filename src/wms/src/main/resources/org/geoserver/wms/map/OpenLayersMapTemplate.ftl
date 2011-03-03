@@ -157,7 +157,8 @@
                     },
                     {
                         buffer: 0,
-                        displayOutsideMaxExtent: true
+                        displayOutsideMaxExtent: true,
+                        isBaseLayer: true
                     } 
                 );
             
@@ -170,7 +171,7 @@
                         </#list>
                         format: format
                     },
-                    {singleTile: true, ratio: 1} 
+                    {singleTile: true, ratio: 1, isBaseLayer: true} 
                 );
         
                 map.addLayers([untiled, tiled]);
