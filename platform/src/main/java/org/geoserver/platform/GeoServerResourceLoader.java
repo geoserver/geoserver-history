@@ -112,6 +112,10 @@ public class GeoServerResourceLoader extends DefaultResourceLoader implements Ap
                 if (path != null) {
                     addSearchLocation(new File(path));
                 }
+                path = servletContext.getRealPath("/");
+                if (path != null) {
+                    addSearchLocation(new File(path));
+                }
             }
         }
     }
