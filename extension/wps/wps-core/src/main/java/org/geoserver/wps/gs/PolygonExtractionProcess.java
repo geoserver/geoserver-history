@@ -4,13 +4,14 @@
  */
 package org.geoserver.wps.gs;
 
+import jaitools.media.jai.contour.ContourDescriptor;
+import jaitools.media.jai.contour.ContourRIF;
 import jaitools.media.jai.vectorize.VectorizeDescriptor;
+import jaitools.media.jai.vectorize.VectorizeRIF;
 import jaitools.numeric.Range;
 
 import java.awt.geom.AffineTransform;
 import java.awt.image.RenderedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -27,7 +28,7 @@ import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.data.collection.ListFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
-import org.geotools.gce.geotiff.GeoTiffWriter;
+import org.geotools.image.jai.Registry;
 import org.geotools.process.ProcessException;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.metadata.spatial.PixelOrientation;
@@ -46,6 +47,10 @@ import com.vividsolutions.jts.geom.util.AffineTransformation;
 @DescribeProcess(title = "PolygonExtraction", description = "Perform the polygon extraction on a provided raster")
 public class PolygonExtractionProcess implements GeoServerProcess {
 	
+    
+    static {
+        Registry.registerRIF(JAI.getDefaultInstance(), new VectorizeDescriptor(), new VectorizeRIF(), Registry.JAI_TOOLS_PRODUCT);
+    }
 
 	
     @DescribeResult(name = "result", description = "The polygon feature collection")
