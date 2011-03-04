@@ -4,7 +4,10 @@
  */
 package org.geoserver.wps.gs;
 
+import jaitools.media.jai.contour.ContourDescriptor;
+import jaitools.media.jai.contour.ContourRIF;
 import jaitools.media.jai.rangelookup.RangeLookupDescriptor;
+import jaitools.media.jai.rangelookup.RangeLookupRIF;
 import jaitools.media.jai.rangelookup.RangeLookupTable;
 import jaitools.numeric.Range;
 
@@ -14,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javax.media.jai.JAI;
 import javax.media.jai.RenderedOp;
 import javax.media.jai.operator.BandSelectDescriptor;
 
@@ -26,6 +30,7 @@ import org.geotools.coverage.CoverageFactoryFinder;
 import org.geotools.coverage.GridSampleDimension;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridCoverageFactory;
+import org.geotools.image.jai.Registry;
 import org.geotools.process.ProcessException;
 import org.geotools.renderer.i18n.Errors;
 import org.geotools.resources.i18n.ErrorKeys;
@@ -46,6 +51,10 @@ import org.opengis.util.ProgressListener;
 public class RangeLookupProcess implements GeoServerProcess {
 	
 	private final static Logger LOGGER = Logging.getLogger(RangeLookupProcess.class);
+	
+	static {
+        Registry.registerRIF(JAI.getDefaultInstance(), new RangeLookupDescriptor(), new RangeLookupRIF(), Registry.JAI_TOOLS_PRODUCT);
+    }
 
     @DescribeResult(name = "reclassified", description = "The resulting reclassified coverage")
     public GridCoverage2D execute(
