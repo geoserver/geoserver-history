@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 import junit.framework.TestCase;
 
@@ -1265,6 +1266,44 @@ public class CatalogImplTest extends TestCase {
         assertEquals( 2, catalog.getStores(WMSStoreInfo.class).size() );
     }
     
+    private static final int GET_LAYER_BY_ID_WITH_CONCURRENT_ADD_TEST_COUNT = 500;
+    private static final int GET_LAYER_BY_ID_WITH_CONCURRENT_ADD_THREAD_COUNT = 10;
+    
+    public void testGetLayerByIdWithConcurrentAdd() throws Exception {
+        addDataStore();
+        addNamespace();
+        
+        LayerInfo layer = catalog.getFactory().createLayer();
+        layer.setResource(ft);
+        layer.setName("LAYER");
+        catalog.add(layer);
+        String id = layer.getId();
+        
+        CountDownLatch ready = new CountDownLatch(GET_LAYER_BY_ID_WITH_CONCURRENT_ADD_THREAD_COUNT + 1);
+        CountDownLatch done = new CountDownLatch(GET_LAYER_BY_ID_WITH_CONCURRENT_ADD_THREAD_COUNT);
+        
+        List<RunnerBase> runners = new ArrayList<RunnerBase>();
+        for (int i = 0; i < GET_LAYER_BY_ID_WITH_CONCURRENT_ADD_THREAD_COUNT; i++) {
+            RunnerBase runner = new LayerAddRunner(ready, done, i);
+            new Thread(runner).start();
+            runners.add(runner);
+        }
+        
+        // note that test thread is ready
+        ready.countDown();
+        // wait for all threads to reach latch in order to maximize likelihood of contention
+        ready.await();
+        
+        for (int i = 0; i < GET_LAYER_BY_ID_WITH_CONCURRENT_ADD_TEST_COUNT ; i++) {
+            catalog.getLayer(id);
+        }
+
+        // make sure worker threads are done
+        done.await();
+        
+        RunnerBase.checkForRunnerExceptions(runners);
+    }
+    
     
     static class TestListener implements CatalogListener {
 
@@ -1317,4 +1356,26 @@ public class CatalogImplTest extends TestCase {
         }
         
     }
+    
+    class LayerAddRunner extends RunnerBase {
+
+        private int idx;
+        
+        protected LayerAddRunner(CountDownLatch ready, CountDownLatch done, int idx) {
+            super(ready, done);
+            this.idx = idx;
+        }
+
+        protected void runInternal() throws Exception {
+            CatalogFactory factory = catalog.getFactory();
+            for (int i = 0; i < GET_LAYER_BY_ID_WITH_CONCURRENT_ADD_TEST_COUNT; i++) {
+                LayerInfo layer = factory.createLayer();
+                layer.setResource(ft);
+                layer.setName("LAYER-" + i + "-" + idx);
+                catalog.add(layer);
+            }
+        }
+        
+    };
+
 }

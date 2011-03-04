@@ -14,6 +14,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.commons.collections.MultiHashMap;
 import org.geoserver.catalog.Catalog;
@@ -93,10 +94,13 @@ public class DefaultCatalogFacade implements CatalogFacade {
      */
     protected HashMap<String, WorkspaceInfo> workspaces = new HashMap<String, WorkspaceInfo>();
     
+    //JD: Using a CopyOnWriteArrayList is a temporary measure here to deal with some 
+    // concurrency issues around layer access. See GEOS-4404. Long term solution is to us
+    // concurrent collections (set and map) for all the collections in this class
     /**
      * layers
      */
-    protected List<LayerInfo> layers = new ArrayList();
+    protected List<LayerInfo> layers = new CopyOnWriteArrayList<LayerInfo>();
 
     /**
      * maps
@@ -384,17 +388,13 @@ public class DefaultCatalogFacade implements CatalogFacade {
     //
     public LayerInfo add(LayerInfo layer) {
         resolve(layer);
-        synchronized(layers) {
-            layers.add(layer);
-        }
+        layers.add(layer);
         
         return ModificationProxy.create(layer, LayerInfo.class);
     }
     
     public void remove(LayerInfo layer) {
-        synchronized(layers) {
-            layers.remove(unwrap(layer));
-        }
+        layers.remove(unwrap(layer));
     }
     
     public void save(LayerInfo layer) {
@@ -406,8 +406,7 @@ public class DefaultCatalogFacade implements CatalogFacade {
     }
     
     public LayerInfo getLayer(String id) {
-        for (Iterator l = layers.iterator(); l.hasNext();) {
-            LayerInfo layer = (LayerInfo) l.next();
+        for (LayerInfo layer : layers) {
             if (id.equals(layer.getId())) {
                 return ModificationProxy.create( layer, LayerInfo.class );
             }
@@ -417,9 +416,7 @@ public class DefaultCatalogFacade implements CatalogFacade {
     }
     
     public LayerInfo getLayerByName(String name) {
-      
-        for (Iterator l = layers.iterator(); l.hasNext();) {
-            LayerInfo layer = (LayerInfo) l.next();
+        for (LayerInfo layer : layers) {
             if ( name.equals( layer.getName() ) ) {
                 return ModificationProxy.create( layer, LayerInfo.class );
             }
@@ -430,8 +427,7 @@ public class DefaultCatalogFacade implements CatalogFacade {
     
     public List<LayerInfo> getLayers(ResourceInfo resource) {
         List<LayerInfo> matches = new ArrayList<LayerInfo>();
-        for (Iterator l = layers.iterator(); l.hasNext();) {
-            LayerInfo layer = (LayerInfo) l.next();
+        for (LayerInfo layer : layers) {
             if ( resource.equals( layer.getResource() ) ) {
                 matches.add( layer );
             }
@@ -442,8 +438,7 @@ public class DefaultCatalogFacade implements CatalogFacade {
     
     public List<LayerInfo> getLayers(StyleInfo style) {
         List<LayerInfo> matches = new ArrayList<LayerInfo>();
-        for (Iterator l = layers.iterator(); l.hasNext();) {
-            LayerInfo layer = (LayerInfo) l.next();
+        for (LayerInfo layer : layers) {
             if ( style.equals( layer.getDefaultStyle() ) || layer.getStyles().contains( style ) ) {
                 matches.add( layer );
             }
@@ -904,7 +899,7 @@ public class DefaultCatalogFacade implements CatalogFacade {
         
         //layers
         if ( layers == null ) {
-            layers = new ArrayList<LayerInfo>();    
+            layers = new CopyOnWriteArrayList<LayerInfo>();
         }
         for ( LayerInfo l : layers ) { 
             resolve(l);
