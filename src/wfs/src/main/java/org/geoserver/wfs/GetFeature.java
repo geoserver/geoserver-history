@@ -8,11 +8,8 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
-import java.util.Stack;
 import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
@@ -31,14 +28,12 @@ import net.opengis.wfs.XlinkPropertyNameType;
 import org.geoserver.catalog.AttributeTypeInfo;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.FeatureTypeInfo;
-import org.geoserver.catalog.NamespaceInfo;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.Query;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.factory.Hints;
 import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.NameImpl;
 import org.geotools.feature.SchemaException;
 import org.geotools.filter.expression.AbstractExpressionVisitor;
 import org.geotools.filter.visitor.AbstractFilterVisitor;
@@ -51,13 +46,10 @@ import org.geotools.xml.EMFUtils;
 import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
-import org.opengis.feature.type.ComplexType;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.GeometryDescriptor;
-import org.opengis.feature.type.Name;
-import org.opengis.feature.type.PropertyDescriptor;
 import org.opengis.filter.Filter;
-import org.opengis.filter.FilterFactory2;
+import org.opengis.filter.FilterFactory;
 import org.opengis.filter.expression.ExpressionVisitor;
 import org.opengis.filter.expression.PropertyName;
 import org.opengis.filter.sort.SortBy;
@@ -65,7 +57,6 @@ import org.opengis.filter.spatial.BBOX;
 import org.opengis.filter.spatial.BinarySpatialOperator;
 import org.opengis.metadata.extent.GeographicBoundingBox;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.xml.sax.helpers.NamespaceSupport;
 
 /**
  * Web Feature Service GetFeature operation.
@@ -92,7 +83,7 @@ public class GetFeature {
     protected WFSInfo wfs;
 
     /** filter factory */
-    protected FilterFactory2 filterFactory;
+    protected FilterFactory filterFactory;
 
     /**
      * Creates the GetFeature operation.
@@ -109,19 +100,6 @@ public class GetFeature {
     public Catalog getCatalog() {
         return catalog;
     }
-    
-    /**      
-     * @return NamespaceSupport from Catalog
-     */
-    public NamespaceSupport getNamespaceSupport() {
-        NamespaceSupport ns = new NamespaceSupport();
-        Iterator<NamespaceInfo> it = getCatalog().getNamespaces().iterator();
-        while (it.hasNext()) {
-            NamespaceInfo ni = it.next();
-            ns.declarePrefix(ni.getPrefix(), ni.getURI());
-        }
-        return ns;
-    }
 
     /**
      * @return The reference to the WFS configuration.
@@ -135,7 +113,7 @@ public class GetFeature {
      *
      * @param filterFactory
      */
-    public void setFilterFactory(FilterFactory2 filterFactory) {
+    public void setFilterFactory(FilterFactory filterFactory) {
         this.filterFactory = filterFactory;
     }
 
@@ -192,59 +170,75 @@ public class GetFeature {
                 }
 
                 FeatureSource<? extends FeatureType, ? extends Feature> source = meta.getFeatureSource(null,null);
-              
+
+                List<AttributeTypeInfo> atts = meta.attributes();
+                List attNames = new ArrayList( atts.size() );
+                for ( AttributeTypeInfo att : atts ) {
+                    attNames.add( att.getName() );
+                }
+
                 //make sure property names are cool
-                NamespaceSupport ns = getNamespaceSupport();
-                
-                List<PropertyName> propNames = null;
-                List<PropertyName> allPropNames = null;
-                                
-                if (!query.getPropertyName().isEmpty()){
-                    
-                    propNames = new ArrayList<PropertyName>();
-                    
-                    for (Iterator iter = query.getPropertyName().iterator(); iter.hasNext();) {
-                        PropertyName propName = createPropertyName((String) iter.next(), ns);
-    
-                        //if (!attNames.contains(propName)) {
-                        if ( propName.evaluate(meta.getFeatureType()) == null) {
-                            String mesg = "Requested property: " + propName + " is " + "not available "
-                                + "for " + query.getTypeName() + ".  ";
-                            
-                            if (meta.getFeatureType() instanceof SimpleFeatureType) {
-                                List<AttributeTypeInfo> atts = meta.attributes();
-                                List attNames = new ArrayList( atts.size() );
-                                for ( AttributeTypeInfo att : atts ) {
-                                    attNames.add( att.getName() );
-                                }
-                                mesg += "The possible propertyName values are: " + attNames;
+                List propNames = query.getPropertyName();
+
+                for (Iterator iter = propNames.iterator(); iter.hasNext();) {
+                    String propName = (String) iter.next();
+
+                    //HACK: strip off namespace
+                    if (propName.indexOf(':') != -1) {
+                        propName = propName.substring(propName.indexOf(':') + 1);
+                    }
+
+                    if (!attNames.contains(propName)) {
+                        String mesg = "Requested property: " + propName + " is " + "not available "
+                            + "for " + query.getTypeName() + ".  " + "The possible propertyName "
+                            + "values are: " + attNames;
+
+                        throw new WFSException(mesg);
+                    }
+                }
+
+                //we must also include any properties that are mandatory ( even if not requested ),
+                // ie. those with minOccurs > 0
+                List extraGeometries = new ArrayList();
+                List properties = new ArrayList();
+                if (propNames.size() != 0) {
+                    Iterator ii = atts.iterator();
+
+                    while (ii.hasNext()) {
+                        AttributeTypeInfo ati = (AttributeTypeInfo) ii.next();
+                        LOGGER.finer("checking to see if " + propNames + " contains" + ati);
+
+                        if (((ati.getMinOccurs() > 0) && (ati.getMaxOccurs() != 0))) {
+                            //mandatory, add it
+                            properties.add(ati.getName());
+
+                            continue;
+                        }
+
+                        //check if it was requested
+                        for (Iterator p = propNames.iterator(); p.hasNext();) {
+                            String propName = (String) p.next();
+
+                            if (propName.matches("(\\w+:)?" + ati.getName())) {
+                                properties.add(ati.getName());
+                                break;
                             }
-    
-                            throw new WFSException(mesg);
                         }
                         
-                        propNames.add(propName);
+                        // if we need to force feature bounds computation, we have to load 
+                        // all of the geometries, but we'll have to remove them in the 
+                        // returned feature type
+                        if(wfs.isFeatureBounding() && meta.getFeatureType().getDescriptor(ati.getName()) instanceof GeometryDescriptor
+                                && !properties.contains(ati.getName())) {
+                            properties.add(ati.getName());
+                            extraGeometries.add(ati.getName());
+                        }
                     }
-                    
-                    // if we need to force feature bounds computation, we have to load 
-                    // all of the geometries, but we'll have to remove them in the 
-                    // returned feature type
-                    if(wfs.isFeatureBounding()) {
-                        allPropNames = addGeometryProperties(meta, propNames);                        
-                    } else {
-                        allPropNames = propNames;
-                    }     
-                    
-                    //we must also include any properties that are mandatory ( even if not requested ),
-                    // ie. those with minOccurs > 0
-                    //only do this for simple features, complex mandatory features are handled by app-schema
-                    if (meta.getFeatureType() instanceof SimpleFeatureType) {
-                        allPropNames = DataUtilities.addMandatoryProperties((SimpleFeatureType) meta.getFeatureType(), allPropNames);
-                        propNames = DataUtilities.addMandatoryProperties((SimpleFeatureType) meta.getFeatureType(), propNames);
-                    }
-                    //for complex features, mandatory properties need to be handled by datastore.
-                    
-                }                
+
+                    //replace property names
+                    query.getPropertyName().clear();
+                    query.getPropertyName().addAll(properties);
+                }
 
                 //make sure filters are sane
                 //
@@ -364,7 +358,7 @@ public class GetFeature {
                 int queryMaxFeatures = maxFeatures - count;
                 if(meta.getMaxFeatures() > 0 && meta.getMaxFeatures() < queryMaxFeatures)
                     queryMaxFeatures = meta.getMaxFeatures();
-                org.geotools.data.Query gtQuery = toDataQuery(query, queryMaxFeatures, source, request, allPropNames);
+                org.geotools.data.Query gtQuery = toDataQuery(query, queryMaxFeatures, source, request);
                 
                 LOGGER.fine("Query is " + query + "\n To gt2: " + gtQuery);
 
@@ -382,14 +376,10 @@ public class GetFeature {
                 // we may need to shave off geometries we did load only to make bounds
                 // computation happy
                 // TODO: support non-SimpleFeature geometry shaving
-                if(features.getSchema() instanceof SimpleFeatureType && propNames!=null && propNames.size() < allPropNames.size()) {
-                    String[] residualNames = new String[propNames.size()];
-                    Iterator<PropertyName> it = propNames.iterator();
-                    int j =0;
-                    while (it.hasNext()) {
-                        residualNames[j] = it.next().getPropertyName();
-                        j++;
-                    }
+                if(features.getSchema() instanceof SimpleFeatureType && extraGeometries.size() > 0) {
+                    List residualProperties = new ArrayList(properties);
+                    residualProperties.removeAll(extraGeometries);
+                    String[] residualNames = (String[]) residualProperties.toArray(new String[residualProperties.size()]);
                     SimpleFeatureType targetType = DataUtilities.createSubType((SimpleFeatureType) features.getSchema(), residualNames);
                     features = new FeatureBoundsFeatureCollection((SimpleFeatureCollection) features, targetType);
                 }
@@ -493,12 +483,23 @@ public class GetFeature {
      *
      */
     public org.geotools.data.Query toDataQuery(QueryType query, int maxFeatures,
-        FeatureSource<? extends FeatureType, ? extends Feature> source, GetFeatureType request, List<PropertyName> props) throws WFSException {
+        FeatureSource<? extends FeatureType, ? extends Feature> source, GetFeatureType request) throws WFSException {
         
         String wfsVersion = request.getVersion();
         
         if (maxFeatures <= 0) {
             maxFeatures = Query.DEFAULT_MAX;
+        }
+
+        String[] props = null;
+
+        if (!query.getPropertyName().isEmpty()) {
+            props = new String[query.getPropertyName().size()];
+
+            for (int p = 0; p < query.getPropertyName().size(); p++) {
+                String propertyName = (String) query.getPropertyName().get(p);
+                props[p] = propertyName;
+            }
         }
 
         Filter filter = (Filter) query.getFilter();
@@ -597,12 +598,10 @@ public class GetFeature {
             hints.put(Hints.VIRTUAL_TABLE_PARAMETERS, request.getMetadata().get(SQL_VIEW_PARAMS));
         }
         
-        //currently only used by app-schema, produce mandatory properties
-        hints.put(Query.INCLUDE_MANDATORY_PROPS, true);
 
         //finally, set the hints
         dataQuery.setHints(hints);
-               
+        
         return dataQuery;
     }
 
@@ -638,39 +637,5 @@ public class GetFeature {
         }
 
         return meta;
-    }
-    
-    
-    protected PropertyName createPropertyName (String path, NamespaceSupport namespaceContext) {
-        if (path.contains("/")) {
-            return filterFactory.property(path, namespaceContext);
-        } else {
-            if (path.contains(":")) {
-                int i = path.indexOf(":");
-                return filterFactory.property(new NameImpl(namespaceContext.getURI(path.substring(0, i)), path.substring(i+1) ));
-            } else {
-                return filterFactory.property(path);
-            }
-        }
-        
-    }
-     
-    protected List<PropertyName> addGeometryProperties (FeatureTypeInfo meta, List<PropertyName> oldProperties) throws IOException {
-        List<AttributeTypeInfo> atts = meta.attributes();
-        Iterator ii = atts.iterator();
-        
-        List<PropertyName> properties = new ArrayList<PropertyName>(oldProperties);
-
-        while (ii.hasNext()) {
-            AttributeTypeInfo ati = (AttributeTypeInfo) ii.next();
-            PropertyName propName = filterFactory.property (ati.getName());
-            
-            if(meta.getFeatureType().getDescriptor(ati.getName()) instanceof GeometryDescriptor
-                    && !properties.contains(propName) ) {
-                properties.add(propName);
-            }
-        }
-        
-        return properties;
     }
 }

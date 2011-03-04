@@ -271,6 +271,17 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
         assertEquals("ows:ExceptionReport", doc.getDocumentElement().getNodeName());
     }
     
+    /**
+     * Test GetFeature with Property Selection.
+     */
+    public void testGetFeaturePropertySelection() {
+        Document doc = getAsDOM("wfs?request=GetFeature&typename=gsml:MappedFeature&propertyname=positionalAccuracy,specification");
+        LOGGER.info("WFS GetFeature&typename=gsml:MappedFeature&propertyname=positionalAccuracy response:\n" + prettyString(doc));
+        assertXpathCount( 1, "//gsml:MappedFeature[@gml:id='mf1']/gsml:positionalAccuracy/gsml:CGI_NumericValue",doc);
+        assertXpathCount( 1, "//gsml:MappedFeature[@gml:id='mf1']/gsml:specification/gsml:GeologicUnit",doc);
+       
+    }
+
     public void testGetFeatureValid() {
         String path = "wfs?request=GetFeature&typename=gsml:MappedFeature";
         String newline = System.getProperty("line.separator");

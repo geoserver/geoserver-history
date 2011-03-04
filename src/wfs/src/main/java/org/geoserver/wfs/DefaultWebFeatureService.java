@@ -19,7 +19,7 @@ import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.config.GeoServer;
 import org.geotools.xml.transform.TransformerBase;
-import org.opengis.filter.FilterFactory2;
+import org.opengis.filter.FilterFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -44,7 +44,7 @@ public class DefaultWebFeatureService implements WebFeatureService, ApplicationC
     /**
      * Filter factory
      */
-    protected FilterFactory2 filterFactory;
+    protected FilterFactory filterFactory;
 
     /**
      * The spring application context, used to look up transaction listeners, plugins and
@@ -60,7 +60,7 @@ public class DefaultWebFeatureService implements WebFeatureService, ApplicationC
     /**
      * Sets the fitler factory.
      */
-    public void setFilterFactory(FilterFactory2 filterFactory) {
+    public void setFilterFactory(FilterFactory filterFactory) {
         this.filterFactory = filterFactory;
     }
 

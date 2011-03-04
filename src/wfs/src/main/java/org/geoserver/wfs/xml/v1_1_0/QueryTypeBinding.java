@@ -221,6 +221,10 @@ public class QueryTypeBinding extends AbstractComplexBinding {
                 else
                     propertyName = (String) ((PropertyName) property).getPropertyName();
 
+                if (propertyName.indexOf(':') != -1) {
+                    propertyName = propertyName.substring(propertyName.indexOf(':') + 1);
+                }
+
                 query.getPropertyName().add(propertyName);
             }
         }
