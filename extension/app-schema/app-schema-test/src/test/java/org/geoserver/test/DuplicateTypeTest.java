@@ -35,6 +35,16 @@ public class DuplicateTypeTest extends AbstractAppSchemaWfsTestSupport {
         LOGGER.info("WFS " + request + " response:\n" + prettyString(doc));
         assertXpathEvaluatesTo("4", "/wfs:FeatureCollection/@numberOfFeatures", doc);
         assertXpathCount(4, "//gsml:DuplicateMappedFeature", doc);
+        // test that targetAttributeNode works when mapping gsml:positionalAccuracy to
+        // gsml:CGI_TermValue
+        assertXpathEvaluatesTo(
+                "unknown",
+                "(//gsml:DuplicateMappedFeature)[1]/gsml:positionalAccuracy/gsml:CGI_TermValue/gsml:value",
+                doc);
+        assertXpathEvaluatesTo(
+                "",
+                "(//gsml:DuplicateMappedFeature)[1]/gsml:positionalAccuracy/gsml:CGI_NumericValue/gsml:principalValue",
+                doc);
     }
 
     /**
@@ -46,6 +56,15 @@ public class DuplicateTypeTest extends AbstractAppSchemaWfsTestSupport {
         LOGGER.info("WFS " + request + " response:\n" + prettyString(doc));
         assertXpathEvaluatesTo("4", "/wfs:FeatureCollection/@numberOfFeatures", doc);
         assertXpathCount(4, "//gsml:MappedFeature", doc);
+        // test that targetAttributeNode works when mapping gsml:positionalAccuracy to
+        // gsml:CGI_NumericValue
+        assertXpathEvaluatesTo("",
+                "(//gsml:MappedFeature)[1]/gsml:positionalAccuracy/gsml:CGI_TermValue/gsml:value",
+                doc);
+        assertXpathEvaluatesTo(
+                "200.0",
+                "(//gsml:MappedFeature)[1]/gsml:positionalAccuracy/gsml:CGI_NumericValue/gsml:principalValue",
+                doc);
     }
 
 }
