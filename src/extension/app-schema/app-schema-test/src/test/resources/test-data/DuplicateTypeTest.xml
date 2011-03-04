@@ -49,6 +49,22 @@
                         <OCQL>NAME</OCQL>
                     </sourceExpression>
                 </AttributeMapping>
+                <!-- map gsml:positionalAccuracy as a different type to that mapped in gsml:MappedFeature 
+                    (which uses gsml:CGI_NumericValuePropertyType) -->
+                <AttributeMapping>
+                    <targetAttribute>gsml:positionalAccuracy</targetAttribute>
+                    <targetAttributeNode>gsml:CGI_TermValuePropertyType</targetAttributeNode>
+                </AttributeMapping>
+                <AttributeMapping>
+                    <targetAttribute>gsml:positionalAccuracy/gsml:CGI_TermValue/gsml:value</targetAttribute>
+                    <sourceExpression>
+                        <OCQL>'unknown'</OCQL>
+                    </sourceExpression>
+                    <ClientProperty>
+                        <name>codeSpace</name>
+                        <value>'http://dictionary.example.org/'</value>
+                    </ClientProperty>
+                </AttributeMapping>
                 <AttributeMapping>
                     <targetAttribute>
                        gsml:shape
