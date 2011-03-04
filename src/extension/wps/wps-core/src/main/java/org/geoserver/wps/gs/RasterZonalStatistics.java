@@ -8,6 +8,7 @@ import jaitools.imageutils.ROIGeometry;
 import jaitools.media.jai.zonalstats.ZonalStats;
 import jaitools.media.jai.zonalstats.ZonalStatsDescriptor;
 import jaitools.media.jai.zonalstats.ZonalStatsOpImage;
+import jaitools.media.jai.zonalstats.ZonalStatsRIF;
 import jaitools.numeric.Range;
 import jaitools.numeric.Statistic;
 
@@ -19,6 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import javax.media.jai.JAI;
 import javax.media.jai.ROI;
 
 import org.geoserver.wps.WPSException;
@@ -39,6 +41,7 @@ import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.image.jai.Registry;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.operation.transform.ProjectiveTransform;
 import org.geotools.util.NumberRange;
@@ -75,6 +78,10 @@ public class RasterZonalStatistics implements GeoServerProcess {
     private final static CoverageProcessor PROCESSOR = CoverageProcessor.getInstance();
 
     private final static Operation CROPOPERATION = PROCESSOR.getOperation("CoverageCrop");
+    
+    static {
+        Registry.registerRIF(JAI.getDefaultInstance(), new ZonalStatsDescriptor(), new ZonalStatsRIF(), Registry.JAI_TOOLS_PRODUCT);
+    }
 
     @DescribeResult(name = "statistics", description = "A geometryless feature collection with all the attributes "
             + "of the zoning layer (prefixed by 'z_'), "
