@@ -18,6 +18,7 @@
     <include>org.geoserver:wcs1_1</include>
     <include>org.geoserver:gwc</include>
     <include>org.geoserver:rest</include>
+    <include>org.geoserver:restconfig</include>
     <include>org.geoserver:maven</include>
     <include>org.geoserver:community</include>
     <include>org.geoserver:extension</include>
