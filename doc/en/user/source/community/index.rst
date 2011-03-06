@@ -15,8 +15,10 @@ This section is devoted to GeoServer community modules. Community modules are co
 
    controlflow/index
    css/index
-   printing/index
-   monitoring/index
-   python/index
-   spatialite/index
+   dxf/index
    dds/index
+   monitoring/index
+   printing/index
+   python/index
+   querylayer/index
+   spatialite/index

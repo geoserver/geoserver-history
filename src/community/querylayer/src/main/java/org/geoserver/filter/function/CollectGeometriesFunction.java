@@ -44,7 +44,7 @@ public class CollectGeometriesFunction extends FunctionImpl {
             return new GeometryCollection(null, new GeometryFactory());
         }
 
-        // collect but don't clone, unfortunalely we're already stuck with a list, by cloning
+        // collect but don't clone, unfortunately we're already stuck with a list, by cloning
         // we'd just increase memory usage
         GeometryCollector collector = new GeometryCollector();
         collector.setFactory(null);
