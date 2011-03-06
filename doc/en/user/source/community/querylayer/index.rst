@@ -60,6 +60,16 @@ Function reference
      - ``geometries``: a list of Geometry objects
      - Turns the list of geometries into a single Geometry object, suitable for being used as the reference geometry in spatial filters. Will throw an exception if too many coordinates are being collected (the results of queryCollection cannot be used as is)
      
+Optimizing the module speed
+---------------------------
+
+In order to have the module run at full speed on the 2.1.x series it is necessary to add the
+following parameter as a system variable when starting the Java Virtual Machine::
+
+    -Dorg.geotools.filter.function.simplify=true 
+    
+This will make sure the functions are evaluated just once per query instead of once per feature matched by the filter. The flag is not necessary on trunk (2.2.x series) and hopefully this behavior will become the default on 2.1.x as well.
+     
 Memory limits
 -------------
 
