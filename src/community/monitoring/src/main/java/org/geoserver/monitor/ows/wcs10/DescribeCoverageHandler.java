@@ -19,7 +19,8 @@ public class DescribeCoverageHandler extends RequestObjectHandler {
 
     @Override
     public List<String> getLayers(Object request) {
-        return new ArrayList((List)EMFUtils.get((EObject)request, "coverage"));
+        List l = (List)EMFUtils.get((EObject)request, "coverage");
+        return l != null ? new ArrayList(l) : null; 
     }
 
 }

@@ -19,7 +19,8 @@ public class GetCoverageHandler extends RequestObjectHandler {
 
     @Override
     public List<String> getLayers(Object request) {
-        return Arrays.asList((String)EMFUtils.get((EObject)request, "sourceCoverage"));
+        String source = (String)EMFUtils.get((EObject)request, "sourceCoverage");
+        return source != null ? Arrays.asList(source) : null;
     }
 
 }

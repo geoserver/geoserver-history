@@ -21,7 +21,10 @@ public class GetLegendGraphicHandler extends RequestObjectHandler {
     @Override
     protected List<String> getLayers(Object request) {
         FeatureType type = (FeatureType) OwsUtils.get(request, "layer");
-        return Arrays.asList(type.getName().toString());
+        if (type != null) {
+            return Arrays.asList(type.getName().toString());
+        }
+        return null;
     }
 
 }

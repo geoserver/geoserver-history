@@ -29,6 +29,10 @@ public class TransactionHandler extends WFSRequestObjectHandler {
         
         //also determine the sub operation
         FeatureMap elements = (FeatureMap) EMFUtils.get((EObject)request, "group");
+        if (elements == null) {
+            return;
+        }
+        
         ListIterator i = elements.valueListIterator();
         int flag = 0;
         while(i.hasNext()) {
@@ -58,6 +62,9 @@ public class TransactionHandler extends WFSRequestObjectHandler {
     @Override
     public List<String> getLayers(Object request) {
         FeatureMap elements = (FeatureMap) EMFUtils.get((EObject)request, "group");
+        if (elements == null) {
+            return null;
+        }
         
         List<String> layers = new ArrayList();
         ListIterator i = elements.valueListIterator();

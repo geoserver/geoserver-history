@@ -19,6 +19,9 @@ public class GetMapHandler extends RequestObjectHandler {
     @Override
     public List<String> getLayers(Object request) {
         List mapLayers = (List) OwsUtils.get(request, "layers");
+        if (mapLayers == null) {
+            return null;
+        }
         
         List<String> layers = new ArrayList();
         for (int i = 0; i < mapLayers.size(); i++) {

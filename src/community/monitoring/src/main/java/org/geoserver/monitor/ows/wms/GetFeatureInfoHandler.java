@@ -19,6 +19,10 @@ public class GetFeatureInfoHandler extends RequestObjectHandler {
     @Override
     public List<String> getLayers(Object request) {
         List queryLayers = (List) OwsUtils.get(request, "queryLayers");
+        if (queryLayers == null) {
+            return null;
+        }
+        
         List<String> layers = new ArrayList();
         for (int i = 0; i < queryLayers.size(); i++) {
             layers.add((String) OwsUtils.get(queryLayers.get(i), "name"));

@@ -21,8 +21,8 @@ public class GetCoverageHandler extends RequestObjectHandler {
     
     @Override
     public List<String> getLayers(Object request) {
-        return Arrays.asList(
-            ((CodeType)EMFUtils.get((EObject)request, "identifier")).getValue());
+        CodeType id = (CodeType)EMFUtils.get((EObject)request, "identifier");
+        return id != null ? Arrays.asList(id.getValue()) : null; 
     }
 
 }

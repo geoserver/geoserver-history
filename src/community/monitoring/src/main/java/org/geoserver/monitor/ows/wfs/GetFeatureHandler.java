@@ -19,8 +19,11 @@ public class GetFeatureHandler extends WFSRequestObjectHandler {
     @Override
     public List<String> getLayers(Object request) {
         List queries = (List) EMFUtils.get((EObject)request,"query");
-        List<String> layers = new ArrayList();
+        if (queries == null) {
+            return null;
+        }
         
+        List<String> layers = new ArrayList();
         for (Object q : queries) {
             List typeNames = (List) EMFUtils.get((EObject) q, "typeName");
             
