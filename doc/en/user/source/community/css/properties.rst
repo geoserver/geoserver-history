@@ -75,11 +75,11 @@ Line Symbology
         ``stroke-repeat`` property.
       * yes
     - * ``stroke-linecap``   
-      * keyword: miter, butt, square
+      * keyword: butt, square, round
       * The style to apply to the ends of lines drawn 
       * yes
     - * ``stroke-linejoin``  
-      * keyword: miter, butt, square
+      * keyword: miter, round, bevel
       * The style to apply to the "elbows" where segments of multi-line features meet. 
       * yes
     - * ``stroke-dasharray`` 

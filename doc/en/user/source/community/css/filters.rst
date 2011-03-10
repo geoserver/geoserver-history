@@ -43,7 +43,7 @@ Supported predicate operators include the following:
       - **Meaning**
     * - ``=``  
       - The property must be exactly `equal` to the specified value.
-    * - ``!=``
+    * - ``<>``
       - The property must not be exactly equal to the specified value.
     * - ``>``
       - The property must be greater than (or alphabetically later than) the
