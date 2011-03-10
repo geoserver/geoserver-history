@@ -64,7 +64,7 @@ public class SecuredGetFeatureTest extends WFSTestSupport {
         Document doc = getAsDOM("wfs?request=GetFeature&version=1.1.0&service=wfs&typeName=" + getLayerId(MockData.BUILDINGS));
         // print(doc);
         checkOws10Exception(doc);
-        assertXpathEvaluatesTo("Feature type cite:Buildings unknown", "//ows:ExceptionText/text()", doc);
+        assertXpathEvaluatesTo("Unknown namespace [cite]", "//ows:ExceptionText/text()", doc);
     }
     
     public void testGetNoAuthChallenge() throws Exception {

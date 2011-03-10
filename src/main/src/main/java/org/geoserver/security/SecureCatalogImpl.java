@@ -31,6 +31,7 @@ import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.catalog.event.CatalogListener;
 import org.geoserver.catalog.impl.AbstractDecorator;
 import org.geoserver.ows.Dispatcher;
+import org.geoserver.ows.LocalWorkspaceResourceAccessManager;
 import org.geoserver.ows.Request;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.GeoServerResourceLoader;
@@ -75,7 +76,9 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
             DataAccessManager daManager = lookupDataAccessManager();
             manager = new DataAccessManagerAdapter(daManager);
         } 
-        return manager;
+        LocalWorkspaceResourceAccessManager lwManager = new LocalWorkspaceResourceAccessManager();
+        lwManager.setDelegate(manager);
+        return lwManager;
     }
 
     static DataAccessManager lookupDataAccessManager() throws Exception {
@@ -581,7 +584,7 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
         boolean canRead = true;
         boolean canWrite = true;
         AccessLimits limits;
-        
+
         if(info instanceof WorkspaceInfo) {
             // unsure here... shall we disallow writing? Only catalog and config
             // related code should be playing with stores directly, so it's more of a 
