@@ -5,26 +5,12 @@ This tutorial will walk through installing the CSS plugin for GeoServer and usin
 
 What you need before starting this tutorial:
 
-* GeoServer 2.1.x (for example, :doc:`2.1.x</installation/index>`)
+* An installed copy of GeoServer 2.0 or greater.
+  See :doc:`/installation/index` if you have not already installed GeoServer.
 * The states layer from the `default GeoServer configuration
   <http://svn.codehaus.org/geoserver/trunk/data/release/data/shapefiles/>`_
-
-Installation
-------------
-
-The CSS module is built nightly and published to the `nightly build server
-<http://gridlock.opengeo.org/geoserver/2.1.x/community-latest/>`_.  The
-installation process is similar to other GeoServer plugins:
-
-* Download the file named like ``geoserver-2.0.2-SNAPSHOT-css-plugin.zip``
-* Extract the contents of the ZIP archive into the :file:`/WEB-INF/lib/`
-  directory in the GeoServer webapp.  For example, if you have installed the
-  GeoServer binary to :file:`/opt/geoserver-2.1.0/`, the CSS extension JAR files
-  should be placed in
-  :file:`/opt/geoserver-2.1.0/webapps/geoserver/WEB-INF/lib/`.  
-* After extracting the extension, restart GeoServer in order for the changes to
-  take effect.  All further configuration can be done through the GeoServer web
-  UI.
+* The CSS plugin installed.
+  See :doc:`/community/css/install` if you have not already installed the plugin.
 
 What's in the Box?
 ------------------
