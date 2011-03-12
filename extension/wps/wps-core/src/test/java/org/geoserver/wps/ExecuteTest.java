@@ -1,7 +1,6 @@
 package org.geoserver.wps;
 
-import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
-import static org.custommonkey.xmlunit.XMLAssert.assertXpathExists;
+import static org.custommonkey.xmlunit.XMLAssert.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -208,6 +207,47 @@ public class ExecuteTest extends WPSTestSupport {
         assertXpathExists( "/wps:ExecuteResponse/wps:Status/wps:ProcessSucceeded", d);
         assertXpathExists( 
             "/wps:ExecuteResponse/wps:ProcessOutputs/wps:Output/wps:Data/wps:ComplexData/wfs:FeatureCollection", d);
+    }
+    
+    public void testFeatureCollectionInlineBoundedBy() throws Exception { // Standard Test A.4.4.2, A.4.4.4
+        String xml = "<wps:Execute service='WPS' version='1.0.0' xmlns:wps='http://www.opengis.net/wps/1.0.0' " + 
+              "xmlns:ows='http://www.opengis.net/ows/1.1'>" + 
+              "<ows:Identifier>gt:BufferFeatureCollection</ows:Identifier>" + 
+               "<wps:DataInputs>" + 
+                  "<wps:Input>" + 
+                      "<ows:Identifier>features</ows:Identifier>" + 
+                      "<wps:Data>" +
+                        "<wps:ComplexData mimeType=\"text/xml; subtype=wfs-collection/1.0\">" + 
+                             readFileIntoString("restricted-FeatureCollection.xml") + 
+                        "</wps:ComplexData>" + 
+                      "</wps:Data>" +     
+                  "</wps:Input>" + 
+                  "<wps:Input>" + 
+                     "<ows:Identifier>buffer</ows:Identifier>" + 
+                     "<wps:Data>" + 
+                       "<wps:LiteralData>1000</wps:LiteralData>" + 
+                     "</wps:Data>" + 
+                  "</wps:Input>" + 
+                 "</wps:DataInputs>" +
+                 "<wps:ResponseForm>" +  
+                   "<wps:ResponseDocument storeExecuteResponse='false'>" + 
+                     "<wps:Output>" +
+                       "<ows:Identifier>result</ows:Identifier>" +
+                     "</wps:Output>" + 
+                   "</wps:ResponseDocument>" +
+                 "</wps:ResponseForm>" + 
+               "</wps:Execute>";
+        
+        Document d = postAsDOM( "wps", xml );
+        // print(d);
+        // checkValidationErrors(d);
+        
+        assertEquals( "wps:ExecuteResponse", d.getDocumentElement().getNodeName() );
+        
+        assertXpathExists( "/wps:ExecuteResponse/wps:Status/wps:ProcessSucceeded", d);
+        assertXpathExists( 
+            "/wps:ExecuteResponse/wps:ProcessOutputs/wps:Output/wps:Data/wps:ComplexData/wfs:FeatureCollection", d);
+        assertXpathEvaluatesTo("0", "count(//feature:boundedBy)", d);
     }
     
     public void testFeatureCollectionInlineKVP() throws Exception { 

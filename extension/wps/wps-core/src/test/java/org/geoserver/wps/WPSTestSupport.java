@@ -30,6 +30,7 @@ public abstract class WPSTestSupport extends GeoServerTestSupport {
         namespaces.put("gml", "http://www.opengis.net/gml");
         namespaces.put("wfs", "http://www.opengis.net/wfs");
         namespaces.put("xlink", "http://www.w3.org/1999/xlink");
+        namespaces.put("feature", "http://geoserver.sf.net"); 
         
         XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(namespaces));
     }

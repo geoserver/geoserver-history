@@ -6,17 +6,21 @@ package org.geoserver.wps.ppio;
 
 import java.io.InputStream;
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.namespace.QName;
 
 import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.WfsFactory;
 
+import org.geoserver.feature.RetypingFeatureCollection;
 import org.geotools.data.crs.ForceCoordinateSystemFeatureResults;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.data.store.ReprojectingFeatureCollection;
 import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.gml3.GMLConfiguration;
 import org.geotools.referencing.CRS;
 import org.geotools.wfs.v1_0.WFSConfiguration;
@@ -25,6 +29,7 @@ import org.geotools.xml.Encoder;
 import org.geotools.xml.Parser;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.xml.sax.ContentHandler;
@@ -85,6 +90,43 @@ public class WFSPPIO extends XMLPPIO {
             }
         }
         
+        return eliminateFeatureBounds(fc);
+    }
+    
+    /**
+     * Parsing GML we often end up with empty attributes that will break shapefiles
+     * and common processing algorithms because they introduce bounding boxes (boundedBy) or hijack 
+     * the default geometry property (location). We sanitize the collection in this method by
+     * removing them.
+     * It is not the best approach, but works in most cases, whilst not doing it would break
+     * the code in most cases. Would be better to find a more general approach...
+     * @param fc
+     * @return
+     */
+    private SimpleFeatureCollection eliminateFeatureBounds(SimpleFeatureCollection fc) {
+        final SimpleFeatureType original = fc.getSchema();
+        List<String> names = new ArrayList<String>();
+        boolean alternateGeometry = true;
+        for(AttributeDescriptor ad : original.getAttributeDescriptors()) {
+            final String name = ad.getLocalName();
+            if(!"boundedBy".equals(name) && !"metadataProperty".equals(name)) {
+                names.add(name);
+            }
+            if(!"location".equals(name) && ad instanceof GeometryDescriptor) {
+                alternateGeometry = true;
+            }
+        }
+        // if there is another geometry we assume "location" is going to be empty,
+        // otherwise we're going to get always a null geometry
+        if(alternateGeometry) {
+            names.remove("location");
+        }
+        
+        if(names.size() < original.getDescriptors().size()) {
+            String[] namesArray = (String[]) names.toArray(new String[names.size()]);
+            SimpleFeatureType target = SimpleFeatureTypeBuilder.retype(original, namesArray);
+            return new RetypingFeatureCollection(fc, target);
+        }
         return fc;
     }
     
