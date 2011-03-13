@@ -21,6 +21,32 @@ public class WMSServiceExceptionTest extends WMSTestSupport {
         assertResponse111("wms?version=1.1.0&request=getmap&layers=foobar");
     }
     
+    /**
+     * Ask for png8 image and error in image, check that the content type of the response png,
+     * see http://jira.codehaus.org/browse/GEOS-3018
+     * @throws Exception
+     */
+    public void testPng8InImageFormat111() throws Exception {
+        MockHttpServletResponse response = getAsServletResponse("wms?bbox=-130,24,-66,50&styles=I_DONT_EXIST"
+                + "&layers=states&Format=image/png8&request=GetMap&width=550"
+                + "&height=250&srs=EPSG:4326&version=1.1.1&service=WMS&EXCEPTIONS=application/vnd.ogc.se_inimage");
+        
+        assertEquals("image/png", response.getContentType());
+    }
+    
+    /**
+     * Ask for png8 image and error in image, check that the content type of the response png,
+     * see http://jira.codehaus.org/browse/GEOS-3018
+     * @throws Exception
+     */
+    public void testPng8InImageFormat130() throws Exception {
+        MockHttpServletResponse response = getAsServletResponse("wms?bbox=-130,24,-66,50&styles=I_DONT_EXIST"
+                + "&layers=states&Format=image/png8&request=GetMap&width=550"
+                + "&height=250&srs=EPSG:4326&version=1.3.0&service=WMS&EXCEPTIONS=application/vnd.ogc.se_inimage");
+        
+        assertEquals("image/png", response.getContentType());
+    }
+    
     void assertResponse111(String path) throws Exception {
         MockHttpServletResponse response = getAsServletResponse(path);
         String content = response.getOutputStreamContent(); 
