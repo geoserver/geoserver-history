@@ -167,7 +167,11 @@ public class WMSServiceExceptionHandler extends ServiceExceptionHandler {
         g.dispose();
         try {
             final HttpServletResponse response = request.getHttpResponse();
-            response.setContentType(format);
+            if("image/png8".equals(format)) {
+                response.setContentType("image/png");
+            } else {
+                response.setContentType(format);
+            }
             final ServletOutputStream os = response.getOutputStream();
             ImageIO.write(img, IMAGEIO_FORMATS.get(format), os);
             os.flush();
