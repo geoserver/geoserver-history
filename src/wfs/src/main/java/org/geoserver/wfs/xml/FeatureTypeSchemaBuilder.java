@@ -612,9 +612,9 @@ public abstract class FeatureTypeSchemaBuilder {
     protected abstract XSDSchema gmlSchema();
 
     protected boolean filterAttributeType( AttributeDescriptor attribute ) {
-        return "name".equals( attribute.getName() ) 
-            || "description".equals( attribute.getName()) 
-            || "boundedBy".equals( attribute.getName());
+        return "name".equals( attribute.getLocalName()) 
+            || "description".equals( attribute.getLocalName()) 
+            || "boundedBy".equals( attribute.getLocalName());
     }
     
     public static final class GML2 extends FeatureTypeSchemaBuilder {
@@ -680,8 +680,8 @@ public abstract class FeatureTypeSchemaBuilder {
         
         protected boolean filterAttributeType( AttributeDescriptor attribute ) {
             return super.filterAttributeType( attribute ) || 
-                "metaDataProperty".equals( attribute.getName() ) || 
-                "location".equals( attribute.getName() );
+                "metaDataProperty".equals( attribute.getLocalName() ) || 
+                "location".equals( attribute.getLocalName() );
         }
     }
 }
