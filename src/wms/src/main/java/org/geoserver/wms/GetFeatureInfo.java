@@ -29,6 +29,7 @@ import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.WMSLayerInfo;
 import org.geoserver.data.util.CoverageUtils;
 import org.geoserver.platform.ServiceException;
+import org.geoserver.wms.featureinfo.FeatureCollectionDecorator;
 import org.geotools.coverage.GridSampleDimension;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridEnvelope2D;
@@ -47,6 +48,7 @@ import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
 import org.geotools.factory.Hints;
 import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.NameImpl;
 import org.geotools.feature.SchemaException;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
@@ -280,6 +282,12 @@ public class GetFeatureInfo {
             }
 
             if (collection != null) {
+                if (! (collection instanceof SimpleFeatureCollection)) {
+                    //put wrapper around it with layer name
+                    Name name = new NameImpl (layer.getFeature().getNamespace().getName(), layer.getFeature().getName());                
+                    collection = new FeatureCollectionDecorator(name, collection);
+                }
+                
                 int size = collection.size();
                 if(size != 0) {
                     results.add(collection);

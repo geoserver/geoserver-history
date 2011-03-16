@@ -17,8 +17,9 @@ import net.opengis.wfs.FeatureCollectionType;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.GetFeatureInfoRequest;
 import org.geoserver.wms.WMS;
-import org.geotools.data.simple.SimpleFeatureCollection;
-import org.geotools.data.simple.SimpleFeatureIterator;
+import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.FeatureIterator;
+import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
@@ -32,7 +33,7 @@ import com.vividsolutions.jts.geom.Geometry;
  * abstract feature info class handle the rest.
  * 
  * @author James Macgill, PSU
- * @version $Id: TextFeatureInfoResponse.java,v 1.3 2004/07/19 22:31:40 jmacgill Exp $
+ * @version $Id$
  */
 public class TextFeatureInfoOutputFormat extends GetFeatureInfoOutputFormat {
 
@@ -48,7 +49,7 @@ public class TextFeatureInfoOutputFormat extends GetFeatureInfoOutputFormat {
      * 
      * @see GetFeatureInfoOutputFormat#write
      */
-    @SuppressWarnings("unchecked")
+    //@SuppressWarnings("unchecked")
     public void write(FeatureCollectionType results, GetFeatureInfoRequest request, OutputStream out)
             throws ServiceException, IOException {
         Charset charSet = wms.getCharSet();
@@ -66,65 +67,76 @@ public class TextFeatureInfoOutputFormat extends GetFeatureInfoOutputFormat {
                                                      // if not specified
                                                      // in the request
 
-        SimpleFeatureIterator reader = null;
+        FeatureIterator reader = null;
 
         try {
-            final List<SimpleFeatureCollection> collections = results.getFeature();
+            final List collections = results.getFeature();
             final int size = collections.size();
-            SimpleFeatureCollection fr;
+            FeatureCollection fr;
             SimpleFeature f;
 
             SimpleFeatureType schema;
             List<AttributeDescriptor> types;
-
+            
             for (int i = 0; i < size; i++) // for each layer queried
             {
-                fr = (SimpleFeatureCollection) collections.get(i);
+                fr = (FeatureCollection) collections.get(i);                
                 reader = fr.features();
-
-                if (reader.hasNext() && (featuresPrinted < maxfeatures)) // if this layer has a hit
-                                                                         // and we're going to print
-                                                                         // it
-                {
-                    writer.println("Results for FeatureType '" + fr.getSchema().getTypeName()
-                            + "':");
-                }
-
+              
+                boolean startFeat = true;
                 while (reader.hasNext()) {
-                    f = reader.next();
-                    schema = f.getFeatureType();
-                    types = schema.getAttributeDescriptors();
-
+                    Feature feature = reader.next();
+                    
+                    if (startFeat) {
+                        writer.println("Results for FeatureType '" + fr.getSchema().getName()
+                            + "':");
+                        startFeat = false;
+                    }
+                    
                     if (featuresPrinted < maxfeatures) {
                         writer.println("--------------------------------------------");
-
-                        for (AttributeDescriptor descriptor : types) {
-                            final Name name = descriptor.getName();
-                            if (Geometry.class.isAssignableFrom(descriptor.getType().getBinding())) {
-                                // writer.println(types[j].getName() + " =
-                                // [GEOMETRY]");
-
-                                // DJB: changed this to print out WKT - its very
-                                // nice for users
-                                // Geometry g = (Geometry)
-                                // f.getAttribute(types[j].getName());
-                                // writer.println(types[j].getName() + " =
-                                // [GEOMETRY] = "+g.toText() );
-
-                                // DJB: decided that all the geometry info was
-                                // too much - they should use GML version if
-                                // they want those details
-                                Geometry g = (Geometry) f.getAttribute(name);
-                                writer.println(name + " = [GEOMETRY (" + g.getGeometryType()
-                                        + ") with " + g.getNumPoints() + " points]");
-                            } else {
-                                writer.println(name + " = " + f.getAttribute(name));
+                    
+                        if (feature instanceof SimpleFeature)
+                        {
+                            f = (SimpleFeature) feature;
+                            schema = (SimpleFeatureType) f.getType();
+                            types = schema.getAttributeDescriptors();
+        
+                            for (AttributeDescriptor descriptor : types) {
+                                final Name name = descriptor.getName();
+                                if (Geometry.class.isAssignableFrom(descriptor.getType().getBinding())) {
+                                    // writer.println(types[j].getName() + " =
+                                    // [GEOMETRY]");
+    
+                                    // DJB: changed this to print out WKT - its very
+                                    // nice for users
+                                    // Geometry g = (Geometry)
+                                    // f.getAttribute(types[j].getName());
+                                    // writer.println(types[j].getName() + " =
+                                    // [GEOMETRY] = "+g.toText() );
+    
+                                    // DJB: decided that all the geometry info was
+                                    // too much - they should use GML version if
+                                    // they want those details
+                                    Geometry g = (Geometry) f.getAttribute(name);
+                                    writer.println(name + " = [GEOMETRY (" + g.getGeometryType()
+                                            + ") with " + g.getNumPoints() + " points]");
+                                } else {
+                                    writer.println(name + " = " + f.getAttribute(name));
+                                }
                             }
+                            
                         }
 
-                        writer.println("--------------------------------------------");
-                        featuresPrinted++;
+                        else
+                        {
+                            writer.println(feature.toString());
+                        }
                     }
+                    
+                    writer.println("--------------------------------------------");
+                    featuresPrinted++;
+                    
                 }
             }
         } catch (Exception ife) {
