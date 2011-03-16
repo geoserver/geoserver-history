@@ -44,6 +44,8 @@ Here are the three data models (as you can see there are redundancies, in partic
 * attributes (listMap): the type attributes
   
   * name (string): attribute  name
+  * namespace (string): attribute namespace URI
+  * prefix (string): attribute namespace prefix
   * type (string): attribute type,  the fully qualified Java class name
   * isGeometry (boolean): true if the attribute is geometric, false otherwise
 
@@ -54,13 +56,19 @@ Here are the three data models (as you can see there are redundancies, in partic
 * attributes (listMap): the list of attributes (both data and metadata)
   
   * name (string): attribute  name
-  * type (string): attribute type,  the fully qualified Java class name
-  * isGeometry (boolean): true if the attribute is geometric, false otherwise
-  * value: the attribute value (as a string)
+  * namespace (string): attribute namespace URI
+  * prefix (string): attribute namespace prefix
+  * isGeometry (boolean): true if the attribute is geometric, false otherwise  
+  * value: a string representation of the the attribute value
+  * isComplex (boolean): true if the attribute is a feature (see :ref:`app-schema.complex-features`), false otherwise
+  * type (string or FeatureType): attribute type: if isComplex is false, the fully qualified Java class name; if isComplex is true, a FeatureType
+  * rawValue: the actual attribute value (is isComplex is true rawValue is a Feature)
 
 * type (map)  
 
   * name (string): the type name (same as typeName)
+  * namespace (string): attribute namespace URI
+  * prefix (string): attribute namespace prefix
   * title (string): The title configured in the admin console
   * abstract (string): The abstract for the type
   * description (string): The description for the type

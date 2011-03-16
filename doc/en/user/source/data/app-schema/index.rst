@@ -35,5 +35,6 @@ Contents
    feature-chaining
    polymorphism
    data-access-integration
+   wms-support
    tutorial
 

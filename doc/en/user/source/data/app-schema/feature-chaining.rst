@@ -387,6 +387,8 @@ Nesting simple properties
 You don't need to chain multi-valued simple properties and map them separately. 
 The original configuration would still work.
 
+..  _app-schema.filtering-nested:
+
 Filtering nested attributes on chained features
 -----------------------------------------------
 Filters would work as usual. You can supply the full XPath of the attribute, and the code would handle this.
