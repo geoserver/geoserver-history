@@ -34,7 +34,7 @@ import org.geoserver.wfs.WFSInfo;
 import org.geotools.data.FeatureDiffReader;
 import org.geotools.util.Version;
 import org.geotools.xml.transform.TransformerBase;
-import org.opengis.filter.FilterFactory;
+import org.opengis.filter.FilterFactory2;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 
@@ -61,7 +61,7 @@ public class DefaultVersioningWebFeatureService
     /**
      * Filter factory
      */
-    protected FilterFactory filterFactory;
+    protected FilterFactory2 filterFactory;
 
     /**
      * The spring application context, used to look up transaction listeners, plugins and
@@ -94,7 +94,7 @@ public class DefaultVersioningWebFeatureService
     /**
      * Sets the fitler factory.
      */
-    public void setFilterFactory(FilterFactory filterFactory) {
+    public void setFilterFactory(FilterFactory2 filterFactory) {
         this.filterFactory = filterFactory;
     }
 
