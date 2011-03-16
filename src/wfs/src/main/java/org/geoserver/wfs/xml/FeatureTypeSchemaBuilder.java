@@ -34,7 +34,6 @@ import org.eclipse.xsd.XSDParticle;
 import org.eclipse.xsd.XSDSchema;
 import org.eclipse.xsd.XSDSchemaContent;
 import org.eclipse.xsd.XSDTypeDefinition;
-import org.eclipse.xsd.impl.XSDImportImpl;
 import org.eclipse.xsd.impl.XSDSchemaImpl;
 import org.eclipse.xsd.util.XSDConstants;
 import org.eclipse.xsd.util.XSDSchemaLocator;
@@ -324,10 +323,10 @@ public abstract class FeatureTypeSchemaBuilder {
      */
     public XSDSchema addApplicationTypes( XSDSchema wfsSchema ) throws IOException {
         //incorporate application schemas into the wfs schema
-        Collection featureTypeInfos = catalog.getFeatureTypes();
+        Collection<FeatureTypeInfo> featureTypeInfos = catalog.getFeatureTypes();
 
-        for (Iterator i = featureTypeInfos.iterator(); i.hasNext();) {
-            FeatureTypeInfo meta = (FeatureTypeInfo) i.next();
+        for (Iterator<FeatureTypeInfo> i = featureTypeInfos.iterator(); i.hasNext();) {
+            FeatureTypeInfo meta = i.next();
             
             // don't build schemas for disabled feature types
             if(!meta.enabled())
@@ -342,16 +341,16 @@ public abstract class FeatureTypeSchemaBuilder {
             wfsSchema.getQNamePrefixToNamespaceMap().put(prefix, namespaceURI);
 
             //add the types + elements to the wfs schema
-            for (Iterator t = schema.getTypeDefinitions().iterator(); t.hasNext();) {
+            for (Iterator<XSDTypeDefinition> t = schema.getTypeDefinitions().iterator(); t.hasNext();) {
                 wfsSchema.getTypeDefinitions().add(t.next());
             }
 
-            for (Iterator e = schema.getElementDeclarations().iterator(); e.hasNext();) {
+            for (Iterator<XSDElementDeclaration> e = schema.getElementDeclarations().iterator(); e.hasNext();) {
                 wfsSchema.getElementDeclarations().add(e.next());
             }
             
             // add secondary namespaces from catalog
-            for (Map.Entry entry : (Set<Map.Entry>) schema.getQNamePrefixToNamespaceMap()
+            for (Map.Entry<String, String> entry : (Set<Map.Entry<String, String>>) schema.getQNamePrefixToNamespaceMap()
                     .entrySet()) {
                 if (!wfsSchema.getQNamePrefixToNamespaceMap().containsKey(entry.getKey())) {
                     wfsSchema.getQNamePrefixToNamespaceMap().put(entry.getKey(), entry.getValue());
