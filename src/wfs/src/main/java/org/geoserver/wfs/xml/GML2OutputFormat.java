@@ -35,6 +35,7 @@ import org.geoserver.platform.ServiceException;
 import org.geoserver.wfs.GMLInfo;
 import org.geoserver.wfs.WFSGetFeatureOutputFormat;
 import org.geoserver.wfs.WFSInfo;
+import org.geotools.GML.Version;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.gml.producer.FeatureTransformer;
@@ -219,14 +220,14 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
             transformer.addSchemaLocation(uri, (String) ftNamespaces.get(uri));
         }
 
-        transformer.setGmlPrefixing(wfs.isCiteCompliant());
+        GMLInfo gml = wfs.getGML().get(WFSInfo.Version.V_10);
+        transformer.setGmlPrefixing(wfs.isCiteCompliant() || !gml.getOverrideGMLAttributes());
 
         if (results.getLockId() != null) {
             transformer.setLockId(results.getLockId());
         }
 
         if (srs != -1) {
-            GMLInfo gml = wfs.getGML().get( WFSInfo.Version.V_10);
             transformer.setSrsName(gml.getSrsNameStyle().getPrefix() + srs);
         }
     }

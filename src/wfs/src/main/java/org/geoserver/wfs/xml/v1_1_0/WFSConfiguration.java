@@ -6,6 +6,7 @@ package org.geoserver.wfs.xml.v1_1_0;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,7 +24,14 @@ import org.geoserver.catalog.event.CatalogListener;
 import org.geoserver.catalog.event.CatalogModifyEvent;
 import org.geoserver.catalog.event.CatalogPostModifyEvent;
 import org.geoserver.catalog.event.CatalogRemoveEvent;
+import org.geoserver.config.ConfigurationListener;
+import org.geoserver.config.ConfigurationListenerAdapter;
+import org.geoserver.config.GeoServer;
+import org.geoserver.config.GeoServerInfo;
+import org.geoserver.config.LoggingInfo;
+import org.geoserver.config.ServiceInfo;
 import org.geoserver.ows.xml.v1_0.OWSConfiguration;
+import org.geoserver.wfs.WFSInfo;
 import org.geoserver.wfs.xml.FeatureTypeSchemaBuilder;
 import org.geoserver.wfs.xml.PropertyTypePropertyExtractor;
 import org.geoserver.wfs.xml.WFSHandlerFactory;
@@ -67,10 +75,10 @@ public class WFSConfiguration extends Configuration {
      */
     protected FeatureTypeSchemaBuilder schemaBuilder;
 
-    public WFSConfiguration(Catalog catalog, FeatureTypeSchemaBuilder schemaBuilder, final WFS wfs) {
+    public WFSConfiguration(GeoServer geoServer, FeatureTypeSchemaBuilder schemaBuilder, final WFS wfs) {
         super( wfs );
 
-        this.catalog = catalog;
+        this.catalog = geoServer.getCatalog();
         this.schemaBuilder = schemaBuilder;
         
         catalog.addListener(new CatalogListener() {
@@ -110,6 +118,19 @@ public class WFSConfiguration extends Configuration {
             
             public void disposed(DataStoreInfo dataStore, DataAccess da) {
                 wfs.flush();
+            }
+        });
+        geoServer.addListener(new ConfigurationListenerAdapter() {
+            
+            public void reloaded() {
+                wfs.flush();
+            }
+            
+            public void handleServiceChange(ServiceInfo service, List<String> propertyNames,
+                    List<Object> oldValues, List<Object> newValues) {
+                if (service instanceof WFSInfo) {
+                    reloaded();
+                }
             }
         });
         addDependency(new OGCConfiguration());

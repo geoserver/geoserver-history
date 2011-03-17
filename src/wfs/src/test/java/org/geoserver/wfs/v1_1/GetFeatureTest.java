@@ -9,6 +9,7 @@ import junit.textui.TestRunner;
 
 import org.custommonkey.xmlunit.XMLAssert;
 import org.geoserver.data.test.MockData;
+import org.geoserver.wfs.GMLInfo;
 import org.geoserver.wfs.WFSInfo;
 import org.geoserver.wfs.WFSTestSupport;
 import org.geotools.gml3.GML;
@@ -420,6 +421,30 @@ public class GetFeatureTest extends WFSTestSupport {
     public void testGML32OutputFormat() throws Exception {
         testGetFifteenAll(
             "wfs?request=getfeature&typename=cdf:Fifteen&version=1.1.0&service=wfs&outputFormat=gml32");
+    }
+    
+    public void testGMLAttributeMapping() throws Exception {
+        WFSInfo wfs = getWFS();
+        GMLInfo gml = wfs.getGML().get(WFSInfo.Version.V_11);
+        gml.setOverrideGMLAttributes(false);
+        getGeoServer().save(wfs);
+        
+        Document dom = getAsDOM("ows?service=WFS&version=1.1.0&request=GetFeature" +
+                "&typename=" + getLayerId(MockData.PRIMITIVEGEOFEATURE));
+        XMLAssert.assertXpathExists("//gml:name", dom);
+        XMLAssert.assertXpathExists("//gml:description", dom);
+        XMLAssert.assertXpathNotExists("//sf:name", dom);
+        XMLAssert.assertXpathNotExists("//sf:description", dom);
+        
+        gml.setOverrideGMLAttributes(true);
+        getGeoServer().save(wfs);
+    
+        dom = getAsDOM("ows?service=WFS&version=1.1.0&request=GetFeature" +
+                "&typename=" + getLayerId(MockData.PRIMITIVEGEOFEATURE));
+        XMLAssert.assertXpathNotExists("//gml:name", dom);
+        XMLAssert.assertXpathNotExists("//gml:description", dom);
+        XMLAssert.assertXpathExists("//sf:name", dom);
+        XMLAssert.assertXpathExists("//sf:description", dom);
     }
     
     public static void main(String[] args) {

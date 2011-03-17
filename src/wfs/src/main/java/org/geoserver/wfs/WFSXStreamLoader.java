@@ -32,12 +32,14 @@ public class WFSXStreamLoader extends XStreamServiceLoader<WFSInfo> {
         //gml2
         GMLInfoImpl gml2 = new GMLInfoImpl();
         gml2.setSrsNameStyle( GMLInfo.SrsNameStyle.XML );
+        gml2.setOverrideGMLAttributes(true);
         wfs.getGML().put( WFSInfo.Version.V_10 , gml2 );
         
         //gml3
         GMLInfoImpl gml3 = new GMLInfoImpl();
         gml3.setSrsNameStyle( GMLInfo.SrsNameStyle.URN );
-        wfs.getGML().put( WFSInfo.Version.V_11 , new GMLInfoImpl() );
+        gml3.setOverrideGMLAttributes(false);
+        wfs.getGML().put( WFSInfo.Version.V_11 , gml3);
         
         return wfs;
     }
@@ -52,6 +54,16 @@ public class WFSXStreamLoader extends XStreamServiceLoader<WFSInfo> {
         if ( service.getVersions().isEmpty() ) {
             service.getVersions().add( new Version( "1.0.0" ) );
             service.getVersions().add( new Version( "1.1.0" ) );
+        }
+        
+        //set the defaults for GMLInfo if they are not set
+        GMLInfo gml = service.getGML().get(WFSInfo.Version.V_10);
+        if (gml.getOverrideGMLAttributes() == null) {
+            gml.setOverrideGMLAttributes(true);
+        }
+        gml = service.getGML().get(WFSInfo.Version.V_11);
+        if (gml.getOverrideGMLAttributes() == null) {
+            gml.setOverrideGMLAttributes(false);
         }
         return service;
     }

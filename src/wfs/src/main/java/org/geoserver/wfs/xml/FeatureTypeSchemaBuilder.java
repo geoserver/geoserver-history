@@ -45,6 +45,7 @@ import org.geoserver.config.GeoServer;
 import org.geoserver.ows.URLMangler.URLType;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.GeoServerResourceLoader;
+import org.geoserver.wfs.GMLInfo;
 import org.geoserver.wfs.WFSInfo;
 import org.geotools.feature.NameImpl;
 import org.geotools.gml2.GMLConfiguration;
@@ -548,9 +549,12 @@ public abstract class FeatureTypeSchemaBuilder {
                 AttributeDescriptor attribute = (AttributeDescriptor) pd;
 
                 if ( filterAttributeType( attribute ) ) {
-                    continue;
+                    GMLInfo gml = getGMLConfig(wfs);
+                    if (gml == null || !gml.getOverrideGMLAttributes()) {
+                        continue;
+                    }
                 }
-
+                 
                 XSDElementDeclaration element = factory.createXSDElementDeclaration();
                 element.setName(attribute.getLocalName());
                 element.setNillable(attribute.isNillable());
@@ -677,6 +681,8 @@ public abstract class FeatureTypeSchemaBuilder {
 
     protected abstract XSDSchema gmlSchema();
 
+    protected abstract GMLInfo getGMLConfig(WFSInfo wfs);
+    
     protected boolean filterAttributeType( AttributeDescriptor attribute ) {
         return "name".equals( attribute.getLocalName() ) 
             || "description".equals( attribute.getLocalName()) 
@@ -710,6 +716,11 @@ public abstract class FeatureTypeSchemaBuilder {
             }
 
             return gml2Schema;
+        }
+        
+        @Override
+        protected GMLInfo getGMLConfig(WFSInfo wfs) {
+            return wfs.getGML().get(WFSInfo.Version.V_10);
         }
     }
 
@@ -756,6 +767,11 @@ public abstract class FeatureTypeSchemaBuilder {
             return super.filterAttributeType( attribute ) || 
                 "metaDataProperty".equals( attribute.getLocalName() ) || 
                 "location".equals( attribute.getLocalName() );
+        }
+        
+        @Override
+        protected GMLInfo getGMLConfig(WFSInfo wfs) {
+            return wfs.getGML().get(WFSInfo.Version.V_11);
         }
     }
     

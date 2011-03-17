@@ -40,6 +40,7 @@ public class WFSLoader extends LegacyServiceLoader<WFSInfo> {
         
         //gml2
         GMLInfo gml = new GMLInfoImpl();
+        gml.setOverrideGMLAttributes(true);
         
         Boolean srsXmlStyle = (Boolean) properties.get( "srsXmlStyle" );
         if( srsXmlStyle ) {
@@ -53,6 +54,7 @@ public class WFSLoader extends LegacyServiceLoader<WFSInfo> {
         //gml3
         gml = new GMLInfoImpl();
         gml.setSrsNameStyle(SrsNameStyle.URN);
+        gml.setOverrideGMLAttributes(false);
         wfs.getGML().put( WFSInfo.Version.V_11 , gml );
         
         wfs.getVersions().add( new Version( "1.0.0" ) );
