@@ -19,7 +19,6 @@ import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.wms.GetMapRequest;
-import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMSInfo;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
@@ -29,6 +28,8 @@ import org.geowebcache.conveyor.ConveyorTile;
 import org.geowebcache.diskquota.DiskQuotaConfig;
 import org.geowebcache.diskquota.DiskQuotaMonitor;
 import org.geowebcache.diskquota.ExpirationPolicy;
+import org.geowebcache.diskquota.storage.BDBQuotaStore;
+import org.geowebcache.diskquota.storage.Quota;
 import org.geowebcache.grid.BoundingBox;
 import org.geowebcache.grid.GridMismatchException;
 import org.geowebcache.grid.GridSet;
@@ -78,13 +79,17 @@ public class GWC implements DisposableBean, ApplicationContextAware {
 
     private ApplicationContext appContext;
 
+    private final BDBQuotaStore quotaStore;
+
     public GWC(final StorageBroker sb, final TileLayerDispatcher tld,
-            final TileBreeder tileBreeder, final CatalogConfiguration config, GeoServer geoserver) {
+            final TileBreeder tileBreeder, final CatalogConfiguration config, GeoServer geoserver,
+            BDBQuotaStore quotaStore) {
         this.tld = tld;
         this.storageBroker = sb;
         this.tileBreeder = tileBreeder;
         this.config = config;
         this.geoserver = geoserver;
+        this.quotaStore = quotaStore;
     }
 
     /**
@@ -248,10 +253,11 @@ public class GWC implements DisposableBean, ApplicationContextAware {
         // request.getFormatOptions()??
         final String layerName = request.getRawKvp().get("LAYERS");
         /*
-         * This is a quick way of checking if the request was for a single layer. We can't really use request.getLayers()
-         * because in the event that a layerGroup was requested, the request parser turned it into a list of actual Layers
+         * This is a quick way of checking if the request was for a single layer. We can't really
+         * use request.getLayers() because in the event that a layerGroup was requested, the request
+         * parser turned it into a list of actual Layers
          */
-        if(layerName.indexOf(',') != -1){
+        if (layerName.indexOf(',') != -1) {
             return null;
         }
 
@@ -374,7 +380,7 @@ public class GWC implements DisposableBean, ApplicationContextAware {
     }
 
     public List<TileLayer> getLayers() {
-        return new ArrayList<TileLayer>(tld.getLayers().values());
+        return new ArrayList<TileLayer>(tld.getLayerList());
     }
 
     public List<TileLayer> getLayers(final String namespacePrefixFilter) {
@@ -435,6 +441,14 @@ public class GWC implements DisposableBean, ApplicationContextAware {
         DiskQuotaMonitor monitor = getDiskQuotaMonitor();
         ExpirationPolicy policy = monitor.findExpirationPolicy(expirationPoliciName);
         return policy;
+    }
+
+    public Quota getGlobalQuota() {
+        return getDisQuotaConfig().getGlobalQuota();
+    }
+
+    public Quota getGlobalUsedQuota() {
+        return quotaStore.getGloballyUsedQuota();
     }
 
 }

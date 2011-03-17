@@ -1,5 +1,7 @@
 package org.geoserver.gwc.web;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.logging.Logger;
 
 import org.apache.wicket.AttributeModifier;
@@ -10,6 +12,7 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.geoserver.catalog.MetadataMap;
@@ -21,6 +24,8 @@ import org.geoserver.web.util.MapModel;
 import org.geoserver.wms.WMSInfo;
 import org.geotools.util.logging.Logging;
 import org.geowebcache.diskquota.DiskQuotaConfig;
+import org.geowebcache.diskquota.storage.Quota;
+import org.geowebcache.diskquota.storage.StorageUnit;
 
 public class GWCSettingsPage extends GeoServerSecuredPage {
 
@@ -30,7 +35,7 @@ public class GWCSettingsPage extends GeoServerSecuredPage {
     public GWCSettingsPage() {
         setHeaderPanel(headerPanel());
 
-        Form form = new Form("form");
+        final Form form = new Form("form");
         add(form);
 
         final IModel<WMSInfo> wmsInfoModel = new LoadableDetachableModel<WMSInfo>() {
@@ -71,7 +76,26 @@ public class GWCSettingsPage extends GeoServerSecuredPage {
                 "GWCSettingsPage.enableWMSIntegration.title");
         form.add(wmsIntegration);
 
-        form.add(new DiskQuotaConfigPanel("diskQuotaConfigPanel", form, diskQuotaModel, gwcModel));
+        final DiskQuotaConfig diskQuotaConfig = diskQuotaModel.getObject();
+        Quota globalQuota = diskQuotaConfig.getGlobalQuota();
+        if (globalQuota == null) {
+            LOGGER.info("There's no GWC global disk quota configured, setting a default of 100MiB");
+            globalQuota = new Quota(100, StorageUnit.MiB);
+            diskQuotaConfig.setGlobalQuota(globalQuota);
+        }
+
+        // use this two payload models to let the user configure the global quota as a decimal value
+        // plus a storage unit. Then at form sumbission we'll transform them back to a BigInteger
+        // representing the quota byte count
+        BigInteger bytes = globalQuota.getBytes();
+        StorageUnit bestRepresentedUnit = StorageUnit.bestFit(bytes);
+        BigDecimal transformedQuota = StorageUnit.B.convertTo(new BigDecimal(bytes),
+                bestRepresentedUnit);
+        final IModel<BigDecimal> configQuotaValueModel = new Model<BigDecimal>(transformedQuota);
+        final IModel<StorageUnit> configQuotaUnitModel = new Model<StorageUnit>(bestRepresentedUnit);
+
+        form.add(new DiskQuotaConfigPanel("diskQuotaConfigPanel", form, diskQuotaModel, gwcModel,
+                configQuotaValueModel, configQuotaUnitModel));
 
         form.add(new Button("submit") {
             private static final long serialVersionUID = 1L;
@@ -84,6 +108,13 @@ public class GWCSettingsPage extends GeoServerSecuredPage {
 
                 // DiskQuotaConfig diskQuotaConfig = diskQuotaModel.getObject();
                 GWC gwc = getGWC();
+                StorageUnit chosenUnit = configQuotaUnitModel.getObject();
+                BigDecimal chosenQuota = configQuotaValueModel.getObject();
+                if (chosenQuota.compareTo(BigDecimal.ZERO) < 0) {
+                    form.error("Quota has to be > 0");
+                    return;
+                }
+                gwc.getGlobalQuota().setValue(chosenQuota.doubleValue(), chosenUnit);
                 gwc.saveDiskQuotaConfig();
 
                 setResponsePage(GeoServerHomePage.class);
