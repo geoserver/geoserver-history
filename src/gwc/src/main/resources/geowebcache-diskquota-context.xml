@@ -9,6 +9,7 @@
   </bean>
 
   <bean id="DiskQuotaMonitor" class="org.geowebcache.diskquota.DiskQuotaMonitor">
+    <constructor-arg ref="gwcDefaultStorageFinder" />
     <constructor-arg ref="DiskQuotaConfigLoader" />
     <constructor-arg ref="gwcTLDispatcher" />
     <constructor-arg ref="gwcStorageBroker" />

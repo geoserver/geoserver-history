@@ -452,7 +452,11 @@ public class GWC implements DisposableBean, ApplicationContextAware {
     }
 
     public Quota getGlobalUsedQuota() {
-        return quotaStore.getGloballyUsedQuota();
+        try {
+            return quotaStore.getGloballyUsedQuota();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
