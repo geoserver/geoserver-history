@@ -3,6 +3,7 @@ package org.geoserver.wfs;
 public class GMLInfoImpl implements GMLInfo {
 
     SrsNameStyle srsNameStyle = SrsNameStyle.NORMAL;
+    Boolean overrideGMLAttributes;
     
     public SrsNameStyle getSrsNameStyle() {
         return srsNameStyle;
@@ -10,6 +11,14 @@ public class GMLInfoImpl implements GMLInfo {
 
     public void setSrsNameStyle(SrsNameStyle srsNameStyle) {
         this.srsNameStyle = srsNameStyle;
+    }
+    
+    public Boolean getOverrideGMLAttributes() {
+        return overrideGMLAttributes;
+    }
+    
+    public void setOverrideGMLAttributes(Boolean overrideGMLAttributes) {
+        this.overrideGMLAttributes = overrideGMLAttributes;
     }
     
     public int hashCode() {

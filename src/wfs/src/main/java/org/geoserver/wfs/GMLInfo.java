@@ -50,4 +50,22 @@ public interface GMLInfo extends Serializable {
      * Sets the srs name style to be used when encoding the gml 'srsName' attribute.
      */
     void setSrsNameStyle( SrsNameStyle srsNameStyle );
+    
+    /**
+     * Controls how attributes are handled with regard to attributes defined in the schema of
+     * AbstractFeatureType, name, description, etc... 
+     * <p>
+     * When set this flag will cause the attributes to be redefined in the application schema 
+     * namespace.
+     * </p>
+     */
+    Boolean getOverrideGMLAttributes();
+    
+    /**
+     * Sets the flag that controls how attributes are handled with regard to attributes defined in 
+     * the schema of AbstractFeatureType.
+     * 
+     * @see {@link #getOverrideGMLAttributes()}
+     */
+    void setOverrideGMLAttributes(Boolean overrideGMLAttributes);
 }

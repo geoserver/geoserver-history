@@ -116,7 +116,7 @@ public class GML3FeatureInfoOutputFormat extends GetFeatureInfoOutputFormat {
         final GeoServer gs = wms.getGeoServer();
                 
         FeatureTypeSchemaBuilder sb = new FeatureTypeSchemaBuilder.GML3(gs); 
-        WFSConfiguration configuration = new WFSConfiguration(gs.getCatalog(), sb, new WFS(sb));
+        WFSConfiguration configuration = new WFSConfiguration(gs, sb, new WFS(sb));
         
         GML3OutputFormat format = new GML3OutputFormat(gs, configuration);
         format.write(features, out, opDescriptor);

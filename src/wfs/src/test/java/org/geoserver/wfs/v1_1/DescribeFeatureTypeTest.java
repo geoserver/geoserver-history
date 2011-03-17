@@ -4,11 +4,13 @@ import java.net.URLEncoder;
 
 import javax.xml.namespace.QName;
 
+import org.custommonkey.xmlunit.XMLAssert;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.data.test.MockData;
+import org.geoserver.wfs.GMLInfo;
 import org.geoserver.wfs.WFSInfo;
 import org.geoserver.wfs.WFSTestSupport;
 import org.w3c.dom.Document;
@@ -204,5 +206,23 @@ public class DescribeFeatureTypeTest extends WFSTestSupport {
         Document dom = getAsDOM("ows?service=WFS&version=1.1.0&request=DescribeFeatureType" +
             "&outputFormat=text/xml;+subtype%3Dgml/3.2&typename=" + getLayerId(MockData.POLYGONS));
         print(dom);
+    }
+    
+    public void testGMLAttributeMapping() throws Exception {
+        WFSInfo wfs = getWFS();
+        GMLInfo gml = wfs.getGML().get(WFSInfo.Version.V_11);
+        gml.setOverrideGMLAttributes(false);
+        getGeoServer().save(wfs);
+        
+        Document dom = getAsDOM("ows?service=WFS&version=1.1.0&request=DescribeFeatureType" +
+                "&typename=" + getLayerId(MockData.PRIMITIVEGEOFEATURE));
+        XMLAssert.assertXpathNotExists("//xsd:element[@name = 'name']", dom);
+        XMLAssert.assertXpathNotExists("//xsd:element[@name = 'description']", dom);
+        
+        gml.setOverrideGMLAttributes(true);
+        dom = getAsDOM("ows?service=WFS&version=1.1.0&request=DescribeFeatureType" +
+                "&typename=" + getLayerId(MockData.PRIMITIVEGEOFEATURE));
+        XMLAssert.assertXpathExists("//xsd:element[@name = 'name']", dom);
+        XMLAssert.assertXpathExists("//xsd:element[@name = 'description']", dom);
     }
 }

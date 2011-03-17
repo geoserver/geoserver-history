@@ -75,6 +75,8 @@ public class WFSAdminPage extends BaseServiceAdminPage<WFSInfo> {
                 Arrays.asList(SrsNameStyle.values());
             DropDownChoice srsNameStyle = new DropDownChoice("srsNameStyle", choices);
             add(srsNameStyle);
+            
+            add(new CheckBox("overrideGMLAttributes"));
         }
         
     }
