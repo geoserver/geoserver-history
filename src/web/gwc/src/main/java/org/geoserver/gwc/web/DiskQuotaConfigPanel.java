@@ -97,30 +97,16 @@ public class DiskQuotaConfigPanel extends Panel {
 
     private void addGlobalExpirationPolicyConfig(final IModel<DiskQuotaConfig> diskQuotaModel) {
         IModel<ExpirationPolicy> globalQuotaPolicyModel = new PropertyModel<ExpirationPolicy>(
-                diskQuotaModel, "globalExpirationPolicy");
+                diskQuotaModel, "globalExpirationPolicyName");
 
         RadioGroup<ExpirationPolicy> globalQuotaPolicy;
         globalQuotaPolicy = new RadioGroup<ExpirationPolicy>("globalQuotaExpirationPolicy",
                 globalQuotaPolicyModel);
         add(globalQuotaPolicy);
 
-        IModel<ExpirationPolicy> lfuModel = new LoadableDetachableModel<ExpirationPolicy>() {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            protected ExpirationPolicy load() {
-                return getGWC().getExpirationPolicy("LFU");
-            }
-        };
-        IModel<ExpirationPolicy> lruModel = new LoadableDetachableModel<ExpirationPolicy>() {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            protected ExpirationPolicy load() {
-                return getGWC().getExpirationPolicy("LRU");
-            }
-        };
-
+        IModel<ExpirationPolicy> lfuModel = new Model<ExpirationPolicy>(ExpirationPolicy.LFU);
+        IModel<ExpirationPolicy> lruModel = new Model<ExpirationPolicy>(ExpirationPolicy.LRU);
+        
         Radio<ExpirationPolicy> globalQuotaPolicyLFU;
         Radio<ExpirationPolicy> globalQuotaPolicyLRU;
         globalQuotaPolicyLFU = new Radio<ExpirationPolicy>("globalQuotaPolicyLFU", lfuModel);

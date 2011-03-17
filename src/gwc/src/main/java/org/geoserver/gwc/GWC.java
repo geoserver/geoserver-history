@@ -27,7 +27,6 @@ import org.geowebcache.GeoWebCacheException;
 import org.geowebcache.conveyor.ConveyorTile;
 import org.geowebcache.diskquota.DiskQuotaConfig;
 import org.geowebcache.diskquota.DiskQuotaMonitor;
-import org.geowebcache.diskquota.ExpirationPolicy;
 import org.geowebcache.diskquota.storage.BDBQuotaStore;
 import org.geowebcache.diskquota.storage.Quota;
 import org.geowebcache.grid.BoundingBox;
@@ -439,12 +438,6 @@ public class GWC implements DisposableBean, ApplicationContextAware {
      */
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.appContext = applicationContext;
-    }
-
-    public ExpirationPolicy getExpirationPolicy(final String expirationPoliciName) {
-        DiskQuotaMonitor monitor = getDiskQuotaMonitor();
-        ExpirationPolicy policy = monitor.findExpirationPolicy(expirationPoliciName);
-        return policy;
     }
 
     public Quota getGlobalQuota() {

@@ -14,6 +14,7 @@
     <constructor-arg ref="gwcTLDispatcher" />
     <constructor-arg ref="gwcStorageBroker" />
     <constructor-arg ref="DiskQuotaStore" />
+    <constructor-arg ref="gwcCacheCleaner" />
   </bean>
 
   <bean id="gwcTilePageCalculator" class="org.geowebcache.diskquota.storage.TilePageCalculator">
@@ -25,18 +26,14 @@
     <constructor-arg ref="gwcTilePageCalculator" />
   </bean>
 
-  <bean id="ExpirationPolicyLRU" class="org.geowebcache.diskquota.lru.ExpirationPolicyLRU">
+  <bean id="gwcCacheCleaner" class="org.geowebcache.diskquota.CacheCleaner">
     <constructor-arg ref="gwcTileBreeder" />
     <constructor-arg ref="DiskQuotaStore" />
   </bean>
 
-  <bean id="ExpirationPolicyLFU" class="org.geowebcache.diskquota.lfu.ExpirationPolicyLFU">
-    <constructor-arg ref="gwcTileBreeder" />
-    <constructor-arg ref="DiskQuotaStore" />
-  </bean>
-
-  <!-- bean id="mockWMSSource" class="org.geowebcache.diskquota.MockWMSLayerSource"> 
-    <description>REMOVE THIS, it's a fake WMS source for all layers!!!</description> <constructor-arg ref="gwcTLDispatcher" /> 
+  <!--bean id="mockWMSSource" class="org.geowebcache.util.MockWMSLayerSource">
+    <description>REMOVE THIS, it's a fake WMS source for all layers!!!</description>
+    <constructor-arg ref="gwcTLDispatcher" />
   </bean-->
 
 </beans>
