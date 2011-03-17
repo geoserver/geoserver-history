@@ -91,7 +91,8 @@ public class GWCSettingsPage extends GeoServerSecuredPage {
         StorageUnit bestRepresentedUnit = StorageUnit.bestFit(bytes);
         BigDecimal transformedQuota = StorageUnit.B.convertTo(new BigDecimal(bytes),
                 bestRepresentedUnit);
-        final IModel<BigDecimal> configQuotaValueModel = new Model<BigDecimal>(transformedQuota);
+        final IModel<Double> configQuotaValueModel = new Model<Double>(
+                transformedQuota.doubleValue());
         final IModel<StorageUnit> configQuotaUnitModel = new Model<StorageUnit>(bestRepresentedUnit);
 
         form.add(new DiskQuotaConfigPanel("diskQuotaConfigPanel", form, diskQuotaModel, gwcModel,
@@ -109,8 +110,16 @@ public class GWCSettingsPage extends GeoServerSecuredPage {
                 // DiskQuotaConfig diskQuotaConfig = diskQuotaModel.getObject();
                 GWC gwc = getGWC();
                 StorageUnit chosenUnit = configQuotaUnitModel.getObject();
-                BigDecimal chosenQuota = configQuotaValueModel.getObject();
-                if (chosenQuota.compareTo(BigDecimal.ZERO) < 0) {
+                // REVISIT: it seems Wicket is sending back a plain string instead of a BigDecimal
+                String chosenQuotaStr = String.valueOf(configQuotaValueModel.getObject());
+                Double chosenQuota;
+                try {
+                    chosenQuota = Double.valueOf(chosenQuotaStr);
+                } catch (NumberFormatException e) {
+                    form.error(chosenQuotaStr + " is not a valid floating point number");//TODO: localize
+                    return;
+                }
+                if (chosenQuota.doubleValue() <= 0D) {
                     form.error("Quota has to be > 0");
                     return;
                 }

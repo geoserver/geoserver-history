@@ -41,7 +41,7 @@ public class DiskQuotaConfigPanel extends Panel {
     @SuppressWarnings({ "rawtypes" })
     public DiskQuotaConfigPanel(final String id, final Form form,
             final IModel<DiskQuotaConfig> diskQuotaConfigModel, final IModel<GWC> gwcModel,
-            IModel<BigDecimal> configQuotaValueModel, IModel<StorageUnit> configQuotaUnitModel) {
+            IModel<Double> configQuotaValueModel, IModel<StorageUnit> configQuotaUnitModel) {
 
         super(id);
         this.gwcModel = gwcModel;
@@ -59,7 +59,7 @@ public class DiskQuotaConfigPanel extends Panel {
     }
 
     private void addGlobalQuotaConfig(final IModel<DiskQuotaConfig> diskQuotaModel,
-            IModel<BigDecimal> quotaValueModel, IModel<StorageUnit> unitModel) {
+            IModel<Double> quotaValueModel, IModel<StorageUnit> unitModel) {
 
         final IModel<Quota> globalQuotaModel = new LoadableDetachableModel<Quota>() {
             private static final long serialVersionUID = 1L;
@@ -84,7 +84,7 @@ public class DiskQuotaConfigPanel extends Panel {
                 "GWCSettingsPage.usedQuotaMessage", null, progressMessageParams);
         addGlobalQuotaStatusBar(globalQuotaModel, globalUsedQuotaModel, progressMessageModel);
 
-        TextField<BigDecimal> quotaValue = new TextField<BigDecimal>("globalQuota", quotaValueModel);
+        TextField<Double> quotaValue = new TextField<Double>("globalQuota", quotaValueModel);
         quotaValue.setRequired(true);
         add(quotaValue);
 

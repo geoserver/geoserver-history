@@ -203,9 +203,13 @@ public class GWC implements DisposableBean, ApplicationContextAware {
     }
 
     public synchronized void removeLayer(String prefixedName) {
-        truncate(prefixedName);
         config.removeLayer(prefixedName);
         tld.remove(prefixedName);
+        try {
+            storageBroker.delete(prefixedName);
+        } catch (StorageException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void reload() {
