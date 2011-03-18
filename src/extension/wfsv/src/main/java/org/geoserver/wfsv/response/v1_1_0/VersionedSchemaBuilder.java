@@ -4,6 +4,8 @@ import static org.geoserver.ows.util.ResponseUtils.params;
 
 import org.eclipse.xsd.XSDSchema;
 import org.geoserver.config.GeoServer;
+import org.geoserver.wfs.GMLInfo;
+import org.geoserver.wfs.WFSInfo;
 import org.geoserver.wfs.xml.FeatureTypeSchemaBuilder;
 import org.geoserver.wfs.xml.GML3Profile;
 import org.geoserver.wfsv.xml.v1_1_0.WFSVConfiguration;
@@ -38,6 +40,11 @@ public class VersionedSchemaBuilder extends FeatureTypeSchemaBuilder {
         }
 
         return gml3Schema;
+    }
+    
+    @Override
+    protected GMLInfo getGMLConfig(WFSInfo wfs) {
+        return wfs.getGML().get(WFSInfo.Version.V_11);
     }
     
     protected boolean filterAttributeType( AttributeDescriptor attribute ) {
