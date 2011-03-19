@@ -5,12 +5,12 @@
   <parent>
     <groupId>org.geoserver</groupId>
     <artifactId>web</artifactId>
-    <version>2.0.3-SNAPSHOT</version>
+    <version>2.0.3</version>
   </parent>
   <groupId>org.geoserver.web</groupId>
   <artifactId>web-app</artifactId>
   <packaging>jar</packaging>
-  <version>2.0.3-SNAPSHOT</version>
+  <version>2.0.3</version>
   <name>GeoServer Web Application</name>
   <dependencies>
     <dependency>
@@ -247,7 +247,7 @@
         <dependency>
           <groupId>org.geoserver.extension</groupId>
           <artifactId>arcsde</artifactId> 
-          <version>2.0.3-SNAPSHOT</version>
+          <version>2.0.3</version>
         </dependency>
       </dependencies>
     </profile>
@@ -276,7 +276,7 @@
         <dependency>
           <groupId>org.geoserver.extension</groupId>
           <artifactId>sqlserver</artifactId> 
-          <version>2.0.3-SNAPSHOT</version>
+          <version>2.0.3</version>
         </dependency>
       </dependencies>
     </profile>
@@ -286,7 +286,7 @@
         <dependency>
           <groupId>org.geoserver.extension</groupId>
           <artifactId>oracle</artifactId> 
-          <version>2.0.3-SNAPSHOT</version>
+          <version>2.0.3</version>
         </dependency>
       </dependencies>
     </profile>
@@ -296,7 +296,7 @@
         <dependency>
           <groupId>org.geoserver.extension</groupId>
           <artifactId>mysql</artifactId> 
-          <version>2.0.3-SNAPSHOT</version>
+          <version>2.0.3</version>
         </dependency>
       </dependencies>
     </profile>
