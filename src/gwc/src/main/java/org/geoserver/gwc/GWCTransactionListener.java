@@ -22,6 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
 import net.opengis.wfs.DeleteElementType;
@@ -34,6 +35,7 @@ import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.NamespaceInfo;
+import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.wfs.TransactionEvent;
 import org.geoserver.wfs.TransactionEventType;
 import org.geoserver.wfs.TransactionPlugin;
@@ -50,6 +52,9 @@ import org.springframework.util.Assert;
  * <p>
  * A Spring bean singleton of this class needs to be declared in order for GeoServer transactions to
  * pick it up automatically and forward transaction events to it.
+ * </p>
+ * <p>
+ * TODO: upon deletion, only truncate if feature count > 0
  * </p>
  * 
  * @author Arne Kepp
@@ -275,15 +280,26 @@ public class GWCTransactionListener implements TransactionPlugin {
     private String getQualifiedLayerName(final TransactionEvent event) {
         final String layerName;
 
-        QName name = event.getLayerName();
-        String namespaceURI = name.getNamespaceURI();
-        NamespaceInfo namespaceInfo = catalog.getNamespaceByURI(namespaceURI);
-        if (namespaceInfo == null) {
-            log.info("Can't find namespace info for layer " + name + ". Cache not truncated");
-            throw new NoSuchElementException("Layer not found: " + name);
+        final QName name = event.getLayerName();
+        final String namespaceURI = name.getNamespaceURI();
+        final String localName = name.getLocalPart();
+        if (!XMLConstants.NULL_NS_URI.equals(namespaceURI)) {
+            NamespaceInfo namespaceInfo = catalog.getNamespaceByURI(namespaceURI);
+            if (namespaceInfo == null) {
+                log.info("Can't find namespace info for layer " + name + ". Cache not truncated");
+                throw new NoSuchElementException("Layer not found: " + name);
+            }
+            String prefix = namespaceInfo.getPrefix();
+            layerName = prefix + ":" + localName;
+        } else {
+            LayerInfo layerInfo = catalog.getLayerByName(localName);
+            if(layerInfo == null){
+                log.info("Can't find layer " + localName + ". Cache not truncated");
+                throw new NoSuchElementException("Layer not found: " + localName);
+            }
+            ResourceInfo resource = layerInfo.getResource();
+            layerName = resource.getPrefixedName();
         }
-        String prefix = namespaceInfo.getPrefix();
-        layerName = prefix + ":" + name.getLocalPart();
 
         return layerName;
     }
