@@ -597,12 +597,10 @@ public class KMLUtils {
                     // getting rule
                     Rule r = ftsRules[j];
 
-                    if (KMLUtils.isWithInScale(r, 1)) {
-                        if (r.hasElseFilter()) {
-                            result[ELSE_RULES].add(r);
-                        } else {
-                            result[RULES].add(r);
-                        }
+                    if (r.hasElseFilter()) {
+                        result[ELSE_RULES].add(r);
+                    } else {
+                        result[RULES].add(r);
                     }
                 }
             }
@@ -638,8 +636,8 @@ public class KMLUtils {
      * @return
      */
     private static Filter summarizeRuleFilters(List[] rules, double scaleDenominator) {
-        if (rules[RULES].size() == 0 || rules[ELSE_RULES].size() > 0)
-            return Filter.INCLUDE;
+        if (rules[RULES].size() == 0 && rules[ELSE_RULES].size() > 0)
+            return Filter.EXCLUDE;
 
         List filters = new ArrayList();
         for (Iterator it = rules[RULES].iterator(); it.hasNext();) {

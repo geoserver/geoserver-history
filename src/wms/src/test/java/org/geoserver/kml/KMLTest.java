@@ -29,6 +29,7 @@ public class KMLTest extends WMSTestSupport {
     protected void populateDataDirectory(MockData dataDirectory) throws Exception {
         super.populateDataDirectory(dataDirectory);
         dataDirectory.addStyle("notthere", KMLTest.class.getResource("notthere.sld"));
+        dataDirectory.addStyle("scaleRange", KMLTest.class.getResource("scaleRange.sld"));
     }
     
     public void testVector() throws Exception {
@@ -38,6 +39,19 @@ public class KMLTest extends WMSTestSupport {
             "&layers=" + MockData.BASIC_POLYGONS.getPrefix() + ":" + MockData.BASIC_POLYGONS.getLocalPart() +
             "&styles=" + MockData.BASIC_POLYGONS.getLocalPart() + 
             "&height=1024&width=1024&bbox=-180,-90,180,90&srs=EPSG:4326" 
+        );
+        
+        assertEquals( getFeatureSource(MockData.BASIC_POLYGONS).getFeatures().size(), 
+            doc.getElementsByTagName("Placemark").getLength()
+        );
+    }
+    
+    public void testVectorScaleRange() throws Exception {
+        Document doc = getAsDOM(
+            "wms?request=getmap&service=wms&version=1.1.1" + 
+            "&format=" + KMLMapOutputFormat.MIME_TYPE + 
+            "&layers=" + MockData.BASIC_POLYGONS.getPrefix() + ":" + MockData.BASIC_POLYGONS.getLocalPart() +
+            "&styles=scaleRange&height=1024&width=1024&bbox=-180,-90,180,90&srs=EPSG:4326" 
         );
         
         assertEquals( getFeatureSource(MockData.BASIC_POLYGONS).getFeatures().size(), 
