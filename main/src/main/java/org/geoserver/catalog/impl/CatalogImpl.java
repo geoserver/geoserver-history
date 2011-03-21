@@ -12,7 +12,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -20,17 +19,17 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.geoserver.catalog.Catalog;
-import org.geoserver.catalog.CatalogFacade;
 import org.geoserver.catalog.CatalogException;
+import org.geoserver.catalog.CatalogFacade;
 import org.geoserver.catalog.CatalogFactory;
 import org.geoserver.catalog.CatalogInfo;
+import org.geoserver.catalog.CatalogValidator;
 import org.geoserver.catalog.CatalogVisitor;
 import org.geoserver.catalog.CoverageDimensionInfo;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
-import org.geoserver.catalog.CatalogValidator;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.MapInfo;
@@ -192,7 +191,6 @@ public class CatalogImpl implements Catalog {
         }
         validate(store, false);
         facade.save(store);
-        saved(store);
     }
 
     public <T extends StoreInfo> T detach(T store) {
@@ -402,7 +400,6 @@ public class CatalogImpl implements Catalog {
     public void save(ResourceInfo resource) {
         validate(resource,false);
         facade.save(resource);
-        saved(resource);
     }
 
     public <T extends ResourceInfo> T detach(T resource) {
@@ -654,7 +651,6 @@ public class CatalogImpl implements Catalog {
     public void save(LayerInfo layer) {
         validate( layer, false );
         facade.save(layer);
-        saved(layer);
     }
     
     public LayerInfo detach(LayerInfo layer) {
@@ -773,7 +769,6 @@ public class CatalogImpl implements Catalog {
     public void save(LayerGroupInfo layerGroup) {
         validate(layerGroup,false);
         facade.save(layerGroup);
-        saved(layerGroup);
     }
     
     public LayerGroupInfo detach(LayerGroupInfo layerGroup) {
@@ -804,7 +799,6 @@ public class CatalogImpl implements Catalog {
 
     public void save(MapInfo map) {
         facade.save(map);
-        saved(map);
     }
     
     public MapInfo detach(MapInfo map) {
@@ -894,7 +888,6 @@ public class CatalogImpl implements Catalog {
         validate(namespace,false);
         
         facade.save(namespace);
-        saved(namespace);
     }
     
     public NamespaceInfo detach(NamespaceInfo namespace) {
@@ -983,7 +976,6 @@ public class CatalogImpl implements Catalog {
         validate(workspace,false);
         
         facade.save(workspace);
-        saved(workspace);
     }
     
     public WorkspaceInfo detach(WorkspaceInfo workspace) {
@@ -1069,7 +1061,6 @@ public class CatalogImpl implements Catalog {
     public void save(StyleInfo style) {
         validate(style,false);
         facade.save(style);
-        saved(style);
     }
     
     public StyleInfo detach(StyleInfo style) {
@@ -1184,10 +1175,6 @@ public class CatalogImpl implements Catalog {
         if (toThrow != null) {
             throw toThrow;
         }
-    }
-    
-    protected void saved(CatalogInfo info) {
-        firePostModified(info);
     }
     
     public static Object unwrap(Object obj) {
