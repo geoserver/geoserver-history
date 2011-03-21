@@ -158,6 +158,12 @@
       </modules>
     </profile>
 
+    <profile>
+      <id>querylayer</id>
+      <modules>
+        <module>querylayer</module>
+      </modules>
+    </profile>
 
     <!-- allExtensions profile, includes all modules -->
     <profile>
@@ -181,6 +187,7 @@
         <module>imagemosaic-jdbc</module>
         <module>control-flow</module>
         <module>wps</module>
+        <module>querylayer</module>
       </modules>
     </profile>
 
@@ -207,6 +214,7 @@
         <module>imagemosaic-jdbc</module>
         <module>control-flow</module>
         <module>wps</module>
+        <module>querylayer</module>
       </modules>
     </profile>
 
