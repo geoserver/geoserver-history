@@ -14,6 +14,7 @@
     <constructor-arg ref="gwcTileBreeder" />
     <constructor-arg ref="gwcCatalogConfiguration" />
     <constructor-arg ref="geoServer" />
+    <constructor-arg ref="DiskQuotaStore"/>
   </bean>
 
   <bean id="gwcWMSExtendedCapabilitiesProvider" class="org.geoserver.gwc.wms.CachingExtendedCapabilitiesProvider">
