@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.Vector;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -30,6 +31,8 @@ import javax.servlet.ServletContextListener;
 
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.LogManager;
+import org.geoserver.config.impl.CoverageAccessInfoImpl;
+import org.geoserver.config.impl.CoverageAccessInfoImpl;
 import org.geoserver.logging.LoggingUtils;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geotools.data.DataAccessFinder;
@@ -113,7 +116,10 @@ public class GeoserverInitStartupListener implements ServletContextListener {
         Hints.putSystemDefault(Hints.STYLE_FACTORY, CommonFactoryFinder.getStyleFactory(null));
         Hints.putSystemDefault(Hints.FEATURE_FACTORY, CommonFactoryFinder.getFeatureFactory(null));
         
-        final ThreadPoolExecutor executor = new ThreadPoolExecutor(5, 5, 30000, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
+        // initialize the default executor service
+        final ThreadPoolExecutor executor = new ThreadPoolExecutor(CoverageAccessInfoImpl.DEFAULT_CorePoolSize, 
+                CoverageAccessInfoImpl.DEFAULT_MaxPoolSize, CoverageAccessInfoImpl.DEFAULT_KeepAliveTime, 
+                TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
         Hints.putSystemDefault(Hints.EXECUTOR_SERVICE, executor);
     }
     
@@ -193,6 +199,20 @@ public class GeoserverInitStartupListener implements ServletContextListener {
             LOGGER.info("Shut down GT  SPI ");
             
             
+            LOGGER.info("Shut down coverage thread pool ");
+            Object o =Hints.getSystemDefault(Hints.EXECUTOR_SERVICE);
+            if(o !=null && o instanceof ExecutorService){
+                final ThreadPoolExecutor executor = (ThreadPoolExecutor) o;
+                try{
+                    executor.shutdown();
+                } finally {
+                    try { 
+                        executor.shutdownNow();
+                    } finally {
+                        
+                    }
+                }
+            }
             
             // unload everything that JAI ImageIO can still refer to
             // We need to store them and unregister later to avoid concurrent modification exceptions
