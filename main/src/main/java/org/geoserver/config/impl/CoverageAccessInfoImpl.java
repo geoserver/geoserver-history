@@ -5,9 +5,7 @@
 package org.geoserver.config.impl;
 
 import java.io.Serializable;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 import org.geoserver.config.CoverageAccessInfo;
 
@@ -17,7 +15,7 @@ public class CoverageAccessInfoImpl implements Serializable, CoverageAccessInfo 
 
     transient ThreadPoolExecutor threadPoolExecutor;
     
-    public static final int DEFAULT_MaxPoolSize = 10;
+    public static final int DEFAULT_MaxPoolSize = 5;
     int maxPoolSize = DEFAULT_MaxPoolSize;
 
     public static final int DEFAULT_CorePoolSize = 5;
@@ -30,12 +28,7 @@ public class CoverageAccessInfoImpl implements Serializable, CoverageAccessInfo 
     QueueType queueType = DEFAULT_QUEUE_TYPE;
 
     public CoverageAccessInfoImpl(){
-        threadPoolExecutor = new ThreadPoolExecutor(
-                DEFAULT_CorePoolSize, 
-                DEFAULT_MaxPoolSize, 
-                DEFAULT_KeepAliveTime, 
-                TimeUnit.MILLISECONDS, 
-                new LinkedBlockingQueue<Runnable>());
+        threadPoolExecutor = null;
     }
     
     public ThreadPoolExecutor getThreadPoolExecutor() {
@@ -79,9 +72,5 @@ public class CoverageAccessInfoImpl implements Serializable, CoverageAccessInfo 
     }
     
     public void dispose(){
-        if (threadPoolExecutor != null){
-            threadPoolExecutor.shutdown();
-            threadPoolExecutor.shutdownNow();
-        }
     }
 }
