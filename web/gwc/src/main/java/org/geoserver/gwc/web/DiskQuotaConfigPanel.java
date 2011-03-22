@@ -1,6 +1,7 @@
 package org.geoserver.gwc.web;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -27,8 +28,8 @@ import org.geoserver.gwc.GWC;
 import org.geotools.util.logging.Logging;
 import org.geowebcache.diskquota.DiskQuotaConfig;
 import org.geowebcache.diskquota.ExpirationPolicy;
-import org.geowebcache.diskquota.Quota;
-import org.geowebcache.diskquota.StorageUnit;
+import org.geowebcache.diskquota.storage.Quota;
+import org.geowebcache.diskquota.storage.StorageUnit;
 
 public class DiskQuotaConfigPanel extends Panel {
     private static final long serialVersionUID = 1L;
@@ -39,35 +40,33 @@ public class DiskQuotaConfigPanel extends Panel {
 
     @SuppressWarnings({ "rawtypes" })
     public DiskQuotaConfigPanel(final String id, final Form form,
-            final IModel<DiskQuotaConfig> diskQuotaModel, final IModel<GWC> gwcModel) {
+            final IModel<DiskQuotaConfig> diskQuotaConfigModel, final IModel<GWC> gwcModel,
+            IModel<Double> configQuotaValueModel, IModel<StorageUnit> configQuotaUnitModel) {
+
         super(id);
         this.gwcModel = gwcModel;
 
-        addDiskQuotaIntegrationEnablement(diskQuotaModel);
+        addDiskQuotaIntegrationEnablement(diskQuotaConfigModel);
 
-        addDiskBlockSizeConfig(diskQuotaModel);
+        addDiskBlockSizeConfig(diskQuotaConfigModel);
 
-        addCleanUpFrequencyConfig(diskQuotaModel);
+        addCleanUpFrequencyConfig(diskQuotaConfigModel);
 
-        addGlobalQuotaConfig(form, diskQuotaModel);
+        addGlobalQuotaConfig(diskQuotaConfigModel, configQuotaValueModel, configQuotaUnitModel);
 
-        addGlobalExpirationPolicyConfig(diskQuotaModel);
+        addGlobalExpirationPolicyConfig(diskQuotaConfigModel);
+
     }
 
-    @SuppressWarnings("rawtypes")
-    private void addGlobalQuotaConfig(final Form form, final IModel<DiskQuotaConfig> diskQuotaModel) {
-        final DiskQuotaConfig diskQuotaConfig = diskQuotaModel.getObject();
-        if (diskQuotaConfig.getGlobalQuota() == null) {
-            LOGGER.info("There's no GWC global disk quota configured, setting a default of 100MiB");
-            diskQuotaConfig.setGlobalQuota(new Quota(100, StorageUnit.MiB));
-        }
+    private void addGlobalQuotaConfig(final IModel<DiskQuotaConfig> diskQuotaModel,
+            IModel<Double> quotaValueModel, IModel<StorageUnit> unitModel) {
 
         final IModel<Quota> globalQuotaModel = new LoadableDetachableModel<Quota>() {
             private static final long serialVersionUID = 1L;
 
             @Override
             protected Quota load() {
-                return getGWC().getDisQuotaConfig().getGlobalQuota();
+                return getGWC().getGlobalQuota();
             }
         };
         final IModel<Quota> globalUsedQuotaModel = new LoadableDetachableModel<Quota>() {
@@ -75,25 +74,20 @@ public class DiskQuotaConfigPanel extends Panel {
 
             @Override
             protected Quota load() {
-                return getGWC().getDisQuotaConfig().getGlobalUsedQuota();
+                return getGWC().getGlobalUsedQuota();
             }
         };
 
-        addGlobalQuotaStatusBar(form, globalQuotaModel, globalUsedQuotaModel);
-
-        Object[] params = { globalUsedQuotaModel.getObject().toNiceString(),
+        Object[] progressMessageParams = { globalUsedQuotaModel.getObject().toNiceString(),
                 globalQuotaModel.getObject().toNiceString() };
-        IModel<String> usageModel = new StringResourceModel("GWCSettingsPage.usedQuotaMessage",
-                null, params);
-        add(new Label("globalQuotaLabel", usageModel));
+        IModel<String> progressMessageModel = new StringResourceModel(
+                "GWCSettingsPage.usedQuotaMessage", null, progressMessageParams);
+        addGlobalQuotaStatusBar(globalQuotaModel, globalUsedQuotaModel, progressMessageModel);
 
-        IModel<BigDecimal> quotaValueModel;
-        quotaValueModel = new PropertyModel<BigDecimal>(globalQuotaModel, "value");
-        TextField<BigDecimal> quotaValue = new TextField<BigDecimal>("globalQuota", quotaValueModel);
+        TextField<Double> quotaValue = new TextField<Double>("globalQuota", quotaValueModel);
         quotaValue.setRequired(true);
         add(quotaValue);
 
-        IModel<StorageUnit> unitModel = new PropertyModel<StorageUnit>(globalQuotaModel, "units");
         List<? extends StorageUnit> units = Arrays.asList(StorageUnit.MiB, StorageUnit.GiB,
                 StorageUnit.TiB);
         DropDownChoice<StorageUnit> quotaUnitChoice;
@@ -103,30 +97,16 @@ public class DiskQuotaConfigPanel extends Panel {
 
     private void addGlobalExpirationPolicyConfig(final IModel<DiskQuotaConfig> diskQuotaModel) {
         IModel<ExpirationPolicy> globalQuotaPolicyModel = new PropertyModel<ExpirationPolicy>(
-                diskQuotaModel, "globalExpirationPolicy");
+                diskQuotaModel, "globalExpirationPolicyName");
 
         RadioGroup<ExpirationPolicy> globalQuotaPolicy;
         globalQuotaPolicy = new RadioGroup<ExpirationPolicy>("globalQuotaExpirationPolicy",
                 globalQuotaPolicyModel);
         add(globalQuotaPolicy);
 
-        IModel<ExpirationPolicy> lfuModel = new LoadableDetachableModel<ExpirationPolicy>() {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            protected ExpirationPolicy load() {
-                return getGWC().getExpirationPolicy("LFU");
-            }
-        };
-        IModel<ExpirationPolicy> lruModel = new LoadableDetachableModel<ExpirationPolicy>() {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            protected ExpirationPolicy load() {
-                return getGWC().getExpirationPolicy("LRU");
-            }
-        };
-
+        IModel<ExpirationPolicy> lfuModel = new Model<ExpirationPolicy>(ExpirationPolicy.LFU);
+        IModel<ExpirationPolicy> lruModel = new Model<ExpirationPolicy>(ExpirationPolicy.LRU);
+        
         Radio<ExpirationPolicy> globalQuotaPolicyLFU;
         Radio<ExpirationPolicy> globalQuotaPolicyLRU;
         globalQuotaPolicyLFU = new Radio<ExpirationPolicy>("globalQuotaPolicyLFU", lfuModel);
@@ -202,27 +182,29 @@ public class DiskQuotaConfigPanel extends Panel {
         add(diskQuotaIntegration);
     }
 
-    @SuppressWarnings("rawtypes")
-    private void addGlobalQuotaStatusBar(final Form form, final IModel<Quota> globalQuotaModel,
-            final IModel<Quota> globalUsedQuotaModel) {
+    private void addGlobalQuotaStatusBar(final IModel<Quota> globalQuotaModel,
+            final IModel<Quota> globalUsedQuotaModel, IModel<String> progressMessageModel) {
 
         Quota limit = globalQuotaModel.getObject();
         Quota used = globalUsedQuotaModel.getObject();
 
-        BigDecimal usedValue;
-        BigDecimal limitValue;
-        if (limit.min(used) == limit) {// used > limit?, use used quota units
-            limitValue = limit.getUnits().convertTo(limit.getValue(), used.getUnits());
-            usedValue = used.getValue();
-        } else {
-            limitValue = limit.getValue();
-            usedValue = used.getUnits().convertTo(used.getValue(), limit.getUnits());
-        }
+        BigInteger limitValue = limit.getBytes();
+        BigInteger usedValue = used.getBytes();
 
-        final IModel<Number> usedModel = new Model<Number>(usedValue);
-        final IModel<Number> limitModel = new Model<Number>(limitValue);
+        StorageUnit bestUnitForLimit = StorageUnit.bestFit(limitValue);
+        StorageUnit bestUnitForUsed = StorageUnit.bestFit(usedValue);
 
-        StatusBar statusBar = new StatusBar("globalQuotaProgressBar", limitModel, usedModel);
+        StorageUnit biggerUnit = bestUnitForLimit.compareTo(bestUnitForUsed) > 0 ? bestUnitForLimit
+                : bestUnitForUsed;
+
+        BigDecimal showLimit = StorageUnit.B.convertTo(new BigDecimal(limitValue), biggerUnit);
+        BigDecimal showUsed = StorageUnit.B.convertTo(new BigDecimal(usedValue), biggerUnit);
+
+        final IModel<Number> limitModel = new Model<Number>(showLimit);
+        final IModel<Number> usedModel = new Model<Number>(showUsed);
+
+        StatusBar statusBar = new StatusBar("globalQuotaProgressBar", limitModel, usedModel,
+                progressMessageModel);
 
         add(statusBar);
     }

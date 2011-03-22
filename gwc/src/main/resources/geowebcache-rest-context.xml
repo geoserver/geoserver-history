@@ -7,6 +7,7 @@
 
   <!-- Restlets -->
   <bean id="gwcSeedRestlet" class="org.geowebcache.rest.seed.SeedRestlet">
+    <property name="xmlConfig" ref="gwcXmlConfig"/>
     <property name="tileBreeder" ref="gwcTileBreeder"/>
   </bean>
 
@@ -29,8 +30,8 @@
   <bean id="gwcByteStreamerRestlet" class="org.geowebcache.rest.webresources.ByteStreamerRestlet" />
 
   <!-- REST Dispatcher. Differs from the standalone version in that the entries have the /rest prefix -->
-  <bean id="gwcRestDispatcher" class="org.geowebcache.rest.RESTDispatcher">
-    <constructor-arg type="java.util.Map">
+   <bean id="gwcRestMappings" class="org.geowebcache.rest.RESTMapping">
+    <property name="routes">
       <map>
         <entry>
           <key><value>/rest/seed/{layer}.{extension}</value></key>
@@ -61,8 +62,10 @@
           <ref bean="gwcByteStreamerRestlet" />
         </entry>
       </map>
-    </constructor-arg>
+    </property>
   </bean>
+
+  <bean id="gwcRestDispatcher" class="org.geowebcache.rest.RESTDispatcher"/>
 
   <!--
     This mappings are different from the standalone gwc ones in that they prepend the /gwc prefix to the context so it

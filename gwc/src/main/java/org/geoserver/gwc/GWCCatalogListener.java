@@ -99,6 +99,7 @@ public class GWCCatalogListener implements CatalogListener {
                 if (defaultStyle != null && defaultStyle.getName().equals(styleName)) {
                     String prefixedName = li.getResource().getPrefixedName();
                     layerNameList.add(prefixedName);
+                    //TODO: truncate/delete only the tileset associated to the style
                     gwc.truncate(prefixedName);
                 }
             }

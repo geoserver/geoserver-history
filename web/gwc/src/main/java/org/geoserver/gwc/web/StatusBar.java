@@ -1,11 +1,14 @@
 package org.geoserver.gwc.web;
 
 import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.ajax.AjaxSelfUpdatingTimerBehavior;
 import org.apache.wicket.behavior.HeaderContributor;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.util.time.Duration;
 
 public class StatusBar extends Panel {
 
@@ -13,8 +16,9 @@ public class StatusBar extends Panel {
 
     @SuppressWarnings("deprecation")
     public StatusBar(final String id, final IModel<Number> limitModel,
-            final IModel<Number> progressModel) {
+            final IModel<Number> progressModel, final IModel<String> progressMessageModel) {
         super(id);
+        setOutputMarkupId(true);
         add(HeaderContributor.forCss(StatusBar.class, "statusbar.css"));
 
         WebMarkupContainer usageBar = new WebMarkupContainer("statusBarProgress");
@@ -46,6 +50,10 @@ public class StatusBar extends Panel {
 
         add(usageBar);
         add(excessBar);
+        add(new Label("progressLabel", progressMessageModel));
+
+        //TODO:make the argument models truly dynamic
+        //add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(5)));
     }
 
 }
