@@ -18,6 +18,7 @@ import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.config.GeoServerInitializer;
 import org.geoserver.config.impl.CoverageAccessInfoImpl;
+import org.geoserver.platform.ExtensionPriority;
 import org.geotools.factory.GeoTools;
 import org.geotools.factory.Hints;
 
@@ -27,9 +28,12 @@ import org.geotools.factory.Hints;
  * @author Daniele Romagnoli, GeoSolutions
  * 
  */
-public class CoverageAccessInitializer implements GeoServerInitializer {
+public class CoverageAccessInitializer implements GeoServerInitializer, ExtensionPriority {
+    
+    GeoServer gs;
 
     public void initialize(GeoServer geoServer) throws Exception {
+        this.gs = geoServer;
         final GeoServerInfo geoserverInfo = geoServer.getGlobal();
         CoverageAccessInfo coverageAccess = geoserverInfo.getCoverageAccess();
         if (coverageAccess == null){
@@ -45,11 +49,16 @@ public class CoverageAccessInitializer implements GeoServerInitializer {
                     List<Object> newValues) {
                 initCoverage(global.getCoverageAccess());
             }
+            
+            @Override
+            public void handlePostGlobalChange(GeoServerInfo global) {
+                initCoverage(global.getCoverageAccess());
+            }
         });
     }
 
     void initCoverage(CoverageAccessInfo coverageAccess) {
-        if (coverageAccess != null){
+        if (coverageAccess != null) {
             ThreadPoolExecutor executor = coverageAccess.getThreadPoolExecutor();
             
             //First initialization
@@ -99,6 +108,13 @@ public class CoverageAccessInitializer implements GeoServerInitializer {
                     coverageAccess.setThreadPoolExecutor(executor);
                 }
             }
+
+            // set the executor in the resource pool
+            gs.getCatalog().getResourcePool().setCoverageExecutor(executor);    
         } 
+    }
+
+    public int getPriority() {
+        return 0;
     }
 }
