@@ -1,3 +1,20 @@
+GeoServer 2.1-RC3 (March 22, 2011)
+----------------------------------
+
+The third (and hopefully) final release candidate for 2.1. This release includes
+some good bug fixes and some new features and improvements:
+
+  * querylayer extension for cross layer querying
+  * GML3 support in georss output
+  * Raster to vector conversion process added to WPS
+  * WMS decorations included in PDF output 
+
+And much more. The entire changelog is available here:
+
+ http://jira.codehaus.org/secure/ReleaseNote.jspa?projectId=10311&version=17257
+
+This release is based on GeoTools 2.7.0 and GeoWebCache 1.2.5-SNAPSHOT (tag = 1.2.5-GS-2.1-RC3).
+
 GeoServer 2.1-RC1 (February 18, 2011)
 -------------------------------------
 
