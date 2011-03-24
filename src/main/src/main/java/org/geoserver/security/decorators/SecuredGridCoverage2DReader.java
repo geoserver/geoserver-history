@@ -17,11 +17,15 @@ import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.coverage.processing.CoverageProcessor;
 import org.geotools.coverage.processing.operation.Crop;
 import org.geotools.factory.Hints;
+import org.geotools.geometry.jts.JTS;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.opengis.coverage.grid.Format;
 import org.opengis.parameter.GeneralParameterDescriptor;
 import org.opengis.parameter.GeneralParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
 
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.MultiPolygon;
 
 /**
@@ -102,11 +106,18 @@ public class SecuredGridCoverage2DReader extends DecoratingGridCoverage2DReader 
 
         // crop if necessary
         if (rasterFilter != null) {
-            final ParameterValueGroup param = (ParameterValueGroup) cropParams.clone();
-            param.parameter("source").setValue(grid);
-            param.parameter("ROI").setValue(rasterFilter);
-            grid = (GridCoverage2D) coverageCropFactory.doOperation(param, hints);
+            
+            Geometry coverageBounds = JTS.toGeometry((Envelope) new ReferencedEnvelope(grid.getEnvelope2D()));
+            if(coverageBounds.intersects(rasterFilter)) {
+                final ParameterValueGroup param = (ParameterValueGroup) cropParams.clone();
+                param.parameter("source").setValue(grid);
+                param.parameter("ROI").setValue(rasterFilter);
+                grid = (GridCoverage2D) coverageCropFactory.doOperation(param, hints);
+            } else {
+                return null;
+            }
         }
+            
 
         return grid;
     }

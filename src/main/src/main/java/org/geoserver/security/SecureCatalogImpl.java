@@ -487,7 +487,7 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
         // handle the modes that do not require wrapping
         if(policy.level == AccessLevel.HIDDEN)
             return null;
-        else if(policy.level == AccessLevel.READ_WRITE)
+        else if(policy.level == AccessLevel.READ_WRITE && policy.getLimits() == null)
             return layer;
 
         // otherwise we are in a mixed case where the user can read but not write, or
