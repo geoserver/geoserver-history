@@ -20,5 +20,4 @@ This section is devoted to GeoServer community modules. Community modules are co
    monitoring/index
    printing/index
    python/index
-   querylayer/index
    spatialite/index
