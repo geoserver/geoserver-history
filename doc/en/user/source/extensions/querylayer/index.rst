@@ -1,4 +1,4 @@
-.. _community_querylayer:
+.. _extension_querylayer:
 
 Cross layer filtering
 =====================
@@ -10,7 +10,7 @@ Since filter functions are widely supported in GeoServer this cross layer filter
 Installing the 'querylayer' module
 ----------------------------------
 
-#. Download the 'querylayer' extension from the nightly GeoServer community module builds, either `trunk <http://gridlock.opengeo.org/geoserver/trunk/community-latest/>`_ or `2.1.x <http://gridlock.opengeo.org/geoserver/2.1.x/community-latest/>`_ ones.
+#. Download the 'querylayer' extension corresponding to your version of GeoServer.
 
    .. warning:: Make sure to match the version of the extension to the version of the GeoServer instance!
 

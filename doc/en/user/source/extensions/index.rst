@@ -13,6 +13,7 @@ This section describes the various extensions available to GeoServer.  For infor
    geosearch
    imagemap
    ogr
+   querylayer/index
    styler
    wfsv
    wps/index
