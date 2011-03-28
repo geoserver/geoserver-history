@@ -59,7 +59,7 @@ public class WMSGeoServerHelper extends WMSSourceHelper {
         if (tileRespRecv instanceof Conveyor) {
             actualRequest = ((Conveyor) tileRespRecv).servletReq;
             actualResponse = ((Conveyor) tileRespRecv).servletResp;
-            cookies = actualRequest.getCookies();
+            cookies = actualRequest == null? null : actualRequest.getCookies();
         }
 
         FakeHttpServletRequest req = new FakeHttpServletRequest(wmsParams, cookies);
