@@ -102,7 +102,7 @@ public class MetadataMap implements Map<String, Serializable>, Serializable {
     }
 
     public Serializable remove(Object key) {
-        return null;
+        return map.remove(key);
     }
     
     public void clear() {
