@@ -7,8 +7,7 @@
  */
 package org.geoserver.gwc;
 
-import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.geoserver.catalog.Catalog;
@@ -24,12 +23,8 @@ import org.geoserver.catalog.event.CatalogRemoveEvent;
 import org.geotools.util.logging.Logging;
 
 /**
- * This class implements a GeoWebCache configuration object, i.e. a source of WMS layer definitions,
- * and a GeoServer catalog listener which is loaded on startup and listens for configuration
- * changes.
- * <p>
- * At construction time, registers itself as a {@link Catalog#addListener catalog listener}
- * </p>
+ * A {@link CatalogListener} that keeps the GeoServer layers in sync with its GeoWebCache
+ * counterparts.
  * 
  * @author Arne Kepp
  * @author Gabriel Roldan
@@ -38,13 +33,13 @@ public class GWCCatalogListener implements CatalogListener {
 
     private static Logger log = Logging.getLogger("org.geoserver.gwc.GWCCatalogListener");
 
-    private final Catalog cat;
+    private final Catalog gsCatalog;
 
     private final GWC gwc;
 
     public GWCCatalogListener(final Catalog cat, final GWC gwc) {
 
-        this.cat = cat;
+        this.gsCatalog = cat;
         this.gwc = gwc;
 
         cat.addListener(this);
@@ -84,58 +79,8 @@ public class GWCCatalogListener implements CatalogListener {
         Object obj = event.getSource();
 
         if (obj instanceof StyleInfo) {
-            // TODO First pass only considers default styles,
-            // which is all GWC will accept anyway
             StyleInfo si = (StyleInfo) obj;
-            String styleName = si.getName();
-
-            LinkedList<String> layerNameList = new LinkedList<String>();
-
-            // First we collect all the layers that use this style
-            Iterator<LayerInfo> liter = cat.getLayers().iterator();
-            while (liter.hasNext()) {
-                final LayerInfo li = liter.next();
-                final StyleInfo defaultStyle = li.getDefaultStyle();
-                if (defaultStyle != null && defaultStyle.getName().equals(styleName)) {
-                    String prefixedName = li.getResource().getPrefixedName();
-                    layerNameList.add(prefixedName);
-                    //TODO: truncate/delete only the tileset associated to the style
-                    gwc.truncate(prefixedName);
-                }
-            }
-
-            // Now we check for layer groups that are affected
-            Iterator<LayerGroupInfo> lgiter = cat.getLayerGroups().iterator();
-            while (lgiter.hasNext()) {
-                LayerGroupInfo lgi = lgiter.next();
-                boolean truncate = false;
-
-                // First we check for referenced to affected layers
-                liter = lgi.getLayers().iterator();
-                while (!truncate && liter.hasNext()) {
-                    LayerInfo li = liter.next();
-                    if (layerNameList.contains(li.getResource().getPrefixedName())) {
-                        truncate = true;
-                    }
-                }
-
-                // Finally we need to check whether the style is used explicitly
-                if (!truncate) {
-                    Iterator<StyleInfo> siiter = lgi.getStyles().iterator();
-                    while (!truncate && siiter.hasNext()) {
-                        StyleInfo si2 = siiter.next();
-                        if (si2 != null && si2.getName().equals(si.getName())) {
-                            truncate = true;
-                        }
-                    }
-                }
-
-                if (truncate) {
-                    gwc.truncate(lgi.getName());
-                }
-                // Next layer group
-            }
-
+            handleStyleChange(si);
         } else if (obj instanceof LayerInfo) {
             LayerInfo li = (LayerInfo) obj;
             gwc.createLayer(li);
@@ -144,6 +89,54 @@ public class GWCCatalogListener implements CatalogListener {
             gwc.createLayer(lgInfo);
         }
 
+    }
+
+    /**
+     * Options are:
+     * <ul>
+     * <li>A {@link LayerInfo} has {@code modifiedStyle} as either its default or style or as one of
+     * its alternate styles
+     * <li>A {@link LayerGroupInfo} contains a layer using {@code modifiedStyle}
+     * <li>{@code modifiedStyle} is explicitly assigned to a {@link LayerGroupInfo}
+     * </ul>
+     * 
+     * @param modifiedStyle
+     */
+    private void handleStyleChange(final StyleInfo modifiedStyle) {
+        final String styleName = modifiedStyle.getName();
+
+        // First we collect all the layers that use this style
+        for (LayerInfo affectedLayer : gsCatalog.getLayers(modifiedStyle)) {
+            String prefixedName = affectedLayer.getResource().getPrefixedName();
+            log.fine("Truncating layer '" + prefixedName + "' due to a change in style '"
+                    + styleName + "'");
+            gwc.truncate(prefixedName, styleName);
+        }
+
+        // Now we check for layer groups that are affected
+        for (LayerGroupInfo layerGroup : gsCatalog.getLayerGroups()) {
+
+            final List<StyleInfo> explicitLayerGroupStyles = layerGroup.getStyles();
+            final List<LayerInfo> groupLayers = layerGroup.getLayers();
+
+            for (int layerN = 0; layerN < groupLayers.size(); layerN++) {
+
+                LayerInfo childLayer = groupLayers.get(layerN);
+                StyleInfo assignedLayerStyle = explicitLayerGroupStyles.get(layerN);
+                if (assignedLayerStyle == null) {
+                    assignedLayerStyle = childLayer.getDefaultStyle();
+                }
+
+                if (modifiedStyle.equals(assignedLayerStyle)) {
+                    String layerGroupName = layerGroup.getName();
+                    log.fine("Truncating layer group '" + layerGroupName
+                            + "' due to a change in style '" + styleName + "'");
+                    gwc.truncate(layerGroupName);
+                    break;
+                }
+            }
+
+        }
     }
 
     /**

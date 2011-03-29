@@ -14,7 +14,6 @@ import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.DropDownChoice;
-import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.Radio;
 import org.apache.wicket.markup.html.form.RadioGroup;
 import org.apache.wicket.markup.html.form.TextField;
@@ -36,15 +35,33 @@ public class DiskQuotaConfigPanel extends Panel {
 
     private static final Logger LOGGER = Logging.getLogger(DiskQuotaConfigPanel.class);
 
-    private IModel<GWC> gwcModel;
+    private final IModel<StorageUnit> configQuotaUnitModel;
 
-    @SuppressWarnings({ "rawtypes" })
-    public DiskQuotaConfigPanel(final String id, final Form form,
-            final IModel<DiskQuotaConfig> diskQuotaConfigModel, final IModel<GWC> gwcModel,
-            IModel<Double> configQuotaValueModel, IModel<StorageUnit> configQuotaUnitModel) {
+    private final IModel<Double> configQuotaValueModel;
 
-        super(id);
-        this.gwcModel = gwcModel;
+    public DiskQuotaConfigPanel(final String id, final IModel<DiskQuotaConfig> diskQuotaConfigModel) {
+
+        super(id, diskQuotaConfigModel);
+
+        final DiskQuotaConfig diskQuotaConfig = diskQuotaConfigModel.getObject();
+
+        Quota globalQuota = diskQuotaConfig.getGlobalQuota();
+        if (globalQuota == null) {
+            LOGGER.info("There's no GWC global disk quota configured, setting a default of 100MiB");
+            globalQuota = new Quota(100, StorageUnit.MiB);
+            diskQuotaConfig.setGlobalQuota(globalQuota);
+        }
+
+        // use this two payload models to let the user configure the global quota as a decimal value
+        // plus a storage unit. Then at form sumbission we'll transform them back to a BigInteger
+        // representing the quota byte count
+        BigInteger bytes = globalQuota.getBytes();
+        StorageUnit bestRepresentedUnit = StorageUnit.bestFit(bytes);
+        BigDecimal transformedQuota = StorageUnit.B.convertTo(new BigDecimal(bytes),
+                bestRepresentedUnit);
+        configQuotaValueModel = new Model<Double>(transformedQuota.doubleValue());
+
+        configQuotaUnitModel = new Model<StorageUnit>(bestRepresentedUnit);
 
         addDiskQuotaIntegrationEnablement(diskQuotaConfigModel);
 
@@ -61,20 +78,15 @@ public class DiskQuotaConfigPanel extends Panel {
     private void addGlobalQuotaConfig(final IModel<DiskQuotaConfig> diskQuotaModel,
             IModel<Double> quotaValueModel, IModel<StorageUnit> unitModel) {
 
-        final IModel<Quota> globalQuotaModel = new LoadableDetachableModel<Quota>() {
-            private static final long serialVersionUID = 1L;
+        final IModel<Quota> globalQuotaModel = new PropertyModel<Quota>(diskQuotaModel,
+                "globalQuota");
 
-            @Override
-            protected Quota load() {
-                return getGWC().getGlobalQuota();
-            }
-        };
         final IModel<Quota> globalUsedQuotaModel = new LoadableDetachableModel<Quota>() {
             private static final long serialVersionUID = 1L;
 
             @Override
             protected Quota load() {
-                return getGWC().getGlobalUsedQuota();
+                return GWC.get().getGlobalUsedQuota();
             }
         };
 
@@ -106,7 +118,7 @@ public class DiskQuotaConfigPanel extends Panel {
 
         IModel<ExpirationPolicy> lfuModel = new Model<ExpirationPolicy>(ExpirationPolicy.LFU);
         IModel<ExpirationPolicy> lruModel = new Model<ExpirationPolicy>(ExpirationPolicy.LRU);
-        
+
         Radio<ExpirationPolicy> globalQuotaPolicyLFU;
         Radio<ExpirationPolicy> globalQuotaPolicyLRU;
         globalQuotaPolicyLFU = new Radio<ExpirationPolicy>("globalQuotaPolicyLFU", lfuModel);
@@ -209,7 +221,12 @@ public class DiskQuotaConfigPanel extends Panel {
         add(statusBar);
     }
 
-    private GWC getGWC() {
-        return gwcModel.getObject();
+    public StorageUnit getStorageUnit() {
+        return configQuotaUnitModel.getObject();
+    }
+
+    public Object getQuotaValue() {
+        // REVISIT: it seems Wicket is sending back a plain string instead of a BigDecimal
+        return configQuotaValueModel.getObject();
     }
 }
