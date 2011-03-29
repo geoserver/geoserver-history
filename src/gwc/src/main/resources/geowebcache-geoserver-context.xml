@@ -2,19 +2,35 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 <beans>
 
+  <bean id="gwcGeoServervConfigPersister" class="org.geoserver.gwc.GWCConfigPersister">
+    <constructor-arg ref="xstreamPersisterFactory" />
+    <constructor-arg ref="resourceLoader">
+      <description>
+        GeoServer's resource loader to locate the root configuration
+        directory where to store gwc-gs.xml
+      </description>
+    </constructor-arg>
+  </bean>
+
   <bean id="gwcCatalogConfiguration" class="org.geoserver.gwc.CatalogConfiguration">
+    <constructor-arg ref="gwcGeoServervConfigPersister">
+      <description>
+        Used to get the default layer configuration options when creating GeoServerTileLayer objects
+      </description>
+    </constructor-arg>
     <constructor-arg ref="gwcGridSetBroker" />
     <constructor-arg ref="rawCatalog" /> <!-- GeoServer -->
     <constructor-arg ref="dispatcher" /> <!-- GeoServer -->
   </bean>
 
   <bean id="gwcFacade" class="org.geoserver.gwc.GWC">
+    <constructor-arg ref="gwcGeoServervConfigPersister"/>
     <constructor-arg ref="gwcStorageBroker" />
     <constructor-arg ref="gwcTLDispatcher" />
     <constructor-arg ref="gwcTileBreeder" />
     <constructor-arg ref="gwcCatalogConfiguration" />
     <constructor-arg ref="geoServer" />
-    <constructor-arg ref="DiskQuotaStore"/>
+    <constructor-arg ref="DiskQuotaStore" />
   </bean>
 
   <bean id="gwcWMSExtendedCapabilitiesProvider" class="org.geoserver.gwc.wms.CachingExtendedCapabilitiesProvider">
@@ -41,7 +57,7 @@
       </list>
     </constructor-arg>
     <!-- loadDelay < -1 forces gwc to load configuration in the main thread -->
-    <constructor-arg value="-1"/>
+    <constructor-arg value="-1" />
   </bean>
 
 
