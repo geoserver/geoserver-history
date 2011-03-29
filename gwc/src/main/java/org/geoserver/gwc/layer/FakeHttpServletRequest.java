@@ -5,7 +5,7 @@
  * 
  * @author Arne Kepp / OpenGeo
  */
-package org.geowebcache.layer.wms;
+package org.geoserver.gwc.layer;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -32,10 +32,15 @@ public class FakeHttpServletRequest implements HttpServletRequest {
 
     private String wmsParams;
 
-    private HashMap<String, String> parameterMap = new HashMap<String, String>(10);
+    private Map<String, String> parameterMap = new HashMap<String, String>(10);
 
     private Cookie[] cookies;
 
+    public FakeHttpServletRequest(Map<String, String> parameterMap, Cookie[] cookies) {
+        this.parameterMap = parameterMap;
+        this.cookies = cookies;
+    }
+    
     public FakeHttpServletRequest(String wmsParams, Cookie[] cookies) {
         log.finer("Constructing from " + wmsParams);
 

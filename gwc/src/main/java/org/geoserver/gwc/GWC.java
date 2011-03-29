@@ -6,8 +6,11 @@ package org.geoserver.gwc;
 
 import static org.geowebcache.seed.GWCTask.TYPE.TRUNCATE;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,8 +21,8 @@ import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.config.GeoServer;
+import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.wms.GetMapRequest;
-import org.geoserver.wms.WMSInfo;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.util.logging.Logging;
@@ -28,6 +31,7 @@ import org.geowebcache.conveyor.ConveyorTile;
 import org.geowebcache.diskquota.DiskQuotaConfig;
 import org.geowebcache.diskquota.DiskQuotaMonitor;
 import org.geowebcache.diskquota.storage.BDBQuotaStore;
+import org.geowebcache.diskquota.storage.LayerQuota;
 import org.geowebcache.diskquota.storage.Quota;
 import org.geowebcache.grid.BoundingBox;
 import org.geowebcache.grid.GridMismatchException;
@@ -62,11 +66,14 @@ import com.vividsolutions.jts.geom.Envelope;
  */
 public class GWC implements DisposableBean, ApplicationContextAware {
 
-    public static final String WMS_INTEGRATION_ENABLED_KEY = "GWC_WMS_Integration";
+    /**
+     * @see #get()
+     */
+    private static GWC INSTANCE;
 
     private static Logger log = Logging.getLogger("org.geoserver.gwc.GWC");
 
-    private final CatalogConfiguration config;
+    private final CatalogConfiguration embeddedConfig;
 
     private final TileLayerDispatcher tld;
 
@@ -80,40 +87,60 @@ public class GWC implements DisposableBean, ApplicationContextAware {
 
     private final BDBQuotaStore quotaStore;
 
-    public GWC(final StorageBroker sb, final TileLayerDispatcher tld,
-            final TileBreeder tileBreeder, final CatalogConfiguration config, GeoServer geoserver,
-            BDBQuotaStore quotaStore) {
+    private final GWCConfigPersister gwcConfigPersister;
+
+    public GWC(final GWCConfigPersister gwcConfigPersister, final StorageBroker sb,
+            final TileLayerDispatcher tld, final TileBreeder tileBreeder,
+            final CatalogConfiguration config, GeoServer geoserver, BDBQuotaStore quotaStore) {
+        this.gwcConfigPersister = gwcConfigPersister;
         this.tld = tld;
         this.storageBroker = sb;
         this.tileBreeder = tileBreeder;
-        this.config = config;
+        this.embeddedConfig = config;
         this.geoserver = geoserver;
         this.quotaStore = quotaStore;
     }
 
-    /**
-     * Returns the value of the {@link WMSInfo} {@link #WMS_INTEGRATION_ENABLED_KEY} metadata key,
-     * indicating whether direct GWC/WMS integration is enabled.
-     * 
-     * @return {@code true} if direct WMS integration is enabled, defaults to {@code false} if not
-     *         set
-     */
-    public boolean isWMSIntegrationEnabled() {
-        boolean enabled = false;
-        WMSInfo service = geoserver.getService(WMSInfo.class);
-        if (service != null && service.getMetadata() != null) {
-            Boolean storedValue = service.getMetadata().get(WMS_INTEGRATION_ENABLED_KEY,
-                    Boolean.class);
-            if (storedValue != null) {
-                enabled = storedValue.booleanValue();
+    public synchronized static GWC get() {
+        if (GWC.INSTANCE == null) {
+            GWC.INSTANCE = GeoServerExtensions.bean(GWC.class);
+            if (GWC.INSTANCE == null) {
+                throw new IllegalStateException("No bean of type " + GWC.class.getName()
+                        + " found by GeoServerExtensions");
             }
         }
-        return enabled;
+        return GWC.INSTANCE;
     }
 
+    public GWCConfig getConfig() {
+        return gwcConfigPersister.getConfig();
+    }
+
+    /**
+     * Fully truncates the given layer, including any ParameterFilter
+     * 
+     * @param layerName
+     */
     public void truncate(final String layerName) {
         try {
-            // TODO: async
+            // TODO: use fast truncate path instead of delete. Delete will result in loosing usage
+            // statistics
+
+            storageBroker.delete(layerName);
+        } catch (StorageException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Truncates the cache for the given layer/style combination
+     * 
+     * @param layerName
+     * @param styleName
+     */
+    public void truncate(final String layerName, final String styleName) {
+        try {
+            // TODO: use truncate instead of delete. Delete will result in loosing usage statistics
             storageBroker.delete(layerName);
         } catch (StorageException e) {
             throw new RuntimeException(e);
@@ -196,13 +223,13 @@ public class GWC implements DisposableBean, ApplicationContextAware {
     }
 
     public void addOrReplaceLayer(TileLayer layer) {
-        tld.getLayers();
+        tld.getLayerList();
         tld.add(layer);
         log.finer(layer.getName() + " added to TileLayerDispatcher");
     }
 
     public synchronized void removeLayer(String prefixedName) {
-        config.removeLayer(prefixedName);
+        embeddedConfig.removeLayer(prefixedName);
         tld.remove(prefixedName);
         try {
             storageBroker.delete(prefixedName);
@@ -220,12 +247,12 @@ public class GWC implements DisposableBean, ApplicationContextAware {
     }
 
     public void createLayer(LayerInfo layerInfo) {
-        TileLayer tileLayer = config.createLayer(layerInfo);
+        TileLayer tileLayer = embeddedConfig.createLayer(layerInfo);
         addOrReplaceLayer(tileLayer);
     }
 
     public void createLayer(LayerGroupInfo lgi) {
-        TileLayer tileLayer = config.createLayer(lgi);
+        TileLayer tileLayer = embeddedConfig.createLayer(lgi);
         addOrReplaceLayer(tileLayer);
     }
 
@@ -268,6 +295,9 @@ public class GWC implements DisposableBean, ApplicationContextAware {
         try {
             tileLayer = this.tld.getTileLayer(layerName);
         } catch (GeoWebCacheException e) {
+            return null;
+        }
+        if (!tileLayer.isEnabled()) {
             return null;
         }
 
@@ -316,8 +346,17 @@ public class GWC implements DisposableBean, ApplicationContextAware {
                 return null;
             }
 
-            String fullParameters = null;
-            String modifiedParameters = null;
+            Map<String, String> fullParameters = null;
+            Map<String, String> modifiedParameters = null;
+            {
+                Map<String, String> requestParameterMap = request.getRawKvp();
+                Map<String, String>[] modStrs;
+                modStrs = tileLayer.getModifiableParameters(requestParameterMap, "UTF-8");
+                if (modStrs != null) {
+                    fullParameters = modStrs[0];
+                    modifiedParameters = modStrs[1];
+                }
+            }
             ConveyorTile tileReq;
             tileReq = new ConveyorTile(storageBroker, layerName, gridSetId, tileIndex, mimeType,
                     fullParameters, modifiedParameters, servletReq, servletResp);
@@ -382,6 +421,26 @@ public class GWC implements DisposableBean, ApplicationContextAware {
         return true;
     }
 
+    /**
+     * @param layerName
+     * @return the tile layer named {@code layerName}
+     * @throws IllegalArgumentException
+     *             if no {@link TileLayer} named {@code layeName} is found
+     */
+    public TileLayer getLayerByName(String layerName) throws IllegalArgumentException {
+        TileLayer tileLayer;
+        try {
+            tileLayer = tld.getTileLayer(layerName);
+        } catch (GeoWebCacheException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+        return tileLayer;
+    }
+
+    public Set<String> getLayerNames() {
+        return tld.getLayerNames();
+    }
+
     public List<TileLayer> getLayers() {
         return new ArrayList<TileLayer>(tld.getLayerList());
     }
@@ -391,7 +450,7 @@ public class GWC implements DisposableBean, ApplicationContextAware {
             return getLayers();
         }
 
-        final Catalog catalog = config.getCatalog();
+        final Catalog catalog = embeddedConfig.getCatalog();
 
         final NamespaceInfo namespaceFilter = catalog.getNamespaceByPrefix(namespacePrefixFilter);
         if (namespaceFilter == null) {
@@ -417,7 +476,7 @@ public class GWC implements DisposableBean, ApplicationContextAware {
         return filteredLayers;
     }
 
-    public DiskQuotaConfig getDisQuotaConfig() {
+    public DiskQuotaConfig getDiskQuotaConfig() {
         DiskQuotaMonitor monitor = getDiskQuotaMonitor();
         return monitor.getConfig();
     }
@@ -428,9 +487,13 @@ public class GWC implements DisposableBean, ApplicationContextAware {
         return monitor;
     }
 
-    public void saveDiskQuotaConfig() {
+    public void saveConfig(GWCConfig gwcConfig) throws IOException {
+        gwcConfigPersister.save(gwcConfig);
+    }
+
+    public void saveDiskQuotaConfig(DiskQuotaConfig config) {
         DiskQuotaMonitor monitor = getDiskQuotaMonitor();
-        monitor.saveConfig();
+        monitor.saveConfig(config);
     }
 
     /**
@@ -441,7 +504,7 @@ public class GWC implements DisposableBean, ApplicationContextAware {
     }
 
     public Quota getGlobalQuota() {
-        return getDisQuotaConfig().getGlobalQuota();
+        return getDiskQuotaConfig().getGlobalQuota();
     }
 
     public Quota getGlobalUsedQuota() {
@@ -452,4 +515,27 @@ public class GWC implements DisposableBean, ApplicationContextAware {
         }
     }
 
+    public Quota getQuotaLimit(final String layerName) {
+        DiskQuotaConfig disQuotaConfig = getDiskQuotaConfig();
+        List<LayerQuota> layerQuotas = disQuotaConfig.getLayerQuotas();
+        if (layerQuotas == null) {
+            return null;
+        }
+        for (LayerQuota lq : layerQuotas) {
+            if (layerName.equals(lq.getLayer())) {
+                return new Quota(lq.getQuota());
+            }
+        }
+        return null;
+    }
+
+    public Quota getUsedQuota(final String layerName) {
+        try {
+            Quota usedQuotaByLayerName = quotaStore.getUsedQuotaByLayerName(layerName);
+            return usedQuotaByLayerName;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
