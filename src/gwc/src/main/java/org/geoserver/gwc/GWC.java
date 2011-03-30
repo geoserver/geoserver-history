@@ -8,6 +8,9 @@ import static org.geowebcache.seed.GWCTask.TYPE.TRUNCATE;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -33,6 +36,7 @@ import org.geowebcache.diskquota.DiskQuotaMonitor;
 import org.geowebcache.diskquota.storage.BDBQuotaStore;
 import org.geowebcache.diskquota.storage.LayerQuota;
 import org.geowebcache.diskquota.storage.Quota;
+import org.geowebcache.filter.parameters.ParameterFilter;
 import org.geowebcache.grid.BoundingBox;
 import org.geowebcache.grid.GridMismatchException;
 import org.geowebcache.grid.GridSet;
@@ -43,6 +47,8 @@ import org.geowebcache.layer.TileLayerDispatcher;
 import org.geowebcache.mime.MimeException;
 import org.geowebcache.mime.MimeType;
 import org.geowebcache.seed.GWCTask;
+import org.geowebcache.seed.GWCTask.TYPE;
+import org.geowebcache.seed.SeedRequest;
 import org.geowebcache.seed.TileBreeder;
 import org.geowebcache.storage.StorageBroker;
 import org.geowebcache.storage.StorageException;
@@ -122,14 +128,11 @@ public class GWC implements DisposableBean, ApplicationContextAware {
      * @param layerName
      */
     public void truncate(final String layerName) {
-        try {
-            // TODO: use fast truncate path instead of delete. Delete will result in loosing usage
-            // statistics
-
-            storageBroker.delete(layerName);
-        } catch (StorageException e) {
-            throw new RuntimeException(e);
-        }
+        String styleName = null;// all of them
+        String gridSetId = null; // all of them
+        BoundingBox bounds = null;// whole layer
+        String format = null;// all of them
+        truncate(layerName, styleName, gridSetId, bounds, format);
     }
 
     /**
@@ -139,80 +142,176 @@ public class GWC implements DisposableBean, ApplicationContextAware {
      * @param styleName
      */
     public void truncate(final String layerName, final String styleName) {
-        try {
-            // TODO: use truncate instead of delete. Delete will result in loosing usage statistics
-            storageBroker.delete(layerName);
-        } catch (StorageException e) {
-            throw new RuntimeException(e);
+
+        // check if the given style is actually cached
+        if (!isStyleCached(layerName, styleName)) {
+            return;
         }
+
+        String gridSetId = null; // all of them
+        BoundingBox bounds = null;// all of them
+        String format = null;// all of them
+        truncate(layerName, styleName, gridSetId, bounds, format);
     }
 
     public void truncate(final String layerName, final ReferencedEnvelope bounds)
             throws GeoWebCacheException {
 
         final TileLayer tileLayer = tld.getTileLayer(layerName);
+        final Collection<GridSubset> gridSubSets = tileLayer.getGridSubsets().values();
 
-        List<GWCTask> truncateTasks = new ArrayList<GWCTask>(tileLayer.getGridSubsets().size()
-                * tileLayer.getMimeTypes().size());
         /*
-         * Create a truncate task for each gridSubset (CRS) and format
+         * Create a truncate task for each gridSubset (CRS), format and style
          */
-        for (GridSubset layerGrid : tileLayer.getGridSubsets().values()) {
-            final GridSet gridSet = layerGrid.getGridSet();
-            final String gridSetId = gridSet.getName();
-            final SRS srs = gridSet.getSRS();
-            final CoordinateReferenceSystem gridSetCrs;
-            try {
-                gridSetCrs = CRS.decode("EPSG:" + srs.getNumber());
-            } catch (Exception e) {
-                throw new RuntimeException("Can't decode SRS for layer '" + layerName + "': ESPG:"
-                        + srs.getNumber());
-            }
-
-            ReferencedEnvelope truncateBoundsInGridsetCrs;
-
-            try {
-                truncateBoundsInGridsetCrs = bounds.transform(gridSetCrs, true);
-            } catch (Exception e) {
-                log.info("Can't truncate layer " + layerName
-                        + ": error transforming requested bounds to layer gridset " + gridSetId
-                        + ": " + e.getMessage());
+        for (GridSubset layerGrid : gridSubSets) {
+            BoundingBox intersectingBounds = getIntersectingBounds(layerName, layerGrid, bounds);
+            if (intersectingBounds == null) {
                 continue;
             }
+            String gridSetId = layerGrid.getName();
+            String styleName = null;// all of them
+            String format = null;// all of them
+            truncate(layerName, styleName, gridSetId, intersectingBounds, format);
+        }
+    }
 
-            final double minx = truncateBoundsInGridsetCrs.getMinX();
-            final double miny = truncateBoundsInGridsetCrs.getMinY();
-            final double maxx = truncateBoundsInGridsetCrs.getMaxX();
-            final double maxy = truncateBoundsInGridsetCrs.getMaxY();
-            final BoundingBox reqBounds = new BoundingBox(minx, miny, maxx, maxy);
-            /*
-             * layerGrid.getCoverageIntersections is not too robust, so we better check the
-             * requested bounds intersect the layer bounds
-             */
-            final BoundingBox layerBounds = layerGrid.getCoverageBestFitBounds();
-            if (!layerBounds.intersects(reqBounds)) {
-                log.fine("Requested truncation bounds do not intersect cached layer bounds, ignoring truncate request");
-                continue;
-            }
-            final BoundingBox intersection = BoundingBox.intersection(layerBounds, reqBounds);
-            final long[][] coverageIntersections = layerGrid.getCoverageIntersections(intersection);
-            final int zoomStart = layerGrid.getZoomStart();
-            final int zoomStop = layerGrid.getZoomStop();
-            final String parameters = null;// how do I get these?
-
-            for (MimeType mime : tileLayer.getMimeTypes()) {
-                TileRange tileRange;
-                tileRange = new TileRange(layerName, gridSetId, zoomStart, zoomStop,
-                        coverageIntersections, mime, parameters);
-                GWCTask[] singleTask;
-                singleTask = tileBreeder.createTasks(tileRange, tileLayer, TRUNCATE, 1, false);
-                truncateTasks.add(singleTask[0]);
-            }
-
+    private BoundingBox getIntersectingBounds(String layerName, GridSubset layerGrid,
+            ReferencedEnvelope bounds) {
+        final GridSet gridSet = layerGrid.getGridSet();
+        final String gridSetId = gridSet.getName();
+        final SRS srs = gridSet.getSRS();
+        final CoordinateReferenceSystem gridSetCrs;
+        try {
+            gridSetCrs = CRS.decode("EPSG:" + srs.getNumber());
+        } catch (Exception e) {
+            throw new RuntimeException("Can't decode SRS for layer '" + layerName + "': ESPG:"
+                    + srs.getNumber());
         }
 
-        GWCTask[] tasks = truncateTasks.toArray(new GWCTask[truncateTasks.size()]);
-        tileBreeder.dispatchTasks(tasks);
+        ReferencedEnvelope truncateBoundsInGridsetCrs;
+
+        try {
+            truncateBoundsInGridsetCrs = bounds.transform(gridSetCrs, true);
+        } catch (Exception e) {
+            log.warning("Can't truncate layer " + layerName
+                    + ": error transforming requested bounds to layer gridset " + gridSetId + ": "
+                    + e.getMessage());
+            return null;
+        }
+
+        final double minx = truncateBoundsInGridsetCrs.getMinX();
+        final double miny = truncateBoundsInGridsetCrs.getMinY();
+        final double maxx = truncateBoundsInGridsetCrs.getMaxX();
+        final double maxy = truncateBoundsInGridsetCrs.getMaxY();
+        final BoundingBox reqBounds = new BoundingBox(minx, miny, maxx, maxy);
+        /*
+         * layerGrid.getCoverageIntersections is not too robust, so we better check the requested
+         * bounds intersect the layer bounds
+         */
+        final BoundingBox layerBounds = layerGrid.getCoverageBestFitBounds();
+        if (!layerBounds.intersects(reqBounds)) {
+            log.fine("Requested truncation bounds do not intersect cached layer bounds, ignoring truncate request");
+            return null;
+        }
+        final BoundingBox intersectingBounds = BoundingBox.intersection(layerBounds, reqBounds);
+        return intersectingBounds;
+    }
+
+    /**
+     * @param layerName
+     *            name of the layer to truncate, non {@code null}
+     * @param styleName
+     *            style to truncate, or {@code null} for all
+     * @param gridSetName
+     *            grid set to truncate, non {@code null}
+     * @param bounds
+     *            bounds to truncate based on, or {@code null} for whole layer
+     * @param format
+     *            {@link MimeType#getFormat() format} to truncate, or {@code null} for all
+     */
+    private void truncate(final String layerName, final String styleName, final String gridSetName,
+            final BoundingBox bounds, final String format) {
+
+        final TileLayer layer = getLayerByName(layerName);
+        final Set<String> styleNames;
+        final Set<String> gridSetIds;
+        final List<MimeType> mimeTypes;
+        if (styleName == null) {
+            styleNames = getCachedStyles(layerName);
+            if (styleNames.size() == 0) {
+                styleNames.add("");
+            }
+        } else {
+            styleNames = Collections.singleton(styleName);
+        }
+        if (gridSetName == null) {
+            gridSetIds = layer.getGridSubsets().keySet();
+        } else {
+            gridSetIds = Collections.singleton(gridSetName);
+        }
+        if (format == null) {
+            mimeTypes = layer.getMimeTypes();
+        } else {
+            try {
+                mimeTypes = Collections.singletonList(MimeType.createFromFormat(format));
+            } catch (MimeException e) {
+                throw new RuntimeException();
+            }
+        }
+
+        for (String gridSetId : gridSetIds) {
+            final GridSubset gridSubset = layer.getGridSubset(gridSetId);
+            for (String style : styleNames) {
+                Map<String, String> parameters = Collections.singletonMap("STYLES", style);
+                for (MimeType mime : mimeTypes) {
+                    String formatName = mime.getFormat();
+                    truncate(layer, bounds, gridSubset, formatName, parameters);
+                }
+            }
+        }
+    }
+
+    private void truncate(final TileLayer layer, final BoundingBox bounds,
+            final GridSubset gridSubset, String formatName, Map<String, String> parameters) {
+        final int threadCount = 1;
+        int zoomStart;
+        int zoomStop;
+        zoomStart = gridSubset.getZoomStart();
+        zoomStop = gridSubset.getZoomStop();
+        final TYPE taskType = TRUNCATE;
+        SeedRequest req = new SeedRequest(layer.getName(), bounds, gridSubset.getName(),
+                threadCount, zoomStart, zoomStop, formatName, taskType, parameters);
+        try {
+            TileRange tr = TileBreeder.createTileRange(req, layer);
+            boolean filterUpdate = false;
+            GWCTask[] tasks = tileBreeder.createTasks(tr, taskType, threadCount, filterUpdate);
+            tileBreeder.dispatchTasks(tasks);
+        } catch (GeoWebCacheException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private boolean isStyleCached(final String layerName, final String styleName) {
+        Set<String> cachedStyles = getCachedStyles(layerName);
+        boolean styleIsCached = cachedStyles.contains(styleName);
+        return styleIsCached;
+    }
+
+    private Set<String> getCachedStyles(final String layerName) {
+        final TileLayer l = getLayerByName(layerName);
+        List<ParameterFilter> parameterFilters = l.getParameterFilters();
+        Set<String> cachedStyles = new HashSet<String>();
+        if (parameterFilters != null) {
+            for (ParameterFilter pf : parameterFilters) {
+                if (!"STYLES".equalsIgnoreCase(pf.getKey())) {
+                    continue;
+                }
+                cachedStyles.add(pf.getDefaultValue());
+                cachedStyles.addAll(pf.getLegalValues());
+                break;
+            }
+        }
+        return cachedStyles;
     }
 
     /**
@@ -223,7 +322,6 @@ public class GWC implements DisposableBean, ApplicationContextAware {
     }
 
     public void addOrReplaceLayer(TileLayer layer) {
-        tld.getLayerList();
         tld.add(layer);
         log.finer(layer.getName() + " added to TileLayerDispatcher");
     }
@@ -346,20 +444,14 @@ public class GWC implements DisposableBean, ApplicationContextAware {
                 return null;
             }
 
-            Map<String, String> fullParameters = null;
-            Map<String, String> modifiedParameters = null;
+            Map<String, String> fullParameters;
             {
                 Map<String, String> requestParameterMap = request.getRawKvp();
-                Map<String, String>[] modStrs;
-                modStrs = tileLayer.getModifiableParameters(requestParameterMap, "UTF-8");
-                if (modStrs != null) {
-                    fullParameters = modStrs[0];
-                    modifiedParameters = modStrs[1];
-                }
+                fullParameters = tileLayer.getModifiableParameters(requestParameterMap, "UTF-8");
             }
             ConveyorTile tileReq;
             tileReq = new ConveyorTile(storageBroker, layerName, gridSetId, tileIndex, mimeType,
-                    fullParameters, modifiedParameters, servletReq, servletResp);
+                    fullParameters, servletReq, servletResp);
 
             tileResp = tileLayer.getTile(tileReq);
         } catch (Exception e) {

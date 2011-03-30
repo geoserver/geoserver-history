@@ -106,8 +106,9 @@ public class CachedLayersPage extends GeoServerSecuredPage {
     private Component cachedLayerLink(String id, IModel<CachedLayerInfo> itemModel) {
         IModel<String> nameModel = NAME.getModel(itemModel);
         String layerName = nameModel.getObject();
-        return new SimpleBookmarkableLink(id, CachedLayerEditPage.class, nameModel, "name",
-                layerName);
+//        return new SimpleBookmarkableLink(id, CachedLayerEditPage.class, nameModel, "name",
+//                layerName);
+        return new Label(id, layerName);
     }
 
     protected Component headerPanel() {

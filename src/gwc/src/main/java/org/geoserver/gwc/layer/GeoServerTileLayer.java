@@ -415,10 +415,11 @@ public class GeoServerTileLayer extends TileLayer {
         params.put("TRANSPARENT", "true");
         params.put(GWC_SEED_INTERCEPT_TOKEN, "true");
 
-        Map<String, String> filteredParams = tile.getParameters();
-        if (filteredParams != null) {
-            params.putAll(filteredParams);
+        Map<String, String> filteredParams = tile.getFullParameters();
+        if (filteredParams.isEmpty()) {
+            filteredParams = getDefaultParameterFilters();
         }
+        params.putAll(filteredParams);
 
         return params;
     }
