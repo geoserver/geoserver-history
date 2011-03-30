@@ -40,6 +40,8 @@ import org.geowebcache.grid.GridSetBroker;
 import org.geowebcache.grid.GridSubset;
 import org.geowebcache.grid.GridSubsetFactory;
 import org.geowebcache.grid.OutsideCoverageException;
+import org.geowebcache.io.ByteArrayResource;
+import org.geowebcache.io.Resource;
 import org.geowebcache.layer.MetaTile;
 import org.geowebcache.layer.TileLayer;
 import org.geowebcache.layer.meta.ContactInformation;
@@ -293,6 +295,53 @@ public class GeoServerTileLayer extends TileLayer {
     }
 
     @Override
+    public Resource getFeatureInfo(ConveyorTile convTile, BoundingBox bbox, int height, int width,
+            int x, int y) throws GeoWebCacheException {
+
+        Cookie[] cookies = null;
+        Map<String, String> params = buildGetFeatureInfo(convTile, bbox, height, width, x, y);
+        FakeHttpServletResponse response;
+        try {
+            response = dispatchRequest(cookies, params);
+        } catch (Exception e) {
+            throw new GeoWebCacheException(e);
+        }
+        return new ByteArrayResource(response.getBytes());
+    }
+
+    private Map<String, String> buildGetFeatureInfo(ConveyorTile convTile, BoundingBox bbox,
+            int height, int width, int x, int y) {
+        Map<String, String> wmsParams = new HashMap<String, String>();
+        wmsParams.put("SERVICE", "WMS");
+        wmsParams.put("VERSION", "1.1.1");
+        wmsParams.put("REQUEST", "GetFeatureInfo");
+        wmsParams.put("LAYERS", getName());
+        wmsParams.put("STYLES", "");
+        wmsParams.put("QUERY_LAYERS", getName());
+        wmsParams.put("FORMAT", getMimeTypes().get(0).getFormat());
+        wmsParams.put("EXCEPTIONS", GetMapRequest.SE_XML);
+
+        wmsParams.put("INFO_FORMAT", convTile.getMimeType().getFormat());
+
+        GridSubset gridSubset = convTile.getGridSubset();
+
+        wmsParams.put("SRS", gridSubset.getSRS().toString());
+        wmsParams.put("HEIGHT", String.valueOf(height));
+        wmsParams.put("WIDTH", String.valueOf(width));
+        wmsParams.put("BBOX", bbox.toString());
+        wmsParams.put("X", String.valueOf(x));
+        wmsParams.put("Y", String.valueOf(y));
+
+        Map<String, String> fullParameters = convTile.getFullParameters();
+        if (fullParameters.isEmpty()) {
+            fullParameters = getDefaultParameterFilters();
+        }
+        wmsParams.putAll(fullParameters);
+
+        return wmsParams;
+    }
+
+    @Override
     public ConveyorTile getTile(ConveyorTile tile) throws GeoWebCacheException, IOException,
             OutsideCoverageException {
         MimeType mime = tile.getMimeType();
@@ -339,7 +388,7 @@ public class GeoServerTileLayer extends TileLayer {
 
         WebMap map;
         try {
-            map = dispatchRequest(tile, metaTile);
+            map = dispatchGetMap(tile, metaTile);
         } catch (Exception e) {
             throw new GeoWebCacheException("Problem communicating with GeoServer", e);
         }
@@ -350,24 +399,30 @@ public class GeoServerTileLayer extends TileLayer {
         return tile;
     }
 
-    private WebMap dispatchRequest(ConveyorTile tile, final MetaTile metaTile) throws Exception {
+    private WebMap dispatchGetMap(ConveyorTile tile, final MetaTile metaTile) throws Exception {
         HttpServletRequest actualRequest = tile.servletReq;
         Cookie[] cookies = actualRequest == null ? null : actualRequest.getCookies();
 
         Map<String, String> params = buildGetMap(tile, metaTile);
-        FakeHttpServletRequest req = new FakeHttpServletRequest(params, cookies);
-        FakeHttpServletResponse resp = new FakeHttpServletResponse();
-
-        Dispatcher gsDispatcher = config.getDispatcher();
         WebMap map;
         try {
-            gsDispatcher.handleRequest(req, resp);
+            dispatchRequest(cookies, params);
             map = WEB_MAP.get();
         } finally {
             WEB_MAP.remove();
         }
 
         return map;
+    }
+
+    private FakeHttpServletResponse dispatchRequest(Cookie[] cookies, Map<String, String> params)
+            throws Exception {
+        FakeHttpServletRequest req = new FakeHttpServletRequest(params, cookies);
+        FakeHttpServletResponse resp = new FakeHttpServletResponse();
+
+        Dispatcher gsDispatcher = config.getDispatcher();
+        gsDispatcher.handleRequest(req, resp);
+        return resp;
     }
 
     private GeoServerMetaTile createMetaTile(ConveyorTile tile, final int metaX, final int metaY) {
