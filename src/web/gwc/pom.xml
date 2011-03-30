@@ -27,11 +27,7 @@
       <artifactId>web-core</artifactId>
       <version>${project.version}</version>
     </dependency>
-    <dependency>
-      <groupId>commons-collections</groupId>
-      <artifactId>commons-collections</artifactId>
-    </dependency>
-    <dependency>
+   <dependency>
       <groupId>org.geoserver.web</groupId>
       <artifactId>web-core</artifactId>
       <version>${project.version}</version>

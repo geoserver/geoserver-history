@@ -5,7 +5,7 @@
  * 
  * @author Arne Kepp / OpenGeo
  */
-package org.geoserver.gwc.layer;
+package org.geowebcache.layer.wms;
 
 import java.io.IOException;
 import java.io.PrintWriter;

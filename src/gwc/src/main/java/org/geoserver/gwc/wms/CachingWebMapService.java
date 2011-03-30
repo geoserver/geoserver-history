@@ -47,7 +47,7 @@ public class CachingWebMapService implements MethodInterceptor {
      * @see org.aopalliance.intercept.MethodInterceptor#invoke(org.aopalliance.intercept.MethodInvocation)
      */
     public WebMap invoke(MethodInvocation invocation) throws Throwable {
-        if (!gwc.getConfig().isDirectWMSIntegrationEnabled()) {
+        if (!gwc.isWMSIntegrationEnabled()) {
             return (WebMap) invocation.proceed();
         }
 

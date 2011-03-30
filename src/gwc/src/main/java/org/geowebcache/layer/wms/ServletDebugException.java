@@ -5,13 +5,13 @@
  * 
  * @author Arne Kepp / OpenGeo
  */
-package org.geoserver.gwc.layer;
+package org.geowebcache.layer.wms;
 
 /**
  * This class is just used to detect what methods GeoServer actually invokes
  */
-class ServletDebugException extends RuntimeException {
+public class ServletDebugException extends RuntimeException {
     ServletDebugException() {
-
+    
     }
 }
