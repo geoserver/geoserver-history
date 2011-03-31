@@ -51,7 +51,7 @@ public class MonitoringDataSource extends BasicDataSource {
                 throw (SQLException) e;
             }
             
-            throw new SQLException(e);
+            throw (SQLException) new SQLException().initCause(e);
         }
     }
 
