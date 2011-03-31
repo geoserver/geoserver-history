@@ -144,10 +144,12 @@ public class GWC implements DisposableBean, ApplicationContextAware {
     public void truncate(final String layerName, final String styleName) {
 
         // check if the given style is actually cached
+        log.info(" ---- Checking if style " + styleName + " is cached for layer " + layerName);
         if (!isStyleCached(layerName, styleName)) {
+            log.info(" ---- Style " + styleName + " is not cached for layer " + layerName);
             return;
         }
-
+        log.info(" ---- Truncating....");
         String gridSetId = null; // all of them
         BoundingBox bounds = null;// all of them
         String format = null;// all of them
@@ -259,10 +261,19 @@ public class GWC implements DisposableBean, ApplicationContextAware {
             }
         }
 
+        final String defaultStyle = layer.getStyles();
+
         for (String gridSetId : gridSetIds) {
             final GridSubset gridSubset = layer.getGridSubset(gridSetId);
             for (String style : styleNames) {
-                Map<String, String> parameters = Collections.singletonMap("STYLES", style);
+                Map<String, String> parameters;
+                if (style.equals(defaultStyle)) {
+                    log.info(" ---- " + style
+                            + " is the layer's default style, not adding a parameter filter");
+                    parameters = null;
+                } else {
+                    parameters = Collections.singletonMap("STYLES", style);
+                }
                 for (MimeType mime : mimeTypes) {
                     String formatName = mime.getFormat();
                     truncate(layer, bounds, gridSubset, formatName, parameters);
@@ -297,10 +308,20 @@ public class GWC implements DisposableBean, ApplicationContextAware {
         return styleIsCached;
     }
 
+    /**
+     * Returns the names of the styles for the layer, including the default style
+     * 
+     * @param layerName
+     * @return
+     */
     private Set<String> getCachedStyles(final String layerName) {
         final TileLayer l = getLayerByName(layerName);
-        List<ParameterFilter> parameterFilters = l.getParameterFilters();
         Set<String> cachedStyles = new HashSet<String>();
+        String defaultStyle = l.getStyles();
+        if (defaultStyle != null) {
+            cachedStyles.add(defaultStyle);
+        }
+        List<ParameterFilter> parameterFilters = l.getParameterFilters();
         if (parameterFilters != null) {
             for (ParameterFilter pf : parameterFilters) {
                 if (!"STYLES".equalsIgnoreCase(pf.getKey())) {

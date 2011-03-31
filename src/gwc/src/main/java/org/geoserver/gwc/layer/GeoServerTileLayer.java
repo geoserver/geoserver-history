@@ -95,6 +95,9 @@ public class GeoServerTileLayer extends TileLayer {
         super.mimeFormats = info.getMimeFormats();
         if (info.isCacheNonDefaultStyles()) {
             super.parameterFilters = createStylesParameterFilters();
+        } else {
+            LOGGER.info(" ---- NOT Creating GeoServerTileLayer for " + getName()
+                    + " as option is off");
         }
 
         // set default properties that doesn't need initialization
@@ -209,6 +212,7 @@ public class GeoServerTileLayer extends TileLayer {
         }
         final Set<StyleInfo> styles = layerInfo.getStyles();
         if (styles == null || styles.size() == 0) {
+            LOGGER.info(" ---- Layer has no styles");
             return null;
         }
 
