@@ -1,4 +1,4 @@
-def process(title, description, version='1.0.0', args=[], result=[]):
+def process(title, description, version='1.0.0', args=[], result=()):
   """
   Decorator for a process function.
   """
