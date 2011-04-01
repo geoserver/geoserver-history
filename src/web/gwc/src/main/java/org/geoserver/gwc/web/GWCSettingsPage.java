@@ -35,8 +35,17 @@ public class GWCSettingsPage extends GeoServerSecuredPage {
         setHeaderPanel(headerPanel());
 
         GWC gwc = getGWC();
+
+        final boolean diskQuotaModuleDisabled = gwc.getDiskQuotaConfig() == null;
+
         // use a dettached copy of dq config to support the tabbed pane
-        final DiskQuotaConfig diskQuotaConfig = gwc.getDiskQuotaConfig().clone();
+        final DiskQuotaConfig diskQuotaConfig;
+        if (diskQuotaModuleDisabled) {
+            diskQuotaConfig = new DiskQuotaConfig();// fake
+            diskQuotaConfig.setDefaults();
+        } else {
+            diskQuotaConfig = gwc.getDiskQuotaConfig().clone();
+        }
         // use a dettached copy of gwc config to support the tabbed pane
         final GWCConfig gwcConfig = gwc.getConfig().clone();
 
@@ -59,8 +68,12 @@ public class GWCSettingsPage extends GeoServerSecuredPage {
                 gwcConfigModel);
         final CachingOptionsPanel defaultCachingOptionsPanel = new CachingOptionsPanel(
                 "cachingOptionsPanel", gwcConfigModel);
+
         final DiskQuotaConfigPanel diskQuotaConfigPanel = new DiskQuotaConfigPanel(
                 "diskQuotaPanel", diskQuotaModel);
+        if (diskQuotaModuleDisabled) {
+            diskQuotaConfigPanel.setVisible(false);
+        }
 
         form.add(gwcServicesPanel);
         form.add(defaultCachingOptionsPanel);
@@ -84,25 +97,26 @@ public class GWCSettingsPage extends GeoServerSecuredPage {
                     return;
                 }
 
-                StorageUnit chosenUnit = diskQuotaConfigPanel.getStorageUnit();
-                // REVISIT: it seems Wicket is sending back a plain string instead of a
-                String chosenQuotaStr = String.valueOf(diskQuotaConfigPanel.getQuotaValue());
-                Double chosenQuota;
-                try {
-                    chosenQuota = Double.valueOf(chosenQuotaStr);
-                } catch (NumberFormatException e) {
-                    form.error(chosenQuotaStr + " is not a valid floating point number");// TODO:
-                    // localize
-                    return;
+                if (!diskQuotaModuleDisabled) {
+                    StorageUnit chosenUnit = diskQuotaConfigPanel.getStorageUnit();
+                    // REVISIT: it seems Wicket is sending back a plain string instead of a
+                    String chosenQuotaStr = String.valueOf(diskQuotaConfigPanel.getQuotaValue());
+                    Double chosenQuota;
+                    try {
+                        chosenQuota = Double.valueOf(chosenQuotaStr);
+                    } catch (NumberFormatException e) {
+                        form.error(chosenQuotaStr + " is not a valid floating point number");// TODO:
+                        // localize
+                        return;
+                    }
+                    if (chosenQuota.doubleValue() <= 0D) {
+                        form.error("Quota has to be > 0");
+                        return;
+                    }
+                    DiskQuotaConfig dqConfig = diskQuotaModel.getObject();
+                    dqConfig.getGlobalQuota().setValue(chosenQuota.doubleValue(), chosenUnit);
+                    gwc.saveDiskQuotaConfig(dqConfig);
                 }
-                if (chosenQuota.doubleValue() <= 0D) {
-                    form.error("Quota has to be > 0");
-                    return;
-                }
-                DiskQuotaConfig dqConfig = diskQuotaModel.getObject();
-                dqConfig.getGlobalQuota().setValue(chosenQuota.doubleValue(), chosenUnit);
-
-                gwc.saveDiskQuotaConfig(dqConfig);
 
                 setResponsePage(GeoServerHomePage.class);
             }
