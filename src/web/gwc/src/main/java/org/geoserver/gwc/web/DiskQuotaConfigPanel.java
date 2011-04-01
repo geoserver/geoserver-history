@@ -66,7 +66,11 @@ public class DiskQuotaConfigPanel extends Panel {
 
             @Override
             protected Quota load() {
-                return getGWC().getGlobalQuota();
+                GWC gwc = getGWC();
+                if(null == gwc.getDisQuotaConfig()){
+                    return new Quota();
+                }
+                return gwc.getGlobalQuota();
             }
         };
         final IModel<Quota> globalUsedQuotaModel = new LoadableDetachableModel<Quota>() {
@@ -74,6 +78,10 @@ public class DiskQuotaConfigPanel extends Panel {
 
             @Override
             protected Quota load() {
+                GWC gwc = getGWC();
+                if(null == gwc.getDisQuotaConfig()){
+                    return new Quota();
+                }
                 return getGWC().getGlobalUsedQuota();
             }
         };

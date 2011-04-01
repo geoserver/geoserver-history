@@ -237,7 +237,8 @@ public class GWC implements DisposableBean, ApplicationContextAware {
      * <p>
      * Preconditions:
      * <ul>
-     * <li><code>{@link GetMapRequest#isTiled() request.isTiled()} == true</code>
+     * <li>
+     * <code>{@link GetMapRequest#isTiled() request.isTiled()} == true</code>
      * </ul>
      * </p>
      * 
@@ -318,9 +319,9 @@ public class GWC implements DisposableBean, ApplicationContextAware {
             }
 
             Map<String, String> fullParameters = null;
-			Map<String, String> modifiedParameters = null;
+            Map<String, String> modifiedParameters = null;
             ConveyorTile tileReq;
-			tileReq = new ConveyorTile(storageBroker, layerName, gridSetId, tileIndex, mimeType,
+            tileReq = new ConveyorTile(storageBroker, layerName, gridSetId, tileIndex, mimeType,
                     fullParameters, modifiedParameters, servletReq, servletResp);
 
             tileResp = tileLayer.getTile(tileReq);
@@ -420,6 +421,9 @@ public class GWC implements DisposableBean, ApplicationContextAware {
 
     public DiskQuotaConfig getDisQuotaConfig() {
         DiskQuotaMonitor monitor = getDiskQuotaMonitor();
+        if (!monitor.isEnabled()) {
+            return null;
+        }
         return monitor.getConfig();
     }
 

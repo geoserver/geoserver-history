@@ -35,6 +35,7 @@ public class GWCSettingsPage extends GeoServerSecuredPage {
     public GWCSettingsPage() {
         setHeaderPanel(headerPanel());
 
+        final boolean diskQuotaDisabled = getGWC().getDisQuotaConfig() == null;
         final Form form = new Form("form");
         add(form);
 
@@ -53,6 +54,10 @@ public class GWCSettingsPage extends GeoServerSecuredPage {
             protected DiskQuotaConfig load() {
                 final GWC gwc = getGWC();
                 DiskQuotaConfig quotaConfig = gwc.getDisQuotaConfig();
+                if (quotaConfig == null) {
+                    quotaConfig = new DiskQuotaConfig();// fake
+                    quotaConfig.setDefaults();
+                }
                 return quotaConfig;
             }
         };
@@ -84,8 +89,10 @@ public class GWCSettingsPage extends GeoServerSecuredPage {
             diskQuotaConfig.setGlobalQuota(globalQuota);
         }
 
-        // use this two payload models to let the user configure the global quota as a decimal value
-        // plus a storage unit. Then at form sumbission we'll transform them back to a BigInteger
+        // use this two payload models to let the user configure the global
+        // quota as a decimal value
+        // plus a storage unit. Then at form sumbission we'll transform them
+        // back to a BigInteger
         // representing the quota byte count
         BigInteger bytes = globalQuota.getBytes();
         StorageUnit bestRepresentedUnit = StorageUnit.bestFit(bytes);
@@ -95,8 +102,13 @@ public class GWCSettingsPage extends GeoServerSecuredPage {
                 transformedQuota.doubleValue());
         final IModel<StorageUnit> configQuotaUnitModel = new Model<StorageUnit>(bestRepresentedUnit);
 
-        form.add(new DiskQuotaConfigPanel("diskQuotaConfigPanel", form, diskQuotaModel, gwcModel,
-                configQuotaValueModel, configQuotaUnitModel));
+        DiskQuotaConfigPanel diskQuotaConfigPanel = new DiskQuotaConfigPanel(
+                "diskQuotaConfigPanel", form, diskQuotaModel, gwcModel, configQuotaValueModel,
+                configQuotaUnitModel);
+        if (diskQuotaDisabled) {
+            diskQuotaConfigPanel.setVisible(false);
+        }
+        form.add(diskQuotaConfigPanel);
 
         form.add(new Button("submit") {
             private static final long serialVersionUID = 1L;
@@ -106,17 +118,21 @@ public class GWCSettingsPage extends GeoServerSecuredPage {
                 GeoServer gs = getGeoServer();
                 WMSInfo wmsInfo = wmsInfoModel.getObject();
                 gs.save(wmsInfo);
-
-                // DiskQuotaConfig diskQuotaConfig = diskQuotaModel.getObject();
+                if (diskQuotaDisabled) {
+                    setResponsePage(GeoServerHomePage.class);
+                    return;
+                }
                 GWC gwc = getGWC();
                 StorageUnit chosenUnit = configQuotaUnitModel.getObject();
-                // REVISIT: it seems Wicket is sending back a plain string instead of a BigDecimal
+                // REVISIT: it seems Wicket is sending back a plain string
+                // instead of a BigDecimal
                 String chosenQuotaStr = String.valueOf(configQuotaValueModel.getObject());
                 Double chosenQuota;
                 try {
                     chosenQuota = Double.valueOf(chosenQuotaStr);
                 } catch (NumberFormatException e) {
-                    form.error(chosenQuotaStr + " is not a valid floating point number");//TODO: localize
+                    form.error(chosenQuotaStr + " is not a valid floating point number");// TODO:
+                                                                                         // localize
                     return;
                 }
                 if (chosenQuota.doubleValue() <= 0D) {
