@@ -35,6 +35,8 @@ public class CatalogConfiguration implements Configuration {
 
     private final GWCConfigPersister gsGwcConfigPersister;
 
+    private final GridSetBroker gridSetBroker;
+
     /**
      * 
      * @param cat
@@ -45,6 +47,7 @@ public class CatalogConfiguration implements Configuration {
             final GridSetBroker gridSetBroker, final Catalog cat, final Dispatcher gsDispatcher) {
 
         this.gsGwcConfigPersister = gsGwcConfigPersister;
+        this.gridSetBroker = gridSetBroker;
         this.catalog = cat;
         this.gsDispatcher = gsDispatcher;
 
@@ -125,6 +128,7 @@ public class CatalogConfiguration implements Configuration {
      */
     public TileLayer createLayer(LayerInfo li) {
         GeoServerTileLayer geoServerTileLayer = new GeoServerTileLayer(this, li);
+        geoServerTileLayer.initialize(gridSetBroker);
         String layerName = geoServerTileLayer.getName();
         layers.put(layerName, geoServerTileLayer);
         return geoServerTileLayer;
@@ -132,6 +136,7 @@ public class CatalogConfiguration implements Configuration {
 
     public TileLayer createLayer(LayerGroupInfo lgi) {
         GeoServerTileLayer geoServerTileLayer = new GeoServerTileLayer(this, lgi);
+        geoServerTileLayer.initialize(gridSetBroker);
         String layerName = geoServerTileLayer.getName();
         layers.put(layerName, geoServerTileLayer);
         return geoServerTileLayer;

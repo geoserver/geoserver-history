@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 import org.geoserver.gwc.GWC;
 import org.geoserver.wms.ExtendedCapabilitiesProvider;
@@ -103,7 +105,9 @@ public class CachingExtendedCapabilitiesProvider implements ExtendedCapabilities
 
         for (TileLayer layer : tileLayers) {
 
-            Collection<GridSubset> layerGrids = layer.getGridSubsets().values();
+            Map<String, GridSubset> gridSubsets = layer.getGridSubsets();
+            
+            Collection<GridSubset> layerGrids = gridSubsets.values();
 
             for (GridSubset grid : layerGrids) {
                 for (MimeType mime : layer.getMimeTypes()) {
