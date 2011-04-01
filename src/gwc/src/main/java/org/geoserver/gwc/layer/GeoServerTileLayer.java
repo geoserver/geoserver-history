@@ -95,6 +95,8 @@ public class GeoServerTileLayer extends TileLayer {
         super.mimeFormats = info.getMimeFormats();
         if (info.isCacheNonDefaultStyles()) {
             super.parameterFilters = createStylesParameterFilters();
+        } else {
+            LOGGER.fine("NOT Creating GeoServerTileLayer for " + getName() + " as option is off");
         }
 
         // set default properties that doesn't need initialization
@@ -207,15 +209,17 @@ public class GeoServerTileLayer extends TileLayer {
         if (layerInfo == null) {
             return null;
         }
-        final Set<StyleInfo> styles = layerInfo.getStyles();
-        if (styles == null || styles.size() == 0) {
+        final Set<StyleInfo> additionalStyles = layerInfo.getStyles();
+        if (additionalStyles == null || additionalStyles.size() == 0) {
+            LOGGER.info("Layer " + layerInfo.getName()
+                    + " has no additional styles, no parameter filters added");
             return null;
         }
 
         final String defaultStyle = layerInfo.getDefaultStyle().getName();
-        List<String> possibleValues = new ArrayList<String>(1 + styles.size());
+        List<String> possibleValues = new ArrayList<String>(1 + additionalStyles.size());
         possibleValues.add(defaultStyle);
-        for (StyleInfo style : styles) {
+        for (StyleInfo style : additionalStyles) {
             String styleName = style.getName();
             possibleValues.add(styleName);
         }
@@ -225,7 +229,7 @@ public class GeoServerTileLayer extends TileLayer {
         styleParamFilter.defaultValue = defaultStyle;
         styleParamFilter.values = possibleValues;
         parameterFilters.add(styleParamFilter);
-        LOGGER.info("Created STYLES parameter filter for layer " + getName() + " and styles "
+        LOGGER.fine("Created STYLES parameter filter for layer " + getName() + " and styles "
                 + possibleValues);
         return parameterFilters;
     }

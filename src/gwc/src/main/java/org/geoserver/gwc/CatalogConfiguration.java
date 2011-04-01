@@ -126,7 +126,8 @@ public class CatalogConfiguration implements Configuration {
      * @param li
      * @return
      */
-    public TileLayer createLayer(LayerInfo li) {
+    public GeoServerTileLayer createLayer(LayerInfo li) {
+        log.fine("Creating GeoServerTileLayer for LayerInfo " + li.getName());
         GeoServerTileLayer geoServerTileLayer = new GeoServerTileLayer(this, li);
         geoServerTileLayer.initialize(gridSetBroker);
         String layerName = geoServerTileLayer.getName();
@@ -134,7 +135,8 @@ public class CatalogConfiguration implements Configuration {
         return geoServerTileLayer;
     }
 
-    public TileLayer createLayer(LayerGroupInfo lgi) {
+    public GeoServerTileLayer createLayer(LayerGroupInfo lgi) {
+        log.fine("Creating GeoServerTileLayer for LayerGroup " + lgi.getName());
         GeoServerTileLayer geoServerTileLayer = new GeoServerTileLayer(this, lgi);
         geoServerTileLayer.initialize(gridSetBroker);
         String layerName = geoServerTileLayer.getName();

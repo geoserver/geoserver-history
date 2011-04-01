@@ -52,7 +52,7 @@ public class GWCCatalogListener implements CatalogListener {
      */
     public void handleAddEvent(CatalogAddEvent event) throws CatalogException {
         Object obj = event.getSource();
-
+        log.finer("Handling add event: " + obj);
         // We only handle layers here. Layer groups are initially empty
         if (obj instanceof LayerInfo) {
             LayerInfo layerInfo = (LayerInfo) obj;
@@ -77,7 +77,7 @@ public class GWCCatalogListener implements CatalogListener {
      */
     public void handlePostModifyEvent(CatalogPostModifyEvent event) throws CatalogException {
         Object obj = event.getSource();
-
+        log.finer("Handling modify event for " + obj);
         if (obj instanceof StyleInfo) {
             StyleInfo si = (StyleInfo) obj;
             handleStyleChange(si);
@@ -104,11 +104,11 @@ public class GWCCatalogListener implements CatalogListener {
      */
     private void handleStyleChange(final StyleInfo modifiedStyle) {
         final String styleName = modifiedStyle.getName();
-
+        log.finer("Handling style modification: " + styleName);
         // First we collect all the layers that use this style
         for (LayerInfo affectedLayer : gsCatalog.getLayers(modifiedStyle)) {
             String prefixedName = affectedLayer.getResource().getPrefixedName();
-            log.fine("Truncating layer '" + prefixedName + "' due to a change in style '"
+            log.info("Truncating layer '" + prefixedName + "' due to a change in style '"
                     + styleName + "'");
             gwc.truncate(prefixedName, styleName);
         }
