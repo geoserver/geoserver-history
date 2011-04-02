@@ -4,8 +4,9 @@ import java.util.List;
 
 import org.geotools.filter.FunctionImpl;
 import org.opengis.filter.expression.Expression;
+import org.opengis.filter.expression.VolatileFunction;
 
-public class PythonFunction extends FunctionImpl {
+public class PythonFunction extends FunctionImpl implements VolatileFunction {
 
     PythonFilterFunctionAdapter adapter;
     

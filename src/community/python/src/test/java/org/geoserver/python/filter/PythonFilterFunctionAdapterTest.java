@@ -70,5 +70,4 @@ public class PythonFilterFunctionAdapterTest {
         f = b.buildFeature(null);
         assertEquals(true, adapter.evaluate("acme", f, null ));
     }
-    
 }

@@ -111,7 +111,7 @@ public class PythonFilterFunctionAdapter {
         params[0] = Py.java2py(object);
         
         for (int i = 0; i < args.size(); i++) {
-            params[i+1] = Py.java2py(args.get(i).evaluate(null));
+            params[i+1] = Py.java2py(args.get(i).evaluate(object));
         }
         
         return func.__call__(params).__tojava__(Object.class);
