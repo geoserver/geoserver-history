@@ -323,7 +323,7 @@ public abstract class WMSTestSupport extends GeoServerTestSupport {
         showImage(testName, image);
     }
 
-    protected void showImage(String frameName, final BufferedImage image) {
+    public static void showImage(String frameName, final BufferedImage image) {
         showImage(frameName, SHOW_TIMEOUT, image);
     }
 
@@ -334,7 +334,7 @@ public abstract class WMSTestSupport extends GeoServerTestSupport {
      * @param timeOut
      * @param image
      */
-    protected void showImage(String frameName, long timeOut, final BufferedImage image) {
+    public static void showImage(String frameName, long timeOut, final BufferedImage image) {
         int width = image.getWidth();
         int height = image.getHeight();
 
