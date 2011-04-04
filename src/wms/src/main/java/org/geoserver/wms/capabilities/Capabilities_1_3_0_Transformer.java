@@ -1191,7 +1191,7 @@ public class Capabilities_1_3_0_Transformer extends TransformerBase {
                 LOGGER.log(Level.WARNING, "Unable to decode " + srs, e);
             }
             
-            if (crs != null && CRS.getAxisOrder(crs) == AxisOrder.LAT_LON) {
+            if (crs != null && CRS.getAxisOrder(crs) == AxisOrder.NORTH_EAST) {
                 String tmp = minx; minx = miny; miny = tmp;
                 tmp = maxx; maxx = maxy; maxy = tmp;
             }

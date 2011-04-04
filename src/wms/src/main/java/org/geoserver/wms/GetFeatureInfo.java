@@ -759,7 +759,7 @@ public class GetFeatureInfo {
         
         //the transformation depends on an x/y ordering, if we have a lat/lon crs swap it
         CoordinateReferenceSystem crs = mapExtent.getCoordinateReferenceSystem();
-        boolean swap = crs != null && CRS.getAxisOrder(crs) == AxisOrder.LAT_LON;
+        boolean swap = crs != null && CRS.getAxisOrder(crs) == AxisOrder.NORTH_EAST;
         if (swap) {
             mapExtent = new ReferencedEnvelope(mapExtent.getMinY(), mapExtent.getMaxY(), 
                 mapExtent.getMinX(), mapExtent.getMaxX(), null);
