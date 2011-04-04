@@ -9,6 +9,8 @@ import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.namespace.QName;
 
@@ -73,6 +75,7 @@ public class GetFeatureInfoIntegrationTest extends WMSTestSupport {
     @Override
     protected void populateDataDirectory(MockData dataDirectory) throws Exception {
         super.populateDataDirectory(dataDirectory);
+        dataDirectory.addWcs10Coverages();
         dataDirectory.addStyle("thickStroke", getClass()
                 .getResource("../wms_1_1_1/thickStroke.sld"));
         dataDirectory.addStyle("raster", getClass().getResource("../wms_1_1_1/raster.sld"));
@@ -419,5 +422,60 @@ public class GetFeatureInfoIntegrationTest extends WMSTestSupport {
         // System.out.println(result);
         assertNotNull(result);
         assertTrue(result.indexOf("Green Forest") > 0);
+    }
+    
+    public void testXYGeo() throws Exception {
+        String layer = getLayerId(MockData.BASIC_POLYGONS);
+        String url = "wms?styles=&format=jpeg&info_format=text/plain&request=GetFeatureInfo&layers="
+            + layer + "&query_layers=" + layer + "&width=292&height=512&x=147&y=360&srs=epsg:4326";
+        
+        String request = url + "&VERSION=1.1.1&BBOX=-3.992187,-4.5,3.992188,9.5";
+        String result = getAsString(request);
+        assertTrue(result.indexOf("the_geom =") > 0);
+        
+        request = url + "&VERSION=1.3.0&BBOX=-4.5,-3.992187,9.5,3.992188";
+        result = getAsString(request);
+        assertTrue(result.indexOf("the_geom =") > 0);
+    }
+    
+    public void testXYProj() throws Exception {
+        String layer = getLayerId(MockData.POLYGONS);
+        String url = "wms?styles=&format=jpeg&info_format=text/plain&request=GetFeatureInfo&layers="
+            + layer + "&query_layers=" + layer + "&WIDTH=512&HEIGHT=511&X=136&Y=380&srs=epsg:32615";
+        
+        String request = url + "&VERSION=1.1.1&BBOX=499699.999705,499502.050472,501800.000326,501597.949528";
+        String result = getAsString(request);
+        assertTrue(result.indexOf("polygonProperty =") > 0);
+        
+        request = url + "&VERSION=1.3.0&BBOX=499699.999705,499502.050472,501800.000326,501597.949528";
+        result = getAsString(request);
+        assertTrue(result.indexOf("polygonProperty =") > 0);
+    }
+    
+    public void testXYCoverage() throws Exception {
+        String layer = getLayerId(MockData.USA_WORLDIMG);
+        String url = "wms?styles=&format=jpeg&info_format=text/plain&request=GetFeatureInfo&layers="
+            + layer + "&query_layers=" + layer + "&WIDTH=512&HEIGHT=408&X=75&Y=132&srs=epsg:4326";
+        
+        String request = url + "&VERSION=1.1.1&BBOX=-180,-143.4375,180,143.4375";
+        String result = getAsString(request);
+        Matcher m = Pattern.compile(
+            ".*RED_BAND = (\\d+\\.\\d+).*GREEN_BAND = (\\d+\\.\\d+).*BLUE_BAND = (\\d+\\.\\d+).*", 
+            Pattern.DOTALL).matcher(result);
+        assertTrue(m.matches());
+        double red = Double.parseDouble(m.group(1));
+        double green = Double.parseDouble(m.group(2));
+        double blue = Double.parseDouble(m.group(3));
+        
+        request = url + "&VERSION=1.3.0&BBOX=-143.4375,-180,143.4375,180";
+        result = getAsString(request);
+        
+        m = Pattern.compile(
+            ".*RED_BAND = (\\d+\\.\\d+).*GREEN_BAND = (\\d+\\.\\d+).*BLUE_BAND = (\\d+\\.\\d+).*", 
+            Pattern.DOTALL).matcher(result);
+        assertTrue(m.matches());
+        assertEquals(red, Double.parseDouble(m.group(1)));
+        assertEquals(green, Double.parseDouble(m.group(2)));
+        assertEquals(blue, Double.parseDouble(m.group(3)));
     }
 }
