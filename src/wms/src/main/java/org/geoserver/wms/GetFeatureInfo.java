@@ -62,6 +62,7 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.WMSMapLayer;
 import org.geotools.parameter.Parameter;
 import org.geotools.referencing.CRS;
+import org.geotools.referencing.CRS.AxisOrder;
 import org.geotools.renderer.lite.MetaBufferEstimator;
 import org.geotools.renderer.lite.RendererUtilities;
 import org.geotools.resources.geometry.XRectangle2D;
@@ -668,7 +669,7 @@ public class GetFeatureInfo {
         return result;
     }
 
-    private Polygon getEnvelopeFilter(int x, int y, int width, int height, Envelope bbox,
+    private Polygon getEnvelopeFilter(int x, int y, int width, int height, ReferencedEnvelope bbox,
             double radius) {
         Coordinate upperLeft = pixelToWorld(x - radius, y - radius, bbox, width, height);
         Coordinate lowerRight = pixelToWorld(x + radius, y + radius, bbox, width, height);
@@ -733,7 +734,7 @@ public class GetFeatureInfo {
      * 
      * @throws RuntimeException
      */
-    private Coordinate pixelToWorld(double x, double y, Envelope map, double width, double height) {
+    private Coordinate pixelToWorld(double x, double y, ReferencedEnvelope map, double width, double height) {
         // set up the affine transform and calculate scale values
         AffineTransform at = worldToScreenTransform(map, width, height);
 
@@ -762,7 +763,16 @@ public class GetFeatureInfo {
      * 
      * @return a transform that maps from real world coordinates to the screen
      */
-    private AffineTransform worldToScreenTransform(Envelope mapExtent, double width, double height) {
+    private AffineTransform worldToScreenTransform(ReferencedEnvelope mapExtent, double width, double height) {
+        
+        //the transformation depends on an x/y ordering, if we have a lat/lon crs swap it
+        CoordinateReferenceSystem crs = mapExtent.getCoordinateReferenceSystem();
+        boolean swap = crs != null && CRS.getAxisOrder(crs) == AxisOrder.LAT_LON;
+        if (swap) {
+            mapExtent = new ReferencedEnvelope(mapExtent.getMinY(), mapExtent.getMaxY(), 
+                mapExtent.getMinX(), mapExtent.getMaxX(), null);
+        }
+        
         double scaleX = (double) width / mapExtent.getWidth();
         double scaleY = (double) height / mapExtent.getHeight();
 
@@ -770,6 +780,11 @@ public class GetFeatureInfo {
         double ty = (mapExtent.getMinY() * scaleY) + height;
 
         AffineTransform at = new AffineTransform(scaleX, 0.0d, 0.0d, -scaleY, tx, ty);
+
+        //if we swapped concatenate a transform that swaps back
+        if (swap) {
+            at.concatenate(new AffineTransform(0, 1, 1, 0, 0, 0));
+        }
 
         return at;
     }
