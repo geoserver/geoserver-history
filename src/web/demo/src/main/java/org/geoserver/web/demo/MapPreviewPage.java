@@ -81,12 +81,12 @@ public class MapPreviewPage extends GeoServerBasePage {
                     f.add(new ExternalLink("ol", olUrl, "OpenLayers"));
                     
                     // kml preview
-                    final String kmlUrl = "../wms/kml?layers=" + layer.getName();
+                    final String kmlUrl = layer.getBaseUrl("wms") + "/kml?layers=" + layer.getName();
                     f.add(new ExternalLink("kml", kmlUrl, "KML"));
                     
                     // gml preview (we actually want it only for vector layers)
                     final String gmlUrl = 
-                        "../ows?service=WFS&version=1.0.0&request=GetFeature&typeName="
+                        layer.getBaseUrl("ows") + "?service=WFS&version=1.0.0&request=GetFeature&typeName="
                         + layer.getName() + "&maxFeatures=50";
                     Component gmlLink = new ExternalLink("gml", gmlUrl, "GML");
                     f.add(gmlLink);
@@ -213,7 +213,7 @@ public class MapPreviewPage extends GeoServerBasePage {
         // build the wms request, redirect to it in a new window, reset the selection
         String wmsUrl = "'" + layer.getWmsLink()
                 + "&format=' + this.options[this.selectedIndex].value";
-        String wfsUrl = "'../ows?service=WFS&version=1.0.0&request=GetFeature&typeName="
+        String wfsUrl = "'" + layer.getBaseUrl("ows") + "?service=WFS&version=1.0.0&request=GetFeature&typeName="
           + layer.getName()
           + "&maxFeatures=50"
           + "&outputFormat=' + this.options[this.selectedIndex].value";

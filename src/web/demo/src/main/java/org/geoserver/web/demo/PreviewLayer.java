@@ -58,6 +58,14 @@ public class PreviewLayer {
         }
     }
     
+    public String getWorkspace() {
+        if (layerInfo != null) {
+            return layerInfo.getResource().getStore().getWorkspace().getName();
+        } else {
+            return null;
+        }
+    }
+    
     public ResourceReference getIcon() {
         if(layerInfo != null)
             return CatalogIconFactory.get().getSpecificLayerIcon(layerInfo);
@@ -159,6 +167,16 @@ public class PreviewLayer {
         }
         return layers;
     }
+    
+    String getBaseUrl(String service) {
+        String ws = getWorkspace();
+        if(ws == null) {
+            // global reference
+            return "../" + service;
+        } else {
+            return "../" + ws + "/" + service;
+        }
+    }
 
     /**
      * Given a request and a target format, builds the WMS request
@@ -173,7 +191,7 @@ public class PreviewLayer {
         if (bbox == null)
             return null;
 
-        return "../wms?service=WMS&version=1.1.0&request=GetMap" //
+        return getBaseUrl("wms") + "?service=WMS&version=1.1.0&request=GetMap" //
                 + "&layers=" + getName() //
                 + "&styles=" //
                 + "&bbox=" + bbox.getMinX() + "," + bbox.getMinY() //
