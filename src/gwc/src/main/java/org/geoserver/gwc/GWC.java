@@ -595,14 +595,29 @@ public class GWC implements DisposableBean, ApplicationContextAware {
     }
 
     /**
+     * Returns whether the disk quota module is available at all.
+     * <p>
+     * If not, none of the other diskquota related methods should be even called. The disk quota
+     * module may have been completely disabled through the {@code GWC_DISKQUOTA_DISABLED=true}
+     * environment variable
+     * </p>
+     * 
+     * @return whether the disk quota module is available at all.
+     */
+    public boolean isDiskQuotaAvailable() {
+        DiskQuotaMonitor diskQuotaMonitor = getDiskQuotaMonitor();
+        return diskQuotaMonitor.isEnabled();
+    }
+
+    /**
      * @return the current DiskQuota configuration or {@code null} if the disk quota module has been
      *         disabled (i.e. through the {@code GWC_DISKQUOTA_DISABLED=true} environment variable)
      */
     public DiskQuotaConfig getDiskQuotaConfig() {
-        DiskQuotaMonitor monitor = getDiskQuotaMonitor();
-        if (!monitor.isEnabled()) {
+        if (!isDiskQuotaAvailable()) {
             return null;
         }
+        DiskQuotaMonitor monitor = getDiskQuotaMonitor();
         return monitor.getConfig();
     }
 
@@ -617,6 +632,7 @@ public class GWC implements DisposableBean, ApplicationContextAware {
     }
 
     public void saveDiskQuotaConfig(DiskQuotaConfig config) {
+        Assert.isTrue(isDiskQuotaAvailable());
         DiskQuotaMonitor monitor = getDiskQuotaMonitor();
         monitor.saveConfig(config);
     }
@@ -629,6 +645,7 @@ public class GWC implements DisposableBean, ApplicationContextAware {
     }
 
     public Quota getGlobalQuota() {
+        Assert.isTrue(isDiskQuotaAvailable());
         return getDiskQuotaConfig().getGlobalQuota();
     }
 
@@ -638,6 +655,7 @@ public class GWC implements DisposableBean, ApplicationContextAware {
      * @return the globally used quota
      */
     public Quota getGlobalUsedQuota() {
+        Assert.isTrue(isDiskQuotaAvailable());
         try {
             return quotaStore.getGloballyUsedQuota();
         } catch (InterruptedException e) {
@@ -646,12 +664,14 @@ public class GWC implements DisposableBean, ApplicationContextAware {
     }
 
     /**
-     * Precondition: {@link #getDiskQuotaConfig() != null}
+     * Precondition: {@link #isDiskQuotaAvailable()}
      * 
      * @return the Quota limit for the given layer, or {@code null} if no specific limit has been
      *         set for that layer
      */
     public Quota getQuotaLimit(final String layerName) {
+        Assert.isTrue(isDiskQuotaAvailable());
+
         DiskQuotaConfig disQuotaConfig = getDiskQuotaConfig();
         List<LayerQuota> layerQuotas = disQuotaConfig.getLayerQuotas();
         if (layerQuotas == null) {
@@ -666,11 +686,12 @@ public class GWC implements DisposableBean, ApplicationContextAware {
     }
 
     /**
-     * Precondition: {@link #getDiskQuotaConfig() != null}
+     * Precondition: {@link #isDiskQuotaAvailable()}
      * 
      * @return the currently used disk quota for the layer or {@code null} if can't be determined
      */
     public Quota getUsedQuota(final String layerName) {
+        Assert.isTrue(isDiskQuotaAvailable());
         try {
             Quota usedQuotaByLayerName = quotaStore.getUsedQuotaByLayerName(layerName);
             return usedQuotaByLayerName;

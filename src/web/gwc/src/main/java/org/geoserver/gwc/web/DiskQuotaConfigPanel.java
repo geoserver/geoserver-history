@@ -87,7 +87,7 @@ public class DiskQuotaConfigPanel extends Panel {
             @Override
             protected Quota load() {
                 GWC gwc = GWC.get();
-                if (gwc.getDiskQuotaConfig() == null) {
+                if (!gwc.isDiskQuotaAvailable()) {
                     return new Quota();// fake
                 }
                 return gwc.getGlobalUsedQuota();

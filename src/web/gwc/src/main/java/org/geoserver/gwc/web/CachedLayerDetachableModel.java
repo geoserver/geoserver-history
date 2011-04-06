@@ -55,8 +55,10 @@ public class CachedLayerDetachableModel extends LoadableDetachableModel<CachedLa
         info.setName(name);
         info.setType(getType(layer));
         info.setEnabled(layer.isEnabled());
-        info.setQuotaLimit(gwc.getQuotaLimit(name));
-        info.setQuotaUsed(gwc.getUsedQuota(name));
+        if (gwc.isDiskQuotaAvailable()) {
+            info.setQuotaLimit(gwc.getQuotaLimit(name));
+            info.setQuotaUsed(gwc.getUsedQuota(name));
+        }
 
         return info;
     }
