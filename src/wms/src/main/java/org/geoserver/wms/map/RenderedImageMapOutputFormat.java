@@ -9,6 +9,7 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.Transparency;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
@@ -37,7 +38,6 @@ import javax.media.jai.PlanarImage;
 import javax.media.jai.ROI;
 import javax.media.jai.ROIShape;
 import javax.media.jai.operator.BandMergeDescriptor;
-import javax.media.jai.operator.CompositeDescriptor;
 import javax.media.jai.operator.ConstantDescriptor;
 import javax.media.jai.operator.CropDescriptor;
 import javax.media.jai.operator.LookupDescriptor;
@@ -49,9 +49,9 @@ import org.geoserver.wms.GetMapOutputFormat;
 import org.geoserver.wms.GetMapRequest;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSInfo;
+import org.geoserver.wms.WMSInfo.WMSInterpolation;
 import org.geoserver.wms.WMSMapContext;
 import org.geoserver.wms.WatermarkInfo;
-import org.geoserver.wms.WMSInfo.WMSInterpolation;
 import org.geoserver.wms.decoration.MapDecoration;
 import org.geoserver.wms.decoration.MapDecorationLayout;
 import org.geoserver.wms.decoration.MetatiledMapDecorationLayout;
@@ -733,6 +733,8 @@ public class RenderedImageMapOutputFormat extends AbstractMapOutputFormat {
         // set transparency
         if (transparent) {
             bgColor = new Color(bgColor.getRed(), bgColor.getGreen(), bgColor.getBlue(), 0);
+        } else {
+            bgColor = new Color(bgColor.getRed(), bgColor.getGreen(), bgColor.getBlue(), 255);
         }
   
         //
@@ -911,31 +913,21 @@ public class RenderedImageMapOutputFormat extends AbstractMapOutputFormat {
         //
         // IndexColorModel
         //
+        final ImageWorker worker = new ImageWorker(image);
+        final int transparencyType=cm.getTransparency();
         
         // in case of index color model we try to preserve it, so that output
         // formats that can work with it can enjoy its extra compactness
         if (cm instanceof IndexColorModel) {
             final IndexColorModel icm = (IndexColorModel) cm;
             // try to find the index that matches the requested background color
-            int bgColorIndex = ColorUtilities.findColorIndex(bgColor, icm);
-            
-            //collect alpha channels if we have them
-            if (cm.hasAlpha()) {
-                final ImageWorker worker = new ImageWorker(image);
-                
-                // simone: I am not sure about this commit, commenting out for the moment.
-//                // GR: Alpha images must have the same sample size as the sources, otherwise the
-//                // Mosaic operation bellow fails
-//                worker.forceComponentColorModel();
-                final RenderedImage alpha = worker.retainLastBand().getRenderedImage();
-                alphaChannels = new PlanarImage[] { PlanarImage.wrapRenderedImage(alpha) };
-            }
+            final int bgColorIndex = ColorUtilities.findColorIndex(bgColor, icm);
             
             //we did not find the background color, well we have to expand to RGB and then tell Mosaic to use the RGB(A) color as the
             // background
             if (bgColorIndex == -1) {
                 // we need to expand the image to RGB
-                image = new ImageWorker(image).forceComponentColorModel().getRenderedImage();
+                image = worker.forceComponentColorModel().getRenderedImage();
                 bgValues = new double[] { bgColor.getRed(), bgColor.getGreen(), bgColor.getBlue(),
                         transparent ? 0 : 255 };
                 cm = image.getColorModel();
@@ -944,6 +936,13 @@ public class RenderedImageMapOutputFormat extends AbstractMapOutputFormat {
             	// The final Mosaic will use the IndexColorModel of this image anywa, therefore all we need to do is to force
             	// the background to point to the right color in the palettte
                 bgValues = new double[] { bgColorIndex };
+            }
+            
+            //collect alpha channels if we have them in order to reuse them later on for mosaic operation
+            if (cm.hasAlpha()) {
+                worker.forceComponentColorModel();
+                final RenderedImage alpha =worker.retainLastBand().getRenderedImage();
+                alphaChannels = new PlanarImage[] { PlanarImage.wrapRenderedImage(alpha) };
             }
         }
         
@@ -1037,8 +1036,8 @@ public class RenderedImageMapOutputFormat extends AbstractMapOutputFormat {
         }
         
         //
-        // If we need to add a collar use mosaic
-        if((!imageBounds.contains(mapRasterArea) && !imageBounds.equals(mapRasterArea))) {
+        // If we need to add a collar use mosaic or if we need to blend/apply a bkg color
+        if(!(imageBounds.contains(mapRasterArea) || imageBounds.equals(mapRasterArea))||transparencyType!=Transparency.OPAQUE) {
             ROI[] rois = new ROI[] { new ROIShape(imageBounds) };
 
             // build the transparency thresholds
@@ -1046,52 +1045,51 @@ public class RenderedImageMapOutputFormat extends AbstractMapOutputFormat {
                     .getSampleModel().getDataType()) } };
             // apply the mosaic
             image = MosaicDescriptor.create(new RenderedImage[] { image },
-                    MosaicDescriptor.MOSAIC_TYPE_OVERLAY,// alphaChannels != null ?
-                                                         // MosaicDescriptor.MOSAIC_TYPE_BLEND:
-                                                         // MosaicDescriptor.MOSAIC_TYPE_OVERLAY,
+//                    MosaicDescriptor.MOSAIC_TYPE_OVERLAY,
+                    alphaChannels != null && transparencyType==Transparency.TRANSLUCENT ? MosaicDescriptor.MOSAIC_TYPE_BLEND: MosaicDescriptor.MOSAIC_TYPE_OVERLAY,
                     alphaChannels, rois, thresholds, bgValues, new RenderingHints(
                             JAI.KEY_IMAGE_LAYOUT, layout));
         }
-        
-        // Check if we need to crop a larger than required image, else return it right away
-        if (imageBounds.contains(mapRasterArea) && !imageBounds.equals(mapRasterArea)) { // the produced image does not need a final mosaicking operation but a crop!
-            // reduce the image to the actually required size
-            image= CropDescriptor.create(
-                    image, 
-                    (float)0, 
-                    (float)0, 
-                    (float)mapWidth,
-                    (float)mapHeight,
-                     null);
-        }
-        
-        // is there any chance we have translucent pixels that we need to blend with a background?
-        if(!transparent && alphaChannels != null && cm instanceof ComponentColorModel) {
-            Byte[] bg = new Byte[bgValues.length - 1];
-            for (int i = 0; i < bg.length; i++) {
-                bg[i] = (byte) bgValues[i];
+        else
+            // Check if we need to crop a subset of the produced image, else return it right away
+            if (imageBounds.contains(mapRasterArea) && !imageBounds.equals(mapRasterArea)) { // the produced image does not need a final mosaicking operation but a crop!
+                // reduce the image to the actually required size
+                image= CropDescriptor.create(
+                        image, 
+                        (float)0, 
+                        (float)0, 
+                        (float)mapWidth,
+                        (float)mapHeight,
+                         null);
             }
-            Byte[] bgAlpha = new Byte[] {(byte) 0xFF};
             
-            RenderingHints hints = new RenderingHints(JAI.KEY_IMAGE_LAYOUT, layout);
-            RenderedImage background = ConstantDescriptor.create((float) image.getWidth(), 
-                    (float) image.getHeight(), bg, hints);
-            RenderedImage bgAlphaImage = ConstantDescriptor.create((float) image.getWidth(), 
-                    (float) image.getHeight(), bgAlpha, hints);
-            
-            ImageWorker iwRGB = new ImageWorker(image);
-            ImageWorker iwAlpha = new ImageWorker(image);
-            iwRGB.setRenderingHints(hints);
-            image = iwRGB.retainBands(iwRGB.getNumBands() - 1).getRenderedImage();
-            iwAlpha.setRenderingHints(hints);
-            RenderedImage alphaImage = iwAlpha.retainLastBand().getRenderedImage();
-            
-            image = CompositeDescriptor.create(image, background, alphaImage,  bgAlphaImage, false, 
-                    CompositeDescriptor.NO_DESTINATION_ALPHA, 
-                    hints);
-        }
+//        // is there any chance we have translucent pixels that we need to blend with a background?
+//        if(!transparent && alphaChannels != null && transparencyType==Transparency.TRANSLUCENT&& cm instanceof ComponentColorModel) {
+//            Byte[] bg = new Byte[bgValues.length - 1];
+//            for (int i = 0; i < bg.length; i++) {
+//                bg[i] = (byte) bgValues[i];
+//            }
+//            Byte[] bgAlpha = new Byte[] {(byte) 0xFF};
+//            
+//            RenderingHints hints = new RenderingHints(JAI.KEY_IMAGE_LAYOUT, layout);
+//            RenderedImage background = ConstantDescriptor.create((float) image.getWidth(), 
+//                    (float) image.getHeight(), bg, hints);
+//            RenderedImage bgAlphaImage = ConstantDescriptor.create((float) image.getWidth(), 
+//                    (float) image.getHeight(), bgAlpha, hints);
+//            
+//            ImageWorker iwRGB = new ImageWorker(image);
+//            ImageWorker iwAlpha = new ImageWorker(image);
+//            iwRGB.setRenderingHints(hints);
+//            image = iwRGB.retainBands(iwRGB.getNumBands() - 1).getRenderedImage();
+//            iwAlpha.setRenderingHints(hints);
+//            RenderedImage alphaImage = iwAlpha.retainLastBand().getRenderedImage();
+//            
+//            image = CompositeDescriptor.create(image, background, alphaImage,  bgAlphaImage, false, 
+//                    CompositeDescriptor.NO_DESTINATION_ALPHA, 
+//                    hints);
+//        }
 
-        // RenderedImageBrowser.showChain(image);
+//         RenderedImageBrowser.showChain(image);
         
         return image;
     }
@@ -1132,7 +1130,7 @@ public class RenderedImageMapOutputFormat extends AbstractMapOutputFormat {
      * @param color
      * @return
      */
-    private boolean isLevelOfGray(Color color) {
+    private static boolean isLevelOfGray(Color color) {
         return color.getRed() == color.getBlue() && color.getRed() == color.getGreen();
     }
 
