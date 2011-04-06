@@ -4,6 +4,7 @@
  */
 package org.geoserver.ows.util;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.aopalliance.intercept.MethodInterceptor;
@@ -27,7 +28,9 @@ public class RequestObjectLogger implements MethodInterceptor {
     }
     
     public Object invoke(MethodInvocation invocation) throws Throwable {
-
+        if (!logger.isLoggable(Level.INFO)) {
+            return invocation.proceed();
+        }
         StringBuffer log = new StringBuffer();
         log.append("\n" + "Request: " + invocation.getMethod().getName());
 
