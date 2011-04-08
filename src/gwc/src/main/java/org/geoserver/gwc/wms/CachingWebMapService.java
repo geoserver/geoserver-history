@@ -5,6 +5,7 @@
 package org.geoserver.gwc.wms;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -83,6 +84,8 @@ public class CachingWebMapService implements MethodInterceptor {
                 RawMap map = new RawMap(null, mapContents, mimeType);
                 map.setResponseHeader("Cache-Control", "no-cache");
                 map.setResponseHeader("ETag", Long.toHexString(cachedTile.getTSCreated()));
+                map.setResponseHeader("geowebcache-tile-index",
+                        Arrays.toString(cachedTile.getTileIndex()));
                 return map;
             }
         }
