@@ -20,37 +20,16 @@
     <!-- constructor-arg value="/etc/geowebcache" / -->
   </bean>
   
-  <!-- If you like to automatically configure GWC from a WMS Getcapabilities document,
-       change the values below. The last constructor-arg lets you specify parameters 
-       that are appended to every WMS request to the backed, for example: 
-       "format_options=regionate_by:auto&amp;bgcolor=0x112233" 
-       
-       You also need to uncomment gwcWMSConfig in the gwcTLDispatcher bean!
-       -->
-  <bean id="gwcWMSConfig" class="org.geowebcache.config.GetCapabilitiesConfiguration">
-  	<constructor-arg ref="gwcGridSetBroker"/>
-    <!-- The URL to the WMS GetCapabilities document, notice &amp; , port is normally 8080-->
-    <constructor-arg value="http://localhost:8282/geoserver/wms?request=getcapabilities&amp;version=1.1.0&amp;service=wms"/>
-    <!-- The formats to support for all layers read for the above document -->    
-    <constructor-arg value="image/png,image/jpeg"/>
-    <!-- Metatiling factors, 3x3 is usually a good compromise for vector data -->
-    <constructor-arg value="3x3"/>
-    <!-- Vendor parameters, these are appended to every request sent to the backend.
-         If you use MapServer you probably want to set this to "map=name" -->
-    <constructor-arg value=""/>
-    <!-- Whether to allow cached=false to specificed for certain requests -->
-    <constructor-arg value="false"/> 
-  </bean>
-  
   <!-- For each configuration bean above, add them below to activate -->
   <bean id="gwcTLDispatcher" class="org.geowebcache.layer.TileLayerDispatcher">
     <constructor-arg ref="gwcGridSetBroker"/>
     <constructor-arg>
       <list>
-	    <!-- ref bean="gwcWMSConfig" / -->
 	    <ref bean="gwcXmlConfig" />
       </list>
     </constructor-arg>
+    <!-- loadDelay < -1 forces gwc to load configuration in the main thread -->
+    <constructor-arg value="-1" />
   </bean>
   
   <bean id="gwcDefaultStorageFinder" class="org.geowebcache.storage.DefaultStorageFinder">
@@ -143,6 +122,7 @@
     <constructor-arg ref="gwcXmlConfig"/>
     <constructor-arg ref="gwcRuntimeStats"/>
     <property name="defaultStorageFinder" ref="gwcDefaultStorageFinder"/>
+    <property name="servletPrefix" value="gwc"/>
   </bean>
 	
   <!-- Thread pool for seeding -->

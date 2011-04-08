@@ -28,8 +28,6 @@ import org.geowebcache.layer.TileLayerDispatcher;
  */
 public class CatalogConfigurationTest extends GeoServerTestSupport {
 
-    private CatalogConfiguration gwcListener;
-
     private Catalog cat;
 
     private TileLayerDispatcher tld;
@@ -49,7 +47,7 @@ public class CatalogConfigurationTest extends GeoServerTestSupport {
      * @throws Exception
      */
     public void testInit() throws Exception {
-        gwcListener = (CatalogConfiguration) applicationContext.getBean("gwcCatalogConfiguration");
+        GWC gwc = GWC.get();
 
         cat = (Catalog) applicationContext.getBean("rawCatalog");
 
@@ -66,7 +64,7 @@ public class CatalogConfigurationTest extends GeoServerTestSupport {
         List<TileLayer> layerList;
         Iterator<TileLayer> tlIter;
 
-        layerList = gwcListener.getTileLayers(true);
+        layerList = gwc.getLayers();
         tlIter = layerList.iterator();
 
         assertTrue(tlIter.hasNext());
@@ -89,7 +87,7 @@ public class CatalogConfigurationTest extends GeoServerTestSupport {
         assertTrue(foundLakes);
 
         // 2) Check sf:GenerictEntity is present and initialized
-        layerList = gwcListener.getTileLayers(true);
+        layerList = gwc.getLayers();
         tlIter = layerList.iterator();
         boolean foudAGF = false;
         while (tlIter.hasNext()) {

@@ -157,7 +157,7 @@ public class GeoServerTileLayerInfo {
     public boolean isEnabled() {
         return enabled;
     }
-
+    
     public void setGutter(int gutter) {
         this.gutter = gutter;
     }

@@ -29,15 +29,18 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.util.logging.Logging;
 import org.geowebcache.GeoWebCacheException;
+import org.geowebcache.config.ConfigurationException;
 import org.geowebcache.conveyor.ConveyorTile;
 import org.geowebcache.filter.parameters.ParameterException;
 import org.geowebcache.filter.parameters.ParameterFilter;
 import org.geowebcache.filter.parameters.StringParameterFilter;
 import org.geowebcache.grid.BoundingBox;
+import org.geowebcache.grid.GridSet;
 import org.geowebcache.grid.GridSetBroker;
 import org.geowebcache.grid.GridSubset;
 import org.geowebcache.grid.GridSubsetFactory;
 import org.geowebcache.grid.OutsideCoverageException;
+import org.geowebcache.grid.SRS;
 import org.geowebcache.io.ByteArrayResource;
 import org.geowebcache.io.Resource;
 import org.geowebcache.layer.MetaTile;
@@ -47,6 +50,10 @@ import org.geowebcache.layer.meta.LayerMetaInformation;
 import org.geowebcache.mime.FormatModifier;
 import org.geowebcache.mime.MimeType;
 import org.geowebcache.util.GWCVars;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.NoSuchAuthorityCodeException;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.TransformException;
 import org.springframework.util.Assert;
 
 public class GeoServerTileLayer extends TileLayer {
@@ -64,6 +71,8 @@ public class GeoServerTileLayer extends TileLayer {
     private transient final String layerId;
 
     private transient final String layerGroupId;
+
+    private String configErrorMessage;
 
     public GeoServerTileLayer(final GWC mediator, final LayerGroupInfo layerGroup) {
         this.mediator = mediator;
@@ -112,7 +121,27 @@ public class GeoServerTileLayer extends TileLayer {
         super.metaInformation = null;// see getMetaInformation() override
         super.queryable = null;// see isQueryable() override
         super.wmsStyles = null;// see getStyles() override
-        setBackendTimeout(120);
+
+        ReferencedEnvelope latLongBbox = getLatLonBbox();
+
+        Hashtable<String, GridSubset> subSets;
+        try {
+            GridSetBroker gridSetBroker = mediator.getGridSetBroker();
+            subSets = getGrids(latLongBbox, gridSetBroker);
+            super.subSets = subSets;
+        } catch (ConfigurationException e) {
+            String msg = "Can't create grids for '" + getName() + "': " + e.getMessage();
+            LOGGER.warning(msg);
+            setConfigErrorMessage(msg);
+        }
+    }
+
+    private void setConfigErrorMessage(String configErrorMessage) {
+        this.configErrorMessage = configErrorMessage;
+    }
+
+    public String getConfigErrorMessage() {
+        return configErrorMessage;
     }
 
     public void setMetaTilingFactors(final int metaTilingX, final int metaTilingY) {
@@ -122,17 +151,32 @@ public class GeoServerTileLayer extends TileLayer {
     }
 
     /**
-     * Returns whether caching is enabled for this tile layer.
+     * Returns whether this tile layer is enabled.
      * <p>
-     * Uses the {@code GWC.enabled} property of the backing {@link LayerInfo}'s or
-     * {@link LayerGroupInfo}'s {@link MetadataMap}
+     * The layer is enabled if these two conditions apply:
+     * <ul>
+     * <li>It is enabled by configuration
+     * <li>The layer is not errored ({@link #getConfigErrorMessage() == null}
+     * </ul>
+     * The layer is enabled by configuration if: the {@code GWC.enabled} metadata property is set to
+     * {@code true} in it's corresponding {@link LayerInfo} or {@link LayerGroupInfo}
+     * {@link MetadataMap}, or there's no {@code GWC.enabled} property set at all but the global
+     * {@link GWCConfig#isCacheLayersByDefault()} is {@code true}.
      * </p>
      * 
      * @see org.geowebcache.layer.TileLayer#isEnabled()
+     * @see #enabled()
      */
     @Override
     public boolean isEnabled() {
-        return info.isEnabled();
+        return info.isEnabled() && configErrorMessage == null;
+    }
+
+    /**
+     * @return
+     */
+    public boolean enabled() {
+        return isEnabled() && getConfigErrorMessage() == null;
     }
 
     @Override
@@ -163,12 +207,6 @@ public class GeoServerTileLayer extends TileLayer {
 
     @Override
     protected boolean initializeInternal(GridSetBroker gridSetBroker) {
-
-        ReferencedEnvelope latLongBbox = getLatLonBbox();
-
-        final Hashtable<String, GridSubset> subSets = getGrids(latLongBbox, gridSetBroker);
-        super.subSets = subSets;
-
         return true;
     }
 
@@ -547,32 +585,66 @@ public class GeoServerTileLayer extends TileLayer {
 
     }
 
-    private Hashtable<String, GridSubset> getGrids(ReferencedEnvelope env,
-            GridSetBroker gridSetBroker) {
-        double minX = env.getMinX();
-        double minY = env.getMinY();
-        double maxX = env.getMaxX();
-        double maxY = env.getMaxY();
+    private Hashtable<String, GridSubset> getGrids(ReferencedEnvelope latLonBbox,
+            GridSetBroker gridSetBroker) throws ConfigurationException {
 
-        BoundingBox bounds4326 = new BoundingBox(minX, minY, maxX, maxY);
-
-        BoundingBox bounds900913 = new BoundingBox(longToSphericalMercatorX(minX),
-                latToSphericalMercatorY(minY), longToSphericalMercatorX(maxX),
-                latToSphericalMercatorY(maxY));
+        List<String> cachedGridSetIds = info.getCachedGridSetIds();
+        if (cachedGridSetIds.size() == 0) {
+            throw new IllegalStateException("TileLayer " + getName()
+                    + " has no gridsets configured");
+        }
 
         Hashtable<String, GridSubset> grids = new Hashtable<String, GridSubset>(2);
-
-        GridSubset gridSubset4326 = GridSubsetFactory.createGridSubSet(
-                gridSetBroker.WORLD_EPSG4326, bounds4326, 0, 25);
-
-        grids.put(gridSetBroker.WORLD_EPSG4326.getName(), gridSubset4326);
-
-        GridSubset gridSubset900913 = GridSubsetFactory.createGridSubSet(
-                gridSetBroker.WORLD_EPSG3857, bounds900913, 0, 25);
-
-        grids.put(gridSetBroker.WORLD_EPSG3857.getName(), gridSubset900913);
+        for (String gridSetId : cachedGridSetIds) {
+            GridSet gridSet = gridSetBroker.get(gridSetId);
+            if (gridSet == null) {
+                throw new ConfigurationException("No GWC GridSet named '" + gridSetId + "' exists.");
+            }
+            BoundingBox extent = getBoundsFromWGS84Bounds(latLonBbox, gridSet.getSRS());
+            Integer zoomStart = 0;
+            Integer zoomStop = gridSet.getGrids().length - 1;
+            GridSubset gridSubSet;
+            gridSubSet = GridSubsetFactory.createGridSubSet(gridSet, extent, zoomStart, zoomStop);
+            grids.put(gridSetId, gridSubSet);
+        }
 
         return grids;
+    }
+
+    private BoundingBox getBoundsFromWGS84Bounds(final ReferencedEnvelope latLonBbox, final SRS srs) {
+        final double minX = latLonBbox.getMinX();
+        final double minY = latLonBbox.getMinY();
+        final double maxX = latLonBbox.getMaxX();
+        final double maxY = latLonBbox.getMaxY();
+
+        final String epsgCode = srs.toString();
+        final boolean longitudeFirst = true;
+        ReferencedEnvelope transformedBounds;
+
+        BoundingBox bounds;
+        if ("EPSG:900913".equals(epsgCode) || "EPSG:3857".equals(epsgCode)) {
+            bounds = new BoundingBox(longToSphericalMercatorX(minX), latToSphericalMercatorY(minY),
+                    longToSphericalMercatorX(maxX), latToSphericalMercatorY(maxY));
+        } else {
+
+            try {
+                CoordinateReferenceSystem crs;
+                crs = CRS.decode(epsgCode, longitudeFirst);
+                transformedBounds = latLonBbox.transform(crs, true, 20);
+            } catch (NoSuchAuthorityCodeException e) {
+                throw new RuntimeException(e);
+            } catch (FactoryException e) {
+                throw new RuntimeException(e);
+            } catch (TransformException e) {
+                throw new RuntimeException(e);
+            }
+            bounds = new BoundingBox(transformedBounds.getMinX(), transformedBounds.getMinY(),
+                    transformedBounds.getMaxX(), transformedBounds.getMaxY());
+        }
+
+        // BoundingBox bounds4326 = new BoundingBox(minX, minY, maxX, maxY);
+
+        return bounds;
     }
 
     private double longToSphericalMercatorX(double x) {
