@@ -26,7 +26,7 @@ public class CachedLayerEditPage extends GeoServerSecuredPage {
         final GWC gwc = GWC.get();
         final TileLayer tileLayer;
         try {
-            tileLayer = gwc.getLayerByName(layerName);
+            tileLayer = gwc.getTileLayerByName(layerName);
         } catch (IllegalArgumentException iae) {
             error(new ParamResourceModel("CachedLayerEditPage.notFound", this, layerName)
                     .getString());

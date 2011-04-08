@@ -50,14 +50,20 @@ public class CachedLayerDetachableModel extends LoadableDetachableModel<CachedLa
     }
 
     static CachedLayerInfo create(final String name, final GWC gwc) {
-        final TileLayer layer = gwc.getLayerByName(name);
+        final TileLayer layer = gwc.getTileLayerByName(name);
         CachedLayerInfo info = new CachedLayerInfo();
         info.setName(name);
         info.setType(getType(layer));
-        info.setEnabled(layer.isEnabled());
-        info.setQuotaLimit(gwc.getQuotaLimit(name));
-        info.setQuotaUsed(gwc.getUsedQuota(name));
-
+        boolean enabled = layer.isEnabled();
+        info.setEnabled(enabled);
+        if (gwc.isDiskQuotaAvailable()) {
+            info.setQuotaLimit(gwc.getQuotaLimit(name));
+            info.setQuotaUsed(gwc.getUsedQuota(name));
+        }
+        if(!enabled && (layer instanceof GeoServerTileLayer)){
+            String error = ((GeoServerTileLayer)layer).getConfigErrorMessage();
+            info.setConfigErrorMessage(error);
+        }
         return info;
     }
 
@@ -97,7 +103,7 @@ public class CachedLayerDetachableModel extends LoadableDetachableModel<CachedLa
 
         public LazyCachedLayerInfoList(final GWC gwc) {
             this.gwc = gwc;
-            List<String> names = new ArrayList<String>(gwc.getLayerNames());
+            List<String> names = new ArrayList<String>(gwc.getTileLayerNames());
             Collections.sort(names);
             this.layerNames = names;
         }

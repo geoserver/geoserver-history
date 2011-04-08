@@ -97,4 +97,8 @@ public class GWCIconFactory implements Serializable {
     public ResourceReference getDisabledIcon() {
         return DISABLED_ICON;
     }
+
+    public ResourceReference getErrorIcon() {
+        return UNKNOWN_ICON;
+    }
 }
