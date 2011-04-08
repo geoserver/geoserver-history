@@ -2,6 +2,17 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 <beans>
 
+  <bean id="gwcFacade" class="org.geoserver.gwc.GWC">
+    <constructor-arg ref="gwcGeoServervConfigPersister"/>
+    <constructor-arg ref="gwcStorageBroker" />
+    <constructor-arg ref="gwcTLDispatcher" />
+    <constructor-arg ref="gwcGridSetBroker" />
+    <constructor-arg ref="gwcTileBreeder" />
+    <constructor-arg ref="geoServer" />
+    <constructor-arg ref="DiskQuotaStore" />
+    <constructor-arg ref="dispatcher" />
+  </bean>
+
   <bean id="gwcGeoServervConfigPersister" class="org.geoserver.gwc.GWCConfigPersister">
     <constructor-arg ref="xstreamPersisterFactory" />
     <constructor-arg ref="resourceLoader">
@@ -12,37 +23,11 @@
     </constructor-arg>
   </bean>
 
-  <bean id="gwcCatalogConfiguration" class="org.geoserver.gwc.CatalogConfiguration">
-    <constructor-arg ref="gwcGeoServervConfigPersister">
-      <description>
-        Used to get the default layer configuration options when creating GeoServerTileLayer objects
-      </description>
-    </constructor-arg>
-    <constructor-arg ref="gwcGridSetBroker" />
-    <constructor-arg ref="rawCatalog" /> <!-- GeoServer -->
-    <constructor-arg ref="dispatcher" /> <!-- GeoServer -->
-  </bean>
-
-  <bean id="gwcFacade" class="org.geoserver.gwc.GWC">
-    <constructor-arg ref="gwcGeoServervConfigPersister"/>
-    <constructor-arg ref="gwcStorageBroker" />
-    <constructor-arg ref="gwcTLDispatcher" />
-    <constructor-arg ref="gwcTileBreeder" />
-    <constructor-arg ref="gwcCatalogConfiguration" />
-    <constructor-arg ref="geoServer" />
-    <constructor-arg ref="DiskQuotaStore" />
-  </bean>
-
   <bean id="gwcWMSExtendedCapabilitiesProvider" class="org.geoserver.gwc.wms.CachingExtendedCapabilitiesProvider">
     <constructor-arg ref="gwcFacade" />
   </bean>
 
   <bean id="gwcTransactionListener" class="org.geoserver.gwc.GWCTransactionListener">
-    <constructor-arg ref="rawCatalog" /> <!-- GeoServer -->
-    <constructor-arg ref="gwcFacade" />
-  </bean>
-
-  <bean id="gwcCatalogListener" class="org.geoserver.gwc.GWCCatalogListener">
     <constructor-arg ref="rawCatalog" /> <!-- GeoServer -->
     <constructor-arg ref="gwcFacade" />
   </bean>

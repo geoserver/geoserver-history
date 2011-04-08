@@ -17,6 +17,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -24,7 +25,13 @@ import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.NamespaceInfo;
+import org.geoserver.catalog.StyleInfo;
 import org.geoserver.config.GeoServer;
+import org.geoserver.gwc.layer.FakeHttpServletRequest;
+import org.geoserver.gwc.layer.FakeHttpServletResponse;
+import org.geoserver.gwc.layer.GeoServerTileLayer;
+import org.geoserver.gwc.layer.GeoServerTileLayerInfo;
+import org.geoserver.ows.Dispatcher;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.wms.GetMapRequest;
 import org.geotools.geometry.jts.ReferencedEnvelope;
@@ -41,6 +48,7 @@ import org.geowebcache.filter.parameters.ParameterFilter;
 import org.geowebcache.grid.BoundingBox;
 import org.geowebcache.grid.GridMismatchException;
 import org.geowebcache.grid.GridSet;
+import org.geowebcache.grid.GridSetBroker;
 import org.geowebcache.grid.GridSubset;
 import org.geowebcache.grid.SRS;
 import org.geowebcache.layer.TileLayer;
@@ -56,7 +64,9 @@ import org.geowebcache.storage.StorageException;
 import org.geowebcache.storage.TileRange;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.util.Assert;
@@ -64,21 +74,21 @@ import org.springframework.util.Assert;
 import com.vividsolutions.jts.geom.Envelope;
 
 /**
- * Spring bean acting as a facade to GWC for the GWC/GeoServer integration classes so that they
- * don't need to worry about GWC complexities nor API changes.
+ * Spring bean acting as a mediator between GWC and GeoServer for the GWC integration classes so
+ * that they don't need to worry about complexities nor API changes in either.
  * 
  * @author Gabriel Roldan
  * @version $Id$
  * 
  */
-public class GWC implements DisposableBean, ApplicationContextAware {
+public class GWC implements DisposableBean, InitializingBean, ApplicationContextAware {
 
     /**
      * @see #get()
      */
     private static GWC INSTANCE;
 
-    private static Logger log = Logging.getLogger("org.geoserver.gwc.GWC");
+    private static Logger log = Logging.getLogger(GWC.class);
 
     private final CatalogConfiguration embeddedConfig;
 
@@ -96,16 +106,28 @@ public class GWC implements DisposableBean, ApplicationContextAware {
 
     private final GWCConfigPersister gwcConfigPersister;
 
+    private final Dispatcher owsDispatcher;
+
+    private final GridSetBroker gridSetBroker;
+
     public GWC(final GWCConfigPersister gwcConfigPersister, final StorageBroker sb,
-            final TileLayerDispatcher tld, final TileBreeder tileBreeder,
-            final CatalogConfiguration config, GeoServer geoserver, BDBQuotaStore quotaStore) {
+            final TileLayerDispatcher tld, final GridSetBroker gridSetBroker,
+            final TileBreeder tileBreeder, final GeoServer geoserver,
+            final BDBQuotaStore quotaStore, final Dispatcher owsDispatcher) {
+
         this.gwcConfigPersister = gwcConfigPersister;
         this.tld = tld;
         this.storageBroker = sb;
+        this.gridSetBroker = gridSetBroker;
         this.tileBreeder = tileBreeder;
-        this.embeddedConfig = config;
+        this.owsDispatcher = owsDispatcher;
         this.geoserver = geoserver;
         this.quotaStore = quotaStore;
+        this.embeddedConfig = new CatalogConfiguration(this);
+
+        Catalog catalog = geoserver.getCatalog();
+        catalog.addListener(new CatalogLayerEventListener(this));
+        catalog.addListener(new CatalogStyleChangeListener(this));
     }
 
     public synchronized static GWC get() {
@@ -117,6 +139,58 @@ public class GWC implements DisposableBean, ApplicationContextAware {
             }
         }
         return GWC.INSTANCE;
+    }
+
+    /**
+     * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
+     * @see #initialize()
+     */
+    public void afterPropertiesSet() throws Exception {
+        initialize();
+    }
+
+    public void initialize() {
+        List<GeoServerTileLayer> tileLayers;
+        try {
+            tileLayers = embeddedConfig.getTileLayers(false);
+        } catch (GeoWebCacheException e) {
+            throw new RuntimeException("Error getting internal TileLayers", e);
+        }
+        for (GeoServerTileLayer layer : tileLayers) {
+            addOrReplaceLayer(layer);
+        }
+    }
+
+    /**
+     * 
+     * @see org.springframework.beans.factory.DisposableBean#destroy()
+     */
+    public void destroy() throws Exception {
+        List<GeoServerTileLayer> tileLayers;
+        try {
+            tileLayers = embeddedConfig.getTileLayers(false);
+        } catch (GeoWebCacheException e) {
+            throw new BeanCreationException("Error getting internal TileLayers", e);
+        }
+        for (GeoServerTileLayer layer : tileLayers) {
+            String name = layer.getName();
+            tld.remove(name);
+        }
+    }
+
+    public void addOrReplaceLayer(TileLayer layer) {
+        tld.add(layer);
+        String layerName = layer.getName();
+        try {
+            quotaStore.createLayer(layerName);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        log.finer(layer.getName() + " added to TileLayerDispatcher");
+    }
+
+    private Catalog getCatalog() {
+        return geoserver.getCatalog();
     }
 
     public GWCConfig getConfig() {
@@ -341,17 +415,15 @@ public class GWC implements DisposableBean, ApplicationContextAware {
     }
 
     /**
+     * Completely eliminates a {@link GeoServerTileLayer} from GWC.
+     * <p>
+     * This method is intended to be called whenever a layer is removed from GeoServer, and besides
+     * eliminating the {@link GeoServerTileLayer} matching it, it also deletes the cache for it.
+     * </p>
      * 
-     * @see org.springframework.beans.factory.DisposableBean#destroy()
+     * @param prefixedName
+     *            the name of the layer to remove.
      */
-    public void destroy() throws Exception {
-    }
-
-    public void addOrReplaceLayer(TileLayer layer) {
-        tld.add(layer);
-        log.finer(layer.getName() + " added to TileLayerDispatcher");
-    }
-
     public synchronized void removeLayer(String prefixedName) {
         embeddedConfig.removeLayer(prefixedName);
         tld.remove(prefixedName);
@@ -568,7 +640,7 @@ public class GWC implements DisposableBean, ApplicationContextAware {
             return getLayers();
         }
 
-        final Catalog catalog = embeddedConfig.getCatalog();
+        final Catalog catalog = getCatalog();
 
         final NamespaceInfo namespaceFilter = catalog.getNamespaceByPrefix(namespacePrefixFilter);
         if (namespaceFilter == null) {
@@ -699,5 +771,77 @@ public class GWC implements DisposableBean, ApplicationContextAware {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public List<LayerInfo> getLayersInfosFor(final StyleInfo modifiedStyle) {
+        Catalog catalog = getCatalog();
+        return catalog.getLayers(modifiedStyle);
+    }
+
+    public List<LayerGroupInfo> getLayerGroups() {
+        Catalog catalog = getCatalog();
+        return catalog.getLayerGroups();
+    }
+
+    public List<LayerGroupInfo> getLayerGroupsFor(final StyleInfo style) {
+        Catalog catalog = getCatalog();
+        List<LayerGroupInfo> layerGroups = new ArrayList<LayerGroupInfo>();
+        for (LayerGroupInfo layerGroup : catalog.getLayerGroups()) {
+
+            final List<StyleInfo> explicitLayerGroupStyles = layerGroup.getStyles();
+            final List<LayerInfo> groupLayers = layerGroup.getLayers();
+
+            for (int layerN = 0; layerN < groupLayers.size(); layerN++) {
+
+                LayerInfo childLayer = groupLayers.get(layerN);
+                StyleInfo assignedLayerStyle = explicitLayerGroupStyles.get(layerN);
+                if (assignedLayerStyle == null) {
+                    assignedLayerStyle = childLayer.getDefaultStyle();
+                }
+
+                if (style.equals(assignedLayerStyle)) {
+                    layerGroups.add(layerGroup);
+                    break;
+                }
+            }
+        }
+        return layerGroups;
+    }
+
+    public void save(GeoServerTileLayerInfo info) {
+        throw new UnsupportedOperationException();
+    }
+
+    public boolean isQueryable(GeoServerTileLayerInfo info) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * @return the {@link LayerInfo} based on the given {@link LayerInfo#getId() layerId}
+     */
+    public LayerInfo getLayerInfoById(final String layerId) {
+        return getCatalog().getLayer(layerId);
+    }
+
+    public List<LayerInfo> getLayerInfos() {
+        return getCatalog().getLayers();
+    }
+
+    public LayerGroupInfo getLayerGroupById(final String layerGroupId) {
+        return getCatalog().getLayerGroup(layerGroupId);
+    }
+
+    public FakeHttpServletResponse dispatchOwsRequest(final Map<String, String> params,
+            Cookie[] cookies) throws Exception {
+
+        FakeHttpServletRequest req = new FakeHttpServletRequest(params, cookies);
+        FakeHttpServletResponse resp = new FakeHttpServletResponse();
+
+        owsDispatcher.handleRequest(req, resp);
+        return resp;
+    }
+
+    public GridSetBroker getGridSetBroker() {
+        return gridSetBroker;
     }
 }

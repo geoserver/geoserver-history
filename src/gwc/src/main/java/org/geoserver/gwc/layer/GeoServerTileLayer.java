@@ -15,15 +15,13 @@ import java.util.logging.Logger;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
-import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.MetadataMap;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.StyleInfo;
-import org.geoserver.gwc.CatalogConfiguration;
+import org.geoserver.gwc.GWC;
 import org.geoserver.gwc.GWCConfig;
-import org.geoserver.ows.Dispatcher;
 import org.geoserver.wms.GetMapRequest;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WebMap;
@@ -61,29 +59,29 @@ public class GeoServerTileLayer extends TileLayer {
 
     public static final ThreadLocal<WebMap> WEB_MAP = new ThreadLocal<WebMap>();
 
-    private CatalogConfiguration config;
+    private GWC mediator;
 
     private transient final String layerId;
 
     private transient final String layerGroupId;
 
-    public GeoServerTileLayer(final CatalogConfiguration config, final LayerGroupInfo layerGroup) {
+    public GeoServerTileLayer(final GWC mediator, final LayerGroupInfo layerGroup) {
+        this.mediator = mediator;
         this.layerId = null;
         this.layerGroupId = layerGroup.getId();
-        this.config = config;
         this.name = layerGroup.getName();
-        GWCConfig configDefaults = config.getConfigPersister().getConfig();
+        GWCConfig configDefaults = mediator.getConfig();
         this.info = GeoServerTileLayerInfo.create(null, layerGroup.getMetadata(), configDefaults);
         setDefaults();
     }
 
-    public GeoServerTileLayer(final CatalogConfiguration config, final LayerInfo layerInfo) {
+    public GeoServerTileLayer(final GWC mediator, final LayerInfo layerInfo) {
+        this.mediator = mediator;
         this.layerId = layerInfo.getId();
         this.layerGroupId = null;
-        this.config = config;
         final ResourceInfo resourceInfo = layerInfo.getResource();
         super.name = resourceInfo.getPrefixedName();
-        GWCConfig configDefaults = config.getConfigPersister().getConfig();
+        GWCConfig configDefaults = mediator.getConfig();
         this.info = GeoServerTileLayerInfo.create(layerInfo.getResource(), layerInfo.getMetadata(),
                 configDefaults);
         setDefaults();
@@ -140,6 +138,7 @@ public class GeoServerTileLayer extends TileLayer {
     @Override
     public void setEnabled(boolean enabled) {
         info.setEnabled(enabled);
+        mediator.save(info);
     }
 
     public int getGutter() {
@@ -148,16 +147,7 @@ public class GeoServerTileLayer extends TileLayer {
 
     public void setGutter(int gutter) {
         info.setGutter(gutter);
-    }
-
-    /**
-     * @return the metadata map for the backing {@link LayerInfo} or {@link LayerGroupInfo}
-     */
-    private MetadataMap getMetadaMap() {
-        if (getLayerInfo() == null) {
-            return getLayerGroupInfo().getMetadata();
-        }
-        return getLayerInfo().getMetadata();
+        mediator.save(info);
     }
 
     /**
@@ -168,12 +158,21 @@ public class GeoServerTileLayer extends TileLayer {
      */
     @Override
     public boolean isQueryable() {
-        // TODO: base on WMS.isQueryable(Layer[Group]Info)
-        return true;
+        return mediator.isQueryable(info);
     }
 
     @Override
     protected boolean initializeInternal(GridSetBroker gridSetBroker) {
+
+        ReferencedEnvelope latLongBbox = getLatLonBbox();
+
+        final Hashtable<String, GridSubset> subSets = getGrids(latLongBbox, gridSetBroker);
+        super.subSets = subSets;
+
+        return true;
+    }
+
+    private ReferencedEnvelope getLatLonBbox() throws IllegalStateException {
         ReferencedEnvelope latLongBbox;
         if (getLayerInfo() == null) {
             LayerGroupInfo groupInfo = getLayerGroupInfo();
@@ -183,20 +182,15 @@ public class GeoServerTileLayer extends TileLayer {
                 boolean lenient = true;
                 latLongBbox = bounds.transform(CRS.decode("EPSG:4326", longitudeFirst), lenient);
             } catch (Exception e) {
-                LOGGER.log(Level.WARNING,
-                        "Can't get lat long bounds for layer group " + groupInfo.getName(), e);
-                return false;
+                String msg = "Can't get lat long bounds for layer group " + groupInfo.getName();
+                LOGGER.log(Level.WARNING, msg, e);
+                throw new IllegalStateException(msg, e);
             }
         } else {
-            latLongBbox = getResourceInfo().getLatLonBoundingBox();
+            ResourceInfo resourceInfo = getResourceInfo();
+            latLongBbox = resourceInfo.getLatLonBoundingBox();
         }
-
-        final Hashtable<String, GridSubset> subSets = getGrids(latLongBbox, gridSetBroker);
-        super.subSets = subSets;
-
-        final String vendorParams = null;
-
-        return true;
+        return latLongBbox;
     }
 
     /**
@@ -211,7 +205,7 @@ public class GeoServerTileLayer extends TileLayer {
         }
         final Set<StyleInfo> additionalStyles = layerInfo.getStyles();
         if (additionalStyles == null || additionalStyles.size() == 0) {
-            LOGGER.info("Layer " + layerInfo.getName()
+            LOGGER.finer("Layer " + layerInfo.getName()
                     + " has no additional styles, no parameter filters added");
             return null;
         }
@@ -242,8 +236,7 @@ public class GeoServerTileLayer extends TileLayer {
         if (layerId == null) {
             return null;
         }
-        Catalog catalog = config.getCatalog();
-        LayerInfo layerInfo = catalog.getLayer(layerId);
+        LayerInfo layerInfo = mediator.getLayerInfoById(layerId);
         return layerInfo;
     }
 
@@ -255,13 +248,13 @@ public class GeoServerTileLayer extends TileLayer {
         if (layerGroupId == null) {
             return null;
         }
-        Catalog catalog = config.getCatalog();
-        LayerGroupInfo layerGroupInfo = catalog.getLayerGroup(layerGroupId);
+        LayerGroupInfo layerGroupInfo = mediator.getLayerGroupById(layerGroupId);
         return layerGroupInfo;
     }
 
     private ResourceInfo getResourceInfo() {
-        return getLayerInfo() == null ? null : getLayerInfo().getResource();
+        LayerInfo layerInfo = getLayerInfo();
+        return layerInfo == null ? null : layerInfo.getResource();
     }
 
     /**
@@ -298,15 +291,19 @@ public class GeoServerTileLayer extends TileLayer {
         return getLayerInfo() == null ? null : getLayerInfo().getDefaultStyle().getName();
     }
 
+    /**
+     * @see org.geowebcache.layer.TileLayer#getFeatureInfo
+     * @see GWC#dispatchOwsRequest
+     */
     @Override
     public Resource getFeatureInfo(ConveyorTile convTile, BoundingBox bbox, int height, int width,
             int x, int y) throws GeoWebCacheException {
 
-        Cookie[] cookies = null;
         Map<String, String> params = buildGetFeatureInfo(convTile, bbox, height, width, x, y);
         FakeHttpServletResponse response;
         try {
-            response = dispatchRequest(cookies, params);
+            Cookie[] cookies = null;
+            response = mediator.dispatchOwsRequest(params, cookies);
         } catch (Exception e) {
             throw new GeoWebCacheException(e);
         }
@@ -404,29 +401,20 @@ public class GeoServerTileLayer extends TileLayer {
     }
 
     private WebMap dispatchGetMap(ConveyorTile tile, final MetaTile metaTile) throws Exception {
-        HttpServletRequest actualRequest = tile.servletReq;
-        Cookie[] cookies = actualRequest == null ? null : actualRequest.getCookies();
 
         Map<String, String> params = buildGetMap(tile, metaTile);
         WebMap map;
         try {
-            dispatchRequest(cookies, params);
+            HttpServletRequest actualRequest = tile.servletReq;
+            Cookie[] cookies = actualRequest == null ? null : actualRequest.getCookies();
+
+            mediator.dispatchOwsRequest(params, cookies);
             map = WEB_MAP.get();
         } finally {
             WEB_MAP.remove();
         }
 
         return map;
-    }
-
-    private FakeHttpServletResponse dispatchRequest(Cookie[] cookies, Map<String, String> params)
-            throws Exception {
-        FakeHttpServletRequest req = new FakeHttpServletRequest(params, cookies);
-        FakeHttpServletResponse resp = new FakeHttpServletResponse();
-
-        Dispatcher gsDispatcher = config.getDispatcher();
-        gsDispatcher.handleRequest(req, resp);
-        return resp;
     }
 
     private GeoServerMetaTile createMetaTile(ConveyorTile tile, final int metaX, final int metaY) {
