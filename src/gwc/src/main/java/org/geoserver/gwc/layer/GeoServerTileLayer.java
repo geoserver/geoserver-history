@@ -304,13 +304,12 @@ public class GeoServerTileLayer extends TileLayer {
     }
 
     /**
-     * Overrides to dynamically return the default style name associated to the layer
-     * 
      * @see org.geowebcache.layer.TileLayer#getStyles()
+     * @see GeoServerTileLayerInfo#getDefaultStyle()
      */
     @Override
     public String getStyles() {
-        return getLayerInfo() == null ? null : getLayerInfo().getDefaultStyle().getName();
+        return info.getDefaultStyle();
     }
 
     /**
@@ -416,13 +415,16 @@ public class GeoServerTileLayer extends TileLayer {
             throw new GeoWebCacheException("Problem communicating with GeoServer", e);
         }
 
-        metaTile.setWebMap(map);
-        super.saveTiles(metaTile, tile);
+        if (map != null) {
+            metaTile.setWebMap(map);
+            super.saveTiles(metaTile, tile);
+        }
 
         return tile;
     }
 
-    private WebMap dispatchGetMap(ConveyorTile tile, final MetaTile metaTile) throws Exception {
+    private WebMap dispatchGetMap(final ConveyorTile tile, final MetaTile metaTile)
+            throws Exception {
 
         Map<String, String> params = buildGetMap(tile, metaTile);
         WebMap map;

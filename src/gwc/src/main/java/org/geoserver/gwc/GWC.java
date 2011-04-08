@@ -46,7 +46,6 @@ import org.geowebcache.diskquota.storage.BDBQuotaStore;
 import org.geowebcache.diskquota.storage.LayerQuota;
 import org.geowebcache.diskquota.storage.Quota;
 import org.geowebcache.filter.parameters.ParameterFilter;
-import org.geowebcache.filter.parameters.StringParameterFilter;
 import org.geowebcache.grid.BoundingBox;
 import org.geowebcache.grid.GridMismatchException;
 import org.geowebcache.grid.GridSet;
@@ -501,92 +500,6 @@ public class GWC implements DisposableBean, InitializingBean {
     }
 
     /**
-     * LayerInfo has been modified, update the corresponding {@link GeoServerTileLayer} if needed
-     * 
-     * @param li
-     */
-    public void modifyLayer(final LayerInfo li) {
-        String prefixedName = li.getResource().getPrefixedName();
-/*        GeoServerTileLayer tileLayer = (GeoServerTileLayer) getTileLayerByName(prefixedName);
-        GeoServerTileLayerInfo tileLayerInfo = tileLayer.getInfo();
-
-        StringParameterFilter oldStylesParamFilter;
-        StringParameterFilter newStylesParamFilter;
-
-        oldStylesParamFilter = tileLayer.getStylesParameterFilter();
-        newStylesParamFilter = GeoServerTileLayer.createStylesParameterFilters();
-
-        if (newStylesParamFilter == null) {
-            tileLayer.setParameterFilters(null);
-        } else {
-            List<ParameterFilter> list = new ArrayList<ParameterFilter>();
-            list.add(newStylesParamFilter);
-            tileLayer.setParameterFilters(list);
-        }
-
-        Set<String> oldAlternateStyles = tileLayer.getInfo().getCachedStyles();
-        Set<StyleInfo> newAlternateStyles = li.getStyles();
-
-        Set<String> stylesAdded = new HashSet<String>();
-        Set<String> stylesRemoved = new HashSet<String>();
-
-        for (StyleInfo style : newAlternateStyles) {
-            String name = style.getName();
-        }
-
-        // modifyLayer(oldTileLayer, newTileLayer);
-*/    }
-
-    /**
-     * LayerGroupInfo has been modified, update the corresponding {@link GeoServerTileLayer} if
-     * needed.
-     * <p>
-     * This should ideally call truncate on the whole LayerGroup under any of the following
-     * circumstances:
-     * <ul>
-     * <li>The list of layers in the group has changed. Either layer(s) has been added or removed
-     * from the group.
-     * <li>The order changed
-     * </ul>
-     * </p>
-     * 
-     * @param li
-     */
-    public void modifyLayer(LayerGroupInfo lgInfo) {
-        String name = lgInfo.getName();
-        GeoServerTileLayer oldTileLayer = (GeoServerTileLayer) getTileLayerByName(name);
-        GeoServerTileLayer newTileLayer = embeddedConfig.createLayer(lgInfo);
-
-        modifyLayer(oldTileLayer, newTileLayer);
-    }
-
-    /**
-     * Stores the configuration for an embedded tile layer only if needed (i.e. both tile layers
-     * {@link GeoServerTileLayerInfo}s don't match).
-     * <p>
-     * Things that may cause the need to save the state and/or truncate tile sets:
-     * <ul>
-     * <li>The assigned styles changed
-     * </ul>
-     * 
-     * @param oldTileLayer
-     * @param newTileLayer
-     */
-    private void modifyLayer(final GeoServerTileLayer oldTileLayer,
-            final GeoServerTileLayer newTileLayer) {
-
-        GeoServerTileLayerInfo oldInfo = oldTileLayer.getInfo();
-        GeoServerTileLayerInfo newInfo = newTileLayer.getInfo();
-        boolean changed = !oldInfo.equals(newInfo);
-        if (!changed) {
-            log.fine("Nothing in layer " + oldTileLayer.getName()
-                    + " changed that justifies saving the GeoServerTileLayer");
-            return;
-        }
-        save(newTileLayer);
-    }
-
-    /**
      * Tries to dispatch a tile request represented by a GeoServer WMS {@link GetMapRequest} through
      * GeoWebCache, and returns the {@link ConveyorTile} if succeeded or {@code null} if it wasn't
      * possible.
@@ -1025,6 +938,25 @@ public class GWC implements DisposableBean, InitializingBean {
 
     public GeoServerTileLayer getTileLayerById(final String id) {
         return embeddedConfig.getLayerById(id);
+    }
+
+    public List<GeoServerTileLayer> getTileLayersForStyle(final String styleName) {
+        List<GeoServerTileLayer> tileLayers;
+        try {
+            tileLayers = embeddedConfig.getTileLayers(false);
+        } catch (GeoWebCacheException e) {
+            throw new RuntimeException(e);
+        }
+        List<GeoServerTileLayer> affected = new ArrayList<GeoServerTileLayer>();
+        for (GeoServerTileLayer tl : tileLayers) {
+            GeoServerTileLayerInfo info = tl.getInfo();
+            String defaultStyle = info.getDefaultStyle();
+            Set<String> cachedStyles = info.getCachedStyles();
+            if (styleName.equals(defaultStyle) || cachedStyles.contains(styleName)) {
+                affected.add(tl);
+            }
+        }
+        return affected;
     }
 
 }

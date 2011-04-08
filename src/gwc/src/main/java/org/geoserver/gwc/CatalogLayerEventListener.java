@@ -7,7 +7,10 @@
  */
 package org.geoserver.gwc;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import org.geoserver.catalog.Catalog;
@@ -15,13 +18,16 @@ import org.geoserver.catalog.CatalogException;
 import org.geoserver.catalog.CatalogInfo;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
+import org.geoserver.catalog.StyleInfo;
 import org.geoserver.catalog.event.CatalogAddEvent;
 import org.geoserver.catalog.event.CatalogListener;
 import org.geoserver.catalog.event.CatalogModifyEvent;
 import org.geoserver.catalog.event.CatalogPostModifyEvent;
 import org.geoserver.catalog.event.CatalogRemoveEvent;
 import org.geoserver.gwc.layer.GeoServerTileLayer;
+import org.geoserver.gwc.layer.GeoServerTileLayerInfo;
 import org.geotools.util.logging.Logging;
+import org.geowebcache.filter.parameters.ParameterFilter;
 
 /**
  * Listens to {@link Catalog}'s layer added/removed events and adds/removes
@@ -92,6 +98,7 @@ public class CatalogLayerEventListener implements CatalogListener {
      * 
      * @see org.geoserver.catalog.event.CatalogListener#handlePostModifyEvent(org.geoserver.catalog.event.CatalogPostModifyEvent)
      */
+    @SuppressWarnings("unchecked")
     public void handlePostModifyEvent(final CatalogPostModifyEvent event) throws CatalogException {
         final Object obj = event.getSource();
         if (!(obj instanceof LayerInfo || obj instanceof LayerGroupInfo)) {
@@ -113,17 +120,65 @@ public class CatalogLayerEventListener implements CatalogListener {
         if (obj instanceof LayerInfo) {
             // REVISIT: what about truncating the LayerGroups containing the modified layer?
             // checking the style applies of course
-            LayerInfo li = (LayerInfo) obj;
-            GeoServerTileLayer tileLayer = gwc.getTileLayerById(li.getId());
-            final String oldName = tileLayer.getName();
-            final String newName = li.getResource().getPrefixedName();
-            if (!oldName.equals(newName)) {
-                gwc.renameTileLayer(oldName, newName);
+            final LayerInfo li = (LayerInfo) obj;
+            final String layerName = li.getResource().getPrefixedName();
+            final GeoServerTileLayer tileLayer = gwc.getTileLayerById(li.getId());
+            {
+                final String oldLayerName = tileLayer.getName();
+                if (!oldLayerName.equals(layerName)) {
+                    gwc.renameTileLayer(oldLayerName, layerName);
+                }
             }
-            if (changedProperties.contains("defaultStyle") || changedProperties.contains("styles")) {
+            boolean save = false;
+            GeoServerTileLayerInfo info = tileLayer.getInfo();
+            if (changedProperties.contains("defaultStyle")) {
+                final int propIndex = changedProperties.indexOf("defaultStyle");
+                final StyleInfo oldStyle = (StyleInfo) oldValues.get(propIndex);
+                final StyleInfo newStyle = (StyleInfo) newValues.get(propIndex);
+                final String oldStyleName = oldStyle.getName();
+                final String newStyleName = newStyle.getName();
+                if (!oldStyleName.equals(newStyleName)) {
+                    save = true;
+                    gwc.truncate(layerName, oldStyleName);
+                    info.setDefaultStyle(newStyleName);
+                }
             }
+            if (changedProperties.contains("styles")) {
+                final int propIndex = changedProperties.indexOf("styles");
+                final Set<StyleInfo> oldStyles = (Set<StyleInfo>) oldValues.get(propIndex);
+                final Set<StyleInfo> newStyles = (Set<StyleInfo>) newValues.get(propIndex);
+                if (!oldStyles.equals(newStyles)) {
+                    save = true;
+                    Set<StyleInfo> removed = new HashSet<StyleInfo>(oldStyles);
+                    removed.removeAll(newStyles);
 
-            // gwc.modifyLayer(li);
+                    Set<String> newStyleSet = new HashSet<String>(info.getCachedStyles());
+                    for (StyleInfo deletedStyle : removed) {
+                        String styleName = deletedStyle.getName();
+                        newStyleSet.remove(styleName);
+                        gwc.truncate(layerName, styleName);
+                    }
+                    if (info.isAutoCacheStyles()) {
+                        Set<StyleInfo> added = new HashSet<StyleInfo>(newStyles);
+                        added.removeAll(oldStyles);
+                        for (StyleInfo addedStyle : added) {
+                            String styleName = addedStyle.getName();
+                            newStyleSet.add(styleName);
+                        }
+                    }
+                    String defaultStyle = li.getDefaultStyle().getName();
+                    info.setCachedStyles(newStyleSet);
+                    ParameterFilter newStyleParamsFilter = null;
+                    if (newStyleSet.size() > 0) {
+                        newStyleParamsFilter = GeoServerTileLayer.createStylesParameterFilters(
+                                defaultStyle, newStyleSet);
+                    }
+                    tileLayer.setParameterFilters(Collections.singletonList(newStyleParamsFilter));
+                }
+            }
+            if (save) {
+                gwc.save(tileLayer);
+            }
         } else if (obj instanceof LayerGroupInfo) {
             LayerGroupInfo lgInfo = (LayerGroupInfo) obj;
             GeoServerTileLayer tileLayer = gwc.getTileLayerById(lgInfo.getId());

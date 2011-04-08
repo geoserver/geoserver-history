@@ -36,7 +36,7 @@ public class GeoServerTileLayerInfo {
 
     private static final String CONFIG_KEY_AUTO_CACHE_STYLES = "GWC.autoCacheStyles";
 
-    private static final String CONFIG_KEY_CACHED_STYLES = "GWC.cacheNonDefaultStyles";
+    private static final String CONFIG_KEY_CACHED_STYLES = "GWC.cachedNonDefaultStyles";
 
     private int gutter;
 
@@ -242,6 +242,7 @@ public class GeoServerTileLayerInfo {
         metadata.put(CONFIG_KEY_METATILING_X, Integer.valueOf(metaTilingX));
         metadata.put(CONFIG_KEY_METATILING_Y, Integer.valueOf(metaTilingY));
         metadata.put(CONFIG_KEY_FORMATS, marshalList(mimeFormats));
+        metadata.put(CONFIG_KEY_AUTO_CACHE_STYLES, autoCacheStyles);
         if (defaultStyle != null) {
             metadata.put(CONFIG_KEY_DEFAULT_STYLE, defaultStyle);
         }
