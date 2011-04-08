@@ -9,6 +9,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -19,7 +20,6 @@ import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.MetadataMap;
 import org.geoserver.catalog.ResourceInfo;
-import org.geoserver.catalog.StyleInfo;
 import org.geoserver.gwc.GWC;
 import org.geoserver.gwc.GWCConfig;
 import org.geoserver.wms.GetMapRequest;
@@ -80,7 +80,7 @@ public class GeoServerTileLayer extends TileLayer {
         this.layerGroupId = layerGroup.getId();
         this.name = layerGroup.getName();
         GWCConfig configDefaults = mediator.getConfig();
-        this.info = GeoServerTileLayerInfo.create(null, layerGroup.getMetadata(), configDefaults);
+        this.info = GeoServerTileLayerInfo.create(layerGroup, configDefaults);
         setDefaults();
     }
 
@@ -88,20 +88,28 @@ public class GeoServerTileLayer extends TileLayer {
         this.mediator = mediator;
         this.layerId = layerInfo.getId();
         this.layerGroupId = null;
-        final ResourceInfo resourceInfo = layerInfo.getResource();
-        super.name = resourceInfo.getPrefixedName();
+        final ResourceInfo resource = layerInfo.getResource();
+        super.name = resource.getPrefixedName();
         GWCConfig configDefaults = mediator.getConfig();
-        this.info = GeoServerTileLayerInfo.create(layerInfo.getResource(), layerInfo.getMetadata(),
-                configDefaults);
+        this.info = GeoServerTileLayerInfo.create(layerInfo, configDefaults);
         setDefaults();
     }
 
     private void setDefaults() {
         super.metaWidthHeight = new int[] { info.getMetaTilingX(), info.getMetaTilingY() };
         // TODO: be careful to update super.mimeFormats when modifying info.mimeFormats
-        super.mimeFormats = info.getMimeFormats();
-        if (info.isCacheNonDefaultStyles()) {
-            super.parameterFilters = createStylesParameterFilters();
+        super.mimeFormats = new ArrayList<String>(info.getMimeFormats());
+        Set<String> cachedStyles = info.getCachedStyles();
+        if (cachedStyles.size() > 0) {
+            String defaultStyle = info.getDefaultStyle();
+            ParameterFilter stylesParameterFilter;
+            stylesParameterFilter = createStylesParameterFilters(defaultStyle, cachedStyles);
+            if (stylesParameterFilter != null) {
+                LOGGER.fine("Created STYLES parameter filter for layer " + getName()
+                        + " and styles " + stylesParameterFilter.getLegalValues());
+                List<ParameterFilter> paramFilters = Arrays.asList(stylesParameterFilter);
+                super.setParameterFilters(paramFilters);
+            }
         } else {
             LOGGER.fine("NOT Creating GeoServerTileLayer for " + getName() + " as option is off");
         }
@@ -136,6 +144,10 @@ public class GeoServerTileLayer extends TileLayer {
         }
     }
 
+    public String getId() {
+        return layerId == null ? layerGroupId : layerId;
+    }
+
     private void setConfigErrorMessage(String configErrorMessage) {
         this.configErrorMessage = configErrorMessage;
     }
@@ -153,9 +165,11 @@ public class GeoServerTileLayer extends TileLayer {
     /**
      * Returns whether this tile layer is enabled.
      * <p>
-     * The layer is enabled if these two conditions apply:
+     * The layer is enabled if the following conditions apply:
      * <ul>
-     * <li>It is enabled by configuration
+     * <li>Caching for this layer is enabled by configuration
+     * <li>Its backing {@link LayerInfo} or {@link LayerGroupInfo} is enabled and not errored (as
+     * per {@link LayerInfo#enabled()} {@link LayerGroupInfo#}
      * <li>The layer is not errored ({@link #getConfigErrorMessage() == null}
      * </ul>
      * The layer is enabled by configuration if: the {@code GWC.enabled} metadata property is set to
@@ -174,16 +188,7 @@ public class GeoServerTileLayer extends TileLayer {
     @Override
     public void setEnabled(boolean enabled) {
         info.setEnabled(enabled);
-        mediator.save(info);
-    }
-
-    public int getGutter() {
-        return info.getGutter();
-    }
-
-    public void setGutter(int gutter) {
-        info.setGutter(gutter);
-        mediator.save(info);
+        mediator.save(this);
     }
 
     /**
@@ -228,34 +233,21 @@ public class GeoServerTileLayer extends TileLayer {
      * 
      * @return
      */
-    private List<ParameterFilter> createStylesParameterFilters() {
-        final LayerInfo layerInfo = getLayerInfo();
-        if (layerInfo == null) {
-            return null;
-        }
-        final Set<StyleInfo> additionalStyles = layerInfo.getStyles();
-        if (additionalStyles == null || additionalStyles.size() == 0) {
-            LOGGER.finer("Layer " + layerInfo.getName()
-                    + " has no additional styles, no parameter filters added");
+    public static StringParameterFilter createStylesParameterFilters(final String defaultStyle,
+            final Set<String> styleNames) {
+
+        if (styleNames.size() == 0) {
             return null;
         }
 
-        final String defaultStyle = layerInfo.getDefaultStyle().getName();
-        List<String> possibleValues = new ArrayList<String>(1 + additionalStyles.size());
+        Set<String> possibleValues = new TreeSet<String>();
         possibleValues.add(defaultStyle);
-        for (StyleInfo style : additionalStyles) {
-            String styleName = style.getName();
-            possibleValues.add(styleName);
-        }
-        List<ParameterFilter> parameterFilters = new ArrayList<ParameterFilter>(1);
+        possibleValues.addAll(styleNames);
         StringParameterFilter styleParamFilter = new StringParameterFilter();
         styleParamFilter.key = "STYLES";
         styleParamFilter.defaultValue = defaultStyle;
-        styleParamFilter.values = possibleValues;
-        parameterFilters.add(styleParamFilter);
-        LOGGER.fine("Created STYLES parameter filter for layer " + getName() + " and styles "
-                + possibleValues);
-        return parameterFilters;
+        styleParamFilter.values = new ArrayList<String>(possibleValues);
+        return styleParamFilter;
     }
 
     /**
@@ -455,7 +447,7 @@ public class GeoServerTileLayer extends TileLayer {
         MimeType responseFormat = tile.getMimeType();
         FormatModifier formatModifier = null;
         long[] tileGridPosition = tile.getTileIndex();
-        int gutter = getGutter();
+        int gutter = info.getGutter();
         metaTile = new GeoServerMetaTile(gridSubset, responseFormat, formatModifier,
                 tileGridPosition, metaX, metaY, gutter);
 
@@ -580,7 +572,7 @@ public class GeoServerTileLayer extends TileLayer {
     private Hashtable<String, GridSubset> getGrids(ReferencedEnvelope latLonBbox,
             GridSetBroker gridSetBroker) throws ConfigurationException {
 
-        List<String> cachedGridSetIds = info.getCachedGridSetIds();
+        Set<String> cachedGridSetIds = info.getCachedGridSetIds();
         if (cachedGridSetIds.size() == 0) {
             throw new IllegalStateException("TileLayer " + getName()
                     + " has no gridsets configured");
@@ -655,6 +647,24 @@ public class GeoServerTileLayer extends TileLayer {
         y = (Math.PI / 180.0) * y;
         double tmp = Math.PI / 4.0 + y / 2.0;
         return 20037508.34 * Math.log(Math.tan(tmp)) / Math.PI;
+    }
+
+    public GeoServerTileLayerInfo getInfo() {
+        return info;
+    }
+
+    public StringParameterFilter getStylesParameterFilter() {
+        if (super.parameterFilters == null) {
+            return null;
+        }
+        StringParameterFilter stylesParamFilter = null;
+        for (ParameterFilter pf : parameterFilters) {
+            if (pf instanceof StringParameterFilter && "STYLES".equals(pf.getKey())) {
+                stylesParamFilter = (StringParameterFilter) pf;
+                break;
+            }
+        }
+        return stylesParamFilter;
     }
 
 }

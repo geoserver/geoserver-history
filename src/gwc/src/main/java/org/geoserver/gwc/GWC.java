@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
+import org.geoserver.catalog.MetadataMap;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.config.GeoServer;
@@ -45,6 +46,7 @@ import org.geowebcache.diskquota.storage.BDBQuotaStore;
 import org.geowebcache.diskquota.storage.LayerQuota;
 import org.geowebcache.diskquota.storage.Quota;
 import org.geowebcache.filter.parameters.ParameterFilter;
+import org.geowebcache.filter.parameters.StringParameterFilter;
 import org.geowebcache.grid.BoundingBox;
 import org.geowebcache.grid.GridMismatchException;
 import org.geowebcache.grid.GridSet;
@@ -63,12 +65,9 @@ import org.geowebcache.storage.StorageBroker;
 import org.geowebcache.storage.StorageException;
 import org.geowebcache.storage.TileRange;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.util.Assert;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -81,7 +80,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * @version $Id$
  * 
  */
-public class GWC implements DisposableBean, InitializingBean, ApplicationContextAware {
+public class GWC implements DisposableBean, InitializingBean {
 
     /**
      * @see #get()
@@ -90,7 +89,7 @@ public class GWC implements DisposableBean, InitializingBean, ApplicationContext
 
     private static Logger log = Logging.getLogger(GWC.class);
 
-    private final CatalogConfiguration embeddedConfig;
+    private CatalogConfiguration embeddedConfig;
 
     private final TileLayerDispatcher tld;
 
@@ -100,8 +99,6 @@ public class GWC implements DisposableBean, InitializingBean, ApplicationContext
 
     private final GeoServer geoserver;
 
-    private ApplicationContext appContext;
-
     private final BDBQuotaStore quotaStore;
 
     private final GWCConfigPersister gwcConfigPersister;
@@ -110,24 +107,27 @@ public class GWC implements DisposableBean, InitializingBean, ApplicationContext
 
     private final GridSetBroker gridSetBroker;
 
+    private DiskQuotaMonitor monitor;
+
+    private CatalogLayerEventListener catalogLayerEventListener;
+
+    private CatalogStyleChangeListener catalogStyleChangeListener;
+
     public GWC(final GWCConfigPersister gwcConfigPersister, final StorageBroker sb,
             final TileLayerDispatcher tld, final GridSetBroker gridSetBroker,
             final TileBreeder tileBreeder, final GeoServer geoserver,
-            final BDBQuotaStore quotaStore, final Dispatcher owsDispatcher) {
+            final BDBQuotaStore quotaStore, final DiskQuotaMonitor monitor,
+            final Dispatcher owsDispatcher) {
 
         this.gwcConfigPersister = gwcConfigPersister;
         this.tld = tld;
         this.storageBroker = sb;
         this.gridSetBroker = gridSetBroker;
         this.tileBreeder = tileBreeder;
+        this.monitor = monitor;
         this.owsDispatcher = owsDispatcher;
         this.geoserver = geoserver;
         this.quotaStore = quotaStore;
-        this.embeddedConfig = new CatalogConfiguration(this);
-
-        Catalog catalog = geoserver.getCatalog();
-        catalog.addListener(new CatalogLayerEventListener(this));
-        catalog.addListener(new CatalogStyleChangeListener(this));
     }
 
     public synchronized static GWC get() {
@@ -150,6 +150,7 @@ public class GWC implements DisposableBean, InitializingBean, ApplicationContext
     }
 
     public void initialize() {
+        this.embeddedConfig = new CatalogConfiguration(this);
         List<GeoServerTileLayer> tileLayers;
         try {
             tileLayers = embeddedConfig.getTileLayers(false);
@@ -159,6 +160,14 @@ public class GWC implements DisposableBean, InitializingBean, ApplicationContext
         for (GeoServerTileLayer layer : tileLayers) {
             addOrReplaceLayer(layer);
         }
+
+        // add the listeners after initialize in case some tile layer configuration needs to be
+        // saved
+        Catalog catalog = geoserver.getCatalog();
+        this.catalogLayerEventListener = new CatalogLayerEventListener(this);
+        this.catalogStyleChangeListener = new CatalogStyleChangeListener(this);
+        catalog.addListener(catalogLayerEventListener);
+        catalog.addListener(catalogStyleChangeListener);
     }
 
     /**
@@ -166,6 +175,14 @@ public class GWC implements DisposableBean, InitializingBean, ApplicationContext
      * @see org.springframework.beans.factory.DisposableBean#destroy()
      */
     public void destroy() throws Exception {
+        Catalog catalog = geoserver.getCatalog();
+        if (this.catalogLayerEventListener != null) {
+            catalog.removeListener(this.catalogLayerEventListener);
+        }
+        if (this.catalogStyleChangeListener != null) {
+            catalog.removeListener(this.catalogStyleChangeListener);
+        }
+
         List<GeoServerTileLayer> tileLayers;
         try {
             tileLayers = embeddedConfig.getTileLayers(false);
@@ -178,13 +195,18 @@ public class GWC implements DisposableBean, InitializingBean, ApplicationContext
         }
     }
 
-    public void addOrReplaceLayer(TileLayer layer) {
+    public void addOrReplaceLayer(GeoServerTileLayer layer) {
         tld.add(layer);
         String layerName = layer.getName();
-        try {
-            quotaStore.createLayer(layerName);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+        if (isDiskQuotaAvailable()) {
+            try {
+                quotaStore.createLayer(layerName);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        if (layer.getInfo().isDirty()) {
+            save(layer);
         }
         log.finer(layer.getName() + " added to TileLayerDispatcher");
     }
@@ -313,7 +335,7 @@ public class GWC implements DisposableBean, InitializingBean, ApplicationContext
     private void truncate(final String layerName, final String styleName, final String gridSetName,
             final BoundingBox bounds, final String format) {
 
-        final TileLayer layer = getLayerByName(layerName);
+        final TileLayer layer = getTileLayerByName(layerName);
         final Set<String> styleNames;
         final Set<String> gridSetIds;
         final List<MimeType> mimeTypes;
@@ -394,7 +416,7 @@ public class GWC implements DisposableBean, InitializingBean, ApplicationContext
      * @return
      */
     private Set<String> getCachedStyles(final String layerName) {
-        final TileLayer l = getLayerByName(layerName);
+        final TileLayer l = getTileLayerByName(layerName);
         Set<String> cachedStyles = new HashSet<String>();
         String defaultStyle = l.getStyles();
         if (defaultStyle != null) {
@@ -434,6 +456,20 @@ public class GWC implements DisposableBean, InitializingBean, ApplicationContext
         }
     }
 
+    public synchronized void renameTileLayer(final String oldLayerName, final String newLayerName) {
+        try {
+            log.info("Renaming GWC TileLayer '" + oldLayerName + "' as '" + newLayerName + "'");
+            tld.remove(oldLayerName);
+            storageBroker.rename(oldLayerName, newLayerName);
+            GeoServerTileLayer tileLayer = embeddedConfig.removeLayer(oldLayerName);
+            tileLayer.setName(newLayerName);
+            embeddedConfig.add(tileLayer);
+            tld.add(tileLayer);
+        } catch (StorageException e) {
+            log.log(Level.WARNING, e.getMessage(), e);
+        }
+    }
+
     public void reload() {
         try {
             tld.reInit();
@@ -442,14 +478,112 @@ public class GWC implements DisposableBean, InitializingBean, ApplicationContext
         }
     }
 
+    /**
+     * LayerInfo has been created, add a matching {@link GeoServerTileLayer}
+     * 
+     * @see CatalogLayerEventListener#handleAddEvent
+     * @see CatalogConfiguration#createLayer(LayerInfo)
+     */
     public void createLayer(LayerInfo layerInfo) {
-        TileLayer tileLayer = embeddedConfig.createLayer(layerInfo);
+        GeoServerTileLayer tileLayer = embeddedConfig.createLayer(layerInfo);
         addOrReplaceLayer(tileLayer);
     }
 
+    /**
+     * LayerGroupInfo has been created, add a matching {@link GeoServerTileLayer}
+     * 
+     * @see CatalogLayerEventListener#handleAddEvent
+     * @see CatalogConfiguration#createLayer(LayerGroupInfo)
+     */
     public void createLayer(LayerGroupInfo lgi) {
-        TileLayer tileLayer = embeddedConfig.createLayer(lgi);
+        GeoServerTileLayer tileLayer = embeddedConfig.createLayer(lgi);
         addOrReplaceLayer(tileLayer);
+    }
+
+    /**
+     * LayerInfo has been modified, update the corresponding {@link GeoServerTileLayer} if needed
+     * 
+     * @param li
+     */
+    public void modifyLayer(final LayerInfo li) {
+        String prefixedName = li.getResource().getPrefixedName();
+/*        GeoServerTileLayer tileLayer = (GeoServerTileLayer) getTileLayerByName(prefixedName);
+        GeoServerTileLayerInfo tileLayerInfo = tileLayer.getInfo();
+
+        StringParameterFilter oldStylesParamFilter;
+        StringParameterFilter newStylesParamFilter;
+
+        oldStylesParamFilter = tileLayer.getStylesParameterFilter();
+        newStylesParamFilter = GeoServerTileLayer.createStylesParameterFilters();
+
+        if (newStylesParamFilter == null) {
+            tileLayer.setParameterFilters(null);
+        } else {
+            List<ParameterFilter> list = new ArrayList<ParameterFilter>();
+            list.add(newStylesParamFilter);
+            tileLayer.setParameterFilters(list);
+        }
+
+        Set<String> oldAlternateStyles = tileLayer.getInfo().getCachedStyles();
+        Set<StyleInfo> newAlternateStyles = li.getStyles();
+
+        Set<String> stylesAdded = new HashSet<String>();
+        Set<String> stylesRemoved = new HashSet<String>();
+
+        for (StyleInfo style : newAlternateStyles) {
+            String name = style.getName();
+        }
+
+        // modifyLayer(oldTileLayer, newTileLayer);
+*/    }
+
+    /**
+     * LayerGroupInfo has been modified, update the corresponding {@link GeoServerTileLayer} if
+     * needed.
+     * <p>
+     * This should ideally call truncate on the whole LayerGroup under any of the following
+     * circumstances:
+     * <ul>
+     * <li>The list of layers in the group has changed. Either layer(s) has been added or removed
+     * from the group.
+     * <li>The order changed
+     * </ul>
+     * </p>
+     * 
+     * @param li
+     */
+    public void modifyLayer(LayerGroupInfo lgInfo) {
+        String name = lgInfo.getName();
+        GeoServerTileLayer oldTileLayer = (GeoServerTileLayer) getTileLayerByName(name);
+        GeoServerTileLayer newTileLayer = embeddedConfig.createLayer(lgInfo);
+
+        modifyLayer(oldTileLayer, newTileLayer);
+    }
+
+    /**
+     * Stores the configuration for an embedded tile layer only if needed (i.e. both tile layers
+     * {@link GeoServerTileLayerInfo}s don't match).
+     * <p>
+     * Things that may cause the need to save the state and/or truncate tile sets:
+     * <ul>
+     * <li>The assigned styles changed
+     * </ul>
+     * 
+     * @param oldTileLayer
+     * @param newTileLayer
+     */
+    private void modifyLayer(final GeoServerTileLayer oldTileLayer,
+            final GeoServerTileLayer newTileLayer) {
+
+        GeoServerTileLayerInfo oldInfo = oldTileLayer.getInfo();
+        GeoServerTileLayerInfo newInfo = newTileLayer.getInfo();
+        boolean changed = !oldInfo.equals(newInfo);
+        if (!changed) {
+            log.fine("Nothing in layer " + oldTileLayer.getName()
+                    + " changed that justifies saving the GeoServerTileLayer");
+            return;
+        }
+        save(newTileLayer);
     }
 
     /**
@@ -617,7 +751,7 @@ public class GWC implements DisposableBean, InitializingBean, ApplicationContext
      * @throws IllegalArgumentException
      *             if no {@link TileLayer} named {@code layeName} is found
      */
-    public TileLayer getLayerByName(String layerName) throws IllegalArgumentException {
+    public TileLayer getTileLayerByName(String layerName) throws IllegalArgumentException {
         TileLayer tileLayer;
         try {
             tileLayer = tld.getTileLayer(layerName);
@@ -627,24 +761,30 @@ public class GWC implements DisposableBean, InitializingBean, ApplicationContext
         return tileLayer;
     }
 
-    public Set<String> getLayerNames() {
+    public Set<String> getTileLayerNames() {
         return tld.getLayerNames();
     }
 
-    public List<TileLayer> getLayers() {
+    public List<TileLayer> getTileLayers() {
         return new ArrayList<TileLayer>(tld.getLayerList());
     }
 
-    public List<TileLayer> getLayers(final String namespacePrefixFilter) {
-        if (namespacePrefixFilter == null) {
-            return getLayers();
+    /**
+     * @param nsPrefix
+     *            the namespace prefix to filter upon, or {@code null} to return all layers
+     * @return the tile layers that belong to a layer(group)info in the given prefix, or all the
+     *         {@link TileLayer}s in the {@link TileLayerDispatcher} if {@code nsPrefix == null}
+     */
+    public List<TileLayer> getTileLayersByNamespacePrefix(final String nsPrefix) {
+        if (nsPrefix == null) {
+            return getTileLayers();
         }
 
         final Catalog catalog = getCatalog();
 
-        final NamespaceInfo namespaceFilter = catalog.getNamespaceByPrefix(namespacePrefixFilter);
+        final NamespaceInfo namespaceFilter = catalog.getNamespaceByPrefix(nsPrefix);
         if (namespaceFilter == null) {
-            return getLayers();
+            return getTileLayers();
         }
 
         List<TileLayer> filteredLayers = new ArrayList<TileLayer>();
@@ -652,7 +792,7 @@ public class GWC implements DisposableBean, InitializingBean, ApplicationContext
         NamespaceInfo layerNamespace;
         String layerName;
 
-        for (TileLayer tileLayer : getLayers()) {
+        for (TileLayer tileLayer : getTileLayers()) {
             layerName = tileLayer.getName();
             LayerInfo layerInfo = catalog.getLayerByName(layerName);
             if (layerInfo != null) {
@@ -694,8 +834,6 @@ public class GWC implements DisposableBean, InitializingBean, ApplicationContext
     }
 
     private DiskQuotaMonitor getDiskQuotaMonitor() {
-        DiskQuotaMonitor monitor = (DiskQuotaMonitor) appContext.getBean("DiskQuotaMonitor");
-        Assert.notNull(monitor);
         return monitor;
     }
 
@@ -707,13 +845,6 @@ public class GWC implements DisposableBean, InitializingBean, ApplicationContext
         Assert.isTrue(isDiskQuotaAvailable());
         DiskQuotaMonitor monitor = getDiskQuotaMonitor();
         monitor.saveConfig(config);
-    }
-
-    /**
-     * @see org.springframework.context.ApplicationContextAware#setApplicationContext(org.springframework.context.ApplicationContext)
-     */
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.appContext = applicationContext;
     }
 
     public Quota getGlobalQuota() {
@@ -775,7 +906,27 @@ public class GWC implements DisposableBean, InitializingBean, ApplicationContext
 
     public List<LayerInfo> getLayersInfosFor(final StyleInfo modifiedStyle) {
         Catalog catalog = getCatalog();
-        return catalog.getLayers(modifiedStyle);
+        // /doesnt work after a style was modified: return catalog.getLayers(modifiedStyle);
+        final String styleName = modifiedStyle.getName();
+        List<LayerInfo> result = new ArrayList<LayerInfo>();
+        {
+            List<LayerInfo> layers = catalog.getLayers();
+            for (LayerInfo layer : layers) {
+                String name = layer.getDefaultStyle().getName();
+                if (styleName.equals(name)) {
+                    result.add(layer);
+                    continue;
+                }
+                for (StyleInfo alternateStyle : layer.getStyles()) {
+                    name = alternateStyle.getName();
+                    if (styleName.equals(name)) {
+                        result.add(layer);
+                        break;
+                    }
+                }
+            }
+        }
+        return result;
     }
 
     public List<LayerGroupInfo> getLayerGroups() {
@@ -808,8 +959,26 @@ public class GWC implements DisposableBean, InitializingBean, ApplicationContext
         return layerGroups;
     }
 
-    public void save(GeoServerTileLayerInfo info) {
-        throw new UnsupportedOperationException();
+    public void save(GeoServerTileLayer layer) {
+        System.err.println("Saving " + layer.getName());
+        MetadataMap metadata;
+        LayerInfo layerInfo = layer.getLayerInfo();
+        LayerGroupInfo layerGroupInfo = layer.getLayerGroupInfo();
+        if (layerInfo == null) {
+            metadata = layerGroupInfo.getMetadata();
+        } else {
+            metadata = layerInfo.getMetadata();
+        }
+
+        GeoServerTileLayerInfo tileLayerInfo = layer.getInfo();
+        tileLayerInfo.saveTo(metadata);
+
+        Catalog catalog = getCatalog();
+        if (layerInfo != null) {
+            catalog.save(layerInfo);
+        } else {
+            catalog.save(layerGroupInfo);
+        }
     }
 
     public boolean isQueryable(GeoServerTileLayerInfo info) {
@@ -831,6 +1000,15 @@ public class GWC implements DisposableBean, InitializingBean, ApplicationContext
         return getCatalog().getLayerGroup(layerGroupId);
     }
 
+    /**
+     * Dispatches a request to the GeoServer OWS {@link Dispatcher}
+     * 
+     * @param params
+     *            the KVP map of OWS parameters
+     * @param cookies
+     * @return an http response wrapper where to grab the raw dispatcher response from
+     * @throws Exception
+     */
     public FakeHttpServletResponse dispatchOwsRequest(final Map<String, String> params,
             Cookie[] cookies) throws Exception {
 
@@ -844,4 +1022,9 @@ public class GWC implements DisposableBean, InitializingBean, ApplicationContext
     public GridSetBroker getGridSetBroker() {
         return gridSetBroker;
     }
+
+    public GeoServerTileLayer getTileLayerById(final String id) {
+        return embeddedConfig.getLayerById(id);
+    }
+
 }

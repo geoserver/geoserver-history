@@ -1,16 +1,21 @@
 package org.geoserver.gwc.layer;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.MetadataMap;
 import org.geoserver.catalog.ResourceInfo;
+import org.geoserver.catalog.StyleInfo;
 import org.geoserver.gwc.GWCConfig;
 import org.springframework.util.Assert;
 
@@ -27,25 +32,130 @@ public class GeoServerTileLayerInfo {
 
     private static final String CONFIG_KEY_FORMATS = "GWC.cacheFormats";
 
-    private MetadataMap md;
+    private static final String CONFIG_KEY_DEFAULT_STYLE = "GWC.defaultStyle";
+
+    private static final String CONFIG_KEY_AUTO_CACHE_STYLES = "GWC.autoCacheStyles";
+
+    private static final String CONFIG_KEY_CACHED_STYLES = "GWC.cacheNonDefaultStyles";
 
     private int gutter;
 
     private boolean enabled;
 
-    private List<String> cachedGridSetIds;
+    private Set<String> cachedGridSetIds;
 
     private int metaTilingX;
 
     private int metaTilingY;
 
-    private List<String> mimeFormats;
+    private Set<String> mimeFormats;
 
-    private boolean cacheNonDefaultStyles;
+    private boolean autoCacheStyles;
 
-    private static List<String> unmarshalList(final String listStr) {
-        List<String> gridSetIds = Arrays.asList(listStr.split(","));
-        return gridSetIds;
+    private String defaultStyle;
+
+    private Set<String> cachedStyles;
+
+    private boolean dirty;
+
+    private static Set<String> unmarshalSet(final String listStr) {
+        Set<String> unmarshalled = new HashSet<String>(Arrays.asList(listStr.split(",")));
+        return unmarshalled;
+    }
+
+    private static String marshalList(final Collection<String> list) {
+        StringBuilder sb = new StringBuilder();
+        for (Iterator<String> i = list.iterator(); i.hasNext();) {
+            sb.append(i.next());
+            if (i.hasNext()) {
+                sb.append(",");
+            }
+        }
+
+        return sb.toString();
+    }
+
+    @SuppressWarnings("unchecked")
+    public static GeoServerTileLayerInfo create(final LayerInfo layerInfo, final GWCConfig defaults) {
+        ResourceInfo resourceInfo = layerInfo.getResource();
+
+        MetadataMap metadataMap = layerInfo.getMetadata();
+        GeoServerTileLayerInfo info = create(metadataMap, defaults);
+
+        if (metadataMap.containsKey(CONFIG_KEY_FORMATS)) {
+            String mimeFormatsStr = metadataMap.get(CONFIG_KEY_FORMATS, String.class);
+            Set<String> mimeFormats = unmarshalSet(mimeFormatsStr);
+            info.setMimeFormats(mimeFormats);
+        } else if (resourceInfo instanceof FeatureTypeInfo) {
+            info.setMimeFormats(defaults.getDefaultVectorCacheFormats());
+            info.setDirty(true);
+        } else if (resourceInfo instanceof CoverageInfo) {
+            info.setMimeFormats(defaults.getDefaultCoverageCacheFormats());
+            info.setDirty(true);
+        } else {
+            info.setMimeFormats(defaults.getDefaultOtherCacheFormats());
+            info.setDirty(true);
+        }
+
+        boolean autoCacheStyles = defaults.isCacheNonDefaultStyles();
+        if (metadataMap.containsKey(CONFIG_KEY_AUTO_CACHE_STYLES)) {
+            autoCacheStyles = metadataMap.get(CONFIG_KEY_AUTO_CACHE_STYLES, Boolean.class)
+                    .booleanValue();
+        } else {
+            info.setDirty(true);
+        }
+        info.setAutoCacheStyles(autoCacheStyles);
+
+        if (metadataMap.containsKey(CONFIG_KEY_DEFAULT_STYLE)) {
+            String defaultStyle = metadataMap.get(CONFIG_KEY_DEFAULT_STYLE, String.class);
+            info.setDefaultStyle(defaultStyle);
+        } else {
+            String defaultStyle = layerInfo.getDefaultStyle().getName();
+            info.setDefaultStyle(defaultStyle);
+            info.setDirty(true);
+        }
+
+        info.setCachedStyles(Collections.EMPTY_SET);
+        if (metadataMap.containsKey(CONFIG_KEY_CACHED_STYLES)) {
+            String cachedStylesStr = metadataMap.get(CONFIG_KEY_CACHED_STYLES, String.class);
+            Set<String> cachedStyles = unmarshalSet(cachedStylesStr);
+            info.setCachedStyles(cachedStyles);
+        } else {
+            if (autoCacheStyles) {
+                Set<StyleInfo> alternateStyles = layerInfo.getStyles();
+                if (alternateStyles != null && alternateStyles.size() > 0) {
+                    Set<String> cachedStyles = new HashSet<String>();
+                    for (StyleInfo si : alternateStyles) {
+                        cachedStyles.add(si.getName());
+                    }
+                    info.setCachedStyles(cachedStyles);
+                    info.setDirty(true);
+                }
+            }
+        }
+
+        return info;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static GeoServerTileLayerInfo create(final LayerGroupInfo layerInfo,
+            final GWCConfig defaults) {
+
+        MetadataMap metadataMap = layerInfo.getMetadata();
+        GeoServerTileLayerInfo info = create(metadataMap, defaults);
+
+        if (metadataMap.containsKey(CONFIG_KEY_FORMATS)) {
+            String mimeFormatsStr = metadataMap.get(CONFIG_KEY_FORMATS, String.class);
+            Set<String> mimeFormats = unmarshalSet(mimeFormatsStr);
+            info.setMimeFormats(mimeFormats);
+        } else {
+            info.setMimeFormats(defaults.getDefaultOtherCacheFormats());
+            info.setDirty(true);
+        }
+
+        info.setCachedStyles(Collections.EMPTY_SET);
+
+        return info;
     }
 
     /**
@@ -56,14 +166,17 @@ public class GeoServerTileLayerInfo {
      * @param metadataMap
      * @return
      */
-    public static GeoServerTileLayerInfo create(final ResourceInfo resourceInfo,
-            final MetadataMap metadataMap, final GWCConfig defaults) {
+    private static GeoServerTileLayerInfo create(final MetadataMap metadataMap,
+            final GWCConfig defaults) {
 
         GeoServerTileLayerInfo info = new GeoServerTileLayerInfo();
-
+        // whether the config needs to be saved
+        boolean dirty = false;
         boolean enabled = defaults.isCacheLayersByDefault();
         if (metadataMap.containsKey(CONFIG_KEY_ENABLED)) {
             enabled = metadataMap.get(CONFIG_KEY_ENABLED, Boolean.class).booleanValue();
+        } else {
+            dirty = true;
         }
         info.setEnabled(enabled);
 
@@ -71,56 +184,86 @@ public class GeoServerTileLayerInfo {
         if (metadataMap.containsKey(CONFIG_KEY_GUTTER)) {
             int gutter = metadataMap.get(CONFIG_KEY_GUTTER, Integer.class).intValue();
             info.setGutter(gutter);
+        } else {
+            dirty = true;
         }
 
         info.setCachedGridSetIds(defaults.getDefaultCachingGridSetIds());
         if (metadataMap.containsKey(CONFIG_KEY_GRIDSETS)) {
             String gridsets = metadataMap.get(CONFIG_KEY_GRIDSETS, String.class);
-            List<String> gridSetIds = unmarshalList(gridsets);
+            Set<String> gridSetIds = unmarshalSet(gridsets);
             info.setCachedGridSetIds(gridSetIds);
+        } else {
+            dirty = true;
         }
 
         info.setMetaTilingX(defaults.getMetaTilingX());
         info.setMetaTilingY(defaults.getMetaTilingY());
         if (metadataMap.containsKey(CONFIG_KEY_METATILING_X)) {
             info.setMetaTilingX(metadataMap.get(CONFIG_KEY_METATILING_X, Integer.class).intValue());
+        } else {
+            dirty = true;
         }
         if (metadataMap.containsKey(CONFIG_KEY_METATILING_Y)) {
             info.setMetaTilingY(metadataMap.get(CONFIG_KEY_METATILING_Y, Integer.class).intValue());
-        }
-
-        if (metadataMap.containsKey(CONFIG_KEY_FORMATS)) {
-            String mimeFormatsStr = metadataMap.get(CONFIG_KEY_FORMATS, String.class);
-            List<String> mimeFormats = unmarshalList(mimeFormatsStr);
-            info.setMimeFormats(mimeFormats);
-        } else if (resourceInfo instanceof FeatureTypeInfo) {
-            info.setMimeFormats(defaults.getDefaultVectorCacheFormats());
-        } else if (resourceInfo instanceof CoverageInfo) {
-            info.setMimeFormats(defaults.getDefaultCoverageCacheFormats());
         } else {
-            info.setMimeFormats(defaults.getDefaultOtherCacheFormats());
+            dirty = true;
         }
 
-        boolean cacheNonDefaultStyles = defaults.isCacheNonDefaultStyles();
-        info.setCacheNonDefaultStyles(cacheNonDefaultStyles);
-
+        info.setDirty(dirty);
         return info;
     }
 
-    public void setCacheNonDefaultStyles(boolean cacheNonDefaultStyles) {
-        this.cacheNonDefaultStyles = cacheNonDefaultStyles;
+    public void setDirty(boolean dirty) {
+        this.dirty = dirty;
     }
 
-    public boolean isCacheNonDefaultStyles() {
-        return cacheNonDefaultStyles;
+    /**
+     * @return whether the config needs to be saved because it's out of sync with the
+     *         layer(group)info metadatamap
+     */
+    public boolean isDirty() {
+        return dirty;
     }
 
-    public List<String> getMimeFormats() {
+    public void saveTo(MetadataMap metadata) {
+
+        final boolean enabled = this.isEnabled();
+        final int gutter = this.getGutter();
+        final Set<String> cachedGridSetIds = this.getCachedGridSetIds();
+        final int metaTilingX = this.getMetaTilingX();
+        final int metaTilingY = this.getMetaTilingY();
+        final Set<String> mimeFormats = this.getMimeFormats();
+        final Set<String> cachedStyles = this.getCachedStyles();
+
+        metadata.put(CONFIG_KEY_ENABLED, Boolean.valueOf(enabled));
+        metadata.put(CONFIG_KEY_GUTTER, Integer.valueOf(gutter));
+        metadata.put(CONFIG_KEY_GRIDSETS, marshalList(cachedGridSetIds));
+        metadata.put(CONFIG_KEY_METATILING_X, Integer.valueOf(metaTilingX));
+        metadata.put(CONFIG_KEY_METATILING_Y, Integer.valueOf(metaTilingY));
+        metadata.put(CONFIG_KEY_FORMATS, marshalList(mimeFormats));
+        if (defaultStyle != null) {
+            metadata.put(CONFIG_KEY_DEFAULT_STYLE, defaultStyle);
+        }
+        if (cachedStyles.size() > 0) {
+            metadata.put(CONFIG_KEY_CACHED_STYLES, marshalList(cachedStyles));
+        }
+    }
+
+    public Set<String> getCachedStyles() {
+        return cachedStyles;
+    }
+
+    public void setCachedStyles(Set<String> cachedStyles) {
+        this.cachedStyles = new HashSet<String>(cachedStyles);
+    }
+
+    public Set<String> getMimeFormats() {
         return mimeFormats;
     }
 
-    public void setMimeFormats(List<String> mimeFormats) {
-        this.mimeFormats = new ArrayList<String>(mimeFormats);
+    public void setMimeFormats(Set<String> mimeFormats) {
+        this.mimeFormats = new HashSet<String>(mimeFormats);
     }
 
     public int getMetaTilingX() {
@@ -141,13 +284,13 @@ public class GeoServerTileLayerInfo {
         this.metaTilingX = metaTilingX;
     }
 
-    public void setCachedGridSetIds(List<String> cachedGridSetIds) {
+    public void setCachedGridSetIds(Set<String> cachedGridSetIds) {
         this.cachedGridSetIds = cachedGridSetIds;
     }
 
     @SuppressWarnings("unchecked")
-    public List<String> getCachedGridSetIds() {
-        return cachedGridSetIds == null ? Collections.EMPTY_LIST : cachedGridSetIds;
+    public Set<String> getCachedGridSetIds() {
+        return cachedGridSetIds == null ? Collections.EMPTY_SET : cachedGridSetIds;
     }
 
     public void setEnabled(boolean enabled) {
@@ -157,7 +300,7 @@ public class GeoServerTileLayerInfo {
     public boolean isEnabled() {
         return enabled;
     }
-    
+
     public void setGutter(int gutter) {
         this.gutter = gutter;
     }
@@ -165,4 +308,31 @@ public class GeoServerTileLayerInfo {
     public int getGutter() {
         return gutter;
     }
+
+    @Override
+    public boolean equals(Object other) {
+        return EqualsBuilder.reflectionEquals(this, other);
+    }
+
+    @Override
+    public int hashCode() {
+        return HashCodeBuilder.reflectionHashCode(this);
+    }
+
+    public String getDefaultStyle() {
+        return defaultStyle;
+    }
+
+    public void setDefaultStyle(String styleName) {
+        this.defaultStyle = styleName;
+    }
+
+    public boolean isAutoCacheStyles() {
+        return autoCacheStyles;
+    }
+
+    public void setAutoCacheStyles(boolean autoCacheStyles) {
+        this.autoCacheStyles = autoCacheStyles;
+    }
+
 }

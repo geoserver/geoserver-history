@@ -7,6 +7,7 @@
  */
 package org.geoserver.gwc;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.geoserver.catalog.Catalog;
@@ -56,8 +57,9 @@ public class CatalogStyleChangeListener implements CatalogListener {
     }
 
     /**
+     * Truncates all tile sets referring the modified {@link StyleInfo}
      * 
-     * @see org.geoserver.catalog.event.CatalogListener#handlePostModifyEvent(org.geoserver.catalog.event.CatalogPostModifyEvent)
+     * @see org.geoserver.catalog.event.CatalogListener#handlePostModifyEvent
      */
     public void handlePostModifyEvent(CatalogPostModifyEvent event) throws CatalogException {
         Object obj = event.getSource();
@@ -78,11 +80,12 @@ public class CatalogStyleChangeListener implements CatalogListener {
      * 
      * @param modifiedStyle
      */
-    public void handleStyleChange(final StyleInfo modifiedStyle) {
+    private void handleStyleChange(final StyleInfo modifiedStyle) {
         final String styleName = modifiedStyle.getName();
         log.finer("Handling style modification: " + styleName);
         // First we collect all the layers that use this style
         for (LayerInfo affectedLayer : gwc.getLayersInfosFor(modifiedStyle)) {
+            //If the style name changes, we need to update the layer's parameter filter
             String prefixedName = affectedLayer.getResource().getPrefixedName();
             log.info("Truncating layer '" + prefixedName + "' due to a change in style '"
                     + styleName + "'");
@@ -99,25 +102,31 @@ public class CatalogStyleChangeListener implements CatalogListener {
     }
 
     /**
+     * If the object removed is a {@link StyleInfo}, truncates all the layers affected with the
+     * proper parameter filter, but also removes the parameter filter matching the removed style
+     * from the tile layer.
      * 
-     * @see org.geoserver.catalog.event.CatalogListener#handleRemoveEvent(org.geoserver.catalog.event.CatalogRemoveEvent)
+     * @see org.geoserver.catalog.event.CatalogListener#handleRemoveEvent
+     * @see GWC#truncate(String, String)
      */
     public void handleRemoveEvent(CatalogRemoveEvent event) throws CatalogException {
         Object obj = event.getSource();
 
         String prefixedName = null;
 
-        if (obj instanceof LayerGroupInfo) {
-            LayerGroupInfo lgInfo = (LayerGroupInfo) obj;
-            prefixedName = lgInfo.getName();
-        } else if (obj instanceof LayerInfo) {
-            LayerInfo layerInfo = (LayerInfo) obj;
-            prefixedName = layerInfo.getResource().getPrefixedName();
+        if (!(obj instanceof StyleInfo)) {
+            return;
         }
 
-        if (null != prefixedName) {
-            gwc.removeLayer(prefixedName);
-        }
+        StyleInfo style = (StyleInfo) obj;
+        // this truncates all tilesets referring to the style
+        handleStyleChange(style);
+
+        // now change the parameter filters. Only for LayerInfo, LayerGroupInfo's don't have STYLE
+        // based parameter filters. But we need a handle to the GeoServerTileLayerInfo because at
+        // this point the style has been removed from the LayerInfo already?
+        List<LayerInfo> layersInfos = gwc.getLayersInfosFor(style);
+
     }
 
     /**

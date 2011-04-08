@@ -162,8 +162,25 @@ public class CatalogConfiguration implements Configuration {
 
     /**
      * @param layerName
+     * @return
      */
-    public synchronized void removeLayer(String layerName) {
-        layers.remove(layerName);
+    public synchronized GeoServerTileLayer removeLayer(String layerName) {
+        GeoServerTileLayer removed = layers.remove(layerName);
+        return removed;
     }
+
+    public void add(GeoServerTileLayer tileLayer) {
+        postCreate(tileLayer);
+    }
+
+    public synchronized GeoServerTileLayer getLayerById(String id) {
+        List<GeoServerTileLayer> registered = new ArrayList<GeoServerTileLayer>(layers.values());
+        for (GeoServerTileLayer layer : registered) {
+            if (id.equals(layer.getId())) {
+                return layer;
+            }
+        }
+        return null;
+    }
+
 }

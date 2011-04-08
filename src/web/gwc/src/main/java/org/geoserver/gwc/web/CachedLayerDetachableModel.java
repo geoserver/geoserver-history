@@ -50,7 +50,7 @@ public class CachedLayerDetachableModel extends LoadableDetachableModel<CachedLa
     }
 
     static CachedLayerInfo create(final String name, final GWC gwc) {
-        final TileLayer layer = gwc.getLayerByName(name);
+        final TileLayer layer = gwc.getTileLayerByName(name);
         CachedLayerInfo info = new CachedLayerInfo();
         info.setName(name);
         info.setType(getType(layer));
@@ -103,7 +103,7 @@ public class CachedLayerDetachableModel extends LoadableDetachableModel<CachedLa
 
         public LazyCachedLayerInfoList(final GWC gwc) {
             this.gwc = gwc;
-            List<String> names = new ArrayList<String>(gwc.getLayerNames());
+            List<String> names = new ArrayList<String>(gwc.getTileLayerNames());
             Collections.sort(names);
             this.layerNames = names;
         }

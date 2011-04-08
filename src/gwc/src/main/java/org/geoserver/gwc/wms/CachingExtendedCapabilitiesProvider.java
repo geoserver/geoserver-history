@@ -101,7 +101,8 @@ public class CachingExtendedCapabilitiesProvider implements ExtendedCapabilities
             return;
         }
 
-        List<TileLayer> tileLayers = gwc.getLayers(request.getNamespace());
+        String namespacePrefixFilter = request.getNamespace();
+        List<TileLayer> tileLayers = gwc.getTileLayersByNamespacePrefix(namespacePrefixFilter);
 
         for (TileLayer layer : tileLayers) {
 

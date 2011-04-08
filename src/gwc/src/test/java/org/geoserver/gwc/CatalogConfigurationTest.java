@@ -64,7 +64,7 @@ public class CatalogConfigurationTest extends GeoServerTestSupport {
         List<TileLayer> layerList;
         Iterator<TileLayer> tlIter;
 
-        layerList = gwc.getLayers();
+        layerList = gwc.getTileLayers();
         tlIter = layerList.iterator();
 
         assertTrue(tlIter.hasNext());
@@ -87,7 +87,7 @@ public class CatalogConfigurationTest extends GeoServerTestSupport {
         assertTrue(foundLakes);
 
         // 2) Check sf:GenerictEntity is present and initialized
-        layerList = gwc.getLayers();
+        layerList = gwc.getTileLayers();
         tlIter = layerList.iterator();
         boolean foudAGF = false;
         while (tlIter.hasNext()) {

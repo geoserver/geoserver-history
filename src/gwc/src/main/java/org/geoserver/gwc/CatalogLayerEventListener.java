@@ -7,10 +7,12 @@
  */
 package org.geoserver.gwc;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogException;
+import org.geoserver.catalog.CatalogInfo;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.event.CatalogAddEvent;
@@ -34,12 +36,24 @@ public class CatalogLayerEventListener implements CatalogListener {
 
     private final GWC gwc;
 
+    /**
+     * Holds the CatalogModifyEvent from {@link #handleModifyEvent} to be taken after the change was
+     * applied to the {@link Catalog} at {@link #handlePostModifyEvent} and check whether it is
+     * necessary to perform any action on the cache based on the changed properties
+     */
+    private static ThreadLocal<CatalogModifyEvent> PRE_MODIFY_EVENT = new ThreadLocal<CatalogModifyEvent>();
+
     public CatalogLayerEventListener(final GWC gwc) {
         this.gwc = gwc;
     }
 
     /**
-     * @see org.geoserver.catalog.event.CatalogListener#handleAddEvent(org.geoserver.catalog.event.CatalogAddEvent)
+     * If either a {@link LayerInfo} or {@link LayerGroupInfo} has been added to the {@link Catalog}
+     * , create a corresponding GWC TileLayer.
+     * 
+     * @see org.geoserver.catalog.event.CatalogListener#handleAddEvent
+     * @see GWC#createLayer(LayerInfo)
+     * @see GWC#createLayer(LayerGroupInfo)
      */
     public void handleAddEvent(CatalogAddEvent event) throws CatalogException {
         Object obj = event.getSource();
@@ -59,7 +73,12 @@ public class CatalogLayerEventListener implements CatalogListener {
      * @see #handlePostModifyEvent
      */
     public void handleModifyEvent(CatalogModifyEvent event) throws CatalogException {
-        // Not dealing with this one just yet
+        CatalogInfo source = event.getSource();
+        if (source instanceof LayerInfo) {
+            PRE_MODIFY_EVENT.set(event);
+        } else if (source instanceof LayerGroupInfo) {
+            PRE_MODIFY_EVENT.set(event);
+        }
     }
 
     /**
@@ -73,16 +92,54 @@ public class CatalogLayerEventListener implements CatalogListener {
      * 
      * @see org.geoserver.catalog.event.CatalogListener#handlePostModifyEvent(org.geoserver.catalog.event.CatalogPostModifyEvent)
      */
-    public void handlePostModifyEvent(CatalogPostModifyEvent event) throws CatalogException {
-        Object obj = event.getSource();
+    public void handlePostModifyEvent(final CatalogPostModifyEvent event) throws CatalogException {
+        final Object obj = event.getSource();
+        if (!(obj instanceof LayerInfo || obj instanceof LayerGroupInfo)) {
+            return;
+        }
+
+        final CatalogModifyEvent preModifyEvent = PRE_MODIFY_EVENT.get();
+        if (preModifyEvent == null) {
+            throw new IllegalStateException(
+                    "PostModifyEvent called without having called handlePreModify first?");
+        }
+        PRE_MODIFY_EVENT.remove();
+
+        final List<String> changedProperties = preModifyEvent.getPropertyNames();
+        final List<Object> oldValues = preModifyEvent.getOldValues();
+        final List<Object> newValues = preModifyEvent.getNewValues();
+
+        log.finer("Handling modify event for " + obj);
         if (obj instanceof LayerInfo) {
-            log.finer("Handling modify event for " + obj);
+            // REVISIT: what about truncating the LayerGroups containing the modified layer?
+            // checking the style applies of course
             LayerInfo li = (LayerInfo) obj;
-            gwc.createLayer(li);
+            GeoServerTileLayer tileLayer = gwc.getTileLayerById(li.getId());
+            final String oldName = tileLayer.getName();
+            final String newName = li.getResource().getPrefixedName();
+            if (!oldName.equals(newName)) {
+                gwc.renameTileLayer(oldName, newName);
+            }
+            if (changedProperties.contains("defaultStyle") || changedProperties.contains("styles")) {
+            }
+
+            // gwc.modifyLayer(li);
         } else if (obj instanceof LayerGroupInfo) {
-            log.finer("Handling modify event for " + obj);
             LayerGroupInfo lgInfo = (LayerGroupInfo) obj;
-            gwc.createLayer(lgInfo);
+            GeoServerTileLayer tileLayer = gwc.getTileLayerById(lgInfo.getId());
+            final String oldName = tileLayer.getName();
+            final String newName = lgInfo.getName();
+            if (!oldName.equals(newName)) {
+                gwc.renameTileLayer(oldName, newName);
+            }
+            if (changedProperties.contains("layers") || changedProperties.contains("styles")) {
+                if (!oldValues.equals(newValues)) {
+                    log.info("Truncating TileLayer for layer group '" + newName
+                            + "' due to a change in its layers or styles");
+                    String layerName = lgInfo.getName();
+                    gwc.truncate(layerName);
+                }
+            }
         }
     }
 
