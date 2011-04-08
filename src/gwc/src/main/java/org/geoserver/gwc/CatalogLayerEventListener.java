@@ -146,26 +146,37 @@ public class CatalogLayerEventListener implements CatalogListener {
             if (changedProperties.contains("styles")) {
                 final int propIndex = changedProperties.indexOf("styles");
                 final Set<StyleInfo> oldStyles = (Set<StyleInfo>) oldValues.get(propIndex);
-                final Set<StyleInfo> newStyles = (Set<StyleInfo>) newValues.get(propIndex);
-                if (!oldStyles.equals(newStyles)) {
-                    save = true;
+                final Set<StyleInfo> currentStyles = (Set<StyleInfo>) newValues.get(propIndex);
+                Set<String> newStyleSet = new HashSet<String>(info.getCachedStyles());
+                if (!oldStyles.equals(currentStyles)) {
                     Set<StyleInfo> removed = new HashSet<StyleInfo>(oldStyles);
-                    removed.removeAll(newStyles);
+                    removed.removeAll(currentStyles);
 
-                    Set<String> newStyleSet = new HashSet<String>(info.getCachedStyles());
+                    // remove any style detacched from the layer
                     for (StyleInfo deletedStyle : removed) {
                         String styleName = deletedStyle.getName();
                         newStyleSet.remove(styleName);
                         gwc.truncate(layerName, styleName);
                     }
+                    // add new cached styles if tilelayer is configured to do so
                     if (info.isAutoCacheStyles()) {
-                        Set<StyleInfo> added = new HashSet<StyleInfo>(newStyles);
+                        Set<StyleInfo> added = new HashSet<StyleInfo>(currentStyles);
                         added.removeAll(oldStyles);
                         for (StyleInfo addedStyle : added) {
                             String styleName = addedStyle.getName();
                             newStyleSet.add(styleName);
                         }
                     }
+                }
+                // prune any tangling style from info
+                Set<String> currentStyleNames = new HashSet<String>();
+                for(StyleInfo current : currentStyles){
+                    currentStyleNames.add(current.getName());
+                }
+                newStyleSet.retainAll(currentStyleNames);
+                // recreate parameter filters if need be
+                if (!newStyleSet.equals(info.getCachedStyles())) {
+                    save = true;
                     String defaultStyle = li.getDefaultStyle().getName();
                     info.setCachedStyles(newStyleSet);
                     ParameterFilter newStyleParamsFilter = null;
