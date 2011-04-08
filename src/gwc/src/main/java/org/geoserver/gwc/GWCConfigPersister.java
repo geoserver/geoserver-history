@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -123,10 +124,10 @@ public class GWCConfigPersister implements GeoServerInitializer {
 
     private void configureXstream(XStream xs) {
         xs.alias("GeoServerGWCConfig", GWCConfig.class);
-        xs.alias("defaultCachingGridSetIds", ArrayList.class);
-        xs.alias("defaultCoverageCacheFormats", ArrayList.class);
-        xs.alias("defaultVectorCacheFormats", ArrayList.class);
-        xs.alias("defaultOtherCacheFormats", ArrayList.class);
+        xs.alias("defaultCachingGridSetIds", HashSet.class);
+        xs.alias("defaultCoverageCacheFormats", HashSet.class);
+        xs.alias("defaultVectorCacheFormats", HashSet.class);
+        xs.alias("defaultOtherCacheFormats", HashSet.class);
     }
 
     private File getConfigRoot() {

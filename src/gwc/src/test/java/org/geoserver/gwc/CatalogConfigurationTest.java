@@ -28,6 +28,12 @@ import org.geowebcache.layer.TileLayerDispatcher;
  */
 public class CatalogConfigurationTest extends GeoServerTestSupport {
 
+    private Catalog cat;
+
+    private TileLayerDispatcher tld;
+
+    private GridSetBroker gridSetBroker;
+
     /**
      * Runs through the Spring based initialization sequence against the mock catalog
      * 
@@ -41,15 +47,13 @@ public class CatalogConfigurationTest extends GeoServerTestSupport {
      * @throws Exception
      */
     public void testInit() throws Exception {
-        CatalogConfiguration gwcListener = (CatalogConfiguration) applicationContext
-                .getBean("gwcCatalogConfiguration");
+        GWC gwc = GWC.get();
 
-        Catalog cat = (Catalog) applicationContext.getBean("rawCatalog");
+        cat = (Catalog) applicationContext.getBean("rawCatalog");
 
-        TileLayerDispatcher tld = (TileLayerDispatcher) applicationContext
-                .getBean("gwcTLDispatcher");
-        
-        GridSetBroker gridSetBroker = (GridSetBroker) applicationContext.getBean("gwcGridSetBroker");
+        tld = (TileLayerDispatcher) applicationContext.getBean("gwcTLDispatcher");
+
+        gridSetBroker = (GridSetBroker) applicationContext.getBean("gwcGridSetBroker");
 
         try {
             tld.getTileLayer("");
@@ -60,7 +64,7 @@ public class CatalogConfigurationTest extends GeoServerTestSupport {
         List<TileLayer> layerList;
         Iterator<TileLayer> tlIter;
 
-        layerList = gwcListener.getTileLayers(true);
+        layerList = gwc.getTileLayers();
         tlIter = layerList.iterator();
 
         assertTrue(tlIter.hasNext());
@@ -83,7 +87,7 @@ public class CatalogConfigurationTest extends GeoServerTestSupport {
         assertTrue(foundLakes);
 
         // 2) Check sf:GenerictEntity is present and initialized
-        layerList = gwcListener.getTileLayers(true);
+        layerList = gwc.getTileLayers();
         tlIter = layerList.iterator();
         boolean foudAGF = false;
         while (tlIter.hasNext()) {
@@ -92,8 +96,7 @@ public class CatalogConfigurationTest extends GeoServerTestSupport {
             if (tl.getName().equals("sf:AggregateGeoFeature")) {
                 // tl.isInitialized();
                 foudAGF = true;
-                GridSubset epsg4326 = tl.getGridSubset(gridSetBroker.WORLD_EPSG4326
-                        .getName());
+                GridSubset epsg4326 = tl.getGridSubset(gridSetBroker.WORLD_EPSG4326.getName());
                 assertTrue(epsg4326.getGridSetBounds().equals(
                         new BoundingBox(-180.0, -90.0, 180.0, 90.0)));
                 String mime = tl.getMimeTypes().get(1).getMimeType();
@@ -127,14 +130,14 @@ public class CatalogConfigurationTest extends GeoServerTestSupport {
 
         // 5) Introducing new LayerInfo
         ResourceInfo resInfo = li.getResource();
-        
-        //JD: not sure what this next line is really doing, disabling it because it changes the 
+
+        // JD: not sure what this next line is really doing, disabling it because it changes the
         // namespace and does not save it... and the catalog does not cascade changes
-        //resInfo.getNamespace().setPrefix("sf");
-        
+        // resInfo.getNamespace().setPrefix("sf");
+
         resInfo.setName("hithere");
         cat.save(resInfo);
-        
+
         LayerInfo layerInfo = cat.getFactory().createLayer();
         layerInfo.setResource(resInfo);
         layerInfo.setName(resInfo.getPrefixedName());

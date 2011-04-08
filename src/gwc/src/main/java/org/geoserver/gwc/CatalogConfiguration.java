@@ -8,50 +8,51 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.gwc.layer.GeoServerTileLayer;
-import org.geoserver.ows.Dispatcher;
 import org.geotools.util.logging.Logging;
 import org.geowebcache.GeoWebCacheException;
 import org.geowebcache.config.Configuration;
 import org.geowebcache.config.meta.ServiceInformation;
 import org.geowebcache.grid.GridSetBroker;
 import org.geowebcache.layer.TileLayer;
+import org.geowebcache.layer.TileLayerDispatcher;
 
+/**
+ * A GWC's {@link Configuration} implementation that provides {@link TileLayer}s directly from the
+ * GeoServer {@link Catalog}'s {@link LayerInfo}s and {@link LayerGroupInfo}s.
+ * <p>
+ * The sole responsibility of the class is to
+ * 
+ * @see #createLayer(LayerInfo)
+ * @see #createLayer(LayerGroupInfo)
+ * @see #getTileLayers(boolean)
+ * @see CatalogStyleChangeListener
+ */
 public class CatalogConfiguration implements Configuration {
-    private static Logger log = Logging.getLogger("org.geoserver.gwc.GWCCatalogListener");
 
-    private final Catalog catalog;
+    private static Logger log = Logging.getLogger(CatalogConfiguration.class);
 
-    private final Dispatcher gsDispatcher;
-
-    private final Map<String, TileLayer> layers;
+    private final Map<String, GeoServerTileLayer> layers;
 
     private final List<String> mimeFormats;
 
-    private final GWCConfigPersister gsGwcConfigPersister;
-
-    private final GridSetBroker gridSetBroker;
+    private final GWC mediator;
 
     /**
      * 
-     * @param cat
-     * @param gridSetBroker
-     * @param gsDispatcher
+     * @param mediator
      */
-    public CatalogConfiguration(final GWCConfigPersister gsGwcConfigPersister,
-            final GridSetBroker gridSetBroker, final Catalog cat, final Dispatcher gsDispatcher) {
+    public CatalogConfiguration(final GWC mediator) {
 
-        this.gsGwcConfigPersister = gsGwcConfigPersister;
-        this.gridSetBroker = gridSetBroker;
-        this.catalog = cat;
-        this.gsDispatcher = gsDispatcher;
+        this.mediator = mediator;
 
-        layers = new HashMap<String, TileLayer>();
+        this.layers = new HashMap<String, GeoServerTileLayer>();
 
         // REVISIT: these are the old default mime formats available for all geoserver layers. We're
         // gonna make that an opt-in configuration option on a per layer basis and default to png
@@ -64,10 +65,6 @@ public class CatalogConfiguration implements Configuration {
         mimeFormats.add("application/vnd.google-earth.kml+xml");
     }
 
-    public GWCConfigPersister getConfigPersister() {
-        return this.gsGwcConfigPersister;
-    }
-
     /**
      * 
      * @see org.geowebcache.config.Configuration#getIdentifier()
@@ -76,16 +73,11 @@ public class CatalogConfiguration implements Configuration {
         return "GeoServer Catalog Configuration";
     }
 
-    public Catalog getCatalog() {
-        return catalog;
-    }
-
     /**
-     * 
      * @see org.geowebcache.config.Configuration#getServiceInformation()
+     * @return {@code null}
      */
     public ServiceInformation getServiceInformation() throws GeoWebCacheException {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -97,28 +89,49 @@ public class CatalogConfiguration implements Configuration {
     }
 
     /**
+     * Returns the list of {@link GeoServerTileLayer} objects matching the GeoServer ones.
+     * <p>
+     * The list is built once and kept, as it is used by {@link TileLayerDispatcher}. Whenever a
+     * layer is added or removed something else needs to notify
+     * {@link TileLayerDispatcher#add(TileLayer)} or {@link TileLayerDispatcher#remove(String)} and
+     * make sure the {@link GeoServerTileLayer} is created/deleted using this class.
+     * </p>
+     * <p>
+     * If the internal list of {@link GeoServerTileLayer} objects matching 1-1 the GeoServer layers
+     * and layergorups is empty, or {@code reload == true}, creates a list of
+     * {@link GeoServerTileLayer} for each geoserver layer(group).
+     * </p>
      * 
      * @see org.geowebcache.config.Configuration#getTileLayers(boolean)
+     * @see #createLayer(LayerInfo)
+     * @see #createLayer(LayerGroupInfo)
+     * @see GWC#createLayer(LayerInfo)
+     * @see GWC#removeLayer(String)
      */
-    public synchronized List<TileLayer> getTileLayers(boolean reload) throws GeoWebCacheException {
+    public synchronized List<GeoServerTileLayer> getTileLayers(boolean reload)
+            throws GeoWebCacheException {
         if (reload) {
             layers.clear();
         }
         if (layers.isEmpty()) {
+            log.fine("Creating GeoServerTileLayers for the available GeoServer LayerInfos");
             // Adding normal layers
-            for (LayerInfo li : catalog.getLayers()) {
+            for (LayerInfo li : mediator.getLayerInfos()) {
                 createLayer(li);
             }
 
+            log.fine("Creating GeoServerTileLayers for the available GeoServer LayerGroups");
             // Adding layer groups
-            for (LayerGroupInfo lgi : catalog.getLayerGroups()) {
+            for (LayerGroupInfo lgi : mediator.getLayerGroups()) {
                 createLayer(lgi);
             }
         }
-        log.fine("Responding with " + layers.size()
-                + " to getTileLayers() request from TileLayerDispatcher");
+        if (log.isLoggable(Level.FINE)) {
+            log.fine("Responding with " + layers.size()
+                    + " to getTileLayers() request from TileLayerDispatcher");
+        }
 
-        return new ArrayList<TileLayer>(layers.values());
+        return new ArrayList<GeoServerTileLayer>(layers.values());
     }
 
     /**
@@ -126,29 +139,48 @@ public class CatalogConfiguration implements Configuration {
      * @param li
      * @return
      */
-    public TileLayer createLayer(LayerInfo li) {
-        log.info(" ---- Creating GeoServerTileLayer for " + li.getName());
-        GeoServerTileLayer geoServerTileLayer = new GeoServerTileLayer(this, li);
-        geoServerTileLayer.initialize(gridSetBroker);
-        String layerName = geoServerTileLayer.getName();
-        layers.put(layerName, geoServerTileLayer);
+    public GeoServerTileLayer createLayer(LayerInfo li) {
+        log.finer("Creating GeoServerTileLayer for LayerInfo " + li.getName());
+        GeoServerTileLayer geoServerTileLayer = new GeoServerTileLayer(mediator, li);
+        postCreate(geoServerTileLayer);
         return geoServerTileLayer;
     }
 
-    public TileLayer createLayer(LayerGroupInfo lgi) {
-        log.info(" ---- Creating GeoServerTileLayer for " + lgi.getName());
-        GeoServerTileLayer geoServerTileLayer = new GeoServerTileLayer(this, lgi);
-        geoServerTileLayer.initialize(gridSetBroker);
-        String layerName = geoServerTileLayer.getName();
-        layers.put(layerName, geoServerTileLayer);
+    public GeoServerTileLayer createLayer(LayerGroupInfo lgi) {
+        log.finer("Creating GeoServerTileLayer for LayerGroup " + lgi.getName());
+        GeoServerTileLayer geoServerTileLayer = new GeoServerTileLayer(mediator, lgi);
+        postCreate(geoServerTileLayer);
         return geoServerTileLayer;
     }
 
-    public synchronized void removeLayer(String layerName) {
-        layers.remove(layerName);
+    private void postCreate(GeoServerTileLayer geoServerTileLayer) {
+        GridSetBroker gridSetBroker = mediator.getGridSetBroker();
+        geoServerTileLayer.initialize(gridSetBroker);
+        String layerName = geoServerTileLayer.getName();
+        layers.put(layerName, geoServerTileLayer);
     }
 
-    public Dispatcher getDispatcher() {
-        return gsDispatcher;
+    /**
+     * @param layerName
+     * @return
+     */
+    public synchronized GeoServerTileLayer removeLayer(String layerName) {
+        GeoServerTileLayer removed = layers.remove(layerName);
+        return removed;
     }
+
+    public void add(GeoServerTileLayer tileLayer) {
+        postCreate(tileLayer);
+    }
+
+    public synchronized GeoServerTileLayer getLayerById(String id) {
+        List<GeoServerTileLayer> registered = new ArrayList<GeoServerTileLayer>(layers.values());
+        for (GeoServerTileLayer layer : registered) {
+            if (id.equals(layer.getId())) {
+                return layer;
+            }
+        }
+        return null;
+    }
+
 }

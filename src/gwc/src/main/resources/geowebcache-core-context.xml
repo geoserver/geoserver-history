@@ -6,7 +6,7 @@
   </description>
 
   <bean id="gwowebCacheExtensions" class="org.geowebcache.GeoWebCacheExtensions"/>
-
+  
   <bean id="gwcAppCtx" class="org.geowebcache.util.ApplicationContextProvider" />
   
   <!-- The location of a static configuration file for GeoWebCache. 
@@ -19,11 +19,23 @@
          alternatively you can specify an absolute or relative path to a directory -->
     <!-- constructor-arg value="/etc/geowebcache" / -->
   </bean>
-
+  
+  <!-- For each configuration bean above, add them below to activate -->
+  <bean id="gwcTLDispatcher" class="org.geowebcache.layer.TileLayerDispatcher">
+    <constructor-arg ref="gwcGridSetBroker"/>
+    <constructor-arg>
+      <list>
+	    <ref bean="gwcXmlConfig" />
+      </list>
+    </constructor-arg>
+    <!-- loadDelay < -1 forces gwc to load configuration in the main thread -->
+    <constructor-arg value="-1" />
+  </bean>
+  
   <bean id="gwcDefaultStorageFinder" class="org.geowebcache.storage.DefaultStorageFinder">
   	<constructor-arg ref="gwcAppCtx" />
   </bean>
-  
+
   <bean id="gwcMetaStore" class="org.geowebcache.storage.metastore.jdbc.JDBCMetaBackend" destroy-method="destroy">
     <constructor-arg ref="gwcDefaultStorageFinder" />
     <constructor-arg>
@@ -101,11 +113,8 @@
       </list>
     </constructor-arg>
   </bean>
-
-  <!--
-    controller for handling all incoming requests. Differs from standalone version in that it has the servletPrefix
-    property set
-  -->
+  
+  <!-- controller for handling all incoming requests -->
   <bean id="geowebcacheDispatcher" class="org.geowebcache.GeoWebCacheDispatcher" destroy-method="destroy">
     <constructor-arg ref="gwcTLDispatcher"/>
     <constructor-arg ref="gwcGridSetBroker"/>

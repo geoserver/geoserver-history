@@ -1,9 +1,10 @@
 package org.geoserver.gwc;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 public class GWCConfig implements Cloneable, Serializable {
 
@@ -36,24 +37,35 @@ public class GWCConfig implements Cloneable, Serializable {
      */
     private boolean cacheNonDefaultStyles;
 
+    /**
+     * Default meta-tiling factor for the X axis
+     */
     private int metaTilingX;
 
+    /**
+     * Default meta-tiling factor for the Y axis
+     */
     private int metaTilingY;
+
+    /**
+     * Default gutter size in pixels
+     */
+    private int gutter;
 
     /**
      * Which SRS's to cache by default when adding a new Layer. Defaults to
      * {@code [EPSG:4326, EPSG:900913]}
      */
-    private ArrayList<String> defaultCachingGridSetIds;
+    private HashSet<String> defaultCachingGridSetIds;
 
-    private ArrayList<String> defaultCoverageCacheFormats;
+    private HashSet<String> defaultCoverageCacheFormats;
 
-    private ArrayList<String> defaultVectorCacheFormats;
+    private HashSet<String> defaultVectorCacheFormats;
 
     /**
      * Default cache formats for non coverage/vector layers (LayerGroups and WMS layers)
      */
-    private ArrayList<String> defaultOtherCacheFormats;
+    private HashSet<String> defaultOtherCacheFormats;
 
     /**
      * Creates a new GWC config with default values
@@ -63,9 +75,9 @@ public class GWCConfig implements Cloneable, Serializable {
         String png = "image/png";
         String jpeg = "image/jpeg";
 
-        setDefaultCoverageCacheFormats(Arrays.asList(jpeg));
-        setDefaultOtherCacheFormats(Arrays.asList(png, jpeg));
-        setDefaultVectorCacheFormats(Arrays.asList(png));
+        setDefaultCoverageCacheFormats(Collections.singleton(jpeg));
+        setDefaultOtherCacheFormats(new HashSet<String>(Arrays.asList(png, jpeg)));
+        setDefaultVectorCacheFormats(Collections.singleton(png));
     }
 
     public boolean isCacheLayersByDefault() {
@@ -127,36 +139,36 @@ public class GWCConfig implements Cloneable, Serializable {
         this.cacheNonDefaultStyles = cacheNonDefaultStyles;
     }
 
-    public List<String> getDefaultCachingGridSetIds() {
+    public Set<String> getDefaultCachingGridSetIds() {
         return defaultCachingGridSetIds;
     }
 
-    public void setDefaultCachingGridSetIds(List<String> defaultCachingGridSetIds) {
-        this.defaultCachingGridSetIds = new ArrayList<String>(defaultCachingGridSetIds);
+    public void setDefaultCachingGridSetIds(Set<String> defaultCachingGridSetIds) {
+        this.defaultCachingGridSetIds = new HashSet<String>(defaultCachingGridSetIds);
     }
 
-    public List<String> getDefaultCoverageCacheFormats() {
+    public Set<String> getDefaultCoverageCacheFormats() {
         return defaultCoverageCacheFormats;
     }
 
-    public void setDefaultCoverageCacheFormats(List<String> defaultCoverageCacheFormats) {
-        this.defaultCoverageCacheFormats = new ArrayList<String>(defaultCoverageCacheFormats);
+    public void setDefaultCoverageCacheFormats(Set<String> defaultCoverageCacheFormats) {
+        this.defaultCoverageCacheFormats = new HashSet<String>(defaultCoverageCacheFormats);
     }
 
-    public List<String> getDefaultVectorCacheFormats() {
+    public Set<String> getDefaultVectorCacheFormats() {
         return defaultVectorCacheFormats;
     }
 
-    public void setDefaultVectorCacheFormats(List<String> defaultVectorCacheFormats) {
-        this.defaultVectorCacheFormats = new ArrayList<String>(defaultVectorCacheFormats);
+    public void setDefaultVectorCacheFormats(Set<String> defaultVectorCacheFormats) {
+        this.defaultVectorCacheFormats = new HashSet<String>(defaultVectorCacheFormats);
     }
 
-    public List<String> getDefaultOtherCacheFormats() {
+    public Set<String> getDefaultOtherCacheFormats() {
         return defaultOtherCacheFormats;
     }
 
-    public void setDefaultOtherCacheFormats(List<String> defaultOtherCacheFormats) {
-        this.defaultOtherCacheFormats = new ArrayList<String>(defaultOtherCacheFormats);
+    public void setDefaultOtherCacheFormats(Set<String> defaultOtherCacheFormats) {
+        this.defaultOtherCacheFormats = new HashSet<String>(defaultOtherCacheFormats);
     }
 
     /**
@@ -175,10 +187,12 @@ public class GWCConfig implements Cloneable, Serializable {
         setCacheLayersByDefault(true);
         setMetaTilingX(4);
         setMetaTilingY(4);
+        setGutter(0);
         // this is not an old default, but a new feature so we enabled it anyway
         setCacheNonDefaultStyles(true);
-        setDefaultCachingGridSetIds(Arrays.asList("EPSG:4326", "EPSG:900913"));
-        List<String> oldDefaultFormats = Arrays.asList("image/png", "image/jpeg");
+        setDefaultCachingGridSetIds(new HashSet<String>(Arrays.asList("EPSG:4326", "EPSG:900913")));
+        Set<String> oldDefaultFormats = new HashSet<String>(
+                Arrays.asList("image/png", "image/jpeg"));
         setDefaultCoverageCacheFormats(oldDefaultFormats);
         setDefaultOtherCacheFormats(oldDefaultFormats);
         setDefaultVectorCacheFormats(oldDefaultFormats);
@@ -204,6 +218,14 @@ public class GWCConfig implements Cloneable, Serializable {
         this.metaTilingY = metaFactorY;
     }
 
+    public int getGutter() {
+        return gutter;
+    }
+
+    public void setGutter(int gutter) {
+        this.gutter = gutter;
+    }
+
     @Override
     public GWCConfig clone() {
         GWCConfig clone;
@@ -213,10 +235,10 @@ public class GWCConfig implements Cloneable, Serializable {
             throw new RuntimeException(e);
         }
 
-        clone.setDefaultCachingGridSetIds(new ArrayList<String>(getDefaultCachingGridSetIds()));
-        clone.setDefaultCoverageCacheFormats(new ArrayList<String>(getDefaultCoverageCacheFormats()));
-        clone.setDefaultVectorCacheFormats(new ArrayList<String>(getDefaultVectorCacheFormats()));
-        clone.setDefaultOtherCacheFormats(new ArrayList<String>(getDefaultOtherCacheFormats()));
+        clone.setDefaultCachingGridSetIds(getDefaultCachingGridSetIds());
+        clone.setDefaultCoverageCacheFormats(getDefaultCoverageCacheFormats());
+        clone.setDefaultVectorCacheFormats(getDefaultVectorCacheFormats());
+        clone.setDefaultOtherCacheFormats(getDefaultOtherCacheFormats());
 
         return clone;
     }
