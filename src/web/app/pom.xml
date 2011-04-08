@@ -648,6 +648,16 @@
       </dependencies>
     </profile>
     <profile>
+      <id>gdal</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.geoserver.extension</groupId>
+          <artifactId>gdal</artifactId>
+          <version>${project.version}</version>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
       <id>sfs</id>
       <dependencies>
         <dependency>

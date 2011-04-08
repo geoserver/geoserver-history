@@ -16,12 +16,15 @@
 			<directory>release/target/dependency</directory>
 			<outputDirectory></outputDirectory>
 			<includes>
-				<include>*imageio-ext*.jar</include>
+        <include>*gt-imageio-ext-gdal*.jar</include>
+				<include>*imageio-ext-gdal*.jar</include>
+				<include>*imageio-ext-geocore*.jar</include>
+				<include>gdal-*.jar</include>
 			</includes>
 			<excludes>
-				<exclude>*arcgrid*.jar</exclude>
-				<exclude>*customstreams*.jar</exclude>
-			</excludes>
+        <exclude>*arcgrid*.jar</exclude>
+        <exclude>*customstreams*.jar</exclude>
+      </excludes>
 		</fileSet>
 		<fileSet>
 			<directory>release/extensions</directory>
