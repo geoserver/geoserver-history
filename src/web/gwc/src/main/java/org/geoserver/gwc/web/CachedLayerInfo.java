@@ -25,6 +25,8 @@ public class CachedLayerInfo {
 
     private Quota quotaUsed;
 
+    private String configErrorMessage;
+
     public String getName() {
         return name;
     }
@@ -65,4 +67,11 @@ public class CachedLayerInfo {
         this.quotaUsed = quotaUsed;
     }
 
+    public String getConfigErrorMessage() {
+        return this.configErrorMessage;
+    }
+
+    public void setConfigErrorMessage(String msg) {
+        this.configErrorMessage = msg;
+    }
 }

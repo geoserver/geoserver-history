@@ -165,18 +165,10 @@ public class GeoServerTileLayer extends TileLayer {
      * </p>
      * 
      * @see org.geowebcache.layer.TileLayer#isEnabled()
-     * @see #enabled()
      */
     @Override
     public boolean isEnabled() {
         return info.isEnabled() && configErrorMessage == null;
-    }
-
-    /**
-     * @return
-     */
-    public boolean enabled() {
-        return isEnabled() && getConfigErrorMessage() == null;
     }
 
     @Override

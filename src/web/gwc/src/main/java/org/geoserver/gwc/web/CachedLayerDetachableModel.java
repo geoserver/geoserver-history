@@ -54,14 +54,16 @@ public class CachedLayerDetachableModel extends LoadableDetachableModel<CachedLa
         CachedLayerInfo info = new CachedLayerInfo();
         info.setName(name);
         info.setType(getType(layer));
-        boolean enabled = layer instanceof GeoServerTileLayer ? ((GeoServerTileLayer) layer)
-                .enabled() : layer.isEnabled();
+        boolean enabled = layer.isEnabled();
         info.setEnabled(enabled);
         if (gwc.isDiskQuotaAvailable()) {
             info.setQuotaLimit(gwc.getQuotaLimit(name));
             info.setQuotaUsed(gwc.getUsedQuota(name));
         }
-
+        if(!enabled && (layer instanceof GeoServerTileLayer)){
+            String error = ((GeoServerTileLayer)layer).getConfigErrorMessage();
+            info.setConfigErrorMessage(error);
+        }
         return info;
     }
 
