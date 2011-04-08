@@ -44,6 +44,12 @@ public class CachingOptionsPanel extends Panel {
                 metaTilingYModel, metaTilingChoices);
         add(metaTilingY);
 
+        IModel<Integer> gutterModel = new PropertyModel<Integer>(gwcConfigModel, "gutter");
+        List<Integer> gutterChoices = Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 50);
+        DropDownChoice<Integer> gutterChoice = new DropDownChoice<Integer>("gutter", gutterModel,
+                gutterChoices);
+        add(gutterChoice);
+
         final List<String> formats = Arrays.asList("image/png", "image/png8", "image/jpeg",
                 "image/gif");
         {

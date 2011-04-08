@@ -67,7 +67,7 @@ public class GeoServerTileLayerInfo {
         }
         info.setEnabled(enabled);
 
-        info.setGutter(0);
+        info.setGutter(defaults.getGutter());
         if (metadataMap.containsKey(CONFIG_KEY_GUTTER)) {
             int gutter = metadataMap.get(CONFIG_KEY_GUTTER, Integer.class).intValue();
             info.setGutter(gutter);

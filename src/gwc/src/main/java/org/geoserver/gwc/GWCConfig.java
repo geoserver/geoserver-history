@@ -36,9 +36,20 @@ public class GWCConfig implements Cloneable, Serializable {
      */
     private boolean cacheNonDefaultStyles;
 
+    /**
+     * Default meta-tiling factor for the X axis
+     */
     private int metaTilingX;
 
+    /**
+     * Default meta-tiling factor for the Y axis
+     */
     private int metaTilingY;
+
+    /**
+     * Default gutter size in pixels
+     */
+    private int gutter;
 
     /**
      * Which SRS's to cache by default when adding a new Layer. Defaults to
@@ -175,6 +186,7 @@ public class GWCConfig implements Cloneable, Serializable {
         setCacheLayersByDefault(true);
         setMetaTilingX(4);
         setMetaTilingY(4);
+        setGutter(0);
         // this is not an old default, but a new feature so we enabled it anyway
         setCacheNonDefaultStyles(true);
         setDefaultCachingGridSetIds(Arrays.asList("EPSG:4326", "EPSG:900913"));
@@ -202,6 +214,14 @@ public class GWCConfig implements Cloneable, Serializable {
 
     public void setMetaTilingY(int metaFactorY) {
         this.metaTilingY = metaFactorY;
+    }
+
+    public int getGutter() {
+        return gutter;
+    }
+
+    public void setGutter(int gutter) {
+        this.gutter = gutter;
     }
 
     @Override
