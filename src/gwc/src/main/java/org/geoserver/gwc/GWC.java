@@ -112,11 +112,13 @@ public class GWC implements DisposableBean, InitializingBean {
 
     private CatalogStyleChangeListener catalogStyleChangeListener;
 
+    private final Catalog rawCatalog;
+
     public GWC(final GWCConfigPersister gwcConfigPersister, final StorageBroker sb,
             final TileLayerDispatcher tld, final GridSetBroker gridSetBroker,
             final TileBreeder tileBreeder, final GeoServer geoserver,
             final BDBQuotaStore quotaStore, final DiskQuotaMonitor monitor,
-            final Dispatcher owsDispatcher) {
+            final Dispatcher owsDispatcher, final Catalog rawCatalog) {
 
         this.gwcConfigPersister = gwcConfigPersister;
         this.tld = tld;
@@ -127,6 +129,7 @@ public class GWC implements DisposableBean, InitializingBean {
         this.owsDispatcher = owsDispatcher;
         this.geoserver = geoserver;
         this.quotaStore = quotaStore;
+        this.rawCatalog = rawCatalog;
     }
 
     public synchronized static GWC get() {
@@ -162,7 +165,7 @@ public class GWC implements DisposableBean, InitializingBean {
 
         // add the listeners after initialize in case some tile layer configuration needs to be
         // saved
-        Catalog catalog = geoserver.getCatalog();
+        Catalog catalog = getCatalog();
         this.catalogLayerEventListener = new CatalogLayerEventListener(this);
         this.catalogStyleChangeListener = new CatalogStyleChangeListener(this);
         catalog.addListener(catalogLayerEventListener);
@@ -174,7 +177,7 @@ public class GWC implements DisposableBean, InitializingBean {
      * @see org.springframework.beans.factory.DisposableBean#destroy()
      */
     public void destroy() throws Exception {
-        Catalog catalog = geoserver.getCatalog();
+        Catalog catalog = getCatalog();
         if (this.catalogLayerEventListener != null) {
             catalog.removeListener(this.catalogLayerEventListener);
         }
@@ -211,7 +214,7 @@ public class GWC implements DisposableBean, InitializingBean {
     }
 
     private Catalog getCatalog() {
-        return geoserver.getCatalog();
+        return rawCatalog;
     }
 
     public GWCConfig getConfig() {
