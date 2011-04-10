@@ -179,13 +179,17 @@ public class CatalogLayerEventListener implements CatalogListener {
                     save = true;
                     String defaultStyle = li.getDefaultStyle().getName();
                     info.setCachedStyles(newStyleSet);
-                    ParameterFilter newStyleParamsFilter = null;
                     if (newStyleSet.size() > 0) {
+                        ParameterFilter newStyleParamsFilter = null;
                         newStyleParamsFilter = GeoServerTileLayer.createStylesParameterFilters(
                                 defaultStyle, newStyleSet);
+                        List<ParameterFilter> filters;
+                        filters = Collections.singletonList(newStyleParamsFilter);
+                        tileLayer.setParameterFilters(filters);
+                    } else {
+                        tileLayer.setParameterFilters(null);
                     }
-                    tileLayer.setParameterFilters(Collections.singletonList(newStyleParamsFilter));
-                }
+                }                
             }
             if (save) {
                 gwc.save(tileLayer);

@@ -90,6 +90,8 @@ public class CatalogStyleChangeListener implements CatalogListener {
                             defaultStyle, styleNames);
                     info.setCachedStyles(styleNames);
                     tl.setParameterFilters(Collections.singletonList(paramFilter));
+                }else{
+                    tl.setParameterFilters(null);
                 }
                 gwc.save(tl);
             }
