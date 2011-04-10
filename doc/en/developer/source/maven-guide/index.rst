@@ -108,6 +108,30 @@ Profiles are also used manage optional extensions community plugins::
    -Pupload
    -Pwps
 
+Additional profiles are defined in the pom.xml files providing optional build steps. Profiles are directly enabled with the \-P flag, others are automatically activated based on platform used or a \-D property being defined.
+
+To build javadocs with UML graph::
+
+   -Duml
+   
+To build the release module as part of your build::
+
+   -Drelease
+   
+To include the legacy moduled::
+
+   -Plegacy
+   
+To include remote tests::
+
+   -PremoteOwsTests
+
+Profiles are also used manage several of the optional community plugins::
+
+   -Pupload
+   -Pwps
+   -Pproxy
+
 Eclipse
 -------
 
