@@ -51,6 +51,8 @@ import net.sf.json.JSON;
 import net.sf.json.JSONSerializer;
 
 import org.apache.commons.codec.binary.Base64;
+import org.eclipse.xsd.XSDSchema;
+import org.eclipse.xsd.XSDSchemaDirective;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.NamespaceInfo;
@@ -72,6 +74,7 @@ import org.geotools.factory.Hints;
 import org.geotools.referencing.CRS;
 import org.geotools.util.logging.Log4JLoggerFactory;
 import org.geotools.util.logging.Logging;
+import org.geotools.xml.XSD;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -152,7 +155,7 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
         username = null;
         password = null;
     }
-
+    
     /**
      * If subclasses override they *must* call super.setUp() first.
      */
@@ -272,8 +275,12 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
      */
     @Override
     protected void oneTimeTearDown() throws Exception {
-        if(getTestData().isTestDataAvailable()) {
+        if(getTestData().isTestDataAvailable()) {            
             try {
+                //dispose WFS XSD schema's - they will otherwise keep geoserver instance alive forever!!
+                disposeIfExists(getXSD11());
+                disposeIfExists(getXSD10());
+                                
                 // kill the context
                 applicationContext.destroy();
                 
@@ -323,6 +330,37 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
      */
     protected GeoServer getGeoServer() {
         return (GeoServer) applicationContext.getBean("geoServer");
+    }
+    
+    /**
+     * Flush XSD if exists.
+     */
+    protected static void disposeIfExists(XSD xsd) {
+        if (xsd != null) {
+            xsd.dispose();
+        }
+    }
+    
+    /**
+     * Accessor for WFS 1.0 XSD from the test application context.
+     */
+    protected XSD getXSD11() {
+        if (applicationContext.containsBean("wfsXsd-1.1")) {
+            return (XSD) applicationContext.getBean("wfsXsd-1.1");
+        } else {
+            return null;
+        }
+    }
+    
+    /**
+     * Accessor for WFS 1.0 XSD from the test application context.
+     */
+    protected XSD getXSD10() {
+        if (applicationContext.containsBean("wfsXsd-1.0")) {
+            return (XSD) applicationContext.getBean("wfsXsd-1.0"); 
+        } else {
+            return null;
+        }
     }
     
     /**

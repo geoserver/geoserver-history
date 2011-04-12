@@ -29,6 +29,7 @@ import org.geotools.data.complex.DataAccessRegistry;
 import org.geotools.xml.AppSchemaCache;
 import org.geotools.xml.AppSchemaResolver;
 import org.geotools.xml.AppSchemaValidator;
+import org.geotools.xml.AppSchemaXSDRegistry;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
@@ -130,6 +131,7 @@ public abstract class AbstractAppSchemaWfsTestSupport extends GeoServerAbstractT
     protected void oneTimeTearDown() throws Exception {
         super.oneTimeTearDown();
         DataAccessRegistry.unregisterAll();
+        AppSchemaXSDRegistry.getInstance().dispose();
     }
 
     /**

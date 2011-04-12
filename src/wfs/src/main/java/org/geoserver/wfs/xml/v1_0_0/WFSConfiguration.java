@@ -91,7 +91,7 @@ public class WFSConfiguration extends Configuration {
             }
 
             public void reloaded() {
-                wfs.flush();
+                wfs.dispose();
             }
                 
         });
@@ -104,7 +104,7 @@ public class WFSConfiguration extends Configuration {
             }
             
             public void disposed(DataStoreInfo dataStore, DataAccess da) {
-                wfs.flush();
+                wfs.dispose();
             }
         });
         

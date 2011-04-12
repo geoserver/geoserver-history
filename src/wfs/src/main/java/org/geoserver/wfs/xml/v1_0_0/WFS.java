@@ -231,18 +231,5 @@ public final class WFS extends XSD {
         return wfsSchema;
     }
     
-    /**
-     * "Flushes" the build schema.
-     * <p>
-     * This method is provided to allow the schema to rebuilt after a new type 
-     * is added.
-     * </p>
-     */
-    public void flush() {
-        schema = null;
-    }
-
-
-    
     
 }
