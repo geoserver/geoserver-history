@@ -17,7 +17,7 @@
     <name>Web Processing Service Module</name>
     
     <properties>
-      <jt.version>1.1-M3</jt.version>
+      <jt.version>1.1.1</jt.version>
     </properties>
     
     <repositories>
