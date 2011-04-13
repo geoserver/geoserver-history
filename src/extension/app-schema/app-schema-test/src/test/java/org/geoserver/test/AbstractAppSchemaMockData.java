@@ -439,6 +439,16 @@ public abstract class AbstractAppSchemaMockData implements NamespaceTestData {
     }
 
     /**
+     * Remove a namespace in a map.
+     * 
+     * @param namspacePrefix
+     *            namespace prefix
+     */
+    protected void removeNamespace(String namspacePrefix) {
+        namespaces.remove(namspacePrefix);
+    }
+    
+    /**
      * Get the name of the data store for a feature type. This is used to construct the name of the
      * feature type directory as well as the name of the data store.
      * 
