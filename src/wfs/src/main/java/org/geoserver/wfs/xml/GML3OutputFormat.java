@@ -30,6 +30,7 @@ import java.util.Set;
 
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.ErrorListener;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
@@ -72,7 +73,7 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
     Catalog catalog;
     GeoServerInfo global;
     WFSConfiguration configuration;
-    private static DOMSource xslt;
+    protected static DOMSource xslt;
     
     static {
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
@@ -273,7 +274,7 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
             encode(results, out, encoder);
             this.transform(in, xslt, output);
         } catch (TransformerException e) {
-            throw new IOException("Error in xslt transformation");
+            throw (IOException) new IOException(e.getMessage()).initCause(e);
         } finally {
             out.close();
             in.close();
@@ -297,7 +298,26 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
         TransformerFactory factory = TransformerFactory.newInstance();
         Transformer transformer = (xslt == null ? factory.newTransformer() : factory
                 .newTransformer(xslt));
-
+        transformer.setErrorListener(new TransformerErrorListener());
         transformer.transform(new StreamSource(in), new StreamResult(out));
+    }
+
+    // If an application does not register its own custom ErrorListener, the default ErrorListener
+    // is used which reports all warnings and errors to System.err and does not throw any Exceptions
+    private class TransformerErrorListener implements ErrorListener {
+
+        public void error(TransformerException exception) throws TransformerException {
+            throw exception;
+        }
+
+        public void fatalError(TransformerException exception) throws TransformerException {
+            throw exception;
+
+        }
+
+        public void warning(TransformerException exception) throws TransformerException {
+            throw exception;
+        }
+
     }
 }
