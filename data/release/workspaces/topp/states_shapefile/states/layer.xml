@@ -6,18 +6,29 @@
   <defaultStyle>
     <id>StyleInfoImpl--570ae188:124761b8d78:-7fe5</id>
   </defaultStyle>
-  <styles>
-    <style>
-      <id>StyleInfoImpl--570ae188:124761b8d78:-7fe0</id>
-    </style>
+  <styles class="linked-hash-set">
     <style>
       <id>StyleInfoImpl--570ae188:124761b8d78:-7fee</id>
+    </style>
+    <style>
+      <id>StyleInfoImpl--570ae188:124761b8d78:-7fe0</id>
     </style>
   </styles>
   <resource class="featureType">
     <id>FeatureTypeInfoImpl--570ae188:124761b8d78:-7fc1</id>
   </resource>
   <enabled>true</enabled>
+  <metadata>
+    <entry key="GWC.metaTilingX">4</entry>
+    <entry key="GWC.autoCacheStyles">true</entry>
+    <entry key="GWC.defaultStyle">population</entry>
+    <entry key="GWC.metaTilingY">4</entry>
+    <entry key="GWC.gutter">0</entry>
+    <entry key="GWC.cachedNonDefaultStyles">polygon,pophatch</entry>
+    <entry key="GWC.enabled">true</entry>
+    <entry key="GWC.gridSets">EPSG:4326,EPSG:900913</entry>
+    <entry key="GWC.cacheFormats">image/png,image/jpeg</entry>
+  </metadata>
   <attribution>
     <logoWidth>0</logoWidth>
     <logoHeight>0</logoHeight>

@@ -81,7 +81,7 @@ public class SessionDebugFilter implements Filter {
             // signal the issue in the logs
 
             // are we creating the session in the web ui?
-            if (getPathInfo().startsWith("web")) {
+            if (getPathInfo().startsWith("/web")) {
                 if(LOGGER.isLoggable(Level.FINE)) {
                     Exception e = new Exception("Full stack trace for the session creation path");
                     e.fillInStackTrace();
@@ -92,7 +92,7 @@ public class SessionDebugFilter implements Filter {
                     Exception e = new Exception("Full stack trace for the session creation path");
                     e.fillInStackTrace();
                     LOGGER.log(Level.INFO, "Creating a new http session outside of the web UI! " +
-                    		"(normally not desirable)", e);
+                    		"(normally not desirable), the path is" + getPathInfo(), e);
                 }
             }
 
