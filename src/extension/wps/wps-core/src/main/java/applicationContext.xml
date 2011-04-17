@@ -161,6 +161,7 @@
     <bean id="pointBuffersProces" class="org.geoserver.wps.gs.PointBuffers" />
     <bean id="rasterZonalStatistics" class="org.geoserver.wps.gs.RasterZonalStatistics" />
     <bean id="rangeLookupProcess" class="org.geoserver.wps.gs.RangeLookupProcess" />
+    <bean id="gridProcess" class="org.geoserver.wps.gs.GridProcess" />
     
     
     <!-- 

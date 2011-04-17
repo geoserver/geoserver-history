@@ -83,6 +83,11 @@
             <version>${gt.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-grid</artifactId>
+            <version>${gt.version}</version>
+        </dependency>
+        <dependency>
           <groupId>com.googlecode.jaitools</groupId>
           <artifactId>jt-zonalstats</artifactId>
           <version>${jt.version}</version>
