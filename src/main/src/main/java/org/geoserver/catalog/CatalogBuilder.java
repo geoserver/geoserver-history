@@ -974,8 +974,12 @@ public class CatalogBuilder {
      * the fact.
      * </p>
      */
-    public LayerInfo buildLayer(WMSLayerInfo layer) throws IOException {
-        return buildLayer((ResourceInfo) layer);
+    public LayerInfo buildLayer(WMSLayerInfo wms) throws IOException {
+        LayerInfo layer = buildLayer((ResourceInfo) wms);
+        
+        layer.setDefaultStyle(getDefaultStyle(wms));
+        
+        return layer;
     }
 
     /**
@@ -988,7 +992,7 @@ public class CatalogBuilder {
      */
     public StyleInfo getDefaultStyle(ResourceInfo resource) throws IOException {
         // raster wise, only one style
-        if (resource instanceof CoverageInfo)
+        if (resource instanceof CoverageInfo || resource instanceof WMSLayerInfo)
             return catalog.getStyleByName(StyleInfo.DEFAULT_RASTER);
 
         // for vectors we depend on the the nature of the default geometry
