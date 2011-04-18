@@ -216,7 +216,7 @@ public class KMLRasterTransformer extends KMLMapTransformer {
                 //inline means reference the image "inline" as in kmz
                 // use the mapLayerOrder
                 int mapLayerOrder = mapContext.indexOf(mapLayer);
-                element("href", "layer_" + mapLayerOrder + ".png");
+                element("href", "images/layer_" + mapLayerOrder + ".png");
             } else {
                 //reference the image as a remote wms call
                 element("href",  
