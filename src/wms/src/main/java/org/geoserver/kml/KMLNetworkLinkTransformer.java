@@ -1,6 +1,8 @@
 package org.geoserver.kml;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,9 +25,7 @@ import org.geotools.styling.Style;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
 import org.opengis.filter.Filter;
-import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.operation.TransformException;
 import org.xml.sax.ContentHandler;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -128,7 +128,8 @@ public class KMLNetworkLinkTransformer extends TransformerBase {
 
             ReferencedEnvelope aggregatedBounds;
             try {
-                aggregatedBounds = new ReferencedEnvelope(CRS.decode("EPSG:4326"));
+                boolean longitudeFirst = true;
+                aggregatedBounds = new ReferencedEnvelope(CRS.decode("EPSG:4326", longitudeFirst));
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -287,6 +288,13 @@ public class KMLNetworkLinkTransformer extends TransformerBase {
 
             String href = WMSRequests.getGetMapUrl(request, layer.getName(), layerIndex, styleName,
                     null, null);
+            try {
+                // WMSRequests.getGetMapUrl returns a URL encoded query string, but GoogleEarth
+                // 6 doesn't like URL encoded parameters. See GEOS-4483
+                href = URLDecoder.decode(href, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException(e);
+            }
             start("href");
             cdata(href);
             end("href");
@@ -324,6 +332,13 @@ public class KMLNetworkLinkTransformer extends TransformerBase {
                 String style = i < styles.size() ? styles.get(i).getName() : null;
                 String href = WMSRequests.getGetMapUrl(request, layers.get(i).getName(), i, style,
                         null, null);
+                try {
+                    // WMSRequests.getGetMapUrl returns a URL encoded query string, but GoogleEarth
+                    // 6 doesn't like URL encoded parameters. See GEOS-4483
+                    href = URLDecoder.decode(href, "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    throw new RuntimeException(e);
+                }
                 start("href");
                 cdata(href);
                 end("href");

@@ -113,7 +113,7 @@ public class KMLNetworkLinkTransformerTest extends TestCase {
         assertXpathEvaluatesTo("-1", "//kml/Folder/NetworkLink/Region/Lod/maxLodPixels", dom);
 
         final Map<String, String> expectedKvp = KMLReflectorTest
-                .toKvp("http://geoserver.org:8181/geoserver/wms?format_options=relLinks%3Atrue%3B&service=wms&srs=EPSG%3A4326&width=512&styles=Default+Style&height=256&transparent=false&bbox=-1.0%2C-10.0%2C1.0%2C10.0&request=GetMap&layers=geos%3ATestPoints&format=application/vnd.google-earth.kmz%2Bxml&version=1.1.1");
+                .toKvp("http://geoserver.org:8181/geoserver/wms?format_options=relLinks%3Atrue%3B&service=wms&srs=EPSG%3A4326&width=512&styles=Default+Style&height=256&transparent=false&bbox=-1.0%2C-10.0%2C1.0%2C10.0&request=GetMap&layers=geos%3ATestPoints&format=application/vnd.google-earth.kmz&version=1.1.1");
         final Map<String, String> actualKvp = KMLReflectorTest.toKvp(xpath.evaluate(
                 "//kml/Folder/NetworkLink/Link/href", dom));
         KMLReflectorTest.assertMapsEqual(expectedKvp, actualKvp);
@@ -162,7 +162,7 @@ public class KMLNetworkLinkTransformerTest extends TestCase {
         assertXpathEvaluatesTo("1", "//kml/Folder/NetworkLink/visibility", dom);
 
         final Map<String, String> expectedKvp = KMLReflectorTest
-                .toKvp("http://geoserver.org:8181/geoserver/wms?format_options=relLinks%3Atrue%3B&service=wms&srs=EPSG%3A4326&width=512&styles=Default+Style&height=256&transparent=false&request=GetMap&layers=geos%3ATestPoints&format=application/vnd.google-earth.kmz%2Bxml&version=1.1.1");
+                .toKvp("http://geoserver.org:8181/geoserver/wms?format_options=relLinks%3Atrue%3B&service=wms&srs=EPSG%3A4326&width=512&styles=Default+Style&height=256&transparent=false&request=GetMap&layers=geos%3ATestPoints&format=application/vnd.google-earth.kmz&version=1.1.1");
         final Map<String, String> actualKvp = KMLReflectorTest.toKvp(xpath.evaluate(
                 "//kml/Folder/NetworkLink/Url/href", dom));
         KMLReflectorTest.assertMapsEqual(expectedKvp, actualKvp);
