@@ -54,8 +54,7 @@ public class GeoServerMetaTile extends MetaTile {
                 RenderedImage tile = super.metaTiledImage;
                 if (this.tiles.length > 1) {
                     Rectangle tileDim = this.tiles[tileIdx];
-                    boolean useJAI = true;
-                    tile = createTile(tileDim.x, tileDim.y, tileDim.width, tileDim.height, useJAI);
+                    tile = createTile(tileDim.x, tileDim.y, tileDim.width, tileDim.height);
                 }
                 RenderedImageMapResponse imageResponse = (RenderedImageMapResponse) responseEncoder;
 
