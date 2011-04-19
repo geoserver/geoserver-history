@@ -87,7 +87,7 @@ public class WMSExtendedCapabilitiesProvider implements ExtendedCapabilitiesProv
         }
         tx.end("inspire_common:URL");
         tx.start("inspire_common:MediaType");
-        tx.chars("application/vnd.ogc.csw.GetRecordByIdResponse_xml");
+        tx.chars("application/vnd.iso.19139+xml");
         tx.end("inspire_common:MediaType");
         tx.end("inspire_common:MetadataUrl");
 
