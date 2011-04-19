@@ -784,6 +784,13 @@ public class Dispatcher extends AbstractController {
     Service findService(String id, String ver) throws ServiceException {
         Version version = (ver != null) ? new Version(ver) : null;
         Collection services = loadServices();
+        
+        // the id is actually the pathinfo, in case workspace specific services
+        // are active we want to skip the workspace part in the path and go directly to the
+        // servlet, which normally, if we ended up here, is a reflector (wms/kml)
+        if(id.contains("/")) {
+            id = id.substring(id.indexOf("/") + 1);
+        }
 
         //first just match on service,request
         List matches = new ArrayList();
