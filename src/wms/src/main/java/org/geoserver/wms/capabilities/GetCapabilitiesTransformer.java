@@ -10,6 +10,8 @@ import static org.geoserver.ows.util.ResponseUtils.buildURL;
 import static org.geoserver.ows.util.ResponseUtils.params;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -268,8 +270,19 @@ public class GetCapabilitiesTransformer extends TransformerBase {
             AttributesImpl orAtts = new AttributesImpl();
             orAtts.addAttribute("", "xmlns:xlink", "xmlns:xlink", "", XLINK_NS);
             orAtts.addAttribute(XLINK_NS, "xlink:type", "xlink:type", "", "simple");
-            String requestBaseUrl = request.getBaseUrl();
-            String onlineResource = buildURL(requestBaseUrl, "wms", null, URLType.SERVICE);
+            
+            String onlineResource = serviceInfo.getOnlineResource();
+            if (onlineResource == null || onlineResource.trim().length() == 0) {
+                String requestBaseUrl = request.getBaseUrl();
+                onlineResource = buildURL(requestBaseUrl, null, null, URLType.SERVICE);
+            } else {
+                try {
+                    new URL(onlineResource);
+                } catch (MalformedURLException e) {
+                    LOGGER.log(Level.WARNING, "WMS online resource seems to be an invalid URL: '"
+                            + onlineResource + "'");
+                }
+            }
             orAtts.addAttribute("", "xlink:href", "xlink:href", "", onlineResource);
             element("OnlineResource", null, orAtts);
 
