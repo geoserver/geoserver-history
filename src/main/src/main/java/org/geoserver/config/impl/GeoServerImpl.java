@@ -253,7 +253,6 @@ public class GeoServerImpl implements GeoServer {
         
         if ( catalog != null ) catalog.dispose();
         if ( facade != null ) facade.dispose();
-        if ( listeners != null ) listeners.clear();
     }
 
     public void reload() throws Exception {
