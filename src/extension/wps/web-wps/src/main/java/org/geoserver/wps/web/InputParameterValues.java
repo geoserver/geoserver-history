@@ -99,7 +99,11 @@ class InputParameterValues implements Serializable {
         }
         return results;
     }
-
+    
+    public boolean isEnum() {
+        return Enum.class.isAssignableFrom(getParameter().type);
+    }
+    
     public boolean isComplex() {
         List<ProcessParameterIO> ppios = getProcessParameterIO();
         return ppios.size() > 0 && ppios.get(0) instanceof ComplexPPIO;

@@ -44,9 +44,9 @@ public class GridProcess implements GeoServerProcess {
             @DescribeParameter(name = "width", description = "Cell width (in the same uom as the bounds referencing system)") double width,
             @DescribeParameter(name = "height", description = "Cell height (optional, used only for rectangular grids, "
                     + "if not provided it is assumed equals to the width)", min = 0) Double height,
-            @DescribeParameter(name = "vertexSpacing", description = "If lower than side / 2 will create polygons "
-                    + "whose sides have been densified accordingly (useful for reprojecting them later)", min = 0) Double vertexSpacing,
-            @DescribeParameter(name = "mode", description = "Grid ", min = 0) GridMode mode)
+            @DescribeParameter(name = "vertexSpacing", description = "Distance between vertices (used to create densified " +
+            		"sides suitable for reprojection)", min = 0) Double vertexSpacing,
+            @DescribeParameter(name = "mode", description = "The type of grid to be generated", min = 0) GridMode mode)
             throws ProcessException {
         final GridFeatureBuilder builder = new GridFeatureBuilderImpl(bounds
                 .getCoordinateReferenceSystem());

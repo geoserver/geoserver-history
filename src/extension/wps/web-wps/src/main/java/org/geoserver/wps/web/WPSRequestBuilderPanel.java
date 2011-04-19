@@ -107,26 +107,30 @@ public class WPSRequestBuilderPanel extends Panel {
                 Parameter p = pv.getParameter();
                 item.add(new Label("param", buildParamSpec(p)));
                 item.add(new Label("paramDescription", p.description.toString(Locale.ENGLISH)));
-                if (!pv.isComplex() && !pv.isCoordinateReferenceSystem() && !pv.isBoundingBox()) {
+                // TODO: roll out an extension point for these editors
+                final PropertyModel property = new PropertyModel(pv,
+                        "values[0].value");
+                if (pv.isBoundingBox()) {
+                    EnvelopePanel envelope = new EnvelopePanel("paramValue", property);
+                    envelope.setCRSFieldVisible(true);
+                    item.add(envelope);
+                } else if (pv.isCoordinateReferenceSystem()) {
+                    CRSPanel crs = new CRSPanel("paramValue", property);
+                    item.add(crs);
+                } else if (pv.isEnum()) {
+                    EnumPanel panel = new EnumPanel("paramValue", ((Class<Enum>) pv.getParameter().type),
+                            property);
+                    item.add(panel);
+                } else if(pv.isComplex()) {
+                    ComplexInputPanel input = new ComplexInputPanel("paramValue", pv, 0);
+                    item.add(input);
+                } else {
                     Fragment f = new Fragment("paramValue", "literal", WPSRequestBuilderPanel.this);
-                    FormComponent literal = new TextField("literalValue", new PropertyModel(pv,
-                            "values[0].value"));
+                    FormComponent literal = new TextField("literalValue", property);
                     literal.setRequired(p.minOccurs > 0);
                     literal.setLabel(new Model(p.key));
                     f.add(literal);
                     item.add(f);
-                } else if (pv.isBoundingBox()) {
-                    EnvelopePanel envelope = new EnvelopePanel("paramValue", new PropertyModel(pv,
-                            "values[0].value"));
-                    envelope.setCRSFieldVisible(true);
-                    item.add(envelope);
-                } else if (pv.isCoordinateReferenceSystem()) {
-                    CRSPanel crs = new CRSPanel("paramValue", new PropertyModel(pv,
-                            "values[0].value"));
-                    item.add(crs);
-                } else {
-                    ComplexInputPanel input = new ComplexInputPanel("paramValue", pv, 0);
-                    item.add(input);
                 }
             }
         };
