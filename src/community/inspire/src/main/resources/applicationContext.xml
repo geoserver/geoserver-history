@@ -11,6 +11,7 @@
   </bean>
   
   <bean id="inspireAdminPanel" class="org.geoserver.web.services.AdminPagePanelInfo">
+      <description>This bean adds the necessary form fields to Geoserver admin interface</description>
     <property name="id" value="inspireAdminPanel"/>
     <property name="titleKey" value="inspire"/>
     <property name="componentClass" value="org.geoserver.inspire.web.InspireAdminPanel"/>
