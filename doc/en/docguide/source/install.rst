@@ -52,6 +52,10 @@ Ubuntu
       make html
   
    This should generate HTML pages in the :file:`doc/user/build/html` directory.
+   
+#. If you want to generate PDF files this command should get you the necessary tools::
+  
+      sudo apt-get install texlive texlive-latex-extra
 
 Mac OS X
 --------
