@@ -214,11 +214,6 @@ HTML
 
      .. note:: You may need to create the :file:`build/html` directory.
 
-#. Change directory to :file:`build/html` and archive its contents::
-
-      cd build/html     
-      zip -r geoserver-[VERSION]-htmldoc.zip *
-
 #. Go back to the root of the documentation tree, and change directory to :file:`doc/developer`.
 
 #. Build HTML files for the Developer Manual.
@@ -233,13 +228,12 @@ HTML
 
      .. note:: You may need to create the :file:`build/html` directory.
 
-#. Change directory to :file:`build/html`
+#. Create a zip file containig two folders, user and developer, with the respective HTML docs built in the previous steps.
+   Under a Unix like system you can achieve it by getting into `geoserver/src/target` and perform the following commands:
 
-#. Move the zip created for the user manual (in step 4) into this directory.
-
-#. Add the contents of the current directory to the existing zip::
-
-      zip -r geoserver-[VERSION]-htmldoc.zip *
+      ln -s ../../../doc/en/user/build/html user
+      ln -s ../../../doc/en/developer/build/html developer
+      zip -r geoserver-[VERSION]-htmldoc.zip user developer
 
    .. note:: When done, the zip file should contain two folders, one called :file:`user` containing the HTML output for the User Manual, and one called :file:`developer` containing the HTML output for the Developer Manual.
 
