@@ -12,5 +12,12 @@
         <include>inspire*.jar</include>
       </includes>
     </fileSet>
+    <fileSet>
+      <directory>community/inspire</directory>
+      <outputDirectory></outputDirectory>
+      <includes>
+        <include>README.txt</include>
+      </includes>
+    </fileSet>
   </fileSets>
 </assembly>
