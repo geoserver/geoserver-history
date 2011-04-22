@@ -2,6 +2,8 @@ package org.geoserver.web.admin;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -9,6 +11,7 @@ import java.util.logging.Level;
 
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.CheckBox;
+import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.ListChoice;
 import org.apache.wicket.markup.html.form.TextField;
@@ -30,6 +33,8 @@ public class GlobalSettingsPage extends ServerAdminPage {
             "VERBOSE_LOGGING.properties", "PRODUCTION_LOGGING.properties",
             "GEOTOOLS_DEVELOPER_LOGGING.properties", "GEOSERVER_DEVELOPER_LOGGING.properties");
 
+    private static final ArrayList<String> AVAILABLE_CHARSETS = new ArrayList<String>(Charset.availableCharsets().keySet());
+
     public GlobalSettingsPage() {
         final IModel globalInfoModel = getGlobalInfoModel();
         final IModel loggingInfoModel = getLoggingInfoModel();
@@ -42,7 +47,7 @@ public class GlobalSettingsPage extends ServerAdminPage {
         form.add(new CheckBox("verboseExceptions"));
         form.add(new CheckBox("globalServices"));
         form.add(new TextField("numDecimals"));
-        form.add(new TextField("charset"));
+        form.add(new DropDownChoice("charset", AVAILABLE_CHARSETS));
         form.add(new TextField("proxyBaseUrl"));
         
         logLevelsAppend(form, loggingInfoModel);
@@ -98,5 +103,5 @@ public class GlobalSettingsPage extends ServerAdminPage {
 
         form.add(new ListChoice("log4jConfigFile", new PropertyModel(loggingInfoModel,
                 "level"), logProfiles));
-    }
+    }    
 };
