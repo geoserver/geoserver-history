@@ -23,12 +23,18 @@ public class AllLanguagesModel implements IModel<List<String>> {
 
     private static final long serialVersionUID = -6324842325783657135L;
 
-    List<String> langs;
+    private List<String> langs;
 
+    /**
+     * @see org.apache.wicket.model.IModel#setObject(java.lang.Object)
+     */
     public void setObject(List<String> object) {
         this.langs = object;
     }
 
+    /**
+     * @see org.apache.wicket.model.IModel#getObject()
+     */
     public List<String> getObject() {
         if (langs == null) {
             try {
@@ -40,6 +46,9 @@ public class AllLanguagesModel implements IModel<List<String>> {
         return langs;
     }
 
+    /**
+     * @see org.apache.wicket.model.IDetachable#detach()
+     */
     public void detach() {
         langs = null;
     }

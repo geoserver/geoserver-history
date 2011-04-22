@@ -1,7 +1,7 @@
 package org.geoserver.inspire.wms;
 
 import static org.geoserver.inspire.wms.InspireMetadata.LANGUAGE;
-import static org.geoserver.inspire.wms.InspireMetadata.METADATA_URL;
+import static org.geoserver.inspire.wms.InspireMetadata.SERVICE_METADATA_URL;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -80,7 +80,7 @@ public class WMSExtendedCapabilitiesProvider implements ExtendedCapabilitiesProv
         // Metadata URL
         tx.start("inspire_common:MetadataUrl",
                 atts("xsi:type", "inspire_common:resourceLocatorType"));
-        String metadataURL = (String) wms.getMetadata().get(METADATA_URL.key);
+        String metadataURL = (String) wms.getMetadata().get(SERVICE_METADATA_URL.key);
         tx.start("inspire_common:URL");
         if (metadataURL != null) {
             tx.chars(metadataURL);
