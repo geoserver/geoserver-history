@@ -13,7 +13,7 @@ public class WMSExtendedCapabilitiesTest extends GeoServerTestSupport {
         WMSInfo wms = getGeoServer().getService(WMSInfo.class);
         wms.getSRS().add("EPSG:4326");
         wms.getMetadata().put(InspireMetadata.LANGUAGE.key, "fre");
-        wms.getMetadata().put(InspireMetadata.METADATA_URL.key, "http://foo.com?bar=baz");
+        wms.getMetadata().put(InspireMetadata.SERVICE_METADATA_URL.key, "http://foo.com?bar=baz");
         getGeoServer().save(wms);
 
         Document dom = getAsDOM("wms?request=getcapabilities");
