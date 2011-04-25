@@ -17,6 +17,7 @@ This section is devoted to GeoServer community modules. Community modules are co
    css/index
    dxf/index
    dds/index
+   inspire/index
    monitoring/index
    printing/index
    python/index
