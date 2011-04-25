@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -20,13 +19,15 @@ import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.MetadataMap;
 import org.geoserver.catalog.ResourceInfo;
+import org.geoserver.catalog.StyleInfo;
 import org.geoserver.gwc.GWC;
-import org.geoserver.gwc.GWCConfig;
+import org.geoserver.gwc.config.GWCConfig;
 import org.geoserver.wms.GetMapRequest;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WebMap;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
+import org.geotools.util.CanonicalSet;
 import org.geotools.util.logging.Logging;
 import org.geowebcache.GeoWebCacheException;
 import org.geowebcache.config.ConfigurationException;
@@ -34,6 +35,7 @@ import org.geowebcache.conveyor.ConveyorTile;
 import org.geowebcache.filter.parameters.ParameterException;
 import org.geowebcache.filter.parameters.ParameterFilter;
 import org.geowebcache.filter.parameters.StringParameterFilter;
+import org.geowebcache.filter.request.RequestFilter;
 import org.geowebcache.grid.BoundingBox;
 import org.geowebcache.grid.GridSet;
 import org.geowebcache.grid.GridSetBroker;
@@ -41,13 +43,17 @@ import org.geowebcache.grid.GridSubset;
 import org.geowebcache.grid.GridSubsetFactory;
 import org.geowebcache.grid.OutsideCoverageException;
 import org.geowebcache.grid.SRS;
-import org.geowebcache.io.ByteArrayResource;
 import org.geowebcache.io.Resource;
+import org.geowebcache.layer.GridLocObj;
+import org.geowebcache.layer.LayerListenerList;
 import org.geowebcache.layer.MetaTile;
 import org.geowebcache.layer.TileLayer;
+import org.geowebcache.layer.TileLayerListener;
 import org.geowebcache.layer.meta.ContactInformation;
 import org.geowebcache.layer.meta.LayerMetaInformation;
+import org.geowebcache.layer.updatesource.UpdateSourceDefinition;
 import org.geowebcache.mime.FormatModifier;
+import org.geowebcache.mime.MimeException;
 import org.geowebcache.mime.MimeType;
 import org.geowebcache.util.GWCVars;
 import org.opengis.referencing.FactoryException;
@@ -66,86 +72,45 @@ public class GeoServerTileLayer extends TileLayer {
 
     public static final ThreadLocal<WebMap> WEB_MAP = new ThreadLocal<WebMap>();
 
-    private GWC mediator;
+    private CatalogConfiguration mediator;
 
-    private transient final String layerId;
+    private final String layerId;
 
-    private transient final String layerGroupId;
+    private final String layerGroupId;
 
     private String configErrorMessage;
 
-    public GeoServerTileLayer(final GWC mediator, final LayerGroupInfo layerGroup) {
+    private List<ParameterFilter> parameterFilters;
+
+    private Map<String, GridSubset> subSets;
+
+    private static LayerListenerList listeners = new LayerListenerList();
+
+    public GeoServerTileLayer(final CatalogConfiguration mediator, final LayerGroupInfo layerGroup) {
         this.mediator = mediator;
         this.layerId = null;
         this.layerGroupId = layerGroup.getId();
-        this.name = layerGroup.getName();
         GWCConfig configDefaults = mediator.getConfig();
         this.info = GeoServerTileLayerInfo.create(layerGroup, configDefaults);
-        setDefaults();
     }
 
-    public GeoServerTileLayer(final GWC mediator, final LayerInfo layerInfo) {
+    public GeoServerTileLayer(final CatalogConfiguration mediator, final LayerInfo layerInfo) {
         this.mediator = mediator;
         this.layerId = layerInfo.getId();
         this.layerGroupId = null;
-        final ResourceInfo resource = layerInfo.getResource();
-        super.name = resource.getPrefixedName();
         GWCConfig configDefaults = mediator.getConfig();
         this.info = GeoServerTileLayerInfo.create(layerInfo, configDefaults);
-        setDefaults();
     }
 
-    private void setDefaults() {
-        super.metaWidthHeight = new int[] { info.getMetaTilingX(), info.getMetaTilingY() };
-        // TODO: be careful to update super.mimeFormats when modifying info.mimeFormats
-        super.mimeFormats = new ArrayList<String>(info.getMimeFormats());
-        Set<String> cachedStyles = info.getCachedStyles();
-        if (cachedStyles.size() > 0) {
-            String defaultStyle = info.getDefaultStyle();
-            ParameterFilter stylesParameterFilter;
-            stylesParameterFilter = createStylesParameterFilters(defaultStyle, cachedStyles);
-            if (stylesParameterFilter != null) {
-                LOGGER.fine("Created STYLES parameter filter for layer " + getName()
-                        + " and styles " + stylesParameterFilter.getLegalValues());
-                List<ParameterFilter> paramFilters = Arrays.asList(stylesParameterFilter);
-                super.setParameterFilters(paramFilters);
-            }
-        } else {
-            LOGGER.fine("NOT Creating GeoServerTileLayer for " + getName() + " as option is off");
+    @Override
+    public String getName() {
+        if (layerGroupId != null) {
+            LayerGroupInfo layerGroupInfo = getLayerGroupInfo();
+            return layerGroupInfo.getName();
         }
-
-        // set default properties that doesn't need initialization
-        super.backendTimeout = 0;
-        super.cacheBypassAllowed = Boolean.TRUE;
-        super.expireCache = null;
-        super.expireCacheList = null;
-        super.expireClients = null;
-        super.expireClientsList = null;
-        super.formatModifiers = null;
-        super.requestFilters = null;
-        super.updateSources = null;
-        super.useETags = false;
-        super.formats = null;// set by super.initialize based on mimeFormats
-        super.metaInformation = null;// see getMetaInformation() override
-        super.queryable = null;// see isQueryable() override
-        super.wmsStyles = null;// see getStyles() override
-
-        ReferencedEnvelope latLongBbox = getLatLonBbox();
-
-        Hashtable<String, GridSubset> subSets;
-        try {
-            GridSetBroker gridSetBroker = mediator.getGridSetBroker();
-            subSets = getGrids(latLongBbox, gridSetBroker);
-            super.subSets = subSets;
-        } catch (ConfigurationException e) {
-            String msg = "Can't create grids for '" + getName() + "': " + e.getMessage();
-            LOGGER.warning(msg);
-            setConfigErrorMessage(msg);
-        }
-    }
-
-    public String getId() {
-        return layerId == null ? layerGroupId : layerId;
+        LayerInfo layerInfo = getLayerInfo();
+        ResourceInfo resource = layerInfo.getResource();
+        return resource.getPrefixedName();
     }
 
     private void setConfigErrorMessage(String configErrorMessage) {
@@ -156,10 +121,34 @@ public class GeoServerTileLayer extends TileLayer {
         return configErrorMessage;
     }
 
-    public void setMetaTilingFactors(final int metaTilingX, final int metaTilingY) {
-        Assert.isTrue(metaTilingX > 0);
-        Assert.isTrue(metaTilingY > 0);
-        super.metaWidthHeight = new int[] { metaTilingX, metaTilingY };
+    @Override
+    public List<ParameterFilter> getParameterFilters() {
+        if (parameterFilters == null) {
+            Set<String> cachedStyles = info.getCachedStyles();
+            if (cachedStyles.size() > 0) {
+                String defaultStyle = getStyles();
+                if (defaultStyle == null) {
+                    // may be null if backed by a LayerGroupInfo, but in that case
+                    // cachedStyles.size() can't be > 0
+                    throw new IllegalStateException(
+                            "TileLayer backed by a LayerGroup should not have alternate styles!");
+                }
+                ParameterFilter stylesParameterFilter;
+                stylesParameterFilter = createStylesParameterFilters(defaultStyle, cachedStyles);
+                if (stylesParameterFilter != null) {
+                    LOGGER.fine("Created STYLES parameter filter for layer " + getName()
+                            + " and styles " + stylesParameterFilter.getLegalValues());
+                    List<ParameterFilter> paramFilters = Arrays.asList(stylesParameterFilter);
+                    this.parameterFilters = paramFilters;
+                }
+            }
+        }
+        return parameterFilters;
+    }
+
+    public void resetParameterFilters() {
+        super.defaultParameterFilterValues = null;// reset default values
+        this.parameterFilters = null;
     }
 
     /**
@@ -182,13 +171,34 @@ public class GeoServerTileLayer extends TileLayer {
      */
     @Override
     public boolean isEnabled() {
-        return info.isEnabled() && configErrorMessage == null;
+        final boolean tileLayerInfoEnabled = info.isEnabled();
+        if (!tileLayerInfoEnabled) {
+            return false;
+        }
+        if (configErrorMessage != null) {
+            if (LOGGER.isLoggable(Level.FINEST)) {
+                LOGGER.finest("Layer " + getName() + "is not enabled due to config error");
+            }
+            return false;
+        }
+        boolean geoserverLayerEnabled;
+        LayerInfo layerInfo = getLayerInfo();
+        if (layerInfo != null) {
+            geoserverLayerEnabled = layerInfo.enabled();
+        } else {
+            // LayerGroupInfo has no enabled property, so assume true
+            geoserverLayerEnabled = true;
+        }
+        return tileLayerInfoEnabled && geoserverLayerEnabled;
     }
 
     @Override
-    public void setEnabled(boolean enabled) {
+    public void setEnabled(final boolean enabled) {
+        boolean oldVal = info.isEnabled();
         info.setEnabled(enabled);
-        mediator.save(this);
+        if (oldVal != enabled) {
+            mediator.save(this);
+        }
     }
 
     /**
@@ -199,12 +209,7 @@ public class GeoServerTileLayer extends TileLayer {
      */
     @Override
     public boolean isQueryable() {
-        return mediator.isQueryable(info);
-    }
-
-    @Override
-    protected boolean initializeInternal(GridSetBroker gridSetBroker) {
-        return true;
+        return mediator.isQueryable(this);
     }
 
     private ReferencedEnvelope getLatLonBbox() throws IllegalStateException {
@@ -235,7 +240,8 @@ public class GeoServerTileLayer extends TileLayer {
      */
     public static StringParameterFilter createStylesParameterFilters(final String defaultStyle,
             final Set<String> styleNames) {
-
+        Assert.notNull(defaultStyle, "defaultStyle");
+        Assert.notNull(defaultStyle, "alternate styles");
         if (styleNames.size() == 0) {
             return null;
         }
@@ -295,7 +301,7 @@ public class GeoServerTileLayer extends TileLayer {
 
         ResourceInfo resourceInfo = getResourceInfo();
         if (resourceInfo != null) {
-            title = resourceInfo.getDescription();
+            title = resourceInfo.getTitle();
             description = resourceInfo.getAbstract();
             keywords = resourceInfo.getKeywords();
         }
@@ -304,12 +310,31 @@ public class GeoServerTileLayer extends TileLayer {
     }
 
     /**
+     * The default style name for the layer, as advertised by its backing
+     * {@link LayerInfo#getDefaultStyle()}, or {@code null} if this tile layer is backed by a
+     * {@link LayerGroupInfo}.
+     * <p>
+     * As the default style is always cached, its name is not stored as part of this tile layer's
+     * {@link GeoServerTileLayerInfo}. Instead it's 'live' and retrieved from the current
+     * {@link LayerInfo} every time this method is invoked.
+     * </p>
+     * 
      * @see org.geowebcache.layer.TileLayer#getStyles()
      * @see GeoServerTileLayerInfo#getDefaultStyle()
      */
     @Override
     public String getStyles() {
-        return info.getDefaultStyle();
+        if (layerGroupId != null) {
+            // there's no such thing as default style for a layer group
+            return null;
+        }
+        LayerInfo layerInfo = getLayerInfo();
+        StyleInfo defaultStyle = layerInfo.getDefaultStyle();
+        if (defaultStyle == null) {
+            setConfigErrorMessage("Underlying GeoSever Layer has no default style");
+            return null;
+        }
+        return defaultStyle.getName();
     }
 
     /**
@@ -321,14 +346,13 @@ public class GeoServerTileLayer extends TileLayer {
             int x, int y) throws GeoWebCacheException {
 
         Map<String, String> params = buildGetFeatureInfo(convTile, bbox, height, width, x, y);
-        FakeHttpServletResponse response;
+        Resource response;
         try {
-            Cookie[] cookies = null;
-            response = mediator.dispatchOwsRequest(params, cookies);
+            response = mediator.dispatchOwsRequest(params, (Cookie[]) null);
         } catch (Exception e) {
             throw new GeoWebCacheException(e);
         }
-        return new ByteArrayResource(response.getBytes());
+        return response;
     }
 
     private Map<String, String> buildGetFeatureInfo(ConveyorTile convTile, BoundingBox bbox,
@@ -340,7 +364,11 @@ public class GeoServerTileLayer extends TileLayer {
         wmsParams.put("LAYERS", getName());
         wmsParams.put("STYLES", "");
         wmsParams.put("QUERY_LAYERS", getName());
-        wmsParams.put("FORMAT", getMimeTypes().get(0).getFormat());
+        MimeType mimeType = convTile.getMimeType();
+        if (mimeType == null) {
+            mimeType = getMimeTypes().get(0);
+        }
+        wmsParams.put("FORMAT", mimeType.getFormat());
         wmsParams.put("EXCEPTIONS", GetMapRequest.SE_XML);
 
         wmsParams.put("INFO_FORMAT", convTile.getMimeType().getFormat());
@@ -367,60 +395,110 @@ public class GeoServerTileLayer extends TileLayer {
     public ConveyorTile getTile(ConveyorTile tile) throws GeoWebCacheException, IOException,
             OutsideCoverageException {
         MimeType mime = tile.getMimeType();
-
+        final List<MimeType> formats = getMimeTypes();
         if (mime == null) {
-            mime = this.formats.get(0);
+            mime = formats.get(0);
+        } else {
+            if (!formats.contains(mime)) {
+                throw new IllegalArgumentException(mime.getFormat()
+                        + " is not a supported format for " + getName());
+            }
         }
 
-        if (!formats.contains(mime)) {
-            throw new GeoWebCacheException(mime.getFormat() + " is not a supported format for "
-                    + name);
+        final String tileGridSetId = tile.getGridSetId();
+        final GridSubset gridSubset = getGridSubset(tileGridSetId);
+        if (gridSubset == null) {
+            throw new IllegalArgumentException("Requested gridset not found: " + tileGridSetId);
         }
 
-        String tileGridSetId = tile.getGridSetId();
-
-        long[] gridLoc = tile.getTileIndex();
+        final long[] gridLoc = tile.getTileIndex();
+        Assert.notNull(gridLoc);
 
         // Final preflight check, throws OutsideCoverageException if necessary
-        getGridSubset(tileGridSetId).checkCoverage(gridLoc);
+        gridSubset.checkCoverage(gridLoc);
 
         ConveyorTile returnTile;
 
-        if (tryCacheFetch(tile)) {
-            returnTile = finalizeTile(tile);// no need to go to the backend
+        int metaX;
+        int metaY;
+        if (mime.supportsTiling()) {
+            metaX = info.getMetaTilingX();
+            metaY = info.getMetaTilingY();
         } else {
-            int metaX = metaWidthHeight[0];
-            int metaY = metaWidthHeight[1];
-            if (!mime.supportsTiling()) {
-                metaX = metaY = 1;
-            }
-            returnTile = getMetatilingReponse(tile, true, metaX, metaY);
-            finalizeTile(returnTile);
+            metaX = metaY = 1;
         }
+        returnTile = getMetatilingReponse(tile, true, metaX, metaY);
 
         sendTileRequestedEvent(returnTile);
 
         return returnTile;
     }
 
-    private ConveyorTile getMetatilingReponse(ConveyorTile tile, boolean tryCacheFetch,
+    @Override
+    public void addLayerListener(final TileLayerListener listener) {
+        listeners.addListener(listener);
+    }
+
+    @Override
+    public boolean removeLayerListener(final TileLayerListener listener) {
+        listeners.removeListener(listener);
+        return true;
+    }
+
+    protected final void sendTileRequestedEvent(ConveyorTile tile) {
+        if (listeners != null) {
+            listeners.sendTileRequested(this, tile);
+        }
+    }
+
+    private static final CanonicalSet<GridLocObj> META_GRID_LOCKS = CanonicalSet
+            .newInstance(GridLocObj.class);
+
+    private ConveyorTile getMetatilingReponse(ConveyorTile tile, final boolean tryCache,
             final int metaX, final int metaY) throws GeoWebCacheException, IOException {
 
+        // Acquire lock
+        if (tryCache && tryCacheFetch(tile)) {
+            return finalizeTile(tile);
+        }
+
         final GeoServerMetaTile metaTile = createMetaTile(tile, metaX, metaY);
+        final GridLocObj metaGridLoc;
+        metaGridLoc = META_GRID_LOCKS.unique(new GridLocObj(metaTile.getMetaGridPos(), 32));
+        synchronized (metaGridLoc) {
+            // got the lock on the meta tile, try again
+            if (tryCache && tryCacheFetch(tile)) {
+                LOGGER.finest("--> " + Thread.currentThread().getName() + " returns cache hit for "
+                        + Arrays.toString(metaTile.getMetaGridPos()));
+            } else {
+                LOGGER.finer("--> " + Thread.currentThread().getName()
+                        + " submitting getMap request for meta grid location "
+                        + Arrays.toString(metaTile.getMetaGridPos()) + " on " + metaTile);
+                WebMap map;
+                try {
+                    map = dispatchGetMap(tile, metaTile);
+                    Assert.notNull(map, "Did not obtain a WebMap from GeoServer's Dispatcher");
+                    metaTile.setWebMap(map);
+                    saveTiles(metaTile, tile);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    throw new GeoWebCacheException("Problem communicating with GeoServer", e);
+                } finally {
+                    META_GRID_LOCKS.remove(metaGridLoc);
+                }
+            }
+        }
 
-        WebMap map;
+        return finalizeTile(tile);
+    }
+
+    @Override
+    protected void saveTiles(MetaTile metaTile, ConveyorTile tileProto) throws GeoWebCacheException {
         try {
-            map = dispatchGetMap(tile, metaTile);
-        } catch (Exception e) {
-            throw new GeoWebCacheException("Problem communicating with GeoServer", e);
+            super.saveTiles(metaTile, tileProto);
+        } finally {
+            ((GeoServerMetaTile) metaTile).dispose();
         }
-
-        if (map != null) {
-            metaTile.setWebMap(map);
-            super.saveTiles(metaTile, tile);
-        }
-
-        return tile;
     }
 
     private WebMap dispatchGetMap(final ConveyorTile tile, final MetaTile metaTile)
@@ -450,8 +528,9 @@ public class GeoServerTileLayer extends TileLayer {
         FormatModifier formatModifier = null;
         long[] tileGridPosition = tile.getTileIndex();
         int gutter = info.getGutter();
-        metaTile = new GeoServerMetaTile(gridSubset, responseFormat, formatModifier,
-                tileGridPosition, metaX, metaY, gutter);
+        String layerName = this.getName();
+        metaTile = new GeoServerMetaTile(layerName, gridSubset, responseFormat, formatModifier,
+                tileGridPosition, metaX, metaY, gutter, mediator);
 
         return metaTile;
     }
@@ -463,7 +542,7 @@ public class GeoServerTileLayer extends TileLayer {
 
         final MimeType mimeType = tile.getMimeType();
         final String gridSetId = tile.getGridSetId();
-        final GridSubset gridSubset = super.subSets.get(gridSetId);
+        final GridSubset gridSubset = getGridSubset(gridSetId);
 
         int width = metaTile.getMetaTileWidth();
         int height = metaTile.getMetaTileHeight();
@@ -551,8 +630,8 @@ public class GeoServerTileLayer extends TileLayer {
     public void seedTile(ConveyorTile tile, boolean tryCache) throws GeoWebCacheException,
             IOException {
 
-        int metaX = metaWidthHeight[0];
-        int metaY = metaWidthHeight[1];
+        int metaX = info.getMetaTilingX();
+        int metaY = info.getMetaTilingY();
         if (!tile.getMimeType().supportsTiling()) {
             metaX = metaY = 1;
         }
@@ -561,17 +640,15 @@ public class GeoServerTileLayer extends TileLayer {
 
     @Override
     public void acquireLayerLock() {
-        // TODO Auto-generated method stub
-
+        throw new UnsupportedOperationException("not implemented yet");
     }
 
     @Override
     public void releaseLayerLock() {
-        // TODO Auto-generated method stub
-
+        throw new UnsupportedOperationException("not implemented yet");
     }
 
-    private Hashtable<String, GridSubset> getGrids(ReferencedEnvelope latLonBbox,
+    private Map<String, GridSubset> getGrids(ReferencedEnvelope latLonBbox,
             GridSetBroker gridSetBroker) throws ConfigurationException {
 
         Set<String> cachedGridSetIds = info.getCachedGridSetIds();
@@ -580,7 +657,7 @@ public class GeoServerTileLayer extends TileLayer {
                     + " has no gridsets configured");
         }
 
-        Hashtable<String, GridSubset> grids = new Hashtable<String, GridSubset>(2);
+        Map<String, GridSubset> grids = new HashMap<String, GridSubset>(2);
         for (String gridSetId : cachedGridSetIds) {
             GridSet gridSet = gridSetBroker.get(gridSetId);
             if (gridSet == null) {
@@ -655,18 +732,152 @@ public class GeoServerTileLayer extends TileLayer {
         return info;
     }
 
-    public StringParameterFilter getStylesParameterFilter() {
-        if (super.parameterFilters == null) {
-            return null;
-        }
-        StringParameterFilter stylesParamFilter = null;
-        for (ParameterFilter pf : parameterFilters) {
-            if (pf instanceof StringParameterFilter && "STYLES".equals(pf.getKey())) {
-                stylesParamFilter = (StringParameterFilter) pf;
-                break;
+    @Override
+    public synchronized Map<String, GridSubset> getGridSubsets() {
+        if (this.subSets == null) {
+            ReferencedEnvelope latLongBbox = getLatLonBbox();
+            try {
+                GridSetBroker gridSetBroker = mediator.getGridSetBroker();
+                this.subSets = getGrids(latLongBbox, gridSetBroker);
+            } catch (ConfigurationException e) {
+                String msg = "Can't create grids for '" + getName() + "': " + e.getMessage();
+                LOGGER.log(Level.WARNING, msg, e);
+                setConfigErrorMessage(msg);
+                return Collections.emptyMap();
             }
         }
-        return stylesParamFilter;
+        return this.subSets;
+    }
+
+    /**
+     * @see org.geowebcache.layer.TileLayer#getUpdateSources()
+     */
+    @Override
+    public List<UpdateSourceDefinition> getUpdateSources() {
+        return Collections.emptyList();
+    }
+
+    /**
+     * @see org.geowebcache.layer.TileLayer#useETags()
+     */
+    @Override
+    public boolean useETags() {
+        return false;
+    }
+
+    /**
+     * @see org.geowebcache.layer.TileLayer#getFormatModifiers()
+     */
+    @Override
+    public List<FormatModifier> getFormatModifiers() {
+        return Collections.emptyList();
+    }
+
+    /**
+     * @see org.geowebcache.layer.TileLayer#setFormatModifiers(java.util.List)
+     */
+    @Override
+    public void setFormatModifiers(List<FormatModifier> formatModifiers) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * @see org.geowebcache.layer.TileLayer#getMetaTilingFactors()
+     */
+    @Override
+    public int[] getMetaTilingFactors() {
+        return new int[] { info.getMetaTilingX(), info.getMetaTilingY() };
+    }
+
+    /**
+     * @return {@code true}
+     * @see #getNoncachedTile(ConveyorTile)
+     * @see org.geowebcache.layer.TileLayer#isCacheBypassAllowed()
+     */
+    @Override
+    public Boolean isCacheBypassAllowed() {
+        return true;
+    }
+
+    /**
+     * @throws UnsupportedOperationException
+     * @see org.geowebcache.layer.TileLayer#setCacheBypassAllowed(boolean)
+     */
+    @Override
+    public void setCacheBypassAllowed(boolean allowed) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * @return {@code 0}
+     * @see org.geowebcache.layer.TileLayer#getBackendTimeout()
+     */
+    @Override
+    public Integer getBackendTimeout() {
+        return Integer.valueOf(0);
+    }
+
+    /**
+     * @throws UnsupportedOperationException
+     * @see org.geowebcache.layer.TileLayer#setBackendTimeout(int)
+     */
+    @Override
+    public void setBackendTimeout(int seconds) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * @see org.geowebcache.layer.TileLayer#getMimeTypes()
+     */
+    @Override
+    public List<MimeType> getMimeTypes() {
+        Set<String> mimeFormats = info.getMimeFormats();
+        List<MimeType> mimeTypes = new ArrayList<MimeType>(mimeFormats.size());
+        for (String format : mimeFormats) {
+            try {
+                mimeTypes.add(MimeType.createFromFormat(format));
+            } catch (MimeException e) {
+                LOGGER.log(Level.WARNING, "Can't create MimeType from format " + format, e);
+            }
+        }
+        return mimeTypes;
+    }
+
+    /**
+     * @see org.geowebcache.layer.TileLayer#getExpireClients(int)
+     */
+    @Override
+    public int getExpireClients(int zoomLevel) {
+        // TODO: make configurable
+        return 0;
+    }
+
+    /**
+     * @see org.geowebcache.layer.TileLayer#getExpireCache(int)
+     */
+    @Override
+    public int getExpireCache(int zoomLevel) {
+        // TODO: make configurable
+        return 0;
+    }
+
+    /**
+     * @return {@code null}, no request filters supported so far
+     * @see org.geowebcache.layer.TileLayer#getRequestFilters()
+     */
+    @Override
+    public List<RequestFilter> getRequestFilters() {
+        return null;
+    }
+
+    /**
+     * Empty method that returns {@code true}
+     * 
+     * @see org.geowebcache.layer.TileLayer#initialize(org.geowebcache.grid.GridSetBroker)
+     */
+    @Override
+    public boolean initialize(GridSetBroker gridSetBroker) {
+        return true;
     }
 
 }

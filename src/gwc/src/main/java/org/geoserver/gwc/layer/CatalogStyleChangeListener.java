@@ -1,13 +1,9 @@
-/** 
- * Copyright (c) 2001 - 2009 TOPP - www.openplans.org. All rights reserved.
+/* Copyright (c) 2011 TOPP - www.openplans.org. All rights reserved.
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
- * 
- * @author Arne Kepp / OpenGeo
  */
-package org.geoserver.gwc;
+package org.geoserver.gwc.layer;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -24,8 +20,6 @@ import org.geoserver.catalog.event.CatalogListener;
 import org.geoserver.catalog.event.CatalogModifyEvent;
 import org.geoserver.catalog.event.CatalogPostModifyEvent;
 import org.geoserver.catalog.event.CatalogRemoveEvent;
-import org.geoserver.gwc.layer.GeoServerTileLayer;
-import org.geoserver.gwc.layer.GeoServerTileLayerInfo;
 import org.geotools.util.logging.Logging;
 import org.geowebcache.filter.parameters.ParameterFilter;
 
@@ -40,10 +34,10 @@ public class CatalogStyleChangeListener implements CatalogListener {
 
     private static Logger log = Logging.getLogger(CatalogStyleChangeListener.class);
 
-    private final GWC gwc;
+    private final CatalogConfiguration catalogConfig;
 
-    public CatalogStyleChangeListener(final GWC gwc) {
-        this.gwc = gwc;
+    public CatalogStyleChangeListener(final CatalogConfiguration catalogConfiguration) {
+        this.catalogConfig = catalogConfiguration;
     }
 
     /**
@@ -70,30 +64,20 @@ public class CatalogStyleChangeListener implements CatalogListener {
             if (oldName.equals(newName)) {
                 return;
             }
-            List<GeoServerTileLayer> affectedLayers = gwc.getTileLayersForStyle(oldName);
+            List<GeoServerTileLayer> affectedLayers = catalogConfig.getTileLayersForStyle(oldName);
             for (GeoServerTileLayer tl : affectedLayers) {
                 GeoServerTileLayerInfo info = tl.getInfo();
-                if (oldName.equals(info.getDefaultStyle())) {
-                    // easy, default style has no parameter id
-                    info.setDefaultStyle(newName);
-                }
+                tl.resetParameterFilters();
                 Set<String> styleNames = new HashSet<String>(info.getCachedStyles());
                 if (styleNames.contains(oldName)) {
                     // pity, we don't have a way to just rename a style in GWC
-                    gwc.truncate(tl.getName(), oldName);
+                    catalogConfig.truncate(tl.getName(), oldName);
                     styleNames.remove(oldName);
                     styleNames.add(newName);
-                }
-                if (styleNames.size() > 0) {
-                    String defaultStyle = info.getDefaultStyle();
-                    ParameterFilter paramFilter = GeoServerTileLayer.createStylesParameterFilters(
-                            defaultStyle, styleNames);
                     info.setCachedStyles(styleNames);
-                    tl.setParameterFilters(Collections.singletonList(paramFilter));
-                }else{
-                    tl.setParameterFilters(null);
                 }
-                gwc.save(tl);
+                tl.resetParameterFilters();
+                catalogConfig.save(tl);
             }
         }
     }
@@ -126,20 +110,20 @@ public class CatalogStyleChangeListener implements CatalogListener {
         final String styleName = modifiedStyle.getName();
         log.finer("Handling style modification: " + styleName);
         // First we collect all the layers that use this style
-        for (LayerInfo affectedLayer : gwc.getLayersInfosFor(modifiedStyle)) {
+        for (LayerInfo affectedLayer : catalogConfig.getLayersInfosFor(modifiedStyle)) {
             // If the style name changes, we need to update the layer's parameter filter
             String prefixedName = affectedLayer.getResource().getPrefixedName();
             log.info("Truncating layer '" + prefixedName + "' due to a change in style '"
                     + styleName + "'");
-            gwc.truncate(prefixedName, styleName);
+            catalogConfig.truncate(prefixedName, styleName);
         }
 
         // Now we check for layer groups that are affected
-        for (LayerGroupInfo layerGroup : gwc.getLayerGroupsFor(modifiedStyle)) {
+        for (LayerGroupInfo layerGroup : catalogConfig.getLayerGroupsFor(modifiedStyle)) {
             String layerGroupName = layerGroup.getName();
             log.info("Truncating layer group '" + layerGroupName + "' due to a change in style '"
                     + styleName + "'");
-            gwc.truncate(layerGroupName);
+            catalogConfig.truncate(layerGroupName);
         }
     }
 
@@ -150,12 +134,14 @@ public class CatalogStyleChangeListener implements CatalogListener {
      * @see org.geoserver.catalog.event.CatalogListener#handleRemoveEvent
      */
     public void handleRemoveEvent(CatalogRemoveEvent event) throws CatalogException {
+        //
     }
 
     /**
      * 
      */
     public void reloaded() {
+        //
     }
 
 }

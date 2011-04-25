@@ -5,21 +5,21 @@
  * 
  * @author Arne Kepp / OpenGeo
  */
-package org.geoserver.gwc.layer;
+package org.geoserver.gwc;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import javax.servlet.ServletOutputStream;
 
-public class FakeServletOutputStream extends ServletOutputStream {
+class FakeServletOutputStream extends ServletOutputStream {
 
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream(20480);
-    
+
     public void write(int b) throws IOException {
         outputStream.write(b);
     }
-    
+
     public byte[] getBytes() {
         return outputStream.toByteArray();
     }

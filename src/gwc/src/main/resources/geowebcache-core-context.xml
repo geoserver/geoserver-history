@@ -23,13 +23,6 @@
   <!-- For each configuration bean above, add them below to activate -->
   <bean id="gwcTLDispatcher" class="org.geowebcache.layer.TileLayerDispatcher">
     <constructor-arg ref="gwcGridSetBroker"/>
-    <constructor-arg>
-      <list>
-	    <ref bean="gwcXmlConfig" />
-      </list>
-    </constructor-arg>
-    <!-- loadDelay < -1 forces gwc to load configuration in the main thread -->
-    <constructor-arg value="-1" />
   </bean>
   
   <bean id="gwcDefaultStorageFinder" class="org.geowebcache.storage.DefaultStorageFinder">

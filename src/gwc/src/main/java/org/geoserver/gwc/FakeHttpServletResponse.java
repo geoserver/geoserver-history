@@ -5,7 +5,7 @@
  * 
  * @author Arne Kepp / OpenGeo
  */
-package org.geoserver.gwc.layer;
+package org.geoserver.gwc;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.geotools.util.logging.Logging;
 
-public class FakeHttpServletResponse implements HttpServletResponse {
+class FakeHttpServletResponse implements HttpServletResponse {
     
     private static Logger log = Logging.getLogger(HttpServletResponse.class.toString());
     

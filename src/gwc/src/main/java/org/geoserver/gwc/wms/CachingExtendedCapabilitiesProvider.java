@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
@@ -102,7 +101,7 @@ public class CachingExtendedCapabilitiesProvider implements ExtendedCapabilities
         }
 
         String namespacePrefixFilter = request.getNamespace();
-        List<TileLayer> tileLayers = gwc.getTileLayersByNamespacePrefix(namespacePrefixFilter);
+        Iterable<TileLayer> tileLayers = gwc.getTileLayersByNamespacePrefix(namespacePrefixFilter);
 
         for (TileLayer layer : tileLayers) {
 

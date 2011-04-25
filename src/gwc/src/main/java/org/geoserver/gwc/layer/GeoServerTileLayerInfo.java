@@ -16,7 +16,7 @@ import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.MetadataMap;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.StyleInfo;
-import org.geoserver.gwc.GWCConfig;
+import org.geoserver.gwc.config.GWCConfig;
 import org.springframework.util.Assert;
 
 public class GeoServerTileLayerInfo {
@@ -31,8 +31,6 @@ public class GeoServerTileLayerInfo {
     private static final String CONFIG_KEY_METATILING_Y = "GWC.metaTilingY";
 
     private static final String CONFIG_KEY_FORMATS = "GWC.cacheFormats";
-
-    private static final String CONFIG_KEY_DEFAULT_STYLE = "GWC.defaultStyle";
 
     private static final String CONFIG_KEY_AUTO_CACHE_STYLES = "GWC.autoCacheStyles";
 
@@ -51,8 +49,6 @@ public class GeoServerTileLayerInfo {
     private Set<String> mimeFormats;
 
     private boolean autoCacheStyles;
-
-    private String defaultStyle;
 
     private Set<String> cachedStyles;
 
@@ -105,15 +101,6 @@ public class GeoServerTileLayerInfo {
             info.setDirty(true);
         }
         info.setAutoCacheStyles(autoCacheStyles);
-
-        if (metadataMap.containsKey(CONFIG_KEY_DEFAULT_STYLE)) {
-            String defaultStyle = metadataMap.get(CONFIG_KEY_DEFAULT_STYLE, String.class);
-            info.setDefaultStyle(defaultStyle);
-        } else {
-            String defaultStyle = layerInfo.getDefaultStyle().getName();
-            info.setDefaultStyle(defaultStyle);
-            info.setDirty(true);
-        }
 
         info.setCachedStyles(Collections.EMPTY_SET);
         if (metadataMap.containsKey(CONFIG_KEY_CACHED_STYLES)) {
@@ -243,9 +230,7 @@ public class GeoServerTileLayerInfo {
         metadata.put(CONFIG_KEY_METATILING_Y, Integer.valueOf(metaTilingY));
         metadata.put(CONFIG_KEY_FORMATS, marshalList(mimeFormats));
         metadata.put(CONFIG_KEY_AUTO_CACHE_STYLES, autoCacheStyles);
-        if (defaultStyle != null) {
-            metadata.put(CONFIG_KEY_DEFAULT_STYLE, defaultStyle);
-        }
+
         if (cachedStyles.size() > 0) {
             metadata.put(CONFIG_KEY_CACHED_STYLES, marshalList(cachedStyles));
         }
@@ -318,14 +303,6 @@ public class GeoServerTileLayerInfo {
     @Override
     public int hashCode() {
         return HashCodeBuilder.reflectionHashCode(this);
-    }
-
-    public String getDefaultStyle() {
-        return defaultStyle;
-    }
-
-    public void setDefaultStyle(String styleName) {
-        this.defaultStyle = styleName;
     }
 
     public boolean isAutoCacheStyles() {

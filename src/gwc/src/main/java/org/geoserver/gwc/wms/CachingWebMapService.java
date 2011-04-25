@@ -4,7 +4,9 @@
  */
 package org.geoserver.gwc.wms;
 
+import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Method;
+import java.nio.channels.Channels;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,6 +24,8 @@ import org.geoserver.wms.WebMapService;
 import org.geoserver.wms.map.RawMap;
 import org.geotools.util.logging.Logging;
 import org.geowebcache.conveyor.ConveyorTile;
+import org.geowebcache.io.ByteArrayResource;
+import org.geowebcache.io.Resource;
 import org.springframework.util.Assert;
 
 /**
@@ -79,9 +83,19 @@ public class CachingWebMapService implements MethodInterceptor {
                 }
 
                 LOGGER.finer("No matching ETag, returning cached tile");
-                final byte[] mapContents = cachedTile.getContent();
                 final String mimeType = cachedTile.getMimeType().getMimeType();
-                RawMap map = new RawMap(null, mapContents, mimeType);
+
+                RawMap map;
+                final Resource mapContents = cachedTile.getBlob();
+                if (mapContents instanceof ByteArrayResource) {
+                    byte[] mapBytes;
+                    mapBytes = ((ByteArrayResource) mapContents).getContents();
+                    map = new RawMap(null, mapBytes, mimeType);
+                } else {
+                    ByteArrayOutputStream out = new ByteArrayOutputStream();
+                    mapContents.transferTo(Channels.newChannel(out));
+                    map = new RawMap(null, out, mimeType);
+                }
                 map.setResponseHeader("Cache-Control", "no-cache");
                 map.setResponseHeader("ETag", Long.toHexString(cachedTile.getTSCreated()));
                 map.setResponseHeader("geowebcache-tile-index",
