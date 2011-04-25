@@ -55,16 +55,20 @@ This information can be changed via the :ref:`webadmin_wms` section of the :ref:
 Extended WMS configuration
 --------------------------
 
-As with the WMS 1.3.0 capabilities document, the WMS configuration in the :ref:`web_admin` is also extended to allow for changing the above published information.  INSPIRE-specific configuration is accessed on the main :ref:`webadmin_wms` page in the :ref:`web_admin`.  This is easily accessed by clicking on the :guilabel:`WMS` link on the sidebar.
+As with the WMS 1.3.0 capabilities document, the WMS configuration in the :ref:`web_admin` is also extended to allow for changing the above published information.  INSPIRE-specific configuration is accessed on the main :ref:`webadmin_wms` page in the :ref:`web_admin`.  This is accessed by clicking on the :guilabel:`WMS` link on the sidebar.
 
 .. note:: You must be logged in as an administrator to edit WMS configuration.
 
-Once on the WMS configuration page, there will be a block titled :guilabel:`INSPIRE`.  This section will have two options: a combo box titled :guilabel:`Language`, for setting the Supported, Default, and Response languages), and a box titled :guilabel:`ISO 19139 Service Metadata URL`, which is for a URL containing the location of the metadata associated with the WMS.
+Once on the WMS configuration page, there will be a block titled :guilabel:`INSPIRE`.  This section will have three settings:
+
+* :guilabel:`Language` combo box, for setting the Supported, Default, and Response languages
+* :guilabel:`ISO 19139 Service Metadata URL` field, a URL containing the location of the metadata associated with the WMS
+* :guilabel:`Service Metadata Type` combo box, for detailing whether the metadata came from a CSW (Catalog Service) or a standalone metadata file
 
 .. figure:: images/inspire.png
    :align: center
 
-   *Additional INSPIRE-related options*
+   *INSPIRE-related options*
 
 
 .. note:: If you do not see this content in the WMS configuration page, the INSPIRE extension may not be installed properly.  Reread the section on :ref:`community_inspire_installing` and verify that the correct file was saved to the correct directory.
