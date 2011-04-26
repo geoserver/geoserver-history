@@ -6,9 +6,11 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.MetadataMap;
+import org.geoserver.catalog.event.CatalogListener;
 import org.geoserver.catalog.impl.CatalogImpl;
 import org.geoserver.config.impl.CoverageAccessInfoImpl;
 import org.geoserver.config.impl.GeoServerInfoImpl;
@@ -26,6 +28,9 @@ import org.geoserver.platform.GeoServerResourceLoader;
  *
  */
 public class DefaultGeoServerLoader extends GeoServerLoader {
+    
+    ConfigurationListener listener;
+    GeoServerPersister persister; 
 
     public DefaultGeoServerLoader(GeoServerResourceLoader resourceLoader) {
         super(resourceLoader);
@@ -43,31 +48,41 @@ public class DefaultGeoServerLoader extends GeoServerLoader {
     }
     
     protected void loadGeoServer(final GeoServer geoServer, XStreamPersister xp) throws Exception {
-        
-        //add event listener which persists changes
-        final List<XStreamServiceLoader> loaders = 
-            GeoServerExtensions.extensions( XStreamServiceLoader.class );
-        geoServer.addListener( 
-            new ConfigurationListenerAdapter() {
-                @Override
-                public void handlePostServiceChange(ServiceInfo service) {
-                    for ( XStreamServiceLoader<ServiceInfo> l : loaders  ) {
-                        if ( l.getServiceClass().isInstance( service ) ) {
-                            try {
-                                l.save( service, geoServer );
-                            } catch (Throwable t) {
-                                //TODO: log this
-                                t.printStackTrace();
+        if(listener == null) { 
+            // add event listener which persists changes
+            final List<XStreamServiceLoader> loaders = 
+                GeoServerExtensions.extensions( XStreamServiceLoader.class );
+            listener = new ConfigurationListenerAdapter() {
+                        @Override
+                        public void handlePostServiceChange(ServiceInfo service) {
+                            for ( XStreamServiceLoader<ServiceInfo> l : loaders  ) {
+                                if ( l.getServiceClass().isInstance( service ) ) {
+                                    try {
+                                        l.save( service, geoServer );
+                                    } catch (Throwable t) {
+                                        LOGGER.log(Level.SEVERE, "Error occurred while saving configuration", t);
+                                    }
+                                }
                             }
                         }
-                    }
-                }
+                    };
+            geoServer.addListener(listener);
+        }
+        
+        try {
+            if (this.persister != null) {
+                // avoid having the persister write down new config files while we read the config,
+                // otherwise it'll dump it back in xml files
+                geoserver.removeListener(persister);
+            } else {
+                // lazy creation of the persister at the first need
+                this.persister = new GeoServerPersister(resourceLoader, xp);
             }
-        );
-        
-        readConfiguration(geoServer, xp);
-        
-        geoServer.addListener( new GeoServerPersister( resourceLoader, xp ) );
+            readConfiguration(geoServer, xp);
+        } finally {
+            // attach back the persister
+            geoserver.addListener(persister);
+        }
     }
     
     @Override

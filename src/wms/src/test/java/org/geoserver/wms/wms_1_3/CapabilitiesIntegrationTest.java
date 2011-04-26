@@ -22,8 +22,10 @@ import org.custommonkey.xmlunit.XpathEngine;
 import org.geoserver.catalog.AttributionInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.StyleInfo;
+import org.geoserver.config.ContactInfo;
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.data.test.MockData;
+import org.geoserver.wms.WMSInfo;
 import org.geoserver.wms.WMSTestSupport;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -134,7 +136,7 @@ public class CapabilitiesIntegrationTest extends WMSTestSupport {
                 xpath.getMatchingNodes("//wms:Layer/wms:Name[not(starts-with(., cite))]", dom)
                         .getLength());
 
-        NodeList nodes = xpath.getMatchingNodes("//wms:OnlineResource", dom);
+        NodeList nodes = xpath.getMatchingNodes("//wms:Layer//wms:OnlineResource", dom);
         assertTrue(nodes.getLength() > 0);
         for (int i = 0; i < nodes.getLength(); i++) {
             e = (Element) nodes.item(i);
@@ -154,7 +156,7 @@ public class CapabilitiesIntegrationTest extends WMSTestSupport {
                 .getLength() == 1);
         assertEquals(1, xpath.getMatchingNodes("//wms:Layer/wms:Layer", dom).getLength());
 
-        NodeList nodes = xpath.getMatchingNodes("//wms:OnlineResource", dom);
+        NodeList nodes = xpath.getMatchingNodes("//wms:Layer//wms:OnlineResource", dom);
         assertTrue(nodes.getLength() > 0);
         for (int i = 0; i < nodes.getLength(); i++) {
             e = (Element) nodes.item(i);
@@ -242,5 +244,60 @@ public class CapabilitiesIntegrationTest extends WMSTestSupport {
         assertTrue(href.contains("GetLegendGraphic"));
         assertTrue(href.contains("layer=Fifteen"));
         assertTrue(href.contains("style=point"));
+    }
+
+    public void testServiceMetadata() throws Exception {
+        final WMSInfo service = getGeoServer().getService(WMSInfo.class);
+        service.setTitle("test title");
+        service.setAbstract("test abstract");
+        service.setAccessConstraints("test accessConstraints");
+        service.setFees("test fees");
+        service.getKeywords().clear();
+        service.getKeywords().add("test keyword 1");
+        service.getKeywords().add("test keyword 2");
+        service.setMaintainer("test maintainer");
+        service.setOnlineResource("http://example.com/geoserver");
+        GeoServerInfo global = getGeoServer().getGlobal();
+        ContactInfo contact = global.getContact();
+        contact.setAddress("__address");
+        contact.setAddressCity("__city");
+        contact.setAddressCountry("__country");
+        contact.setAddressPostalCode("__ZIP");
+        contact.setAddressState("__state");
+        contact.setAddressType("__type");
+        contact.setContactEmail("e@mail");
+        contact.setContactOrganization("__org");
+        contact.setContactFacsimile("__fax");
+        contact.setContactPerson("__me");
+        contact.setContactPosition("__position");
+        contact.setContactVoice("__phone");
+        
+        getGeoServer().save(global);
+        getGeoServer().save(service);
+
+        Document doc = getAsDOM("wms?service=WMS&request=getCapabilities&version=1.3.0", true);
+        //print(doc);
+
+        String base = "wms:WMS_Capabilities/wms:Service/";
+        assertXpathEvaluatesTo("WMS", base + "wms:Name", doc);
+        assertXpathEvaluatesTo("test title", base + "wms:Title", doc);
+        assertXpathEvaluatesTo("test abstract", base + "wms:Abstract", doc);
+        assertXpathEvaluatesTo("test keyword 1", base + "wms:KeywordList/wms:Keyword[1]", doc);
+        assertXpathEvaluatesTo("test keyword 2", base + "wms:KeywordList/wms:Keyword[2]", doc);
+        assertXpathEvaluatesTo("http://example.com/geoserver", base + "wms:OnlineResource/@xlink:href", doc);
+        
+        String cinfo = base + "wms:ContactInformation/";
+        assertXpathEvaluatesTo("__me", cinfo + "wms:ContactPersonPrimary/wms:ContactPerson", doc);
+        assertXpathEvaluatesTo("__org", cinfo + "wms:ContactPersonPrimary/wms:ContactOrganization", doc);
+        assertXpathEvaluatesTo("__position", cinfo + "wms:ContactPosition", doc);
+        assertXpathEvaluatesTo("__type", cinfo + "wms:ContactAddress/wms:AddressType", doc);
+        assertXpathEvaluatesTo("__address", cinfo + "wms:ContactAddress/wms:Address", doc);
+        assertXpathEvaluatesTo("__city", cinfo + "wms:ContactAddress/wms:City", doc);
+        assertXpathEvaluatesTo("__state", cinfo + "wms:ContactAddress/wms:StateOrProvince", doc);
+        assertXpathEvaluatesTo("__ZIP", cinfo + "wms:ContactAddress/wms:PostCode", doc);
+        assertXpathEvaluatesTo("__country", cinfo + "wms:ContactAddress/wms:Country", doc);
+        assertXpathEvaluatesTo("__phone", cinfo + "wms:ContactVoiceTelephone", doc);
+        assertXpathEvaluatesTo("__fax", cinfo + "wms:ContactFacsimileTelephone", doc);
+        assertXpathEvaluatesTo("e@mail", cinfo + "wms:ContactElectronicMailAddress", doc);
     }
 }

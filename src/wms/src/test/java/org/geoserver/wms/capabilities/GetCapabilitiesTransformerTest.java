@@ -189,8 +189,8 @@ public class GetCapabilitiesTransformerTest extends TestCase {
         assertXpathEvaluatesTo("abstract", service + "/Abstract", dom);
         assertXpathEvaluatesTo("k1", service + "/KeywordList/Keyword[1]", dom);
         assertXpathEvaluatesTo("k2", service + "/KeywordList/Keyword[2]", dom);
-        // @REVISIT: shouldn't it be WmsInfo.getOnlineResource?
-        assertXpathEvaluatesTo(baseUrl + "/wms", service + "/OnlineResource/@xlink:href", dom);
+
+        assertXpathEvaluatesTo(wmsInfo.getOnlineResource(), service + "/OnlineResource/@xlink:href", dom);
 
         assertXpathEvaluatesTo("contactPerson", service
                 + "/ContactInformation/ContactPersonPrimary/ContactPerson", dom);

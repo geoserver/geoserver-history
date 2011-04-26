@@ -1,3 +1,26 @@
+GeoServer 2.1-RC5 (April 20, 2011)
+----------------------------------
+
+The fourth release candidate for 2.1. This release contains only bug fixes
+and residual regressions since the 2.0.x series.
+All the bugs fixed can be found in the change log:
+
+http://jira.codehaus.org/secure/ReleaseNote.jspa?projectId=10311&version=17324
+
+This release is based on GeoTools 2.7.0.2 and GeoWebCache 1.2.6.
+
+GeoServer 2.1-RC4 (April 06, 2011)
+----------------------------------
+
+The fourth release candidate for 2.1. This release contains only bug fixes and
+addresses a few regressions found in RC3. All the bugs fixed can be found in the
+change log:
+
+  http://jira.codehaus.org/secure/ReleaseNote.jspa?projectId=10311&version=17294
+
+This release is based on GeoTools 2.7.0.1 and GeoWebCache 1.2.5.
+
+
 GeoServer 2.1-RC3 (March 22, 2011)
 ----------------------------------
 

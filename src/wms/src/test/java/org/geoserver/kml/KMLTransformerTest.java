@@ -288,7 +288,7 @@ public class KMLTransformerTest extends WMSTestSupport {
         assertEquals(mapContext.getLayerCount(), document.getElementsByTagName("href").getLength());
 
         Element href = (Element) document.getElementsByTagName("href").item(0);
-        assertEquals("layer_0.png", href.getFirstChild().getNodeValue());
+        assertEquals("images/layer_0.png", href.getFirstChild().getNodeValue());
     }
 
     public void testRasterTransformerNotInline() throws Exception {
@@ -355,7 +355,7 @@ public class KMLTransformerTest extends WMSTestSupport {
 
             ZipEntry entry = zipFile.getEntry("wms.kml");
             assertNotNull(entry);
-            assertNotNull(zipFile.getEntry("layer_0.png"));
+            assertNotNull(zipFile.getEntry("images/layer_0.png"));
 
             // unzip the wms.kml to file
             byte[] buffer = new byte[1024];

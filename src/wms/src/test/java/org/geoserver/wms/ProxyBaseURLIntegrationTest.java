@@ -37,8 +37,9 @@ public class ProxyBaseURLIntegrationTest extends GeoServerTestSupport {
         //print(dom);
 
         String serviceOnlineRes = "/WMT_MS_Capabilities/Service/OnlineResource/@xlink:href";
-        // @REVISIT: shouldn't it be WmsInfo.getOnlineResource?
-        assertXpathEvaluatesTo(proxyBaseUrl + "/wms", serviceOnlineRes, dom);
+
+        String onlineResource = getGeoServer().getService(WMSInfo.class).getOnlineResource();
+        assertXpathEvaluatesTo(onlineResource, serviceOnlineRes, dom);
 
         String getCapsGet = "/WMT_MS_Capabilities/Capability/Request/GetCapabilities/DCPType/HTTP/Get/OnlineResource/@xlink:href";
         assertXpathEvaluatesTo(proxyBaseUrl + "/wms?SERVICE=WMS&", getCapsGet, dom);

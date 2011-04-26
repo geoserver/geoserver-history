@@ -8,7 +8,7 @@ import java.util.List;
 
 import org.geoserver.ows.KvpParser;
 import org.geoserver.platform.ServiceException;
-import org.geotools.filter.text.ecql.ECQL;
+import org.geoserver.util.XCQL;
 import org.geotools.filter.text.cql2.CQLException;
 
 
@@ -24,7 +24,7 @@ public class CQLFilterKvpParser extends KvpParser {
 
     public Object parse(String value) throws Exception {
         try {
-            return ECQL.toFilterList(value);
+            return XCQL.toFilterList(value);
         } catch (CQLException pe) {
             throw new ServiceException("Could not parse CQL filter list.", pe);
         }

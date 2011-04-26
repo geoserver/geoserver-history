@@ -1,6 +1,8 @@
 package org.geoserver.kml;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -148,7 +150,13 @@ public class KMLNetworkLinkTransformer extends TransformerBase {
   
             String style = i < styles.size()? styles.get(i).getName() : null;
             String href = WMSRequests.getGetMapUrl(request, layers.get(i).getName(), i, style, null, null);
-            start( "href" );
+            try {
+                // WMSRequests.getGetMapUrl returns a URL encoded query string, but GoogleEarth
+                // 6 doesn't like URL encoded parameters. See GEOS-4483
+                href = URLDecoder.decode(href, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException(e);
+            }            start( "href" );
             cdata( href );
             end( "href" );
             
@@ -175,6 +183,13 @@ public class KMLNetworkLinkTransformer extends TransformerBase {
                 
                 String style = i < styles.size()? styles.get(i).getName() : null;
                 String href = WMSRequests.getGetMapUrl(request, layers.get(i).getName(), i, style, null, null);
+                try {
+                    // WMSRequests.getGetMapUrl returns a URL encoded query string, but GoogleEarth
+                    // 6 doesn't like URL encoded parameters. See GEOS-4483
+                    href = URLDecoder.decode(href, "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    throw new RuntimeException(e);
+                }                
                 start( "href" );
                 cdata( href );
                 end( "href" );

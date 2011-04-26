@@ -72,8 +72,8 @@ public class KMZMapProducerTest extends WMSTestSupport {
         ZipFile zipFile = new ZipFile(zip);
 
         assertNotNull(zipFile.getEntry("wms.kml"));
-        assertNotNull(zipFile.getEntry("layer_0.png"));
-        assertNotNull(zipFile.getEntry("layer_1.png"));
+        assertNotNull(zipFile.getEntry("images/layer_0.png"));
+        assertNotNull(zipFile.getEntry("images/layer_1.png"));
 
         zipFile.close();
     }

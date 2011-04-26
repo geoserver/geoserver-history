@@ -30,10 +30,10 @@ public class KMZMapOutputFormat extends AbstractMapOutputFormat {
     /**
      * Official KMZ mime type
      */
-    static final String MIME_TYPE = "application/vnd.google-earth.kmz+xml";
+    static final String MIME_TYPE = "application/vnd.google-earth.kmz";
 
-    public static final String[] OUTPUT_FORMATS = { MIME_TYPE, "application/vnd.google-earth.kmz",
-            "kmz", "application/vnd.google-earth.kmz xml" };
+    public static final String[] OUTPUT_FORMATS = { MIME_TYPE,
+            "application/vnd.google-earth.kmz+xml", "kmz", "application/vnd.google-earth.kmz xml" };
 
     private WMS wms;
 
@@ -62,6 +62,7 @@ public class KMZMapOutputFormat extends AbstractMapOutputFormat {
 
         KMZMap map = new KMZMap(mapContext, transformer, MIME_TYPE);
         map.setContentDispositionHeader(mapContext, ".kmz");
+
         return map;
     }
 }

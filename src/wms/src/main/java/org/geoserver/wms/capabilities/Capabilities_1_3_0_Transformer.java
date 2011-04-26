@@ -101,7 +101,7 @@ public class Capabilities_1_3_0_Transformer extends TransformerBase {
 
     /** The list of output formats to state as supported for the GetMap request */
     private Collection<GetMapOutputFormat> getMapFormats;
-    
+
     /** The list of all extended capabilities providers */
     private Collection<ExtendedCapabilitiesProvider> extCapsProviders;
 
@@ -117,8 +117,8 @@ public class Capabilities_1_3_0_Transformer extends TransformerBase {
      * @param getMapFormats
      *            the list of supported output formats to state for the GetMap request
      */
-    public Capabilities_1_3_0_Transformer(WMS wms, String schemaBaseUrl, 
-            Collection<GetMapOutputFormat> getMapFormats, 
+    public Capabilities_1_3_0_Transformer(WMS wms, String schemaBaseUrl,
+            Collection<GetMapOutputFormat> getMapFormats,
             Collection<ExtendedCapabilitiesProvider> extCapsProviders) {
         super();
         Assert.notNull(wms);
@@ -130,7 +130,7 @@ public class Capabilities_1_3_0_Transformer extends TransformerBase {
         this.extCapsProviders = extCapsProviders;
         this.schemaBaseURL = schemaBaseUrl;
         this.setNamespaceDeclarationEnabled(true);
-        
+
         setIndentation(2);
         final Charset encoding = wms.getCharSet();
         setEncoding(encoding);
@@ -163,7 +163,7 @@ public class Capabilities_1_3_0_Transformer extends TransformerBase {
         private GetCapabilitiesRequest request;
 
         private Collection<GetMapOutputFormat> getMapFormats;
-        
+
         private Collection<ExtendedCapabilitiesProvider> extCapsProviders;
 
         private WMS wmsConfig;
@@ -175,7 +175,7 @@ public class Capabilities_1_3_0_Transformer extends TransformerBase {
          * 
          * @param handler
          *            content handler to send sax events to.
-         * @param schemaBaseURL 
+         * @param schemaBaseURL
          * @param schemaLoc
          * 
          */
@@ -187,7 +187,7 @@ public class Capabilities_1_3_0_Transformer extends TransformerBase {
             this.getMapFormats = getMapFormats;
             this.extCapsProviders = extCapsProviders;
             this.schemaBaseURL = schemaBaseURL;
-            
+
             // register namespaces provided by extended capabilities
             for (ExtendedCapabilitiesProvider cp : extCapsProviders) {
                 cp.registerNamespaces(getNamespaceSupport());
@@ -269,7 +269,7 @@ public class Capabilities_1_3_0_Transformer extends TransformerBase {
 
             return namespace + " " + location;
         }
-        
+
         /**
          * Encodes the service metadata section of a WMS capabilities document.
          */
@@ -283,8 +283,18 @@ public class Capabilities_1_3_0_Transformer extends TransformerBase {
 
             handleKeywordList(serviceInfo.getKeywords());
 
-            String requestBaseUrl = request.getBaseUrl();
-            String onlineResource = buildURL(requestBaseUrl, "ows", null, URLType.SERVICE);
+            String onlineResource = serviceInfo.getOnlineResource();
+            if (onlineResource == null || onlineResource.trim().length() == 0) {
+                String requestBaseUrl = request.getBaseUrl();
+                onlineResource = buildURL(requestBaseUrl, null, null, URLType.SERVICE);
+            } else {
+                try {
+                    new URL(onlineResource);
+                } catch (MalformedURLException e) {
+                    LOGGER.log(Level.WARNING, "WMS online resource seems to be an invalid URL: '"
+                            + onlineResource + "'");
+                }
+            }
             AttributesImpl attributes = attributes("xlink:type", "simple", "xlink:href",
                     onlineResource);
             element("OnlineResource", null, attributes);
@@ -365,28 +375,28 @@ public class Capabilities_1_3_0_Transformer extends TransformerBase {
 
                 element("Format", link.getType());
 
-                //check for "localhost" and turn it into a proper back reference
+                // check for "localhost" and turn it into a proper back reference
                 String content = link.getContent();
                 try {
                     URL url = new URL(content);
                     try {
                         if ("localhost".equals(url.getHost())) {
-                            Map<String,String> kvp = null;
+                            Map<String, String> kvp = null;
                             if (url.getQuery() != null && !"".equals(url.getQuery())) {
                                 kvp = KvpUtils.parseQueryString(url.getQuery());
                             }
-                            
-                            content = 
-                                buildURL(request.getBaseUrl(), url.getPath(), kvp, URLType.RESOURCE);
+
+                            content = buildURL(request.getBaseUrl(), url.getPath(), kvp,
+                                    URLType.RESOURCE);
                         }
+                    } catch (Exception e) {
+                        LOGGER.log(Level.WARNING,
+                                "Unable to create proper back referece for metadata url: "
+                                        + content, e);
                     }
-                    catch(Exception e) {
-                        LOGGER.log(Level.WARNING, 
-                            "Unable to create proper back referece for metadata url: " + content, e);
-                    }
+                } catch (MalformedURLException e) {
                 }
-                catch(MalformedURLException e) {}
-                
+
                 AttributesImpl orAtts = attributes("xlink:type", "simple", "xlink:href", content);
                 element("OnlineResource", null, orAtts);
 
@@ -423,22 +433,23 @@ public class Capabilities_1_3_0_Transformer extends TransformerBase {
             start("GetMap");
 
             Set<String> formats = new LinkedHashSet();
-            
-            //return only mime types, since the cite tests dictate that a format
+
+            // return only mime types, since the cite tests dictate that a format
             // name must match the mime type
-            for(GetMapOutputFormat format : getMapFormats) {
+            for (GetMapOutputFormat format : getMapFormats) {
                 if (format.getOutputFormatNames().contains(format.getMimeType())) {
                     formats.add(format.getMimeType());
-                }
-                else {
+                } else {
                     if (LOGGER.isLoggable(Level.WARNING)) {
-                        LOGGER.warning("Map output format " + format.getMimeType() + " does " +
-                            "not include mime type in output format names. Will be excluded from" +
-                            " capabilities document.");
+                        LOGGER.warning("Map output format "
+                                + format.getMimeType()
+                                + " does "
+                                + "not include mime type in output format names. Will be excluded from"
+                                + " capabilities document.");
                     }
                 }
             }
-            
+
             List<String> sortedFormats = new ArrayList(formats);
             Collections.sort(sortedFormats);
             // this is a hack necessary to make cite tests pass: we need an output format
@@ -534,30 +545,31 @@ public class Capabilities_1_3_0_Transformer extends TransformerBase {
         }
 
         private void handleExtendedCapabilities() {
-            for(ExtendedCapabilitiesProvider cp: extCapsProviders) {
+            for (ExtendedCapabilitiesProvider cp : extCapsProviders) {
                 try {
                     cp.encode(new ExtendedCapabilitiesProvider.Translator() {
                         public void start(String element) {
                             Capabilities_1_3_0_Translator.this.start(element);
                         }
-                        
+
                         public void start(String element, Attributes attributes) {
                             Capabilities_1_3_0_Translator.this.start(element, attributes);
                         }
+
                         public void chars(String text) {
                             Capabilities_1_3_0_Translator.this.chars(text);
                         }
+
                         public void end(String element) {
                             Capabilities_1_3_0_Translator.this.end(element);
                         }
                     }, wmsConfig.getServiceInfo(), request);
-                } 
-                catch (Exception e) {
+                } catch (Exception e) {
                     throw new ServiceException("Extended capabilities provider threw error", e);
                 }
             }
         }
-        
+
         /**
          * Handles the encoding of the layers elements.
          * 
@@ -673,8 +685,8 @@ public class Capabilities_1_3_0_Transformer extends TransformerBase {
             } catch (Exception e) {
                 LOGGER.log(Level.WARNING, e.getLocalizedMessage(), e);
             }
-            
-            //the default CRS:84
+
+            // the default CRS:84
             element("CRS", "CRS:84");
         }
 
@@ -774,8 +786,8 @@ public class Capabilities_1_3_0_Transformer extends TransformerBase {
 
             final String crs = layer.getResource().getSRS();
             element("CRS", crs);
-            
-            //always handle the CRS:84 crs
+
+            // always handle the CRS:84 crs
             element("CRS", "CRS:84");
 
             ReferencedEnvelope llbbox = layer.getResource().getLatLonBoundingBox();
@@ -1036,10 +1048,13 @@ public class Capabilities_1_3_0_Transformer extends TransformerBase {
          * difficult to create a dynamic legend for a layer.
          * </p>
          * 
-         * @param layerName The name of the layer.
-         * @param legend The user specified legend url. If null a default url pointing back to 
-         *  the GetLegendGraphic operation will be automatically created.
-         * @param style The styel for the layer.
+         * @param layerName
+         *            The name of the layer.
+         * @param legend
+         *            The user specified legend url. If null a default url pointing back to the
+         *            GetLegendGraphic operation will be automatically created.
+         * @param style
+         *            The styel for the layer.
          * 
          */
         protected void handleLegendURL(String layerName, LegendInfo legend, StyleInfo style) {
@@ -1110,8 +1125,8 @@ public class Capabilities_1_3_0_Transformer extends TransformerBase {
                 element("Format", defaultFormat);
                 attrs.clear();
 
-                Map<String, String> params = params("service", "WMS", "request", "GetLegendGraphic",
-                        "format", defaultFormat, "width",
+                Map<String, String> params = params("service", "WMS", "request",
+                        "GetLegendGraphic", "format", defaultFormat, "width",
                         String.valueOf(GetLegendGraphicRequest.DEFAULT_WIDTH), "height",
                         String.valueOf(GetLegendGraphicRequest.DEFAULT_HEIGHT), "layer", layerName);
                 if (style != null) {
@@ -1182,20 +1197,23 @@ public class Capabilities_1_3_0_Transformer extends TransformerBase {
             String maxx = String.valueOf(bbox.getMaxX());
             String maxy = String.valueOf(bbox.getMaxY());
 
-            //we need to report geographic coordinate as latitude/longitude
+            // we need to report geographic coordinate as latitude/longitude
             CoordinateReferenceSystem crs = null;
             try {
                 crs = CRS.decode(WMS.toInternalSRS(srs, WMS.VERSION_1_3_0));
-            } 
-            catch (Exception e) {
+            } catch (Exception e) {
                 LOGGER.log(Level.WARNING, "Unable to decode " + srs, e);
             }
-            
-            if (crs != null && CRS.getAxisOrder(crs) == AxisOrder.LAT_LON) {
-                String tmp = minx; minx = miny; miny = tmp;
-                tmp = maxx; maxx = maxy; maxy = tmp;
+
+            if (crs != null && CRS.getAxisOrder(crs) == AxisOrder.NORTH_EAST) {
+                String tmp = minx;
+                minx = miny;
+                miny = tmp;
+                tmp = maxx;
+                maxx = maxy;
+                maxy = tmp;
             }
-            
+
             AttributesImpl bboxAtts = attributes("CRS", srs, //
                     "minx", minx, //
                     "miny", miny,//

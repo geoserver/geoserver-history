@@ -612,16 +612,27 @@ public abstract class GeoServerLoader {
             f = resourceLoader.find( "global.xml");
             if ( f != null ) {
                 BufferedInputStream in = new BufferedInputStream( new FileInputStream( f ) );
-                GeoServerInfoImpl global = (GeoServerInfoImpl) xpf.createXMLPersister().load( in, GeoServerInfo.class );
-                geoServer.setGlobal( global );
+                try {
+                    GeoServerInfoImpl global = 
+                        (GeoServerInfoImpl) xpf.createXMLPersister().load( in, GeoServerInfo.class );
+                    geoServer.setGlobal( global );
+                }
+                finally {
+                    in.close();
+                }
             }
             
             //load logging
             f = resourceLoader.find( "logging.xml" );
             if ( f != null ) {
                 BufferedInputStream in = new BufferedInputStream( new FileInputStream( f ) );
-                LoggingInfo logging = xpf.createXMLPersister().load( in, LoggingInfo.class );
-                geoServer.setLogging( logging );
+                try {
+                    LoggingInfo logging = xpf.createXMLPersister().load( in, LoggingInfo.class );
+                    geoServer.setLogging( logging );
+                }
+                finally {
+                    in.close();
+                }
             }
             //load services
             final List<XStreamServiceLoader> loaders = 

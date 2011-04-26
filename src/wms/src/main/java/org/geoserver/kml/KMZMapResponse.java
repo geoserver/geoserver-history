@@ -16,9 +16,9 @@ import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSMapContext;
 import org.geoserver.wms.map.AbstractMapResponse;
-import org.geoserver.wms.map.RenderedImageMapOutputFormat;
 import org.geoserver.wms.map.PNGMapResponse;
 import org.geoserver.wms.map.RenderedImageMap;
+import org.geoserver.wms.map.RenderedImageMapOutputFormat;
 import org.geoserver.wms.map.XMLTransformerMap;
 import org.geotools.map.MapLayer;
 import org.geotools.xml.transform.TransformerBase;
@@ -95,6 +95,9 @@ public class KMZMapResponse extends AbstractMapResponse {
                     "image/png", wms);
             final PNGMapResponse pngEncoder = new PNGMapResponse(wms);
 
+            ZipEntry images = new ZipEntry("images/");
+            zip.putNextEntry(images);
+            
             // write the images
             for (int i = 0; i < mapContext.getLayerCount(); i++) {
                 MapLayer mapLayer = mapContext.getLayer(i);
@@ -122,17 +125,19 @@ public class KMZMapResponse extends AbstractMapResponse {
                 }
 
                 // write it to the zip stream
-                entry = new ZipEntry("layer_" + i + ".png");
+                entry = new ZipEntry("images/layer_" + i + ".png");
                 zip.putNextEntry(entry);
                 pngEncoder.write(imageMap, zip, operation);
                 zip.closeEntry();
             }
+            zip.closeEntry();// close the images/ folder
 
             zip.finish();
             zip.flush();
         } finally {
             map.dispose();
         }
+        
     }
 
 }

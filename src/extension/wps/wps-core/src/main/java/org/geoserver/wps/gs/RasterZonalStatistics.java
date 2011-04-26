@@ -362,7 +362,7 @@ public class RasterZonalStatistics implements GeoServerProcess {
                 simplifiedGeometry.apply(at);
                 
                 // build a shape using a fast point in polygon wrapper
-                ROI roi = new ROIGeometry(simplifiedGeometry);
+                ROI roi = new ROIGeometry(simplifiedGeometry, false);
 
                 // run the stats via JAI
                 Statistic[] reqStatsArr = new Statistic[] { Statistic.MAX, Statistic.MIN,
