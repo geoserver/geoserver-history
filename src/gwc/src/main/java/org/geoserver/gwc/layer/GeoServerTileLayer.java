@@ -113,7 +113,7 @@ public class GeoServerTileLayer extends TileLayer {
         return resource.getPrefixedName();
     }
 
-    private void setConfigErrorMessage(String configErrorMessage) {
+    void setConfigErrorMessage(String configErrorMessage) {
         this.configErrorMessage = configErrorMessage;
     }
 
@@ -175,9 +175,10 @@ public class GeoServerTileLayer extends TileLayer {
         if (!tileLayerInfoEnabled) {
             return false;
         }
-        if (configErrorMessage != null) {
+        if (getConfigErrorMessage() != null) {
             if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.finest("Layer " + getName() + "is not enabled due to config error");
+                LOGGER.finest("Layer " + getName() + "is not enabled due to config error: "
+                        + getConfigErrorMessage());
             }
             return false;
         }

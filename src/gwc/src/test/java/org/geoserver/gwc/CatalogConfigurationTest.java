@@ -45,7 +45,7 @@ public class CatalogConfigurationTest extends GeoServerTestSupport {
      * 
      * @throws Exception
      */
-    public void testInit() throws Exception {
+    public void _testInit() throws Exception {
         GWC gwc = GWC.get();
 
         cat = (Catalog) applicationContext.getBean("rawCatalog");

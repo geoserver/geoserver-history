@@ -423,7 +423,7 @@ public class CatalogConfiguration implements Configuration {
      * {@link GeoServerTileLayer#getStyles() default style} or one of the
      * {@link GeoServerTileLayerInfo#getCachedStyles() cached styles}.
      * <p>
-     * The result may be different from {@link #getLayersInfosFor(StyleInfo)} and
+     * The result may be different from {@link #getLayerInfosFor(StyleInfo)} and
      * {@link #getLayerGroupsFor(StyleInfo)} as the {@link GeoServerTileLayerInfo}'s backing each
      * {@link GeoServerTileLayer} may have assigned a subset of the layerinfo styles for caching.
      * </p>
@@ -447,7 +447,7 @@ public class CatalogConfiguration implements Configuration {
      * @return all the {@link LayerInfo}s in the {@link Catalog} that somehow refer to the given
      *         style
      */
-    public Iterable<LayerInfo> getLayersInfosFor(final StyleInfo style) {
+    public Iterable<LayerInfo> getLayerInfosFor(final StyleInfo style) {
         final String styleName = style.getName();
         List<LayerInfo> result = new ArrayList<LayerInfo>();
         {
