@@ -18,7 +18,7 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.model.util.MapModel;
 import org.geoserver.gwc.GWC;
-import org.geoserver.gwc.GWCConfig;
+import org.geoserver.gwc.config.GWCConfig;
 import org.geoserver.web.GeoServerHomePage;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geotools.util.logging.Logging;

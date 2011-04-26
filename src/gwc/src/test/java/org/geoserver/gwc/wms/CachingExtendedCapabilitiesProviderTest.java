@@ -58,7 +58,7 @@ public class CachingExtendedCapabilitiesProviderTest extends GeoServerTestSuppor
     public void testTileSets() throws Exception {
         final int numLayers = getCatalog().getLayers().size();
         final int numCRSs = 2; // 4326 and 900913
-        final int numFormats = 5; // png, png8, jpeg, gif, kml
+        final int numFormats = 2; // png, jpeg
         final int numTileSets = numLayers * numCRSs * numFormats;
 
         Document dom = dom(get("wms?request=getCapabilities&version=1.1.1&tiled=true"), false);

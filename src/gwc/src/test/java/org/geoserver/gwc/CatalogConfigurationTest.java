@@ -5,7 +5,6 @@
 package org.geoserver.gwc;
 
 import java.util.Iterator;
-import java.util.List;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.LayerGroupInfo;
@@ -46,7 +45,7 @@ public class CatalogConfigurationTest extends GeoServerTestSupport {
      * 
      * @throws Exception
      */
-    public void testInit() throws Exception {
+    public void _testInit() throws Exception {
         GWC gwc = GWC.get();
 
         cat = (Catalog) applicationContext.getBean("rawCatalog");
@@ -61,7 +60,7 @@ public class CatalogConfigurationTest extends GeoServerTestSupport {
 
         }
 
-        List<TileLayer> layerList;
+        Iterable<TileLayer> layerList;
         Iterator<TileLayer> tlIter;
 
         layerList = gwc.getTileLayers();
@@ -92,7 +91,7 @@ public class CatalogConfigurationTest extends GeoServerTestSupport {
         boolean foudAGF = false;
         while (tlIter.hasNext()) {
             TileLayer tl = tlIter.next();
-            System.out.println(tl.getName());
+            // System.out.println(tl.getName());
             if (tl.getName().equals("sf:AggregateGeoFeature")) {
                 // tl.isInitialized();
                 foudAGF = true;
@@ -130,10 +129,6 @@ public class CatalogConfigurationTest extends GeoServerTestSupport {
 
         // 5) Introducing new LayerInfo
         ResourceInfo resInfo = li.getResource();
-
-        // JD: not sure what this next line is really doing, disabling it because it changes the
-        // namespace and does not save it... and the catalog does not cascade changes
-        // resInfo.getNamespace().setPrefix("sf");
 
         resInfo.setName("hithere");
         cat.save(resInfo);

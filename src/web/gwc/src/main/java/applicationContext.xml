@@ -3,9 +3,6 @@
 
 <beans>
 
-  <!--bean id="GWCCapabilitiesHomePageProvider" class="org.geoserver.gwc.web.GWCCapabilitiesHomePageProvider">
-  </bean-->
-
   <bean id="gwcSettingsMenuPage" class="org.geoserver.web.MenuPageInfo">
     <property name="id" value="gwc.settings"/>
     <property name="titleKey" value="geowebcache"/>

@@ -5,12 +5,15 @@
  * 
  * @author Arne Kepp / OpenGeo
  */
-package org.geoserver.gwc.layer;
+package org.geoserver.gwc;
 
 /**
  * This class is just used to detect what methods GeoServer actually invokes
  */
 class ServletDebugException extends RuntimeException {
+
+    private static final long serialVersionUID = 1L;
+
     ServletDebugException() {
 
     }
