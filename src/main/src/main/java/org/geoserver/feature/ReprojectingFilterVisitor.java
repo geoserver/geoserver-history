@@ -17,6 +17,7 @@ import org.opengis.filter.BinaryComparisonOperator;
 import org.opengis.filter.FilterFactory2;
 import org.opengis.filter.PropertyIsEqualTo;
 import org.opengis.filter.PropertyIsNotEqualTo;
+import org.opengis.filter.capability.FunctionName;
 import org.opengis.filter.expression.Expression;
 import org.opengis.filter.expression.ExpressionVisitor;
 import org.opengis.filter.expression.Function;
@@ -491,6 +492,10 @@ public class ReprojectingFilterVisitor extends DuplicatingFilterVisitor {
 
         public Literal getFallbackValue() {
             return null;
+        }
+
+        public FunctionName getFunctionName() {
+            return delegate.getFunctionName();
         }
     }
 

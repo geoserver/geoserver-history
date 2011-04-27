@@ -10,11 +10,13 @@ import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
 import org.geotools.factory.Hints;
 import org.geotools.feature.FeatureTypes;
+import org.geotools.filter.capability.FunctionNameImpl;
 import org.geotools.referencing.CRS;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
 import org.opengis.filter.PropertyIsEqualTo;
+import org.opengis.filter.capability.FunctionName;
 import org.opengis.filter.expression.Expression;
 import org.opengis.filter.expression.ExpressionVisitor;
 import org.opengis.filter.expression.Function;
@@ -245,6 +247,10 @@ public class ReprojectingFilterVisitorTest extends TestCase {
 
         public Literal getFallbackValue() {
             return null;
+        }
+
+        public FunctionName getFunctionName() {
+            return new FunctionNameImpl("geometryfunction");
         }
     }
 }
