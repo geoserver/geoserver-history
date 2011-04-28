@@ -25,8 +25,10 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.protocol.http.WebResponse;
 import org.apache.wicket.util.io.Streams;
-import org.apache.wicket.validation.validator.NumberValidator;
+import org.apache.wicket.validation.validator.MinimumValidator;
 import org.geoserver.config.GeoServerDataDirectory;
+import org.geoserver.logging.LoggingUtils;
+import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.web.GeoServerSecuredPage;
 
 /**
@@ -44,16 +46,24 @@ public class LogPage extends GeoServerSecuredPage {
     public LogPage(PageParameters params) {
         Form form = new Form("form");
         add(form);
-
-        // locate the geoserver.log file
-        GeoServerDataDirectory dd = getGeoServerApplication().getBeanOfType(
-                GeoServerDataDirectory.class);
-        File logDirectory = new File(dd.root(), "logs");
-        if (!logDirectory.exists()) {
-            error("Could not find the logs directory inside the data dir: "
-                    + logDirectory.getAbsolutePath());
+        
+        /**
+         * take geoserver log file location from Config as absolute path and only use if valid, 
+         * otherwise fallback to (geoserver-root)/logs/geoserver.log as default.
+         */
+        String location = GeoServerExtensions.getProperty(LoggingUtils.GEOSERVER_LOG_LOCATION);
+        if(location == null) {
+            location= getGeoServerApplication().getGeoServer().getLogging().getLocation();
         }
-        logFile = new File(logDirectory, "geoserver.log");
+        logFile = new File(location);
+        
+        if (!logFile.isAbsolute()) {
+            // locate the geoserver.log file
+            GeoServerDataDirectory dd = getGeoServerApplication().getBeanOfType(
+                    GeoServerDataDirectory.class);
+            logFile = new File(dd.root(), logFile.getPath());
+        }
+        
         if (!logFile.exists()) {
             error("Could not find the GeoServer log file: " + logFile.getAbsolutePath());
         }
@@ -77,7 +87,7 @@ public class LogPage extends GeoServerSecuredPage {
         });
 
         TextField lines = new TextField("lines", new PropertyModel(this, "lines"));
-        lines.add(NumberValidator.POSITIVE);
+        lines.add(new MinimumValidator(1));
         form.add(lines);
 
         TextArea logs = new TextArea("logs", new GSLogsModel());
