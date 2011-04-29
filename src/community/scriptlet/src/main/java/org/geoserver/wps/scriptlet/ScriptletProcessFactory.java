@@ -103,6 +103,16 @@ public class ScriptletProcessFactory implements ProcessFactory {
         return Text.text(script.getMetadata().get("description").toString());
     }
 
+    public boolean isAvailable() { return true; }
+
+    public java.util.Map getImplementationHints() {
+        return java.util.Collections.EMPTY_MAP;
+    }
+
+    public InternationalString getTitle() {
+        return Text.text("JavaScript process provider");
+    }
+
     public InternationalString getTitle(Name name) {
         JavaScriptProcess script = create(name);
         return Text.text(script.getMetadata().get("title").toString());

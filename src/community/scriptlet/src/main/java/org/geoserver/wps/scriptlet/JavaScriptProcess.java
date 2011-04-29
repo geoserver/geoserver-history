@@ -14,9 +14,11 @@ import java.util.Set;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
+import org.mozilla.javascript.Script;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.Wrapper;
+import org.mozilla.javascript.tools.shell.Global;
 
 import org.geotools.data.Parameter;
 import org.geotools.process.Process;
@@ -26,7 +28,7 @@ import org.opengis.util.ProgressListener;
 
 public class JavaScriptProcess implements Process{
     private File myScript;
-    private Scriptable scope;
+    private Global scope;
 
     /**
      * Constructs a new process that wraps a script input file
@@ -36,8 +38,12 @@ public class JavaScriptProcess implements Process{
         myScript = algorithm;
         Context cx = Context.enter();
         try {
-            scope = cx.initStandardObjects();
+            scope = new Global(); // cx.initStandardObjects();
+            scope.initStandardObjects(cx, true);
+            scope.installRequire(cx, new java.util.ArrayList(), true);
             FileReader reader = new FileReader(myScript);
+            /// Script script = cx.compileReader(reader, myScript.getName(), 1, null);
+            /// script.exec(cx, scope);
             cx.evaluateReader(scope, reader, myScript.getName(), 1, null);
         } catch (IOException e) {
             throw new RuntimeException("I/O error while loading process script...");
