@@ -22,8 +22,11 @@ import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.WfsFactory;
 
+import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.WorkspaceInfo;
+import org.geoserver.config.GeoServer;
 import org.geoserver.data.test.MockData;
+import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.Operation;
 import org.geoserver.wfs.WFSTestSupport;
 import org.geotools.data.FeatureSource;
@@ -271,6 +274,30 @@ public class ShapeZipTest extends WFSTestSupport {
     	
     	MockHttpServletResponse response = postAsServletResponse("wfs", xml);
     	assertEquals("application/zip", response.getContentType());
+    }
+    
+    public void testOutputZipFileNameSpecifiedInFormatOptions() throws Exception {
+        ShapeZipOutputFormat zip = new ShapeZipOutputFormat(getGeoServer(), getCatalog());
+
+        FeatureCollectionType mockResult = WfsFactory.eINSTANCE.createFeatureCollectionType();
+        mockResult.getFeature().add(getFeatureSource(ALL_DOTS).getFeatures(Filter.INCLUDE));
+        GetFeatureType mockRequest = WfsFactory.eINSTANCE.createGetFeatureType();
+
+        Operation mockOperation = new Operation("GetFeature", getServiceDescriptor10(), null,
+                new Object[] { mockRequest });
+
+        String[][] headers = zip.getHeaders(mockResult, mockOperation);
+        assertEquals(1, headers.length);
+        assertEquals("Content-Disposition", headers[0][0]);
+        assertEquals("attachment; filename=All_Types_Dots.zip", headers[0][1]);
+
+        mockRequest.getFormatOptions().put("FILENAME", "REQUEST_SUPPLIED_FILENAME.zip");
+
+        headers = zip.getHeaders(mockResult, mockOperation);
+        assertEquals(1, headers.length);
+        assertEquals("Content-Disposition", headers[0][0]);
+        assertEquals("attachment; filename=REQUEST_SUPPLIED_FILENAME.zip", headers[0][1]);
+
     }
     
     public void testTemplatePOSTRequest11() throws Exception {

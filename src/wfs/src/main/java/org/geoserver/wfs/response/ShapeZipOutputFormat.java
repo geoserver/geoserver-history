@@ -45,6 +45,7 @@ import org.geoserver.data.util.IOUtils;
 import org.geoserver.feature.RetypingFeatureCollection;
 import org.geoserver.ows.Dispatcher;
 import org.geoserver.ows.Request;
+import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
@@ -147,18 +148,44 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat implements A
         return true;
     }
 
+    /**
+     * Returns this output format's HTTP response header to indicate what the output file name is
+     * for the zipped shapefile.
+     * <p>
+     * The output file name is determined as follows:
+     * <ul>
+     * <li>If the {@code GetFeature} request indicated a desired file name, then that one is used as
+     * is. The request may have specified the output file name through the {@code FILENAME } format
+     * option. For example: {@code &format_options=FILENAME:roads.zip}
+     * <li>Otherwise a file name is inferred from the requested feature type(s) name.
+     * </ul>
+     * 
+     * @return the {@code Content-Disposition} header indicating what the file name is for the
+     *         zipped shapefile(s)
+     * @see org.geoserver.ows.Response#getHeaders(java.lang.Object,
+     *      org.geoserver.platform.Operation)
+     */
+    @Override
     public String[][] getHeaders(Object value, Operation operation)
         throws ServiceException {
         SimpleFeatureCollection fc = (SimpleFeatureCollection) ((FeatureCollectionType) value).getFeature().get(0);
         FeatureTypeInfo ftInfo = catalog.getFeatureTypeByName(fc.getSchema().getName());
         
-        String filename = new FileNameSource(getClass()).getZipName(ftInfo);
+        String filename = null;
+        GetFeatureType request = OwsUtils.parameter(operation.getParameters(), GetFeatureType.class);
+        if (request != null) {
+            Map<String, ?> formatOptions = request.getFormatOptions();
+            filename = (String) formatOptions.get("FILENAME");
+        }
+        if (filename == null) {
+            filename = new FileNameSource(getClass()).getZipName(ftInfo);
+        }
         if (filename == null) {
             filename = ftInfo.getName();
         }
 
         return (String[][]) new String[][] { { "Content-Disposition",
-                "attachment; filename=" + filename + ".zip" } };
+        	"attachment; filename=" + filename + (filename.endsWith(".zip") ? "" : ".zip") } };
     }
     
     protected void write(FeatureCollectionType featureCollection, OutputStream output,
