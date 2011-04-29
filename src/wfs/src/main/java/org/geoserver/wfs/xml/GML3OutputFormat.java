@@ -1,4 +1,4 @@
-/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org. All rights reserved.
+/* Copyright (c) 2001 - 2011 TOPP - www.openplans.org. All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
@@ -64,7 +64,6 @@ import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.Name;
 import org.w3c.dom.Document;
 
-
 public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
     
     GeoServer geoServer;
@@ -85,12 +84,11 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
             xslt = null;
         }
     }
-    
 
     public GML3OutputFormat(GeoServer geoServer, WFSConfiguration configuration) {
         this(new HashSet(Arrays.asList(new Object[] {"gml3", "text/xml; subtype=gml/3.1.1"})), 
             geoServer, configuration);
-}
+    }
     
     public GML3OutputFormat(Set<String> outputFormats, GeoServer geoServer, WFSConfiguration configuration) {
         super(geoServer, outputFormats);
@@ -194,11 +192,10 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
         encoder.setEncoding(Charset.forName( global.getCharset() ));
 
         if (wfs.isCanonicalSchemaLocation()) {
-            encoder.setSchemaLocation(org.geoserver.wfs.xml.v1_1_0.WFS.NAMESPACE,
-                    WFS.CANONICAL_SCHEMA_LOCATION);
+            encoder.setSchemaLocation(getWfsNamespace(), getCanonicalWfsSchemaLocation());
         } else {
-            encoder.setSchemaLocation(org.geoserver.wfs.xml.v1_1_0.WFS.NAMESPACE,
-                    buildSchemaURL(gft.getBaseUrl(), "wfs/1.1.0/wfs.xsd"));
+            encoder.setSchemaLocation(getWfsNamespace(),
+                    buildSchemaURL(gft.getBaseUrl(), getRelativeWfsSchemaLocation()));
         }
 
         //declare application schema namespaces
@@ -279,7 +276,19 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
             featureOut.delete();
         }
     }
-
+    
+    protected String getWfsNamespace() {
+        return org.geoserver.wfs.xml.v1_1_0.WFS.NAMESPACE;
+    }
+    
+    protected String getCanonicalWfsSchemaLocation() {
+        return WFS.CANONICAL_SCHEMA_LOCATION;
+    }
+    
+    protected String getRelativeWfsSchemaLocation() {
+        return "wfs/1.1.0/wfs.xsd";
+    }
+    
     public static boolean isComplexFeature(FeatureCollectionType results) {
         boolean hasComplex = false;
         for (int fcIndex = 0; fcIndex < results.getFeature().size(); fcIndex++) {

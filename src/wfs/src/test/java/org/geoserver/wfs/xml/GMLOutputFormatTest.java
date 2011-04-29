@@ -4,6 +4,7 @@ import junit.framework.Test;
 
 import org.geoserver.data.test.MockData;
 import org.geoserver.wfs.WFSTestSupport;
+import org.geotools.wfs.v2_0.WFS;
 import org.w3c.dom.Document;
 
 public class GMLOutputFormatTest extends WFSTestSupport {
@@ -79,4 +80,12 @@ public class GMLOutputFormatTest extends WFSTestSupport {
         assertNull( getFirstElementByTagName(dom, "gml:outerBoundaryIs"));
         assertNotNull( getFirstElementByTagName(dom, "gml:exterior")); 
     }
+    
+    public void testGML32() throws Exception {
+        Document dom = getAsDOM( "wfs?request=getfeature&version=2.0.0&outputFormat=gml32&typename=" + 
+                MockData.BASIC_POLYGONS.getPrefix() + ":" + MockData.BASIC_POLYGONS.getLocalPart());
+        assertEquals( WFS.NAMESPACE, dom.getDocumentElement().getNamespaceURI() );
+        assertEquals( "FeatureCollection", dom.getDocumentElement().getLocalName() );
+    }
+    
 }

@@ -1,9 +1,12 @@
+/* Copyright (c) 2001 - 2011 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.geoserver.wfs.xml;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -15,7 +18,6 @@ import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.platform.Operation;
 import org.geoserver.wfs.xml.v1_1_0.WFSConfiguration;
-import org.geotools.gml3.v3_2.GML;
 import org.geotools.wfs.v2_0.WFS;
 import org.geotools.xml.Configuration;
 import org.geotools.xml.Encoder;
@@ -55,4 +57,20 @@ public class GML32OutputFormat extends GML3OutputFormat {
         //encoder.getNamespaces().declarePrefix("gml", GML.NAMESPACE);
         encoder.encode(results, WFS.FeatureCollection, output);
     }
+    
+    @Override
+    protected String getWfsNamespace() {
+        return WFS.NAMESPACE;
+    }
+    
+    @Override
+    protected String getCanonicalWfsSchemaLocation() {
+        return WFS.CANONICAL_SCHEMA_LOCATION;
+    }
+    
+    @Override
+    protected String getRelativeWfsSchemaLocation() {
+        return "wfs/2.0/wfs.xsd";
+    }
+    
 }
