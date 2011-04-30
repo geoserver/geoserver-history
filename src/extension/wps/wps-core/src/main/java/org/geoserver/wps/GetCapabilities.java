@@ -5,7 +5,9 @@
 
 package org.geoserver.wps;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -28,6 +30,7 @@ import net.opengis.wps10.ProcessOfferingsType;
 import net.opengis.wps10.WPSCapabilitiesType;
 import net.opengis.wps10.Wps10Factory;
 
+import org.eclipse.emf.common.util.ECollections;
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.ows.Ows11Util;
 import org.geoserver.ows.util.RequestUtils;
@@ -139,6 +142,7 @@ public class GetCapabilities {
         ProcessOfferingsType po = wpsf.createProcessOfferingsType();
         caps.setProcessOfferings(po);
 
+        // gather the process list
         for (ProcessFactory pf : Processors.getProcessFactories()) {
             for (Name name : pf.getNames()) {
                 if (!getProcessBlacklist().contains(name)) {
@@ -151,8 +155,19 @@ public class GetCapabilities {
                     p.setAbstract(Ows11Util.languageString(pf.getDescription(name)));
                 }
             }
-
         }
+        // sort it
+        ECollections.sort(po.getProcess(), new Comparator() {
+
+            public int compare(Object o1, Object o2) {
+                ProcessBriefType pb1 = (ProcessBriefType) o1;
+                ProcessBriefType pb2 = (ProcessBriefType) o2;
+                
+                final String id1 = pb1.getIdentifier().getValue();
+                final String id2 = pb2.getIdentifier().getValue();
+                return id1.compareTo(id2);
+            }
+        });
 
         LanguagesType1 languages = wpsf.createLanguagesType1();
         caps.setLanguages(languages);

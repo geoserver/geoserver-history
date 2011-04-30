@@ -4,6 +4,9 @@ import static org.custommonkey.xmlunit.XMLAssert.*;
 
 import junit.framework.Test;
 
+import org.custommonkey.xmlunit.XMLUnit;
+import org.custommonkey.xmlunit.XpathEngine;
+import org.geotools.xml.test.XMLTestSupport;
 import org.w3c.dom.Document;
 
 public class GetCapabilitiesTest extends WPSTestSupport {
@@ -17,6 +20,21 @@ public class GetCapabilitiesTest extends WPSTestSupport {
         Document d = getAsDOM( "wps?service=wps&request=getcapabilities" );
         // print(d);
         basicCapabilitiesTest(d);
+    }
+    
+    public void testProcesseListSorted() throws Exception { // Standard Test A.4.2.1
+        Document d = getAsDOM( "wps?service=wps&request=getcapabilities" );
+        // print(d);
+        XpathEngine xpath = XMLUnit.newXpathEngine();
+        int count = Integer.valueOf(xpath.evaluate("count(wps:Process)", d));
+        String previous = null;
+        for (int i = 1; i <= count; i++) {
+            String curr = xpath.evaluate("(//wps:Process)[" + i + "]/ows:Identifier)", d);
+            if(previous != null) {
+                assertTrue(curr.compareTo(previous) >= 0);
+            }
+            previous = curr;
+        }
     }
 
     public void testPostBasic() throws Exception { // Standard Test A.4.2.2
