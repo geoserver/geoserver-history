@@ -84,10 +84,10 @@ public class ReprojectProcessTest extends WPSTestSupport {
 
         assertXpathEvaluatesTo(
                 "http://www.opengis.net/gml/srs/epsg.xml#3395",
-                "//feature:BasicPolygons[@gml:id='BasicPolygons.1107531493630']/gml:boundedBy/gml:Envelope/@srsName",
+                "(//gml:boundedBy)[2]/gml:Envelope/@srsName",
                 response);
         assertXpathEvaluatesTo("-222638.98158654713 -110579.96522189587",
-                "//wfs:FeatureCollection/gml:boundedBy/gml:Envelope/gml:lowerCorner", response);
+                "(//gml:boundedBy)[1]/gml:Envelope/gml:lowerCorner", response);
     }
 
 }
