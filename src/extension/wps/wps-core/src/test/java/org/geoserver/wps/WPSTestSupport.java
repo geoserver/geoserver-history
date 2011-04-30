@@ -22,7 +22,7 @@ import org.xml.sax.SAXParseException;
 
 public abstract class WPSTestSupport extends GeoServerTestSupport {
 
-    static {
+    protected void setUpInternal() throws Exception {
         // init xmlunit
         Map<String, String> namespaces = new HashMap<String, String>();
         namespaces.put("wps", "http://www.opengis.net/wps/1.0.0");
@@ -30,10 +30,11 @@ public abstract class WPSTestSupport extends GeoServerTestSupport {
         namespaces.put("gml", "http://www.opengis.net/gml");
         namespaces.put("wfs", "http://www.opengis.net/wfs");
         namespaces.put("xlink", "http://www.w3.org/1999/xlink");
+        namespaces.put("xsi", "http://www.w3.org/2001/XMLSchema-instance");
         namespaces.put("feature", "http://geoserver.sf.net"); 
         
         XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(namespaces));
-    }
+    };
     
     protected String root() {
         return "wps?";

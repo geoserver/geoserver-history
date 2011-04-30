@@ -88,12 +88,12 @@
     </bean>
     
     <!-- responses -->
-    <bean id="wpsCapabilitiesResponse" class="org.geoserver.ows.XmlObjectEncodingResponse">
+    <bean id="wpsCapabilitiesResponse" class="org.geoserver.wps.response.WPSObjectEncodingResponse">
       <constructor-arg index="0" value="net.opengis.wps10.WPSCapabilitiesType"/>
       <constructor-arg index="1" value="Capabilities"/>
       <constructor-arg index="2" value="org.geoserver.wps.xml.WPSConfiguration"/> 
     </bean>
-    <bean id="wpsDescribeProcessResponse" class="org.geoserver.ows.XmlObjectEncodingResponse">
+    <bean id="wpsDescribeProcessResponse" class="org.geoserver.wps.response.WPSObjectEncodingResponse">
       <constructor-arg index="0" value="net.opengis.wps10.ProcessDescriptionsType"/>
       <constructor-arg index="1" value="ProcessDescriptions"/>
       <constructor-arg index="2" value="org.geoserver.wps.xml.WPSConfiguration"/> 

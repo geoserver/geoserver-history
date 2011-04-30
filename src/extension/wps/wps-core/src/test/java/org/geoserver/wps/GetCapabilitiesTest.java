@@ -1,12 +1,10 @@
 package org.geoserver.wps;
 
 import static org.custommonkey.xmlunit.XMLAssert.*;
-
 import junit.framework.Test;
 
 import org.custommonkey.xmlunit.XMLUnit;
 import org.custommonkey.xmlunit.XpathEngine;
-import org.geotools.xml.test.XMLTestSupport;
 import org.w3c.dom.Document;
 
 public class GetCapabilitiesTest extends WPSTestSupport {
@@ -84,6 +82,10 @@ public class GetCapabilitiesTest extends WPSTestSupport {
     private void basicCapabilitiesTest(Document d) throws Exception {
         // print(d);
         checkValidationErrors(d);
+        
+        // check the schema location is declared
+        assertXpathEvaluatesTo("http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsAll.xsd", 
+                "/wps:Capabilities/@xsi:schemaLocation", d);
         
         assertEquals( "wps:Capabilities", d.getDocumentElement().getNodeName() );
         int np = d.getElementsByTagName( "wps:Process" ).getLength();
