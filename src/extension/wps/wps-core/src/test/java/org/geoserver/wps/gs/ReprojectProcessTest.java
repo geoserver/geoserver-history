@@ -1,10 +1,30 @@
 package org.geoserver.wps.gs;
 
+import static org.custommonkey.xmlunit.XMLAssert.*;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.custommonkey.xmlunit.SimpleNamespaceContext;
+import org.custommonkey.xmlunit.XMLUnit;
 import org.geoserver.data.test.MockData;
 import org.geoserver.wps.WPSTestSupport;
 import org.w3c.dom.Document;
 
 public class ReprojectProcessTest extends WPSTestSupport {
+
+    static {
+        // init xmlunit
+        Map<String, String> namespaces = new HashMap<String, String>();
+        namespaces.put("wps", "http://www.opengis.net/wps/1.0.0");
+        namespaces.put("ows", "http://www.opengis.net/ows/1.1");
+        namespaces.put("gml", "http://www.opengis.net/gml");
+        namespaces.put("wfs", "http://www.opengis.net/wfs");
+        namespaces.put("xlink", "http://www.w3.org/1999/xlink");
+        namespaces.put("feature", "http://www.opengis.net/cite");
+
+        XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(namespaces));
+    }
 
     public void testForce() throws Exception {
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -28,9 +48,10 @@ public class ReprojectProcessTest extends WPSTestSupport {
 
         Document response = postAsDOM(root(), xml);
 
-        // TODO: actually check the results, atm they are broken due to
-        // http://jira.codehaus.org/browse/GEOS-4072
-        print(response);
+        // print(response);
+
+        assertXpathEvaluatesTo("http://www.opengis.net/gml/srs/epsg.xml#4269",
+                "//gml:MultiPolygon/@srsName", response);
     }
 
     public void testReproject() throws Exception {
@@ -57,9 +78,14 @@ public class ReprojectProcessTest extends WPSTestSupport {
 
         Document response = postAsDOM(root(), xml);
 
-        // TODO: actually check the results, atm they are broken due to
-        // http://jira.codehaus.org/browse/GEOS-4072
-        print(response);
+        // print(response);
+
+        assertXpathEvaluatesTo(
+                "http://www.opengis.net/gml/srs/epsg.xml#3395",
+                "//feature:BasicPolygons[@gml:id='BasicPolygons.1107531493630']/gml:boundedBy/gml:Envelope/@srsName",
+                response);
+        assertXpathEvaluatesTo("-222638.98158654713 -110579.96522189587",
+                "//wfs:FeatureCollection/gml:boundedBy/gml:Envelope/gml:lowerCorner", response);
     }
 
 }
