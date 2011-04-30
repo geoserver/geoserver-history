@@ -16,7 +16,9 @@ import org.w3c.dom.Document;
 
 public class QueryProcessTest extends WPSTestSupport {
 
-    static {
+    protected void setUpInternal() throws Exception {
+        super.setUpInternal();        
+        
         // init xmlunit
         Map<String, String> namespaces = new HashMap<String, String>();
         namespaces.put("wps", "http://www.opengis.net/wps/1.0.0");
@@ -27,7 +29,7 @@ public class QueryProcessTest extends WPSTestSupport {
         namespaces.put("feature", "http://www.opengis.net/cite");
 
         XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(namespaces));
-    }
+    };
 
     public void testNoOp() throws Exception {
         String request = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
