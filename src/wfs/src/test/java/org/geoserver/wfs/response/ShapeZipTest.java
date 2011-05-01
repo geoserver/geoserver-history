@@ -41,8 +41,6 @@ import com.mockrunner.mock.web.MockHttpServletResponse;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.MultiPolygon;
 
-import freemarker.template.utility.Execute;
-
 public class ShapeZipTest extends WFSTestSupport {
 
     private static final QName ALL_TYPES = new QName(MockData.CITE_URI, "AllTypes", MockData.CITE_PREFIX);
