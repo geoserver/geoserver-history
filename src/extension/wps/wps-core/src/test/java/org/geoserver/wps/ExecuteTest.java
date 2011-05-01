@@ -363,15 +363,13 @@ public class ExecuteTest extends WPSTestSupport {
         "<ows:Identifier>gt:BufferFeatureCollection</ows:Identifier>" + 
          "<wps:DataInputs>" + 
          "    <wps:Input>\n" + 
-         "      <ows:Identifier>features</ows:Identifier>\n" + 
-         "      <wps:Reference mimeType=\"text/xml; subtype=wfs-collection/1.0\" xlink:href=\"http://geoserver/wfs\" method=\"POST\">\n" + 
-         "        <wps:Body>\n" + 
-         "          <wfs:GetFeature service=\"WFS\" version=\"1.0.0\">\n" + 
-         "            <wfs:Query typeName=\"cite:Streams\"/>\n" + 
-         "          </wfs:GetFeature>\n" + 
-         "        </wps:Body>\n" + 
-         "      </wps:Reference>\n" + 
-         "    </wps:Input>\n" + 
+                "<ows:Identifier>features</ows:Identifier>" + 
+                "<wps:Data>" +
+                  "<wps:ComplexData>" + 
+                      readFileIntoString("states-FeatureCollection.xml") + 
+                  "</wps:ComplexData>" + 
+                "</wps:Data>" +
+            "</wps:Input>" + 
             "<wps:Input>" + 
                "<ows:Identifier>buffer</ows:Identifier>" + 
                "<wps:Data>" + 
@@ -388,7 +386,7 @@ public class ExecuteTest extends WPSTestSupport {
   
         MockHttpServletResponse r = postAsServletResponse("wps", xml);
         assertEquals("application/zip", r.getContentType());
-        checkShapefileIntegrity(new String[] {"Streams"}, getBinaryInputStream(r));
+        checkShapefileIntegrity(new String[] {"states"}, getBinaryInputStream(r));
     }
     
     public void testPlainAddition() throws Exception { // Standard Test A.4.4.3

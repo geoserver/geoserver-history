@@ -22,11 +22,8 @@ import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.WfsFactory;
 
-import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.WorkspaceInfo;
-import org.geoserver.config.GeoServer;
 import org.geoserver.data.test.MockData;
-import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.Operation;
 import org.geoserver.wfs.WFSTestSupport;
 import org.geotools.data.FeatureSource;
@@ -43,8 +40,6 @@ import org.opengis.filter.Filter;
 import com.mockrunner.mock.web.MockHttpServletResponse;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.MultiPolygon;
-
-import freemarker.template.utility.Execute;
 
 public class ShapeZipTest extends WFSTestSupport {
 
