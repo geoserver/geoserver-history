@@ -77,17 +77,17 @@ class WPSExecuteTransformer extends TransformerBase {
             // wfs requests as wfs 1.0 and the wcs requests as 1.1, but
             // we really need to move those namespace declaration down to
             // the single request elements so that we can mix them)
-            AttributesImpl attributes = attributes("version", "1.0.0", "service", "WPS",
-                    "xmlns:xsi", XSI_URI, "xmlns", WPS_URI, "xmlns:wfs", WFS_URI, "xmlns:wps",
-                    WPS_URI, "xmlns:ows", OWS.NAMESPACE, "xmlns:gml", GML.NAMESPACE, "xmlns:ogc",
-                    OGC.NAMESPACE, "xmlns:wcs", WCS_URI, "xmlns:xlink", XLINK.NAMESPACE,
-                    "xsi:schemaLocation", WPS.NAMESPACE + " "
-                            + "http://schemas.opengis.net/wps/1.0.0/wpsAll.xsd");
-
             if (mainProcess) {
+                AttributesImpl attributes = attributes("version", "1.0.0", "service", "WPS",
+                        "xmlns:xsi", XSI_URI, "xmlns", WPS_URI, "xmlns:wfs", WFS_URI, "xmlns:wps",
+                        WPS_URI, "xmlns:ows", OWS.NAMESPACE, "xmlns:gml", GML.NAMESPACE, "xmlns:ogc",
+                        OGC.NAMESPACE, "xmlns:wcs", WCS_URI, "xmlns:xlink", XLINK.NAMESPACE,
+                        "xsi:schemaLocation", WPS.NAMESPACE + " "
+                                + "http://schemas.opengis.net/wps/1.0.0/wpsAll.xsd");
                 start("wps:Execute", attributes);
             } else {
-                start("wps:Execute");
+                AttributesImpl attributes = attributes("version", "1.0.0", "service", "WPS");
+                start("wps:Execute", attributes);
             }
             element("ows:Identifier", request.processName);
             handleInputs(request.inputs);
@@ -258,7 +258,9 @@ class WPSExecuteTransformer extends TransformerBase {
 
             start("wps:Reference", attributes("mimeType", value.mime, "xlink:href",
                     "http://geoserver/wps", "method", "POST"));
+            start("wps:Body");
             encode(request, false);
+            end("wps:Body");
             end("wps:Reference");
         }
 
@@ -303,7 +305,7 @@ class WPSExecuteTransformer extends TransformerBase {
                 }
                 return builder.parse(new StringInputStream(data));
             } catch (Throwable t) {
-                LOGGER.log(Level.INFO, "Failed to parse XML, assuming it's plain text", t);
+                LOGGER.log(Level.FINE, "Failed to parse XML, assuming it's plain text", t);
                 return null;
             }
         }

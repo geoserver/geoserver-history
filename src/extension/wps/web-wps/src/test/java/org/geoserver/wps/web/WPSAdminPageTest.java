@@ -1,4 +1,4 @@
-package org.geoserver.web.wps;
+package org.geoserver.wps.web;
 
 import org.geoserver.web.GeoServerWicketTestSupport;
 import org.geoserver.web.wicket.KeywordsEditor;

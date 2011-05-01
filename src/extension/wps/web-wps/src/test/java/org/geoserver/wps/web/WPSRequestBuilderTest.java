@@ -1,4 +1,4 @@
-package org.geoserver.web.wps;
+package org.geoserver.wps.web;
 
 import java.util.List;
 
