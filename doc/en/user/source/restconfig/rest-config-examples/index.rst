@@ -10,7 +10,8 @@ REST data configuration api. The examples are grouped by environment/language.
 .. toctree::
    :maxdepth: 1
 
-   rest-config-examples-curl/
-   rest-config-examples-php/
-   rest-config-examples-python/
+   rest-config-examples-curl
+   rest-config-examples-php
+   rest-config-examples-python
+   rest-config-examples-java
 

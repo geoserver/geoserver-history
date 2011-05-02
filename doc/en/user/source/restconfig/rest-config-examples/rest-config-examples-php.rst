@@ -143,7 +143,7 @@ The logfile should now include lines like::
   < HTTP/1.1 200 OK
 
 as well as some xml looking something like the example 
-:download:`here. <representations/workspaces_xml.txt>`
+:download:`here. <../representations/workspaces_xml.txt>`
 
 DELETE with PHP/cURL
 ------------------------

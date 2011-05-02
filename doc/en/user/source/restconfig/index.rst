@@ -14,5 +14,5 @@ To learn more proceed to the :ref:`rest_overview` section. For details about the
 
    overview/
    rest-config-api/
-   rest-config-examples/
+   rest-config-examples/index
 
