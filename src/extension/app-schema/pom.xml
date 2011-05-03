@@ -20,18 +20,11 @@
       <artifactId>gt-app-schema</artifactId>
       <version>${gt.version}</version>
     </dependency>
-    <!-- Enable web service module locally if required, since Hudson doesn't build gt-webservice from Geotools. 
-	<dependency>
-	  <groupId>org.geotools</groupId>
-      <artifactId>gt-webservice</artifactId>
-      <version>${gt.version}</version>			
-    </dependency> -->
   </dependencies>
 
   <modules>
     <module>app-schema-test</module>
     <module>sample-data-access-test</module>
-    <!-- <module>web-service-test</module> Uncomment when the module is ready -->
   </modules>
 
 </project>
