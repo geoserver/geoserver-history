@@ -46,7 +46,7 @@ public abstract class StoreEditPanel extends Panel {
      * Initializes all store parameters to their default value
      * @param info
      */
-    void applyDataStoreParamsDefaults(StoreInfo info) {
+    protected void applyDataStoreParamsDefaults(StoreInfo info) {
         // grab the factory
         final DataStoreInfo dsInfo = (DataStoreInfo) info;
         DataAccessFactory dsFactory;
@@ -61,16 +61,20 @@ public abstract class StoreEditPanel extends Panel {
             ParamInfo paramInfo = new ParamInfo(p);
 
             // set default value
-            Serializable defValue;
-            if ("namespace".equals(paramInfo.getName())) {
-                defValue = getCatalog().getDefaultNamespace().getURI();
-            } else if (URL.class == paramInfo.getBinding()) {
-                defValue = "file:data/example.extension";
-            } else {
-                defValue = paramInfo.getValue();
-            }
-            info.getConnectionParameters().put(paramInfo.getName(), defValue);
+            applyParamDefault(paramInfo, info);
         }
+    }
+
+    protected void applyParamDefault(ParamInfo paramInfo, StoreInfo info) {
+        Serializable defValue;
+        if ("namespace".equals(paramInfo.getName())) {
+            defValue = getCatalog().getDefaultNamespace().getURI();
+        } else if (URL.class == paramInfo.getBinding()) {
+            defValue = "file:data/example.extension";
+        } else {
+            defValue = paramInfo.getValue();
+        }
+        info.getConnectionParameters().put(paramInfo.getName(), defValue);
     }
 
     protected Catalog getCatalog() {

@@ -100,15 +100,7 @@ public class DefaultDataStoreEditPanel extends StoreEditPanel {
 
                 if (isNew) {
                     // set default value
-                    Serializable defValue;
-                    if ("namespace".equals(paramInfo.getName())) {
-                        defValue = catalog.getDefaultNamespace().getURI();
-                    } else if (URL.class == paramInfo.getBinding()) {
-                        defValue = "file:data/example.extension";
-                    } else {
-                        defValue = paramInfo.getValue();
-                    }
-                    info.getConnectionParameters().put(paramInfo.getName(), defValue);
+                    applyParamDefault(paramInfo, info);
                 }
             }
         }
