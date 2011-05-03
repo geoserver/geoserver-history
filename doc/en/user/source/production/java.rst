@@ -27,15 +27,15 @@ Native extensions are available for Windows, Linux and Solaris (32 and 64 bit sy
 Installing native JAI on Windows
 ````````````````````````````````
 
-#. Go to the `JAI download page <https://jai.dev.java.net/binary-builds.html>`_ and download the Windows installer for version 1.1.3. At the time of writing only the 32 bit version of the installer is available, so if you are using a JDK, you will want to download `jai-1_1_3-lib-windows-i586-jdk.exe <http://download.java.net/media/jai/builds/release/1_1_3/jai-1_1_3-lib-windows-i586-jdk.exe>`_, and if you are using a JRE, you will want to download `jai-1_1_3-lib-windows-i586-jre.exe <http://download.java.net/media/jai/builds/release/1_1_3/jai-1_1_3-lib-windows-i586-jre.exe>`_.
+#. Go to the `JAI download page <http://download.java.net/media/jai/builds/release/1_1_3/>`_ and download the Windows installer for version 1.1.3. At the time of writing only the 32 bit version of the installer is available, so if you are using a JDK, you will want to download `jai-1_1_3-lib-windows-i586-jdk.exe <http://download.java.net/media/jai/builds/release/1_1_3/jai-1_1_3-lib-windows-i586-jdk.exe>`_, and if you are using a JRE, you will want to download `jai-1_1_3-lib-windows-i586-jre.exe <http://download.java.net/media/jai/builds/release/1_1_3/jai-1_1_3-lib-windows-i586-jre.exe>`_.
 #. Run the installer and point it to the JDK/JRE install that GeoServer will use to run.
-#. Go to the `JAI Image I/O download page <https://jai-imageio.dev.java.net/binary-builds.html>`_ and download the Windows installer for version 1.1. At the time of writing only the 32 bit version of the installer is available, so if you are using a JDK, you will want to download `jai_imageio-1_1-lib-windows-i586-jdk.exe <http://download.java.net/media/jai-imageio/builds/release/1.1/jai_imageio-1_1-lib-windows-i586-jdk.exe>`_, and if you are using a JRE, you will want to download `jai_imageio-1_1-lib-windows-i586-jre.exe <http://download.java.net/media/jai-imageio/builds/release/1.1/jai_imageio-1_1-lib-windows-i586-jre.exe>`_
+#. Go to the `JAI Image I/O download page <http://download.java.net/media/jai-imageio/builds/release/1.1/>`_ and download the Windows installer for version 1.1. At the time of writing only the 32 bit version of the installer is available, so if you are using a JDK, you will want to download `jai_imageio-1_1-lib-windows-i586-jdk.exe <http://download.java.net/media/jai-imageio/builds/release/1.1/jai_imageio-1_1-lib-windows-i586-jdk.exe>`_, and if you are using a JRE, you will want to download `jai_imageio-1_1-lib-windows-i586-jre.exe <http://download.java.net/media/jai-imageio/builds/release/1.1/jai_imageio-1_1-lib-windows-i586-jre.exe>`_
 #. Run the installer and point it to the JDK/JRE install that GeoServer will use to run.
 
 Installing native JAI on Linux
 ``````````````````````````````
 
-#. Go to the `JAI download page <https://jai.dev.java.net/binary-builds.html>`_ and download the Linux installer for version 1.1.3, choosing the appropriate architecture:
+#. Go to the `JAI download page <http://download.java.net/media/jai/builds/release/1_1_3/>`_ and download the Linux installer for version 1.1.3, choosing the appropriate architecture:
 
    * `i586` for the 32 bit systems
    * `amd64` for the 64 bit ones (even if using Intel processors)
@@ -48,7 +48,7 @@ Installing native JAI on Linux
     # accept license 
     $ sudo rm jai-1_1_3-lib-linux-i586-jdk.bin
   
-#. Go to the `JAI Image I/O download page <https://jai-imageio.dev.java.net/binary-builds.html>`_ and download the Linux installer for version 1.1, choosing the appropriate architecture:
+#. Go to the `JAI Image I/O download page <http://download.java.net/media/jai-imageio/builds/release/1.1/>`_ and download the Linux installer for version 1.1, choosing the appropriate architecture:
 
    * `i586` for the 32 bit systems
    * `amd64` for the 64 bit ones (even if using Intel processors)
@@ -71,7 +71,7 @@ Installing native JAI manually
 
 You can install the native JAI manually if you encounter problems using the above installers, or if you wish to install the native JAI for more than one JDK/JRE.
 
-Please refer to the `GeoTools page on JAI installation <http://docs.codehaus.org/display/GEOT/Manual+JAI+Installation>`_ for details.
+Please refer to the `GeoTools page on JAI installation <http://docs.geotools.org/latest/developer/guide/building/install/jdk.html>`_ for details.
 
  
 GeoServer cleanup
