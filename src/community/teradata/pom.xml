@@ -20,6 +20,11 @@
       <artifactId>gt-jdbc-teradata</artifactId>
       <version>${gt.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.geoserver.web</groupId>
+      <artifactId>web-core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
   </dependencies>
 
   <profiles>
