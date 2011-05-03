@@ -214,14 +214,21 @@ public class GeoServerTileLayer extends TileLayer {
     }
 
     private ReferencedEnvelope getLatLonBbox() throws IllegalStateException {
+        final CoordinateReferenceSystem wgs84LonFirst;
+        try {
+            final boolean longitudeFirst = true;
+            wgs84LonFirst = CRS.decode("EPSG:4326", longitudeFirst);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
         ReferencedEnvelope latLongBbox;
         if (getLayerInfo() == null) {
             LayerGroupInfo groupInfo = getLayerGroupInfo();
             try {
                 ReferencedEnvelope bounds = groupInfo.getBounds();
-                boolean longitudeFirst = true;
                 boolean lenient = true;
-                latLongBbox = bounds.transform(CRS.decode("EPSG:4326", longitudeFirst), lenient);
+                latLongBbox = bounds.transform(wgs84LonFirst, lenient);
             } catch (Exception e) {
                 String msg = "Can't get lat long bounds for layer group " + groupInfo.getName();
                 LOGGER.log(Level.WARNING, msg, e);
@@ -230,6 +237,15 @@ public class GeoServerTileLayer extends TileLayer {
         } else {
             ResourceInfo resourceInfo = getResourceInfo();
             latLongBbox = resourceInfo.getLatLonBoundingBox();
+            if (null == latLongBbox) {
+                latLongBbox = new ReferencedEnvelope(wgs84LonFirst);
+            }
+            if (null == latLongBbox.getCoordinateReferenceSystem()) {
+                ReferencedEnvelope tmp = new ReferencedEnvelope(wgs84LonFirst);
+                tmp.init(latLongBbox.getMinX(), latLongBbox.getMaxX(), latLongBbox.getMinY(),
+                        latLongBbox.getMaxY());
+                latLongBbox = tmp;
+            }
         }
         return latLongBbox;
     }
@@ -649,8 +665,8 @@ public class GeoServerTileLayer extends TileLayer {
         throw new UnsupportedOperationException("not implemented yet");
     }
 
-    private Map<String, GridSubset> getGrids(ReferencedEnvelope latLonBbox,
-            GridSetBroker gridSetBroker) throws ConfigurationException {
+    private Map<String, GridSubset> getGrids(final ReferencedEnvelope latLonBbox,
+            final GridSetBroker gridSetBroker) throws ConfigurationException {
 
         Set<String> cachedGridSetIds = info.getCachedGridSetIds();
         if (cachedGridSetIds.size() == 0) {
@@ -676,6 +692,9 @@ public class GeoServerTileLayer extends TileLayer {
     }
 
     private BoundingBox getBoundsFromWGS84Bounds(final ReferencedEnvelope latLonBbox, final SRS srs) {
+        Assert.notNull(latLonBbox);
+        Assert.notNull(latLonBbox.getCoordinateReferenceSystem());
+        Assert.notNull(srs);
         final double minX = latLonBbox.getMinX();
         final double minY = latLonBbox.getMinY();
         final double maxX = latLonBbox.getMaxX();
@@ -694,6 +713,7 @@ public class GeoServerTileLayer extends TileLayer {
             try {
                 CoordinateReferenceSystem crs;
                 crs = CRS.decode(epsgCode, longitudeFirst);
+                Assert.notNull(crs);
                 transformedBounds = latLonBbox.transform(crs, true, 20);
             } catch (NoSuchAuthorityCodeException e) {
                 throw new RuntimeException(e);
