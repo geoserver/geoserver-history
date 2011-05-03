@@ -142,7 +142,7 @@
       </modules>
     </profile>
      <profile>      
-      <id>app-schema-community</id>
+      <id>app-schema</id>
       <modules>
         <module>app-schema</module>
       </modules>
