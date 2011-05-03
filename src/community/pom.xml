@@ -134,6 +134,18 @@
       <modules>
         <module>istyler</module>
       </modules>
+    </profile>    
+    <profile>      
+      <id>webservice</id>
+      <modules>
+        <module>app-schema</module>
+      </modules>
+    </profile>
+     <profile>      
+      <id>app-schema-community</id>
+      <modules>
+        <module>app-schema</module>
+      </modules>
     </profile>
     <profile>
       <id>communityRelease</id>
