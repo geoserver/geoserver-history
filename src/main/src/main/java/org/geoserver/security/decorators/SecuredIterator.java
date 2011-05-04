@@ -10,6 +10,8 @@ import org.geoserver.catalog.impl.AbstractDecorator;
 import org.geoserver.security.Response;
 import org.geoserver.security.SecureCatalogImpl;
 import org.geoserver.security.WrapperPolicy;
+import org.geotools.feature.FeatureIterator;
+import org.opengis.feature.Feature;
 import org.opengis.filter.Filter;
 
 /**
@@ -17,7 +19,7 @@ import org.opengis.filter.Filter;
  * @author Andrea Aime - GeoSolutions
  *
  */
-public class SecuredIterator extends AbstractDecorator<Iterator> implements Iterator {
+public class SecuredIterator extends AbstractDecorator<Iterator> implements Iterator,FeatureIterator {
     WrapperPolicy policy;
     Object current;
     Filter writeFilter;
@@ -32,9 +34,9 @@ public class SecuredIterator extends AbstractDecorator<Iterator> implements Iter
         return delegate.hasNext();
     }
 
-    public Object next() {
+    public Feature next() {
         this.current = delegate.next();
-        return current;
+        return (Feature)current;
     }
 
     public void remove() {
@@ -56,6 +58,12 @@ public class SecuredIterator extends AbstractDecorator<Iterator> implements Iter
             return SecureCatalogImpl.unauthorizedAccess();
         } else
             return new UnsupportedOperationException("This iterator is read only");
+    }
+
+    public void close() {
+        if (delegate instanceof FeatureIterator) {
+            ((FeatureIterator) delegate).close();
+        }
     }
 
 }
