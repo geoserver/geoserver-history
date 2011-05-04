@@ -12,6 +12,7 @@
         <include>wps*</include>
         <include>web-wps*</include>
         <include>gt-process*</include>
+        <include>gt-grid*</include>
         <include>gt-xsd-wps*</include>
         <include>gt-geojson*</include>
         <include>net.opengis.wps*</include>
