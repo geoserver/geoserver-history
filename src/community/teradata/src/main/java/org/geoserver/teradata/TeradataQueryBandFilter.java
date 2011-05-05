@@ -12,8 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.geotools.data.teradata.QueryBand;
 
-import com.sun.tools.hat.internal.server.HttpReader;
-
 public class TeradataQueryBandFilter implements Filter {
 
     public void init(FilterConfig filterConfig) throws ServletException {
