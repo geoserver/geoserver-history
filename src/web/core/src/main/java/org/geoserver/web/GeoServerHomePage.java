@@ -89,9 +89,30 @@ public class GeoServerHomePage extends GeoServerBasePage {
             add(placeHolder);
         }
 
-        IModel<List<CapabilitiesHomePageLinkProvider>> capsProviders = getCapsProviders();
+        final IModel<List<GeoServerHomePageContentProvider>> contentProviders;
+        contentProviders = getContentProviders(GeoServerHomePageContentProvider.class);
+        ListView<GeoServerHomePageContentProvider> contentView = new ListView<GeoServerHomePageContentProvider>(
+                "contributedContent", contentProviders) {
+            private static final long serialVersionUID = 1L;
 
-        ListView<CapabilitiesHomePageLinkProvider> view = new ListView<CapabilitiesHomePageLinkProvider>(
+            @Override
+            protected void populateItem(ListItem<GeoServerHomePageContentProvider> item) {
+                GeoServerHomePageContentProvider provider = item.getModelObject();
+                Component extraContent = provider.getPageBodyComponent("contentList");
+                if(null == extraContent){
+                    Label placeHolder = new Label("contentList");
+                    placeHolder.setVisible(false);
+                    extraContent = placeHolder;
+                }
+                item.add(extraContent);
+            }
+        };
+        add(contentView);
+
+        final IModel<List<CapabilitiesHomePageLinkProvider>> capsProviders;
+        capsProviders = getContentProviders(CapabilitiesHomePageLinkProvider.class);
+
+        ListView<CapabilitiesHomePageLinkProvider> capsView = new ListView<CapabilitiesHomePageLinkProvider>(
                 "providedCaps", capsProviders) {
             private static final long serialVersionUID = 1L;
 
@@ -102,22 +123,21 @@ public class GeoServerHomePage extends GeoServerBasePage {
                 item.add(capsList);
             }
         };
-        add(view);
+        add(capsView);
     }
 
-    private IModel<List<CapabilitiesHomePageLinkProvider>> getCapsProviders() {
-        IModel<List<CapabilitiesHomePageLinkProvider>> capsProviders = new LoadableDetachableModel<List<CapabilitiesHomePageLinkProvider>>() {
+    private <T> IModel<List<T>> getContentProviders(final Class<T> providerClass) {
+        IModel<List<T>> providersModel = new LoadableDetachableModel<List<T>>() {
             private static final long serialVersionUID = 1L;
 
             @Override
-            protected List<CapabilitiesHomePageLinkProvider> load() {
+            protected List<T> load() {
                 GeoServerApplication app = getGeoServerApplication();
-                List<CapabilitiesHomePageLinkProvider> providers;
-                providers = app.getBeansOfType(CapabilitiesHomePageLinkProvider.class);
+                List<T> providers = app.getBeansOfType(providerClass);
                 return providers;
             }
         };
-        return capsProviders;
+        return providersModel;
     }
     
     /**

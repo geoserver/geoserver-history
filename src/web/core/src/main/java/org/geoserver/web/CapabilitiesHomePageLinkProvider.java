@@ -14,6 +14,7 @@ import org.apache.wicket.markup.html.list.ListView;
  * 
  * @author Gabriel Roldan
  * @see CapabilitiesHomePagePanel
+ * @see GeoServerHomePageContentProvider
  */
 public interface CapabilitiesHomePageLinkProvider {
 
