@@ -747,8 +747,8 @@ public class GetMapRequest extends WMSRequest {
         StringBuffer returnString = new StringBuffer("\nGetMap Request");
         returnString.append("\n version: " + version);
         returnString.append("\n output format: " + mandatoryParams.format);
-        returnString.append("\n width height: " + mandatoryParams.height + ","
-                + mandatoryParams.width);
+        returnString.append("\n width height: " + mandatoryParams.width + ","
+                + mandatoryParams.height);
         returnString.append("\n bbox: " + mandatoryParams.bbox);
         returnString.append("\n layers: ");
 
