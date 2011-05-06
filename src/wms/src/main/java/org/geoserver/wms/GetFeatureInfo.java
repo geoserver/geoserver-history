@@ -27,7 +27,6 @@ import net.opengis.wfs.WfsFactory;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.WMSLayerInfo;
-import org.geoserver.data.util.CoverageUtils;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.featureinfo.FeatureCollectionDecorator;
 import org.geotools.coverage.GridSampleDimension;
@@ -97,7 +96,6 @@ import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
 
 import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LinearRing;
 import com.vividsolutions.jts.geom.Polygon;
@@ -242,9 +240,8 @@ public class GetFeatureInfo {
                 final AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) cinfo
                         .getGridCoverageReader(new NullProgressListener(),
                                 GeoTools.getDefaultHints());
-                final ParameterValueGroup params = reader.getFormat().getReadParameters();
-                GeneralParameterValue[] parameters = CoverageUtils.getParameters(params,
-                        requestedLayers.get(i).getCoverage().getParameters(), true);
+                
+                
                 // get the original grid geometry
                 final GridGeometry2D coverageGeometry = (GridGeometry2D) cinfo.getGrid();
                 // set the requested position in model space for this request
@@ -274,6 +271,9 @@ public class GetFeatureInfo {
                     continue;
                 }
 
+                // read from the request
+                GeneralParameterValue[] parameters = wms.getWMSReadParameters(request.getGetMapRequest(), 
+                        requestedLayers.get(i), filters[i], reader, true);
                 collection = identifyRasterLayer(reader, position, parameters, cinfo, getMapReq);
 
             } else {

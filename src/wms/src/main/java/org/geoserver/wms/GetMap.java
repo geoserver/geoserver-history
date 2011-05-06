@@ -19,7 +19,6 @@ import java.util.logging.Logger;
 
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.WMSLayerInfo;
-import org.geoserver.data.util.CoverageUtils;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.map.MetatileMapOutputFormat;
 import org.geoserver.wms.map.RenderedImageMapOutputFormat;
@@ -52,10 +51,7 @@ import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
-import org.opengis.parameter.GeneralParameterDescriptor;
 import org.opengis.parameter.GeneralParameterValue;
-import org.opengis.parameter.ParameterValue;
-import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -303,88 +299,8 @@ public class GetMap {
                 if (reader != null) {
 
                     // get the group of parameters tha this reader supports
-                    final ParameterValueGroup readParametersDescriptor = reader.getFormat()
-                            .getReadParameters();
-                    GeneralParameterValue[] readParameters = CoverageUtils.getParameters(
-                            readParametersDescriptor, mapLayerInfo.getCoverage().getParameters());
-
-                    //
-                    // Setting coverage reading params.
-                    //
-
-                    /*
-                     * Test if the parameter "TIME" is present in the WMS request, and by the way in
-                     * the reading parameters. If it is the case, one can adds it to the request. If
-                     * an exception is thrown, we have nothing to do.
-                     */
-                    final List dateTime = request.getTime();
-                    final boolean hasTime = dateTime != null && dateTime.size() > 0;
-                    final List<GeneralParameterDescriptor> parameterDescriptors = readParametersDescriptor
-                            .getDescriptor().descriptors();
-                    if (hasTime)
-                        for (GeneralParameterDescriptor pd : parameterDescriptors) {
-
-                            // TIME
-                            if (pd.getName().getCode().equalsIgnoreCase("TIME")) {
-                                final ParameterValue time = (ParameterValue) pd.createValue();
-                                if (time != null) {
-                                    time.setValue(request.getTime());
-                                }
-
-                                // add to the list
-                                GeneralParameterValue[] readParametersClone = new GeneralParameterValue[readParameters.length + 1];
-                                System.arraycopy(readParameters, 0, readParametersClone, 0,
-                                        readParameters.length);
-                                readParametersClone[readParameters.length] = time;
-                                readParameters = readParametersClone;
-
-                                // leave
-                                break;
-                            }
-                        }
-
-                    // uncomment when the DIM_RANGE vendor parameter will be
-                    // enabled
-                    // try {
-                    // ParameterValue dimRange =
-                    // reader.getFormat().getReadParameters()
-                    // .parameter("DIM_RANGE");
-                    // if (dimRange != null && request.getDimRange() !=
-                    // null) {
-                    // dimRange.setValue(request.getDimRange());
-                    // }
-                    // } catch (ParameterNotFoundException p) {
-                    // }
-
-                    /*
-                     * Test if the parameter "TIME" is present in the WMS request, and by the way in
-                     * the reading parameters. If it is the case, one can adds it to the request. If
-                     * an exception is thrown, we have nothing to do.
-                     */
-                    final double elevationValue = request.getElevation();
-                    final boolean hasElevation = !Double.isNaN(elevationValue);
-                    if (hasElevation)
-                        for (GeneralParameterDescriptor pd : parameterDescriptors) {
-
-                            // ELEVATION
-                            if (pd.getName().getCode().equalsIgnoreCase("ELEVATION")) {
-                                final ParameterValue elevation = (ParameterValue) pd.createValue();
-                                if (elevation != null) {
-                                    elevation.setValue(request.getElevation());
-                                }
-
-                                // add to the list
-                                GeneralParameterValue[] readParametersClone = new GeneralParameterValue[readParameters.length + 1];
-                                System.arraycopy(readParameters, 0, readParametersClone, 0,
-                                        readParameters.length);
-                                readParametersClone[readParameters.length] = elevation;
-                                readParameters = readParametersClone;
-
-                                // leave
-                                break;
-                            }
-                        }
-
+                    GeneralParameterValue[] readParameters = wms.getWMSReadParameters(request,
+                            mapLayerInfo, layerFilter, reader, false);
                     try {
 
                         try {
@@ -477,6 +393,9 @@ public class GetMap {
         return map;
 
     }
+
+    
+    
 
     /**
      * Computes the rendering buffer in case the user did not specify one in the request, and the
@@ -641,7 +560,7 @@ public class GetMap {
         for (int i = 0; i < nLayers; i++) {
             layer = layers.get(i);
             userRequestedFilter = requestFilters.get(i);
-            if (layer.getType() == MapLayerInfo.TYPE_REMOTE_VECTOR) {
+            if (layer.getType() == MapLayerInfo.TYPE_REMOTE_VECTOR || layer.getType() == MapLayerInfo.TYPE_RASTER) {
                 combinedList[i] = userRequestedFilter;
             } else if (layer.getType() == MapLayerInfo.TYPE_VECTOR) {
                 layerDefinitionFilter = layer.getFeature().getFilter();

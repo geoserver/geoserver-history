@@ -27,9 +27,11 @@ import org.geoserver.catalog.WMSLayerInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.config.JAIInfo;
+import org.geoserver.data.util.CoverageUtils;
 import org.geoserver.wms.WMSInfo.WMSInterpolation;
 import org.geoserver.wms.WatermarkInfo.Position;
 import org.geoserver.wms.featureinfo.GetFeatureInfoOutputFormat;
+import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.data.ows.Layer;
 import org.geotools.data.ows.WMSCapabilities;
 import org.geotools.styling.Style;
@@ -37,6 +39,10 @@ import org.geotools.util.Converters;
 import org.geotools.util.Version;
 import org.geotools.util.logging.Logging;
 import org.opengis.feature.type.Name;
+import org.opengis.filter.Filter;
+import org.opengis.parameter.GeneralParameterDescriptor;
+import org.opengis.parameter.GeneralParameterValue;
+import org.opengis.parameter.ParameterValueGroup;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -649,6 +655,49 @@ public class WMS implements ApplicationContextAware {
             }
         }
         return true;
+    }
+    
+    /**
+     * Returns the read parameters for the specified layer, merging some well known request
+     * parameters into the read parameters if possible 
+     * @param request
+     * @param mapLayerInfo
+     * @param layerFilter
+     * @param reader
+     * @return
+     */
+    public GeneralParameterValue[] getWMSReadParameters(final GetMapRequest request,
+            final MapLayerInfo mapLayerInfo, final Filter layerFilter,
+            final AbstractGridCoverage2DReader reader, boolean readGeom) {
+        final ParameterValueGroup readParametersDescriptor = reader.getFormat()
+                .getReadParameters();
+        GeneralParameterValue[] readParameters = CoverageUtils.getParameters(
+                readParametersDescriptor, mapLayerInfo.getCoverage().getParameters(), readGeom);
+
+        /*
+         * Pass down a few well known parameters to the grid reader: TIME, ELEVEATION, FILTER
+         */
+        final List dateTime = request.getTime();
+        final boolean hasTime = dateTime != null && dateTime.size() > 0;
+        final List<GeneralParameterDescriptor> parameterDescriptors = readParametersDescriptor
+                .getDescriptor().descriptors();
+        if (hasTime) {
+            readParameters = CoverageUtils.mergeParameter(parameterDescriptors, 
+                    readParameters, request.getTime(), "TIME", "Time");
+        }
+
+        final double elevationValue = request.getElevation();
+        final boolean hasElevation = !Double.isNaN(elevationValue);
+        if (hasElevation) {
+            readParameters = CoverageUtils.mergeParameter(parameterDescriptors, 
+                    readParameters, request.getElevation(), "ELEVATION", "Elevation");
+        }
+        
+        if(layerFilter != null) {
+            readParameters = CoverageUtils.mergeParameter(parameterDescriptors, 
+                    readParameters, layerFilter, "FILTER", "Filter");
+        }
+        return readParameters;
     }
 
 }
