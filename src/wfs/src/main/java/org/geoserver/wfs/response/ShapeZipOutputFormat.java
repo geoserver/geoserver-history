@@ -432,6 +432,12 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat implements A
             IOException, FileNotFoundException {
         
         boolean useEsriFormat = false;
+        
+        // if the request originates from the WPS we won't actually have any GetFeatureType request
+        if(request == null) {
+            return;
+        }
+        
         Map<String, ?> formatOptions = request.getFormatOptions();
         final String requestedPrjFileFormat = (String) formatOptions.get("PRJFILEFORMAT");
         if (null == requestedPrjFileFormat) {
