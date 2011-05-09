@@ -606,7 +606,7 @@ public class LegacyCatalogImporter {
             cd.setName((String)map.get("name"));
             cd.setDescription((String)map.get("description"));
             cd.setRange(
-               new NumberRange((Double)map.get("min"),(Double)map.get("max"))
+               NumberRange.create( (Double)map.get("min"),(Double)map.get("max"))
             );
             coverage.getDimensions().add( cd );
         }

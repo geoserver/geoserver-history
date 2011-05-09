@@ -104,7 +104,7 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
      */
     protected double scaleDenominator = 1;
 
-    NumberRange scaleRange = new NumberRange(scaleDenominator, scaleDenominator);
+    NumberRange<Double> scaleRange = NumberRange.create(scaleDenominator, scaleDenominator);
 
     /**
      * used to create 2d style objects for features
