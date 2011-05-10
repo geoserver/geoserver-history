@@ -15,9 +15,10 @@ import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.grid.Element;
 import org.geotools.grid.GridElement;
 import org.geotools.grid.GridFeatureBuilder;
-import org.geotools.grid.Orientation;
+import org.geotools.grid.hexagon.HexagonOrientation;
 import org.geotools.grid.hexagon.Hexagons;
 import org.geotools.grid.oblong.Oblongs;
 import org.geotools.process.ProcessException;
@@ -56,9 +57,9 @@ public class GridProcess implements GeoServerProcess {
         if (mode == null || mode == GridMode.Rectangular) {
             source = Oblongs.createGrid(bounds, width, h, builder);
         } else if (mode == GridMode.HexagonFlat) {
-            source = Hexagons.createGrid(bounds, width, Orientation.FLAT, builder);
+            source = Hexagons.createGrid(bounds, width, HexagonOrientation.FLAT, builder);
         } else {
-            source = Hexagons.createGrid(bounds, width, Orientation.ANGLED, builder);
+            source = Hexagons.createGrid(bounds, width, HexagonOrientation.ANGLED, builder);
         }
 
         try {
@@ -109,7 +110,7 @@ public class GridProcess implements GeoServerProcess {
         }
 
         @Override
-        public String getFeatureID(GridElement el) {
+        public String getFeatureID(Element el) {
             return String.valueOf("grid." + (id++));
         }
 
@@ -124,10 +125,11 @@ public class GridProcess implements GeoServerProcess {
          *            a {@code Map} with the single key "id"
          */
         @Override
-        public void setAttributes(GridElement el, Map<String, Object> attributes) {
+        public void setAttributes(Element el, Map<String, Object> attributes) {
+        	GridElement ge = (GridElement) el;
             attributes.put("id", id);
-            attributes.put("centerX", el.getCenter().x);
-            attributes.put("centerY", el.getCenter().y);
+            attributes.put("centerX", ge.getCenter().x);
+            attributes.put("centerY", ge.getCenter().y);
         }
 
     }
