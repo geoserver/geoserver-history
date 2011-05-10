@@ -133,7 +133,7 @@ public class ImportProcess implements GeoServerProcess {
                 if (code == null) {
                     throw new WPSException("Could not find a EPSG code for " + srs);
                 }
-                targetSRSCode = "EPSG" + code;
+                targetSRSCode = "EPSG:" + code;
             } catch (Exception e) {
                 throw new ProcessException("Could not lookup the EPSG code for the provided srs", e);
             }

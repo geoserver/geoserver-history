@@ -1,5 +1,7 @@
 package org.geoserver.wps.gs;
 
+import java.io.IOException;
+
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.data.test.MockData;
@@ -17,7 +19,7 @@ import org.opengis.filter.FilterFactory;
 public class ImportProcessTest extends GeoServerTestSupport {
 
     /**
-     * Try to reimport buildings as another layer (different name, different projection)
+     * Try to re-import buildings as another layer (different name, different projection)
      */
     public void testImportBuildings() throws Exception {
         FeatureTypeInfo ti = getCatalog().getFeatureTypeByName(getLayerId(MockData.BUILDINGS));
@@ -30,7 +32,27 @@ public class ImportProcessTest extends GeoServerTestSupport {
         String result = importer.execute(forced, MockData.CITE_PREFIX, MockData.CITE_PREFIX,
                 "Buildings2", null, null, null);
 
-        assertEquals(MockData.CITE_PREFIX + ":" + "Buildings2", result);
+        checkBuildings2(result);
+    }
+    
+    /**
+     * Try to re-import buildings as another layer (different name, different projection)
+     */
+    public void testImportBuildingsForceCRS() throws Exception {
+        FeatureTypeInfo ti = getCatalog().getFeatureTypeByName(getLayerId(MockData.BUILDINGS));
+        SimpleFeatureCollection rawSource = (SimpleFeatureCollection) ti.getFeatureSource(null,
+                null).getFeatures();
+
+        ImportProcess importer = new ImportProcess(getCatalog());
+        String result = importer.execute(rawSource, MockData.CITE_PREFIX, MockData.CITE_PREFIX,
+                "Buildings2", CRS.decode("EPSG:4326"), null, null);
+
+        checkBuildings2(result);
+    }
+
+
+	private void checkBuildings2(String result) throws IOException {
+		assertEquals(MockData.CITE_PREFIX + ":" + "Buildings2", result);
 
         // check the layer
         LayerInfo layer = getCatalog().getLayerByName(result);
@@ -63,5 +85,5 @@ public class ImportProcessTest extends GeoServerTestSupport {
         fi.close();
         assertEquals("114", f.getAttribute("FID"));
         assertEquals("215 Main Street", f.getAttribute("ADDRESS"));
-    }
+	}
 }
