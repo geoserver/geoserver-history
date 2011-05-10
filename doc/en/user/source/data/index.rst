@@ -55,6 +55,7 @@ Other data sources require the use of GeoServer extensions, extra downloads that
    customjdbcaccess/
    connection-pooling/
    sqlview/
+   primarykey/
    app-schema/index
 
    
