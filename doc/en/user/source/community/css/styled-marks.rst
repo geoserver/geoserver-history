@@ -44,6 +44,8 @@ rule with a special selector.  There are 8 "pseudoclass" selectors that are
 used to style selectors:
 
     * ``:mark`` specifies that a rule applies to symbols used as point markers
+    * ``:shield`` specifies that a rule applies to symbols used as label
+      shields (icons displayed behind label text)
     * ``:stroke`` specifies that a rule applies to symbols used as stroke
       patterns
     * ``:fill`` specifies that a rule applies to symbols used as fill patterns
@@ -51,6 +53,8 @@ used to style selectors:
       which context it is used in
     * ``:nth-mark(n)`` specifies that a rule applies to the symbol used for the
       nth stacked point marker on a feature.
+    * ``:nth-shield(n)`` specifies that a rule applies to the symbol used for
+      the background of the nth stacked label on a feature
     * ``:nth-stroke(n)`` specifies that a rule applies to the symbol used for
       the nth stacked stroke pattern on a feature.
     * ``:nth-fill(n)`` specifies that a rule applies to the symbol used for the

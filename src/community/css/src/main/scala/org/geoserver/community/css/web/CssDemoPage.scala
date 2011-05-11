@@ -7,8 +7,8 @@ import java.io.FileWriter
 import scala.io.Source
 
 import org.geoserver.catalog.{FeatureTypeInfo, ResourceInfo, StyleInfo}
+import org.geoserver.config.GeoServerDataDirectory
 import org.geoserver.web.GeoServerSecuredPage
-import org.vfny.geoserver.global.GeoserverDataDirectory
 
 import org.geotools.data.FeatureSource
 
@@ -43,7 +43,6 @@ import org.apache.wicket.util.time.Duration
 
 import org.geoscript.geocss._
 import org.geoscript.geocss.CssParser._
-import org.geoscript.geocss.Translator._
 
 trait CssDemoConstants {
   val styleName = "cssdemo"
@@ -53,8 +52,10 @@ trait CssDemoConstants {
   mark: symbol(square);
 }"""
 
+  val Translator = new Translator()
+
   private def styleSheetXML(stylesheet: Seq[Rule]): String = {
-    val style = css2sld(stylesheet)
+    val style = Translator.css2sld(stylesheet)
     val sldBytes = new java.io.ByteArrayOutputStream
     val xform = new org.geotools.styling.SLDTransformer
     xform.setIndentation(2)
@@ -99,7 +100,14 @@ class CssValidator extends IValidator[String] {
  * @author David Winslow <cdwinslow@gmail.com>
  */
 class CssDemoPage(params: PageParameters) extends GeoServerSecuredPage
-with CssDemoConstants {
+with CssDemoConstants
+{
+  val datadir = new GeoServerDataDirectory(getCatalog().getResourceLoader())
+  val styledir = datadir.findStyleDir()
+  override val Translator =
+    new Translator(Option(styledir).map { _.toURI.toURL })
+
+  def findStyleFile(f: String): java.io.File = new java.io.File(styledir, f)
 
   class UpdatingTextArea(id: String, m: IModel[String]) extends TextArea(id, m) {
     add(new AjaxFormComponentUpdatingBehavior("onblur") {
@@ -114,13 +122,13 @@ with CssDemoConstants {
 
   def sldText = {
     val filename = styleInfo.getFilename()
-    val file = Some(GeoserverDataDirectory.findStyleFile(filename)) filter (null !=)
+    val file = Some(findStyleFile(filename)) filter (null !=)
     file map { file => Source.fromFile(file).mkString }
   }
 
   class StylePanel(id: String, model: IModel[CssDemoPage], map: OpenLayersMapPanel) extends Panel(id, model) {
     var styleBody = {
-      val file = GeoserverDataDirectory.findStyleFile(cssSource)
+      val file = findStyleFile(cssSource)
       if (file != null && file.exists) {
         Source.fromFile(file).mkString
       } else {
@@ -155,7 +163,7 @@ submit a CSS file.
     styleEditor.add(new AjaxButton("submit", styleEditor) {
       override def onSubmit(target: AjaxRequestTarget, form: Form[_]) = {
         try {
-          val file = GeoserverDataDirectory.findStyleFile(cssSource, true)
+          val file = findStyleFile(cssSource)
 
           cssText2sldText(styleBody) match {
             case Left(noSuccess) => println(noSuccess.toString)
@@ -243,7 +251,7 @@ submit a CSS file.
       style.setFilename(name + ".sld")
       catalog.add(style)
 
-      val sld = GeoserverDataDirectory.findStyleFile(style.getFilename())
+      val sld = findStyleFile(style.getFilename())
       if (sld == null || !sld.exists) {
         catalog.getResourcePool().writeStyle(
           style,
@@ -253,7 +261,7 @@ submit a CSS file.
         )
       }
 
-      val css = GeoserverDataDirectory.findStyleFile(name + ".css", true)
+      val css = findStyleFile(name + ".css")
       if (!css.exists) {
         val writer = new FileWriter(css)
         writer.write(defaultStyle)
