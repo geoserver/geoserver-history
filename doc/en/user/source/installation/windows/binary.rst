@@ -1,9 +1,12 @@
-.. _installation_bin_windows:
+.. _installation_windows_bin:
 
-Windows
-=======
+Windows Binary
+==============
 
-.. note:: This section is for the OS-independent binary.  Please see the section on the :ref:`installation_windows` for the wizard-based installer for Windows.
+.. note:: This section is for the OS-independent binary.  Please see the section on the :ref:`installation_windows_installer` for the wizard-based installer for Windows.
+
+The most common way to install GeoServer is using the OS-independent binary.  This version is a GeoServer web application (webapp) bundled inside `Jetty <http://www.mortbay.org/jetty/>`_, a lightweight servlet container system.  It has the advantages of working very similarly across all operating systems plus being very simple to set up.
+
 
 Installation
 ------------
@@ -15,7 +18,7 @@ Installation
 #. Download the archive, and unpack to the directory where you would like the program to be located.  A typical place would be :file:`C:\\Program Files\\GeoServer`.
 
 Setting environment variables
-``````````````````````````````
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 You will need to set the ``JAVA_HOME`` environment variable if it is not already set.  This is the path to your JDK/JRE such that :file:`%JAVA_HOME%\\bin\\java.exe` exists.
 
