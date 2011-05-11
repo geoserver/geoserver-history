@@ -15,9 +15,9 @@ import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.geotools.grid.Element;
 import org.geotools.grid.GridElement;
 import org.geotools.grid.GridFeatureBuilder;
+import org.geotools.grid.PolygonElement;
 import org.geotools.grid.hexagon.HexagonOrientation;
 import org.geotools.grid.hexagon.Hexagons;
 import org.geotools.grid.oblong.Oblongs;
@@ -110,7 +110,7 @@ public class GridProcess implements GeoServerProcess {
         }
 
         @Override
-        public String getFeatureID(Element el) {
+        public String getFeatureID(GridElement ge) {
             return String.valueOf("grid." + (id++));
         }
 
@@ -125,11 +125,11 @@ public class GridProcess implements GeoServerProcess {
          *            a {@code Map} with the single key "id"
          */
         @Override
-        public void setAttributes(Element el, Map<String, Object> attributes) {
-        	GridElement ge = (GridElement) el;
+        public void setAttributes(GridElement ge, Map<String, Object> attributes) {
+        	PolygonElement pe = (PolygonElement) ge;
             attributes.put("id", id);
-            attributes.put("centerX", ge.getCenter().x);
-            attributes.put("centerY", ge.getCenter().y);
+            attributes.put("centerX", pe.getCenter().x);
+            attributes.put("centerY", pe.getCenter().y);
         }
 
     }
