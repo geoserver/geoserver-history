@@ -150,6 +150,10 @@ Text Symbology (Labeling)
       * expression 
       * An expression to use for the geometry when rendering features. 
       * yes
+    - * ``shield``
+      * mark, symbol
+      * A graphic to display behind the label, such as a highway shield.
+      * yes
     - * ``font-family``
       * string
       * The name of the font or font family to use for labels
