@@ -108,6 +108,12 @@ case where the surrounding quote marks can usually be omitted. Some examples::
         stroke: url(http://example.com/);
     }
 
+.. note:: 
+
+    While relative URLs are supported, they will be fully resolved during the conversion process to SLD and written out as absolute URLs. 
+    This may be cause problems when relocating data directories, etc.
+    The style can be regenerated with the current correct URL by opening it in the demo editor and using the Submit button there.
+
 Well-Known Marks
 ----------------
 

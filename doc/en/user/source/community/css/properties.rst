@@ -276,7 +276,38 @@ Text Symbology (Labeling)
         features to prefer if there are labeling conflicts.  This is equivalent
         to the :ref:`Priority<labeling_priority>` SLD extension.
       * yes
-  
+    - * ``-gt-shield-resize``
+      * string, one of ``none``, ``stretch``, or ``proportional``
+      * This option specifies a mode for resizing label graphics (such as
+        highway shields) to fit the text of the label.  The default mode,
+        'none', never modifies the label graphic. In ``stretch`` mode,
+        GeoServer will resize the graphic to exactly surround the label text,
+        possibly modifying the image's aspect ratio.  In ``proportional`` mode,
+        GeoServer will expand the image to be large enough to surround the text
+        while preserving its original aspect ratio.
+      * none
+    - * ``-gt-shield-margin``
+      * list of lengths, one to four elements long.
+      * This option specifies an extra margin (in pixels) to be applied to the
+        label text when calculating label dimensions for use with the
+        ``-gt-shield-resize`` option.  Similar to the ``margin`` shorthand
+        property in CSS for HTML, its interpretation varies depending on how
+        many margin values are provided:
+
+        * 1 value means that GeoServer will use that margin length on all sides
+          of the label
+        * 2 values mean that GeoServer will use the first for vertical (top and
+          bottom) margins and the second for horizontal (left and right)
+          margins.
+        * 3 values mean that GeoServer will use the first for the top margin,
+          the second for the horizontal (left and right) margins, and the third
+          for the bottom margin.
+        * 4 values mean that GeoServer will use the first for the top margin,
+          second for the right margin, third for the bottom margin, and fourth
+          for the left margin.
+
+      * none
+
 Shared
 ------
 
