@@ -1,3 +1,13 @@
+GeoServer 2.1.0 (May 15, 2011)
+------------------------------
+
+The first official release of GeoServer 2.1. This release contains a few minor
+bug fixes and improvements past RC5. See the change log:
+
+http://jira.codehaus.org/secure/ReleaseNote.jspa?projectId=10311&version=17175
+
+This release is based on GeoTools 2.7.1 and GeoWebCache 1.2.6
+
 GeoServer 2.1-RC5 (April 20, 2011)
 ----------------------------------
 
