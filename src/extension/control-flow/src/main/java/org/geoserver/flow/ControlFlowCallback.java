@@ -32,6 +32,8 @@ public class ControlFlowCallback extends AbstractDispatcherCallback implements
     static final Logger LOGGER = Logging.getLogger(ControlFlowCallback.class);
 
     static ThreadLocal<List<FlowController>> REQUEST_CONTROLLERS = new ThreadLocal<List<FlowController>>();
+    
+    static NestedRequestSentinel SENTINEL = new NestedRequestSentinel();
 
     List<FlowController> controllers = Collections.emptyList();
     long timeout = -1;
@@ -39,35 +41,42 @@ public class ControlFlowCallback extends AbstractDispatcherCallback implements
     ControlFlowConfigurator configurator;
 
     public void finished(Request request) {
-        // call back the same controllers we used when the operation started
-        if (REQUEST_CONTROLLERS.get() != null) {
-            List<FlowController> fcl = REQUEST_CONTROLLERS.get();
-            for (FlowController flowController : fcl) {
-                flowController.requestComplete(request);
+        if(SENTINEL.isOutermostRequest()) {
+            // call back the same controllers we used when the operation started
+            if (REQUEST_CONTROLLERS.get() != null) {
+                List<FlowController> fcl = REQUEST_CONTROLLERS.get();
+                for (FlowController flowController : fcl) {
+                    flowController.requestComplete(request);
+                }
             }
-        }
-        // clean up the thread local
-        REQUEST_CONTROLLERS.remove();
+            // clean up the thread local
+            REQUEST_CONTROLLERS.remove();
+        } 
+        SENTINEL.stop();
     }
 
     public Operation operationDispatched(Request request, Operation operation) {
         // check if we need to rebuild the flow controller list
         if (configurator.isStale())
             reloadConfiguration();
-
-        // scan through the existing controllers and set the list in a thread local
-        // so that this request will get exactly the same list when the operation finishes
-        List<FlowController> controllers = this.controllers;
-        if (controllers.size() > 0) {
-            REQUEST_CONTROLLERS.set(controllers);
-            long maxTime = timeout > 0 ? System.currentTimeMillis() + timeout : -1;
-            for (FlowController flowController : controllers) {
-                if(timeout > 0) {
-                    long maxWait = maxTime - System.currentTimeMillis();
-                    if(!flowController.requestIncoming(request, maxWait)) 
-                        throw new HttpErrorCodeException(503, "Requested timeout out while waiting to be executed");
-                 } else {
-                    flowController.requestIncoming(request, -1);
+        
+        // tell the recursion sentinel we're starting a request
+        SENTINEL.start();
+        if(SENTINEL.isOutermostRequest()) {
+            // scan through the existing controllers and set the list in a thread local
+            // so that this request will get exactly the same list when the operation finishes
+            List<FlowController> controllers = this.controllers;
+            if (controllers.size() > 0) {
+                REQUEST_CONTROLLERS.set(controllers);
+                long maxTime = timeout > 0 ? System.currentTimeMillis() + timeout : -1;
+                for (FlowController flowController : controllers) {
+                    if(timeout > 0) {
+                        long maxWait = maxTime - System.currentTimeMillis();
+                        if(!flowController.requestIncoming(request, maxWait)) 
+                            throw new HttpErrorCodeException(503, "Requested timeout out while waiting to be executed");
+                     } else {
+                        flowController.requestIncoming(request, -1);
+                    }
                 }
             }
         }
