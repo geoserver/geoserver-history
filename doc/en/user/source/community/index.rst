@@ -22,3 +22,4 @@ This section is devoted to GeoServer community modules. Community modules are co
    printing/index
    python/index
    spatialite/index
+   teradata/index
