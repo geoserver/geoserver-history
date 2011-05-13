@@ -11,13 +11,14 @@ import org.geotools.gml3.GML;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
 import org.opengis.filter.FilterFactory;
+import org.opengis.filter.FilterFactory2;
 import org.opengis.filter.expression.PropertyName;
 import org.xml.sax.helpers.NamespaceSupport;
 
 
 /**
  * A binding for ogc:PropertyName which does a special case check for an empty
- * property name.
+ * property name and adds namespace support.
  *
  * @author Justin Deoliveira, The Open Planning Project
  *
@@ -53,6 +54,10 @@ public class PropertyNameTypeBinding extends OGCPropertyNameTypeBinding {
                     && (catalog.getNamespaceByURI(namespaceURI) == null)) {
                 throw new WFSException("Illegal attribute namespace: " + namespaceURI);
             }
+        }
+        
+        if (factory instanceof FilterFactory2) {
+            return ((FilterFactory2) factory).property(propertyName.getPropertyName(), namespaceSupport);
         }
 
         return propertyName;
