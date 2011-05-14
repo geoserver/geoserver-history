@@ -280,10 +280,130 @@ Details
 
 In this example, there are two rules, each containing a ``<LineSymbolizer>``.  (Each ``<LineSymbolizer>`` must exist in its own rule.)  The first rule, on **lines 2-8**, draws a standard line, with **line 5** drawing the lines as dark gray (``#333333``) and **line 6** setting the width of the lines to be 2 pixels.
 
-The hatching is invoked in the second rule, on **lines 10-27**. **Line 16* specifies that the rule draw a vertical line hatch (``shape://vertline``) perpendicular to the line geometry. **Lines 18-19** set the hatch color to dark gray (``#333333``) and width to 1 pixel. Finally, ``line 22`` specifies both the length of the hatch and the distance between each hatch to both be 12 pixels.
+The hatching is invoked in the second rule, on **lines 10-27**. **Line 16** specifies that the rule draw a vertical line hatch (``shape://vertline``) perpendicular to the line geometry. **Lines 18-19** set the hatch color to dark gray (``#333333``) and width to 1 pixel. Finally, ``line 22`` specifies both the length of the hatch and the distance between each hatch to both be 12 pixels.
+
+Spaced graphic symbols
+----------------------
+
+This example uses a graphic stroke along with dash arrays to create a "dot and space" line type.  Without using the dash array the lines would be densely populated with subsequent dots, each one touching the previous one.
+
+Adding the dash array specification allows to control the amount of space between one symbol and the next one.
+
+.. note:: This example is not likely to work with other systems supporting SLD. While the SLD is perfectly compliant we are not aware of other systems allowing to combine the usage of ``dasharray`` and graphics strokes (the SLD specification does not say what this combination is supposed to produce). 
+
+.. figure:: images/line_dashspace.png
+   :align: center
+
+   *Spaced symbols along a line*
+
+Code
+~~~~
+
+:download:`View and download the full "Spaced symbols" SLD <artifacts/line_dashspace.sld>`
+
+.. code-block:: xml 
+   :linenos:
+
+      <FeatureTypeStyle>
+        <Rule>
+          <LineSymbolizer>
+            <Stroke>
+              <GraphicStroke>
+                <Graphic>
+                  <Mark>
+                    <WellKnownName>circle</WellKnownName>
+                    <Stroke>
+                      <CssParameter name="stroke">#333333</CssParameter>
+                      <CssParameter name="stroke-width">1</CssParameter>
+                    </Stroke>
+                    <Fill>
+                      <CssParameter name="stroke">#666666</CssParameter>  
+                    </Fill>
+                  </Mark>
+                  <Size>4</Size>
+                  <CssParameter name="stroke-dasharray">4 6</CssParameter>
+                </Graphic>
+              </GraphicStroke>
+            </Stroke>
+          </LineSymbolizer>
+        </Rule>
+      </FeatureTypeStyle>
+      
+Details
+~~~~~~~
+This example, like others before, uses a ``GraphicStroke`` to place a graphic symbol along a line.
+The symbol, defined at **lines 7-16** is a 4 pixels gray circle with a dark gray outline.
+The spacing between symbols is controlled with the ``dasharray`` at **line 18**, setting 4 pixels pen down, just enough to draw the circle, and 6 pixels pen up, which results in the spacing.
 
 
 .. _sld_cookbook_lines_defaultlabel:
+
+Alternating symbols with dash offsets
+-------------------------------------
+
+This example shows how to create a complex line style which alternates a symbol and a line segment.
+The example builds on the knowledge gathered in previous sections:
+
+  * `dasharray` allows to control pen down/pen up behavior and generate dashed lines
+  * `GraphicStroke` allows to place symbols along a line
+  * combining the two togheter it's possible to control symbol spacing
+  
+This example adds the usage of `dashoffset`, which controls at which point of the ``dasharray`` sequence the renderer starts drawing the repeating pattern. For example, having a dash array of ``5 10`` and a dash offset of ``7`` the renderer would start the repeating pattern 7 pixels after its beginnig, so it would jump over the "5 pixels pen down" section and 2 more pixels in the pen up section, performing a residual of 8 pixels up, then 5 down, 10 up, and so on.
+
+This can be used to create two synchronized sequences of dash arrays, one drawing line segments, and the other symbols along a line, like in the following example.
+
+.. note:: This example is not likely to work with other systems supporting SLD. While the SLD is perfectly compliant we are not aware of other systems allowing to combine the usage of ``dasharray`` and graphics strokes (the SLD specification does not say what this combination is supposed to produce). 
+
+.. figure:: images/line_dashdot.png
+   :align: center
+
+   *Dash and symbol*
+
+Code
+~~~~
+
+:download:`View and download the full "Spaced symbols" SLD <artifacts/line_dashdot.sld>`
+
+.. code-block:: xml 
+   :linenos:
+
+      <FeatureTypeStyle>
+        <Rule>
+          <LineSymbolizer>
+            <Stroke>
+              <CssParameter name="stroke">#0000FF</CssParameter>
+              <CssParameter name="stroke-width">1</CssParameter>
+              <CssParameter name="stroke-dasharray">10 10</CssParameter>
+            </Stroke>
+          </LineSymbolizer>
+          <LineSymbolizer>
+            <Stroke>
+              <GraphicStroke>
+                <Graphic>
+                  <Mark>
+                    <WellKnownName>circle</WellKnownName>
+                    <Stroke>
+                      <CssParameter name="stroke">#000033</CssParameter>
+                      <CssParameter name="stroke-width">1</CssParameter>
+                    </Stroke>
+                  </Mark>
+                  <Size>5</Size>
+                  <CssParameter name="stroke-dasharray">5 15</CssParameter>
+                  <CssParameter name="stroke-dashoffset">7.5</CssParameter>
+                </Graphic>
+              </GraphicStroke>
+            </Stroke>
+          </LineSymbolizer>
+        </Rule>
+      </FeatureTypeStyle>
+
+Details
+~~~~~~~
+
+In this example two dash array based line symbolizers are used to generate an alternating sequence.
+The first one, defined at **lines 3-9** is a simple line dash array alternating 10 pixels of pen down with 10 pixels of pen up. 
+The second one, defined at **lines 10-27** alternates a 5 pixels wide empty circle with 15 pixels of white space.
+In order to have the two symbolizers alternate the second one uses a dashoffset of 7.5, making the sequence start with 12.5 pixels of white space, then a circle (which is then centered between the two line segments of the other pattern), then 15 pixels of white space, and so on.
 
 Line with default label
 -----------------------
