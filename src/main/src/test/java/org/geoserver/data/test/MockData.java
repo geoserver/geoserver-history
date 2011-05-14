@@ -593,6 +593,7 @@ public class MockData implements TestData {
             IOUtils.copy( coverage.openStream(), compressedFile );
             IOUtils.decompress(compressedFile, f);
             final File srcDir = new File(f, name.getLocalPart());
+            srcDir.mkdir();
             FileUtils.copyDirectory(srcDir, f, true);
         }
         coverageInfo(name, f, styleName);

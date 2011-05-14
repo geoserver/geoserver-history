@@ -6,10 +6,13 @@ package org.geoserver.data.util;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import org.geotools.coverage.grid.GeneralGridGeometry;
@@ -17,6 +20,7 @@ import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.parameter.DefaultParameterDescriptor;
 import org.geotools.referencing.CRS;
+import org.opengis.parameter.GeneralParameterDescriptor;
 import org.opengis.parameter.GeneralParameterValue;
 import org.opengis.parameter.ParameterDescriptor;
 import org.opengis.parameter.ParameterValue;
@@ -351,6 +355,44 @@ public class CoverageUtils {
         }
 
         return value;
+    }
+    
+    
+    
+    /**
+     * Merges the provided parameter in the read parameters, provided it's included in the specified
+     * descriptors with one of the aliases
+     * @param parameterDescriptors The parameter descriptors of the reader
+     * @param readParameters The current set of reader parameters
+     * @param value
+     * @param parameterAliases
+     * @return
+     */
+    public static GeneralParameterValue[] mergeParameter(List<GeneralParameterDescriptor> parameterDescriptors, 
+            GeneralParameterValue[] readParameters, Object value, String... parameterAliases) {
+        // setup a param name alias set
+        Set<String> aliases = new HashSet<String>(Arrays.asList(parameterAliases));
+        
+        // scan all the params looking for the one we want to add
+        for (GeneralParameterDescriptor pd : parameterDescriptors) {
+            // in case of match of any alias add a param value to the lot
+            if (aliases.contains(pd.getName().getCode())) {
+                final ParameterValue pv = (ParameterValue) pd.createValue();
+                pv.setValue(value);
+
+                // add to the list
+                GeneralParameterValue[] readParametersClone = new GeneralParameterValue[readParameters.length + 1];
+                System.arraycopy(readParameters, 0, readParametersClone, 0,
+                        readParameters.length);
+                readParametersClone[readParameters.length] = pv;
+                readParameters = readParametersClone;
+
+                // leave
+                break;
+            }
+        }
+        
+        return readParameters;
     }
      
 }

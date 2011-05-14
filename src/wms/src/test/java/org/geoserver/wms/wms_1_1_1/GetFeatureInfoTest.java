@@ -6,8 +6,10 @@ package org.geoserver.wms.wms_1_1_1;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 
+import java.awt.image.RenderedImage;
 import java.util.logging.Level;
 
+import javax.imageio.ImageIO;
 import javax.xml.namespace.QName;
 
 import junit.framework.Test;
@@ -17,6 +19,8 @@ import org.geoserver.wms.WMSInfo;
 import org.geoserver.wms.WMSTestSupport;
 import org.geotools.util.logging.Logging;
 import org.w3c.dom.Document;
+
+import com.mockrunner.mock.web.MockHttpServletResponse;
 
 public class GetFeatureInfoTest extends WMSTestSupport {
     
@@ -52,6 +56,10 @@ public class GetFeatureInfoTest extends WMSTestSupport {
         dataDirectory.addStyle("squares", GetFeatureInfoTest.class.getResource("squares.sld"));
         dataDirectory.addPropertiesType(SQUARES, GetFeatureInfoTest.class.getResource("squares.properties"),
                 null);
+        
+        // this also adds the raster style
+        dataDirectory.addCoverage(new QName(MockData.SF_URI, "mosaic", MockData.SF_PREFIX), 
+                getClass().getResource("../raster-filter-test.zip"), null, "raster");
     }
     
     /**
@@ -341,4 +349,32 @@ public class GetFeatureInfoTest extends WMSTestSupport {
         assertNotNull(result);
         assertTrue(result.indexOf("Green Forest") > 0);
     }
+    
+    public void testRasterFilterRed() throws Exception {
+        String response = getAsString("wms?bgcolor=0x000000&LAYERS=sf:mosaic&STYLES=" +
+        		"&FORMAT=image/png&SERVICE=WMS&VERSION=1.1.1" +
+                "&REQUEST=GetFeatureInfo&SRS=EPSG:4326&BBOX=0,0,1,1&WIDTH=150&HEIGHT=150" +
+                "&transparent=false&CQL_FILTER=location like 'red%25' + " +
+                "&query_layers=sf:mosaic&x=10&y=10");
+        
+        assertTrue(response.indexOf("RED_BAND = 255.0") > 0);
+        assertTrue(response.indexOf("GREEN_BAND = 0.0") > 0);
+        assertTrue(response.indexOf("BLUE_BAND = 0.0") > 0);
+    }
+    
+    public void testRasterFilterGreen() throws Exception {
+        String response = getAsString("wms?bgcolor=0x000000&LAYERS=sf:mosaic&STYLES=" +
+                "&FORMAT=image/png&SERVICE=WMS&VERSION=1.1.1" +
+                "&REQUEST=GetFeatureInfo&SRS=EPSG:4326&BBOX=0,0,1,1&WIDTH=150&HEIGHT=150" +
+                "&transparent=false&CQL_FILTER=location like 'green%25' + " +
+                "&query_layers=sf:mosaic&x=10&y=10");
+        
+        assertTrue(response.indexOf("RED_BAND = 0.0") > 0);
+        assertTrue(response.indexOf("GREEN_BAND = 255.0") > 0);
+        assertTrue(response.indexOf("BLUE_BAND = 0.0") > 0);
+    }
+    
+   
+    
+    
 }
