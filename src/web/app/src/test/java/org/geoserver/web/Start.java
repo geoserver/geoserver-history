@@ -4,8 +4,10 @@
  */
 package org.geoserver.web;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,13 +30,9 @@ public class Start {
     private static final Logger log = org.geotools.util.logging.Logging.getLogger(Start.class.getName());
 
     public static void main(String[] args) {
-        Server jettyServer = null;
+        final Server jettyServer = new Server();
 
         try {
-            jettyServer = new Server();
-
-
-
             SocketConnector conn = new SocketConnector();
             String portVariable = System.getProperty("jetty.port");
             int port = parsePort(portVariable);
@@ -67,7 +65,35 @@ public class Start {
 
            jettyServer.start();
 
-            // use this to test normal stop behaviour, that is, to check stuff that
+           /*
+            * Reads from System.in looking for the string "stop\n" in order to gracefully terminate
+            * the jetty server and shut down the JVM. This way we can invoke the shutdown hooks
+            * while debugging in eclipse. Can't catch CTRL-C to emulate SIGINT as the eclipse
+            * console is not propagating that event
+            */
+           Thread stopThread = new Thread() {
+               @Override
+               public void run() {
+                   BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+                   String line;
+                   try {
+                       while (true) {
+                           line = reader.readLine();
+                           if ("stop".equals(line)) {
+                               jettyServer.stop();
+                               System.exit(0);
+                           }
+                       }
+                   } catch (Exception e) {
+                       e.printStackTrace();
+                       System.exit(1);
+                   }
+               }
+           };
+           stopThread.setDaemon(true);
+           stopThread.run();
+
+           // use this to test normal stop behaviour, that is, to check stuff that
             // need to be done on container shutdown (and yes, this will make 
             // jetty stop just after you started it...)
             // jettyServer.stop(); 
