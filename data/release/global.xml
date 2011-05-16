@@ -25,6 +25,7 @@
     <corePoolSize>5</corePoolSize>
     <keepAliveTime>30000</keepAliveTime>
     <queueType>UNBOUNDED</queueType>
+    <imageIOCacheThreshold>10240</imageIOCacheThreshold>
   </coverageAccess>
   <charset>UTF-8</charset>
   <numDecimals>8</numDecimals>

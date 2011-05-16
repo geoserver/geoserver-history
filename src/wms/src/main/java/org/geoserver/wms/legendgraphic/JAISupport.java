@@ -25,6 +25,8 @@ import javax.imageio.ImageWriter;
 import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.stream.ImageOutputStream;
 
+import org.geotools.image.io.ImageIOExt;
+
 
 /**
  * Helper class to deal with JAI availability and image encoding
@@ -188,7 +190,7 @@ public final class JAISupport {
 
             image = curImage;
 
-            ioutstream = ImageIO.createImageOutputStream(outStream);
+            ioutstream = ImageIOExt.createImageOutputStream(image, outStream);
             writer.setOutput(ioutstream);
             writer.write(image);
             ioutstream.close();
@@ -197,7 +199,7 @@ public final class JAISupport {
             return;
         }
 
-        ioutstream = ImageIO.createImageOutputStream(outStream);
+        ioutstream = ImageIOExt.createImageOutputStream(image, outStream);
         writer.setOutput(ioutstream);
         writer.write(meta, new IIOImage(image, null, meta), param);
         ioutstream.close();

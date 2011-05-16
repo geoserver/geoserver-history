@@ -22,6 +22,15 @@
         <label><wicket:message key="queueType">Default QueueType</wicket:message></label>
         <select wicket:id="queueType" class="field"/>
     </li>
+  </ul>
+ </fieldset>
+ <fieldset>
+  <legend><span><wicket:message key="imageio">ImageIO Settings</wicket:message></span></legend>
+  <ul>
+    <li>
+      <label for="imageIOCacheThreshold"><wicket:message key="imageIOCacheThreshold">ImageIO cache threshold</wicket:message></label>
+      <input id="imageIOCacheThreshold" class="field text" type="text" wicket:id="imageIOCacheThreshold" />
+    </li>
     <li class="button-group selfclear">
       <button type="submit" wicket:id="submit"><wicket:message key="submit">submit</wicket:message></button>
       <button type="submit" wicket:id="cancel"><wicket:message key="cancel">cancel</wicket:message></button>

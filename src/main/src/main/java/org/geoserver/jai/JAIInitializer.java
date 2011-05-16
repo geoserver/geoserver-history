@@ -2,7 +2,6 @@ package org.geoserver.jai;
 
 import java.util.List;
 
-import javax.imageio.ImageIO;
 import javax.media.jai.JAI;
 import javax.media.jai.RecyclingTileFactory;
 
@@ -11,6 +10,7 @@ import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.config.GeoServerInitializer;
 import org.geoserver.config.JAIInfo;
+import org.geotools.image.io.ImageIOExt;
 import org.geotools.image.jai.Registry;
 
 import com.sun.media.jai.util.SunTileCache;
@@ -75,12 +75,7 @@ public class JAIInitializer implements GeoServerInitializer {
         jaiDef.getTileScheduler().setPriority(jai.getTilePriority());
         jaiDef.getTileScheduler().setPrefetchPriority(jai.getTilePriority());
         
-        // ImageIO Caching
-        ImageIO.setUseCache(jai.isImageIOCache());
-        
         // Workaround for native mosaic BUG
         Registry.setNativeAccelerationAllowed("Mosaic", jai.isAllowNativeMosaic(), jaiDef);
-        
-        
     }
 }

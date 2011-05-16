@@ -46,7 +46,6 @@ public class JAIPage extends ServerAdminPage {
         tilePriority.add(NumberValidator.POSITIVE);
         form.add(tilePriority);
         form.add(new CheckBox("recycling"));
-        form.add(new CheckBox("imageIOCache"));
         form.add(new CheckBox("jpegAcceleration"));
         form.add(new CheckBox("pngAcceleration"));
         form.add(new CheckBox("allowNativeMosaic"));

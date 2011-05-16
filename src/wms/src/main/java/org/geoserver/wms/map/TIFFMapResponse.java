@@ -19,6 +19,7 @@ import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.GetMapRequest;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSMapContext;
+import org.geotools.image.io.ImageIOExt;
 import org.geotools.image.palette.InverseColorMapOp;
 import org.geotools.util.logging.Logging;
 
@@ -80,7 +81,7 @@ public final class TIFFMapResponse extends RenderedImageMapResponse {
         final ImageWriter writer = writerSPI.createWriterInstance();
 
         // getting a stream caching in memory
-        final ImageOutputStream ioutstream = ImageIO.createImageOutputStream(outStream);
+        final ImageOutputStream ioutstream = ImageIOExt.createImageOutputStream(image, outStream);
         if (ioutstream == null)
             throw new ServiceException("Unable to create ImageOutputStream.");
 

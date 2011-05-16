@@ -21,6 +21,7 @@ import org.geoserver.config.impl.CoverageAccessInfoImpl;
 import org.geoserver.platform.ExtensionPriority;
 import org.geotools.factory.GeoTools;
 import org.geotools.factory.Hints;
+import org.geotools.image.io.ImageIOExt;
 
 /**
  * Initializes Coverage Access settings from configuration.
@@ -110,7 +111,10 @@ public class CoverageAccessInitializer implements GeoServerInitializer, Extensio
             }
 
             // set the executor in the resource pool
-            gs.getCatalog().getResourcePool().setCoverageExecutor(executor);    
+            gs.getCatalog().getResourcePool().setCoverageExecutor(executor);
+            
+            // setup the memory/file system cache usage threshold
+            ImageIOExt.setFilesystemThreshold(coverageAccess.getImageIOCacheThreshold() * 1024);
         } 
     }
 

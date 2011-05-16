@@ -14,6 +14,7 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.validation.validator.MinimumValidator;
 import org.apache.wicket.validation.validator.NumberValidator;
 import org.geoserver.config.CoverageAccessInfo;
 import org.geoserver.config.CoverageAccessInfo.QueueType;
@@ -35,19 +36,23 @@ public class CoverageAccessPage extends ServerAdminPage {
 
         // All the fields
         TextField corePoolSize = new TextField("corePoolSize");
-        corePoolSize.add(NumberValidator.POSITIVE);
+        corePoolSize.add(new MinimumValidator(1));
         form.add(corePoolSize);
         
         TextField maxPoolSize = new TextField("maxPoolSize");
-        maxPoolSize.add(NumberValidator.POSITIVE);
+        maxPoolSize.add(new MinimumValidator(1));
         form.add(maxPoolSize);
         
         TextField keepAliveTime = new TextField("keepAliveTime");
-        keepAliveTime.add(NumberValidator.POSITIVE);
+        keepAliveTime.add(new MinimumValidator(1));
         form.add(keepAliveTime);
         
         final DropDownChoice queueType = new DropDownChoice("queueType", Arrays.asList(CoverageAccessInfo.QueueType.values()), new QueueTypeRenderer());
         form.add(queueType);
+        
+        TextField imageIOCacheThreshold = new TextField("imageIOCacheThreshold");
+        imageIOCacheThreshold.add(new MinimumValidator(0l));
+        form.add(imageIOCacheThreshold);
                 
         Button submit = new Button("submit", new StringResourceModel("submit", this, null)) {
             @Override
