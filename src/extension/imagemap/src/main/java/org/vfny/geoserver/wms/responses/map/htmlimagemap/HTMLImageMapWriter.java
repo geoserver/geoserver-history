@@ -327,9 +327,11 @@ public class HTMLImageMapWriter extends OutputStreamWriter {
     		// in output
     		if(processStyle(ft,fts)) {
     			try {
+    				Geometry geo=(Geometry)ft.getDefaultGeometry();
+    				if(geo!=null) {
 		    		// encodes starting element
 		            startElement(ft,"");        
-		            Geometry geo=(Geometry)ft.getDefaultGeometry();
+			            
 		            // pre geometry encoding phase
 		            startGeometry(geo);
 		            // actual geometry encoding phase
@@ -341,10 +343,19 @@ public class HTMLImageMapWriter extends OutputStreamWriter {
 		            // if everything has been correctly encoded,
 		            // we commit the buffer content to the stream
 		            commitBuffer();
+    				} else {
+    					buffer=new StringBuffer();
+    					if(LOGGER.isLoggable(Level.WARNING))
+        					LOGGER.warning("null geometry");
+    				}
     			} catch(IOException e) {
     				buffer=new StringBuffer();
     				if(LOGGER.isLoggable(Level.WARNING))
     					LOGGER.warning("Problems encoding shape: "+e.getMessage());
+    			} catch(Throwable t) {
+    				buffer=new StringBuffer();
+    				if(LOGGER.isLoggable(Level.SEVERE))
+    					LOGGER.severe("Problems encoding shape: "+t.getMessage());
     			}
     		}
             
@@ -380,17 +391,28 @@ public class HTMLImageMapWriter extends OutputStreamWriter {
 	    		GeometryCollection geomCollection = (GeometryCollection) ft.getDefaultGeometry();
 	    		for (int i = 0; i < geomCollection.getNumGeometries(); i++) {
 	    			try {
+	    				Geometry geo=geomCollection.getGeometryN(i);
+	    				if(geo!=null) {
 			            startElement(ft,"."+i);        
-			            Geometry geo=geomCollection.getGeometryN(i);
+				            
 			            startGeometry(geo);
 			            writeGeometry(geo,buffer);
 			            endGeometry(geo);        
 			            endElement(ft);
 			            commitBuffer();
+	    				} else {
+	    					if(LOGGER.isLoggable(Level.WARNING))
+		    					LOGGER.warning("Problems encoding shape: null geometry");
+	    				}
+	    					
 	    			} catch(IOException e) {
 	    				buffer=new StringBuffer();
 	    				if(LOGGER.isLoggable(Level.WARNING))
 	    					LOGGER.warning("Problems encoding shape: "+e.getMessage());	    			
+	    			} catch(Throwable t) {
+	    				buffer=new StringBuffer();
+	    				if(LOGGER.isLoggable(Level.SEVERE))
+	    					LOGGER.severe("Problems encoding shape: "+t.getMessage());	    			
 	    			}
 	    		}
     		}
@@ -689,15 +711,19 @@ public class HTMLImageMapWriter extends OutputStreamWriter {
          * @throws IOException if an error occures during encoding
          */
         protected void writeGeometry(Geometry geom,StringBuffer buf) throws IOException {
+        	if(geom instanceof Point) {
             Point p = (Point) geom;
+	            if(p.getCoordinate()!=null) {
             if(asCircle) {
             	writeToBuffer(getPoint(p.getCoordinate())+","+(int)Math.round(size),buf);
             } else{
             	throw new IOException("Nothing to encode");
             	//TODO: manage different shapes
             }
-
-            
+	            } else
+	            	throw new IOException("null point coordinate");
+        	} else
+        		throw new IOException("Wrong geometry: it should be a Point");
         }
     }
 
@@ -764,6 +790,7 @@ public class HTMLImageMapWriter extends OutputStreamWriter {
          * @throws IOException if an error occures during encoding
          */
         protected void writeGeometry(Geometry geom,StringBuffer buf) throws IOException {
+        	if(geom instanceof LineString) {
             LineString l = (LineString) geom;
             
             try {
@@ -775,8 +802,10 @@ public class HTMLImageMapWriter extends OutputStreamWriter {
 					Polygon poly=(Polygon)decimate(buffered);
 					if(poly!=null) {
 						LineString shell = poly.getExteriorRing();
-			            
+				            if(shell!=null && shell.getCoordinates()!=null)
 			            writePathContent(shell.getCoordinates(),buf);
+				            else
+				            	throw new IOException("Nothing to encode");
 					} else
 						throw new IOException("Nothing to encode");
 				} else {
@@ -788,6 +817,8 @@ public class HTMLImageMapWriter extends OutputStreamWriter {
 			} catch (NoninvertibleTransformException e) {
 				throw new IOException(e.getMessage());
 			} 
+        	} else
+        		throw new IOException("Wrong geometry: it should be a LineString");
         }
     }
 
@@ -847,8 +878,10 @@ public class HTMLImageMapWriter extends OutputStreamWriter {
         		throw new IOException("Impossible to encode: "+geom);
             if(poly!=null) {
 	            LineString shell = poly.getExteriorRing();
-	            
+	            if(shell!=null && shell.getCoordinates()!=null)
 	            writePathContent(shell.getCoordinates(),buf);
+	            else
+	            	throw new IOException("Nothing to encode");
             } else
             	throw new IOException("Nothing to encode");
             
@@ -914,7 +947,7 @@ public class HTMLImageMapWriter extends OutputStreamWriter {
     		
     		for (int i = 0; i < geomCollection.getNumGeometries(); i++) {
     			Geometry geom=geomCollection.getGeometryN(i);
-    			
+    			if(geom!=null) {
                 Class<?> gtype = geom.getClass();
 
                 // retrieves the right feature writer (based on the current geometry type)
@@ -931,7 +964,16 @@ public class HTMLImageMapWriter extends OutputStreamWriter {
                 		buffer=new StringBuffer();
                 		if(LOGGER.isLoggable(Level.WARNING))
 	    					LOGGER.warning("Problems encoding shape: "+e.getMessage());
+	                	} catch(Throwable t) {
+	                		buffer=new StringBuffer();
+	                		if(LOGGER.isLoggable(Level.SEVERE))
+		    					LOGGER.severe("Problems encoding shape: "+t.getMessage());
+	                	}
                 	}
+    			} else {
+    				buffer=new StringBuffer();
+            		if(LOGGER.isLoggable(Level.WARNING))
+    					LOGGER.warning("Problems encoding shape: null geometry");
                 }
     		}
             
@@ -968,7 +1010,10 @@ public class HTMLImageMapWriter extends OutputStreamWriter {
          * Actually write the geometry (through the delegate).
          */
 		protected void writeGeometry(Geometry geom,StringBuffer buf) throws IOException {
+			if(geom!=null)
 			delegateWriter.writeGeometry(geom,buf);			
+			else
+				throw new IOException("null geometry");
 		}
         
         
