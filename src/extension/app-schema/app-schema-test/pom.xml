@@ -112,7 +112,7 @@
 		<dependency>
 			<groupId>org.geotools.data</groupId>
 			<artifactId>refdataset-1.0</artifactId>
-			<version>1.0.4</version>				
+			<version>1.0.5</version>				
 			<scope>test</scope>
 		</dependency>
         <dependency>
@@ -139,6 +139,8 @@
 					<excludes>
 						<exclude>**/DataReferenceWfsOracleTest.java</exclude>
 						<exclude>**/DataReferenceWfsPostgisTest.java</exclude>
+						<exclude>**/WfsOnlineOracleTest.java</exclude>
+						<exclude>**/WfsOnlinePostgisTest.java</exclude>
 					</excludes>
 				</configuration>
 			</plugin>

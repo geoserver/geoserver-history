@@ -101,7 +101,7 @@
                         gsml:RockMaterial
 					</targetAttribute>
 					<idExpression>
-						<OCQL>strConCat('gsml.rockmaterial.',id)</OCQL>
+						<OCQL>full_id</OCQL>
 					</idExpression>
 				</AttributeMapping>
 				<AttributeMapping>

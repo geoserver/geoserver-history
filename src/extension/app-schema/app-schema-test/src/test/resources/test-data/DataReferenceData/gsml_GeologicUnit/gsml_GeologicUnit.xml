@@ -102,7 +102,7 @@
                         gsml:GeologicUnit
 					</targetAttribute>
 					<idExpression>
-						<OCQL>strConCat('gsml.geologicunit.',id)</OCQL>
+						<OCQL>full_id</OCQL>
 					</idExpression>				
 				</AttributeMapping>
 				<AttributeMapping>
@@ -164,7 +164,7 @@
 					</targetAttribute>					
 					<ClientProperty>
 						<name>xlink:href</name>
-						<value>if_then_else (isNull(preferredevent_id),'urn:ogc:def:nil:OGC::missing',strConCat('#gsml.geologicevent.',preferredevent_id))</value>
+						<value>if_then_else (isNull(age),'urn:ogc:def:nil:OGC::missing',strConCat('#gsml.geologicevent.',age))</value>
 					</ClientProperty>
 					<isMultiple>true</isMultiple>	
 				</AttributeMapping>	

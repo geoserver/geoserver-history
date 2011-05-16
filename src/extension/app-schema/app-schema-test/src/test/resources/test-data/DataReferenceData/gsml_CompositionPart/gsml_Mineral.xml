@@ -98,7 +98,7 @@
                         gsml:Mineral
 					</targetAttribute>
 					<idExpression>
-						<OCQL>strConCat('gsml.mineral.',id)</OCQL>
+						<OCQL>full_id</OCQL>
 					</idExpression>
 				</AttributeMapping>	
 				<AttributeMapping>

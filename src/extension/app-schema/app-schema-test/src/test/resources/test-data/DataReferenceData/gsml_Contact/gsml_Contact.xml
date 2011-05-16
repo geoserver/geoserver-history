@@ -103,7 +103,7 @@
                         gsml:Contact
 					</targetAttribute>
 					<idExpression>
-						<OCQL>strConCat('gsml.contact.',contact_id)</OCQL>
+						<OCQL>full_contact_id</OCQL>
 					</idExpression>
 				</AttributeMapping>
 				<AttributeMapping>

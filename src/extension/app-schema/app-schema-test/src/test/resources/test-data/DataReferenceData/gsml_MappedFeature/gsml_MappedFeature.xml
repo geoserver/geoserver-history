@@ -101,7 +101,7 @@
                         gsml:MappedFeature
 					</targetAttribute>
 					<idExpression>
-						<OCQL>strConCat('gsml.mappedfeature.',id)</OCQL>
+						<OCQL>full_id</OCQL>
 					</idExpression>					
 				</AttributeMapping>	
 				<AttributeMapping>

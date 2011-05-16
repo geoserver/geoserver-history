@@ -33,6 +33,7 @@ public abstract class DataReferenceWfsOnlineTest extends AbstractDataReferenceWf
     /**
      * Test whether GetCapabilities returns wfs:WFS_Capabilities.
      */
+
     public void testGetCapabilities() {
         Document doc = getAsDOM("wfs?request=GetCapabilities");
         LOGGER.info("WFS =GetCapabilities response:\n" + prettyString(doc));
@@ -250,7 +251,7 @@ public abstract class DataReferenceWfsOnlineTest extends AbstractDataReferenceWf
                 doc);
 
         assertXpathEvaluatesTo(
-                "#gsml.geologicevent.16777549126932776",
+                "#gsml.geologicevent.16777549126932777",
                 "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.16777549126932776']/gsml:preferredAge/@xlink:href",
                 doc);
 
@@ -444,7 +445,7 @@ public abstract class DataReferenceWfsOnlineTest extends AbstractDataReferenceWf
                 doc);
 
         assertXpathEvaluatesTo(
-                "#gsml.geologicevent.16777549126930540",
+                "#gsml.geologicevent.16777549126930541",
                 "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.16777549126930540']/gsml:preferredAge/@xlink:href",
                 doc);
 
@@ -910,7 +911,7 @@ public abstract class DataReferenceWfsOnlineTest extends AbstractDataReferenceWf
                 + "</wfs:GetFeature>";
         Document doc = postAsDOM("wfs", xml);
         LOGGER.info("WFS filter GetFeature response:\n" + prettyString(doc));
-        assertXpathCount(3, "//gsml:GeologicUnit", doc);
+        assertXpathCount(6, "//gsml:GeologicUnit", doc);
         assertXpathCount(1, "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.167775491107848330']",
                 doc);
         assertXpathCount(1, "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.16777549126930540']",
@@ -952,7 +953,7 @@ public abstract class DataReferenceWfsOnlineTest extends AbstractDataReferenceWf
                 + "</wfs:GetFeature>";
         doc = postAsDOM("wfs", xml);
         LOGGER.info("WFS filter GetFeature response:\n" + prettyString(doc));
-        assertXpathCount(7, "//gsml:GeologicUnit", doc);
+        assertXpathCount(17, "//gsml:GeologicUnit", doc);
 
         assertXpathCount(1, "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.167775491107838594']",
                 doc);
@@ -1068,38 +1069,30 @@ public abstract class DataReferenceWfsOnlineTest extends AbstractDataReferenceWf
         //
         doc = postAsDOM("wfs", xml);
         LOGGER.info("WFS filter GetFeature response:\n" + prettyString(doc));
-        assertXpathEvaluatesTo("2", "/wfs:FeatureCollection/@numberOfFeatures", doc);
+        assertXpathEvaluatesTo("5", "/wfs:FeatureCollection/@numberOfFeatures", doc);
     }
 
-    public void testNoPrimaryKey() {
-        String path = "wfs?request=GetFeature&typename=gsml:ShearDisplacementStructure&featureid=gsml.sheardisplacementstructure.46216";
+    public void _testGeologicUnit() {
+        String path = "wfs?request=GetFeature&typename=gsml:GeologicUnit&featureid=gsml.geologicunit.16777549126930540,gsml.geologicunit.167775491107838881,gsml.geologicunit.16777549126931275,gsml.geologicunit.167775491233249211,gsml.geologicunit.1677754911513318041,gsml.geologicunit.167775491107843155,gsml.geologicunit.16777549126932958,gsml.geologicunit.16777549126932676,gsml.geologicunit.16777549126932776,gsml.geologicunit.167775491110573732,gsml.geologicunit.1677754911513320744";
         Document doc = getAsDOM(path);
         LOGGER.info(prettyString(doc));
-        assertXpathCount(
-                2,
-                "//gsml:ShearDisplacementStructure[@gml:id='gsml.sheardisplacementstructure.46216']/gsml:geologicHistory/gsml:DisplacementEvent",
-                doc);
+    }
 
-        String xml = "<wfs:GetFeature service=\"WFS\" version=\"1.1.0\" xmlns:cdf=\"http://www.opengis.net/cite/data\" "
-                + "xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:wfs=\"http://www.opengis.net/wfs\" "
-                + "xmlns:gml=\"http://www.opengis.net/gml\" xmlns:gsml=\""
-                + AbstractAppSchemaMockData.GSML_URI
-                + "\">"
-                + "<wfs:Query typeName=\"gsml:ShearDisplacementStructure\">"
-                + "    <ogc:Filter>"
-                + "          <ogc:PropertyIsEqualTo>"
-                + "              <ogc:Literal>E</ogc:Literal>"
-                + "              <ogc:PropertyName>gsml:ShearDisplacementStructure[@gml:id='gsml.sheardisplacementstructure.46216']/gsml:geologicHistory/gsml:DisplacementEvent/gsml:incrementalDisplacement/gsml:DisplacementValue/gsml:hangingWallDirection/gsml:CGI_LinearOrientation/gsml:descriptiveOrientation/gsml:CGI_TermValue/gsml:value</ogc:PropertyName>"
-                + "          </ogc:PropertyIsEqualTo>"
-                + "    </ogc:Filter>"
-                + "</wfs:Query> "
-                + "</wfs:GetFeature>";
+    public void _testContact() {
+        String path = "wfs?request=GetFeature&typename=gsml:Contact&featureid=gsml.contact.46233,gsml.contact.46235";
+        Document doc = getAsDOM(path);
+        LOGGER.info(prettyString(doc));
+    }
 
-        doc = postAsDOM("wfs", xml);
-        LOGGER.info("WFS filter GetFeature response:\n" + prettyString(doc));
-        assertXpathEvaluatesTo(
-                "E",
-                "//gsml:ShearDisplacementStructure[@gml:id='gsml.sheardisplacementstructure.46216']/gsml:geologicHistory/gsml:DisplacementEvent/gsml:incrementalDisplacement/gsml:DisplacementValue/gsml:hangingWallDirection/gsml:CGI_LinearOrientation/gsml:descriptiveOrientation/gsml:CGI_TermValue/gsml:value",
-                doc);
+    public void _testShearDisplacement() {
+        String path = "wfs?request=GetFeature&typename=gsml:ShearDisplacementStructure&featureid=gsml.sheardisplacementstructure.46179,gsml.sheardisplacementstructure.46181,gsml.sheardisplacementstructure.46188,gsml.sheardisplacementstructure.46199,gsml.sheardisplacementstructure.46216";
+        Document doc = getAsDOM(path);
+        LOGGER.info(prettyString(doc));
+    }
+
+    public void _testMappedFeature() {
+        String path = "wfs?request=GetFeature&typename=gsml:MappedFeature&featureid=gsml.mappedfeature.195201,gsml.mappedfeature.192654,gsml.mappedfeature.191921,gsml.mappedfeature.179239,gsml.mappedfeature.185969,gsml.mappedfeature.186037,gsml.mappedfeature.185817,gsml.mappedfeature.185911,gsml.mappedfeature.178855,gsml.mappedfeature.185608";
+        Document doc = getAsDOM(path);
+        LOGGER.info(prettyString(doc));
     }
 }

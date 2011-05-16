@@ -101,7 +101,7 @@
                         gsml:GeologicEvent
 					</targetAttribute>
 					<idExpression>
-						<OCQL>strConCat('gsml.geologicevent.',id)</OCQL>
+						<OCQL>full_id</OCQL>
 					</idExpression>
 				</AttributeMapping>
 				<AttributeMapping>

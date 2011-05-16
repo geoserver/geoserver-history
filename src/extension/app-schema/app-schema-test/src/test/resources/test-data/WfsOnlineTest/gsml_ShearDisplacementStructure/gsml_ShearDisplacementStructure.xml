@@ -133,18 +133,7 @@
 					<sourceExpression>
 						<OCQL>purpose</OCQL>						
 					</sourceExpression>						
-				</AttributeMapping>	
-				<AttributeMapping>
-					<targetAttribute>
-                       gsml:occurrence
-					</targetAttribute>
-					<sourceExpression>
-						<OCQL>sheardisplacementstructure_id</OCQL>
-						<linkElement>gsml:MappedFeature</linkElement>
-						<linkField>FEATURE_LINK</linkField>						
-					</sourceExpression>	
-					<isMultiple>true</isMultiple>
-				</AttributeMapping>	
+				</AttributeMapping>					
 				<AttributeMapping>
 					<targetAttribute>
                        gsml:preferredAge

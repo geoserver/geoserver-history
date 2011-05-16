@@ -15,7 +15,7 @@
 			<prefix>xlink</prefix>
 			<uri>http://www.w3.org/1999/xlink</uri>
 		</Namespace>
-	</namespaces>		
+	</namespaces>	
 	
 	<sourceDataStores>
 		<DataStore>
@@ -90,82 +90,109 @@
 	<typeMappings>		
 		<FeatureTypeMapping>
 			<sourceDataStore>${dbtype}</sourceDataStore>
-			<sourceType>view_displacementstructname</sourceType>
-			<targetElement>gsml:ShearDisplacementStructure</targetElement>			
+			<sourceType>view_displacementevent</sourceType>
+			<targetElement>gsml:DisplacementEvent</targetElement>			
 			<attributeMappings>
 				<AttributeMapping>
 					<targetAttribute>
-                        gsml:ShearDisplacementStructure
-					</targetAttribute>
-					<idExpression>
-						<OCQL>full_sds_id</OCQL>
-					</idExpression>
+                        gsml:DisplacementEvent
+					</targetAttribute>										
+				</AttributeMapping>
+				<AttributeMapping>
+					<targetAttribute>gsml:eventAge</targetAttribute>
+					<targetAttributeNode>gsml:CGI_TermRangePropertyType</targetAttributeNode>
 				</AttributeMapping>
 				<AttributeMapping>
 					<targetAttribute>
-                        gml:name
+                        gsml:eventAge/gsml:CGI_TermRange/gsml:lower/gsml:CGI_TermValue/gsml:value
 					</targetAttribute>
 					<sourceExpression>
-						<OCQL>value</OCQL>						
+						<OCQL>minage</OCQL>						
 					</sourceExpression>
 					<ClientProperty>
 						<name>codeSpace</name>
 						<value>codespace</value>
-					</ClientProperty>
-					<isMultiple>true</isMultiple>
-				</AttributeMapping> 
+					</ClientProperty>					
+				</AttributeMapping>				
 				<AttributeMapping>
 					<targetAttribute>
-                       gsml:observationMethod/gsml:CGI_TermValue/gsml:value
+                        gsml:eventAge/gsml:CGI_TermRange/gsml:upper/gsml:CGI_TermValue/gsml:value
 					</targetAttribute>
 					<sourceExpression>
-						<OCQL>observationmethod</OCQL>						
+						<OCQL>maxage</OCQL>						
+					</sourceExpression>
+					<ClientProperty>
+						<name>codeSpace</name>
+						<value>codespace</value>
+					</ClientProperty>					
+				</AttributeMapping>
+				<AttributeMapping>
+					<targetAttribute>gsml:eventProcess</targetAttribute>
+					<targetAttributeNode>gsml:CGI_TermValuePropertyType</targetAttributeNode>
+				</AttributeMapping>
+				<AttributeMapping>
+					<targetAttribute>
+                       gsml:eventProcess/gsml:CGI_TermValue/gsml:value
+					</targetAttribute>
+					<sourceExpression>
+						<OCQL>'urn:ogc:def:nil:OGC::missing'</OCQL>						
 					</sourceExpression>	
 					<ClientProperty>
 						<name>codeSpace</name>
-						<value>observationmethod_codespace</value>
+						<value>'http://urn.opengis.net/'</value>
 					</ClientProperty>	
 				</AttributeMapping>
 				<AttributeMapping>
 					<targetAttribute>
-                       gsml:purpose
+                       gsml:incrementalDisplacement/gsml:DisplacementValue/gsml:hangingWallDirection/gsml:CGI_LinearOrientation/gsml:descriptiveOrientation/gsml:CGI_TermValue/gsml:value
 					</targetAttribute>
 					<sourceExpression>
-						<OCQL>purpose</OCQL>						
-					</sourceExpression>						
-				</AttributeMapping>	
+						<OCQL>hwd_value</OCQL>						
+					</sourceExpression>	
+					<ClientProperty>
+						<name>codeSpace</name>
+						<value>hwd_codespace</value>
+					</ClientProperty>
+					<isMultiple>true</isMultiple>
+				</AttributeMapping>
+				<AttributeMapping>
+					<targetAttribute>gsml:incrementalDisplacement</targetAttribute>
+					<targetAttributeNode>gsml:CGI_TermValuePropertyType</targetAttributeNode>
+				</AttributeMapping>
 				<AttributeMapping>
 					<targetAttribute>
-                       gsml:occurrence
+                       gsml:incrementalDisplacement/gsml:DisplacementValue/gsml:movementSense/gsml:CGI_TermValue/gsml:value
 					</targetAttribute>
 					<sourceExpression>
-						<OCQL>sheardisplacementstructure_id</OCQL>
-						<linkElement>gsml:MappedFeature</linkElement>
-						<linkField>FEATURE_LINK</linkField>						
+						<OCQL>ms_value</OCQL>						
 					</sourceExpression>	
+					<ClientProperty>
+						<name>codeSpace</name>
+						<value>ms_codespace</value>
+					</ClientProperty>
 					<isMultiple>true</isMultiple>
 				</AttributeMapping>	
 				<AttributeMapping>
 					<targetAttribute>
-                       gsml:preferredAge
-					</targetAttribute>					
+                       gsml:incrementalDisplacement/gsml:DisplacementValue/gsml:movementType/gsml:CGI_TermValue/gsml:value
+					</targetAttribute>
+					<sourceExpression>
+						<OCQL>mt_value</OCQL>						
+					</sourceExpression>	
 					<ClientProperty>
-						<name>xlink:href</name>
-						<value>strConCat('#gsml.displacementevent.',geologicevent_id)</value>
+						<name>codeSpace</name>
+						<value>mt_codespace</value>
 					</ClientProperty>
-					<isMultiple>true</isMultiple>	
+					<isMultiple>true</isMultiple>
 				</AttributeMapping>
 				<AttributeMapping>
 					<targetAttribute>
-                       gsml:geologicHistory
-					</targetAttribute>					
+                       FEATURE_LINK
+					</targetAttribute>
 					<sourceExpression>
-						<OCQL>sheardisplacementstructure_id</OCQL>
-						<linkElement>gsml:DisplacementEvent</linkElement>
-						<linkField>FEATURE_LINK</linkField>						
+						<OCQL>geologicalfeature_id</OCQL>						
 					</sourceExpression>
-					<isMultiple>true</isMultiple>	
-				</AttributeMapping>	
+				</AttributeMapping>
 			</attributeMappings>
 		</FeatureTypeMapping>			
 	</typeMappings>
