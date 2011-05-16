@@ -9,6 +9,7 @@ import javax.xml.namespace.QName;
 import org.geoserver.data.test.MockData;
 import org.geoserver.wms.WMSTestSupport;
 import org.geotools.image.test.ImageAssert;
+import org.geotools.renderedImage.viewer.RenderedImageBrowser;
 
 import com.mockrunner.mock.web.MockHttpServletResponse;
 
