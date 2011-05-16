@@ -187,6 +187,7 @@
         <module>db2</module>
         <module>imagemap</module>
         <module>gdal</module>
+        <module>jp2k</module>
         <module>ogr</module>
         <module>excel</module>
         <module>validation</module>
