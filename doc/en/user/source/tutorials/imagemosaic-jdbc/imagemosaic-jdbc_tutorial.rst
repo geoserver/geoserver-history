@@ -10,7 +10,7 @@ Introduction
 
 This tutorial describes the process of storing a coverage along with its pyramids in a jdbc database. The ImageMosaic JDBC plugin is authored by Christian Mueller and is part of the geotools library.
 
-The full documentation is available here:`<http://docs.codehaus.org/display/GEOTDOC/Image+Mosaicing+Pyramidal+JDBC+Plugin>`_
+The full documentation is available here:`<http://docs.geotools.org/latest/userguide/library/coverage/jdbc/index.html>`_
 
 This tutorial will show one possible scenario, explaining step by step what to do for using this module in GeoServer (since Version 1.7.2)
 
@@ -271,7 +271,7 @@ Importing the image data
 ------------------------
 
 
-The full documentation is here: `<http://docs.codehaus.org/display/GEOTDOC/Using+the+java+import+utility>`_
+The full documentation is here: `<http://docs.geotools.org/latest/userguide/library/coverage/jdbc/ddl.html>`_
 
 First, the jdbc jar file has to be in the :file:`lib/ext` directory of your java runtime. In my case I had to copy :file:`postgresql-8.1-407.jdbc3.jar`.
 
