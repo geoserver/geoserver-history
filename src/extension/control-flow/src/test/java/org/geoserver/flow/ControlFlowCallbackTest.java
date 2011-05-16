@@ -47,6 +47,7 @@ public class ControlFlowCallbackTest extends TestCase {
         assertEquals(0, c1.requestCompleteCalls);
         assertEquals(1, c2.requestIncomingCalls);
         assertEquals(0, c1.requestCompleteCalls);
+        callback.finished(null);
     }
 
     /**
@@ -104,7 +105,7 @@ public class ControlFlowCallbackTest extends TestCase {
             if(delay > 0)
                 if(timeout > delay) {
                     try {
-                        Thread.currentThread().sleep(delay);
+                        Thread.sleep(delay);
                     } catch(InterruptedException e) {
                         throw new RuntimeException("This is unexpected"); 
                     }
