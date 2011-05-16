@@ -26,6 +26,9 @@ public class CoverageAccessInfoImpl implements Serializable, CoverageAccessInfo 
 
     public static final QueueType DEFAULT_QUEUE_TYPE = QueueType.UNBOUNDED;
     QueueType queueType = DEFAULT_QUEUE_TYPE;
+    
+    public static final long DEFAULT_ImageIOCacheThreshold = 10 * 1024;
+    long imageIOCacheThreshold = DEFAULT_ImageIOCacheThreshold;
 
     public CoverageAccessInfoImpl(){
         threadPoolExecutor = null;
@@ -71,6 +74,53 @@ public class CoverageAccessInfoImpl implements Serializable, CoverageAccessInfo 
         this.queueType = queueType;
     }
     
+    public void setImageIOCacheThreshold(long imageIOCacheThreshold) {
+        this.imageIOCacheThreshold = imageIOCacheThreshold;
+    }
+    
+    public long getImageIOCacheThreshold() {
+        return imageIOCacheThreshold;
+    }
+    
     public void dispose(){
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + corePoolSize;
+        result = prime * result + (int) (imageIOCacheThreshold ^ (imageIOCacheThreshold >>> 32));
+        result = prime * result + keepAliveTime;
+        result = prime * result + maxPoolSize;
+        result = prime * result + ((queueType == null) ? 0 : queueType.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        CoverageAccessInfoImpl other = (CoverageAccessInfoImpl) obj;
+        if (corePoolSize != other.corePoolSize)
+            return false;
+        if (imageIOCacheThreshold != other.imageIOCacheThreshold)
+            return false;
+        if (keepAliveTime != other.keepAliveTime)
+            return false;
+        if (maxPoolSize != other.maxPoolSize)
+            return false;
+        if (queueType == null) {
+            if (other.queueType != null)
+                return false;
+        } else if (!queueType.equals(other.queueType))
+            return false;
+        return true;
+    }
+    
+    
 }

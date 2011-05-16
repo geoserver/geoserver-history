@@ -140,7 +140,6 @@ public class LegacyConfigurationImporter {
         jai.setMemoryThreshold( (Double) value( global.get( "JaiMemoryThreshold"), JAIInfoImpl.DEFAULT_MemoryThreshold) );
         jai.setTileThreads( (Integer) value( global.get( "JaiTileThreads"), JAIInfoImpl.DEFAULT_TileThreads ) );
         jai.setTilePriority( (Integer) value( global.get( "JaiTilePriority"), JAIInfoImpl.DEFAULT_TilePriority ) );
-        jai.setImageIOCache( (Boolean) value( global.get( "ImageIOCache" ), JAIInfoImpl.DEFAULT_ImageIOCache) );
         jai.setJpegAcceleration( (Boolean) value( global.get( "JaiJPEGNative" ),JAIInfoImpl.DEFAULT_JPEGNative ) );
         jai.setPngAcceleration( (Boolean) value( global.get( "JaiPNGNative" ), JAIInfoImpl.DEFAULT_PNGNative)  );
         jai.setRecycling( (Boolean) value( global.get( "JaiRecycling" ), JAIInfoImpl.DEFAULT_Recycling)  );

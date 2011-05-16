@@ -53,4 +53,12 @@ public interface CoverageAccessInfo {
      * Disposes the global configuration object.
      */
     void dispose();
+    
+    /**
+     * Flag controlling the image io cache.
+     */
+    void setImageIOCacheThreshold(long threshold);
+    long getImageIOCacheThreshold();
+    
+    
 }

@@ -10,7 +10,6 @@ import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.imageio.ImageIO;
 import javax.imageio.stream.ImageOutputStream;
 
 import org.geoserver.platform.ServiceException;
@@ -22,6 +21,7 @@ import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridCoverageFactory;
 import org.geotools.gce.geotiff.GeoTiffWriter;
 import org.geotools.geometry.GeneralEnvelope;
+import org.geotools.image.io.ImageIOExt;
 import org.geotools.image.palette.InverseColorMapOp;
 import org.geotools.util.logging.Logging;
 
@@ -55,10 +55,6 @@ public class GeoTIFFMapResponse extends RenderedImageMapResponse {
     @Override
     public void formatImageOutputStream(RenderedImage image, OutputStream outStream,
             WMSMapContext mapContext) throws ServiceException, IOException {
-        // crating a grid coverage
-        final GridCoverage2D gc = factory.create("geotiff", image,
-                new GeneralEnvelope(mapContext.getAreaOfInterest()));
-
         // tiff
         if (LOGGER.isLoggable(Level.FINE)) {
             LOGGER.fine("Writing tiff image ...");
@@ -72,9 +68,13 @@ public class GeoTIFFMapResponse extends RenderedImageMapResponse {
         if (IMAGE_GEOTIFF8.equalsIgnoreCase(format) || (paletteInverter != null)) {
             image = forceIndexed8Bitmask(image, paletteInverter);
         }
+        
+        // crating a grid coverage
+        final GridCoverage2D gc = factory.create("geotiff", image,
+                new GeneralEnvelope(mapContext.getAreaOfInterest()));
 
         // writing it out
-        final ImageOutputStream imageOutStream = ImageIO.createImageOutputStream(outStream);
+        final ImageOutputStream imageOutStream = ImageIOExt.createImageOutputStream(image, outStream);
         if (imageOutStream == null) {
             throw new ServiceException("Unable to create ImageOutputStream.");
         }

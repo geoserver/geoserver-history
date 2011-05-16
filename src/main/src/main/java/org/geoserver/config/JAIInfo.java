@@ -72,8 +72,12 @@ public interface JAIInfo {
     
     /**
      * Flag controlling the image io cache.
+     * @deprecated Replaced by {@link CoverageAccessInfo#getImageIOCacheThreshold()}
      */
     void setImageIOCache(boolean imageIOCache);
+    /**
+     * @deprecated
+     */
     boolean isImageIOCache();
 
     /**
