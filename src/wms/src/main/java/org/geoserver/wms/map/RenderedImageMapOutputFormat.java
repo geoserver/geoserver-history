@@ -1221,7 +1221,9 @@ public class RenderedImageMapOutputFormat extends AbstractMapOutputFormat {
         // then I try to get read parameters associated with this
         // coverage if there are any.
         GridCoverage2D coverage = null;
-        if (params != null) {
+        GeneralParameterValue[] readParams = (GeneralParameterValue[]) params;
+        final int length = readParams == null ? 0 :readParams.length;
+        if (length > 0) {
             // //
             //
             // Getting parameters to control how to read this coverage.
@@ -1229,57 +1231,53 @@ public class RenderedImageMapOutputFormat extends AbstractMapOutputFormat {
             // them to the reader.
             //
             // //
-            GeneralParameterValue[] readParams = (GeneralParameterValue[]) params;
-            final int length = readParams.length;
-            if (length > 0) {
-                // we have a valid number of parameters, let's check if
-                // also have a READ_GRIDGEOMETRY2D. In such case we just
-                // override it with the one we just build for this
-                // request.
-                final String readGGName = AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString();
-                final String readInterpolationName = ImageMosaicFormat.INTERPOLATION.getName().toString();
-                final String bgColorName = AbstractGridFormat.BACKGROUND_COLOR.getName().toString();
-                int i = 0;
-                boolean foundInterpolation = false;
-                boolean foundGG = false;
-                boolean foundBgColor = false;
-                for (; i < length; i++) {
-                    final String paramName = readParams[i].getDescriptor().getName().toString();
-                    if (paramName.equalsIgnoreCase(readGGName)){
-                        ((Parameter) readParams[i]).setValue(readGG);
-                        foundGG = true;
-                    } else if(paramName.equalsIgnoreCase(readInterpolationName)){
-                        ((Parameter) readParams[i]).setValue(interpolation);
-                        foundInterpolation = true;
-                    } else if(paramName.equalsIgnoreCase(bgColorName) && bgColor != null) {
-                        ((Parameter) readParams[i]).setValue(bgColor);
-                        foundBgColor = true;
-                    }
+        
+            // we have a valid number of parameters, let's check if
+            // also have a READ_GRIDGEOMETRY2D. In such case we just
+            // override it with the one we just build for this
+            // request.
+            final String readGGName = AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString();
+            final String readInterpolationName = ImageMosaicFormat.INTERPOLATION.getName().toString();
+            final String bgColorName = AbstractGridFormat.BACKGROUND_COLOR.getName().toString();
+            int i = 0;
+            boolean foundInterpolation = false;
+            boolean foundGG = false;
+            boolean foundBgColor = false;
+            for (; i < length; i++) {
+                final String paramName = readParams[i].getDescriptor().getName().toString();
+                if (paramName.equalsIgnoreCase(readGGName)){
+                    ((Parameter) readParams[i]).setValue(readGG);
+                    foundGG = true;
+                } else if(paramName.equalsIgnoreCase(readInterpolationName)){
+                    ((Parameter) readParams[i]).setValue(interpolation);
+                    foundInterpolation = true;
+                } else if(paramName.equalsIgnoreCase(bgColorName) && bgColor != null) {
+                    ((Parameter) readParams[i]).setValue(bgColor);
+                    foundBgColor = true;
                 }
-                
-                // did we find anything?
-                if (!foundGG || !foundInterpolation || !(foundBgColor && bgColor != null)) {
-                    // add the correct read geometry to the supplied
-                    // params since we did not find anything
-                    List<GeneralParameterValue> paramList = new ArrayList<GeneralParameterValue>();
-                    paramList.addAll(Arrays.asList(readParams));
-                    if(!foundGG) {
-                         paramList.add(readGG);
-                    } 
-                    if(!foundInterpolation) {
-                        paramList.add(readInterpolation);
-                    } 
-                    if(!foundBgColor && bgColor != null) {
-                        paramList.add(bgColorParam);
-                    }
-                    readParams = (GeneralParameterValue[]) paramList.toArray(new GeneralParameterValue[paramList
-                            .size()]);
-                }
-                coverage = (GridCoverage2D) reader.read(readParams);
             }
-        } 
-        // if for any reason the previous block did not produce a coverage (no params, empty params)
-        if (coverage == null) {
+            
+            // did we find anything?
+            if (!foundGG || !foundInterpolation || !(foundBgColor && bgColor != null)) {
+                // add the correct read geometry to the supplied
+                // params since we did not find anything
+                List<GeneralParameterValue> paramList = new ArrayList<GeneralParameterValue>();
+                paramList.addAll(Arrays.asList(readParams));
+                if(!foundGG) {
+                     paramList.add(readGG);
+                } 
+                if(!foundInterpolation) {
+                    paramList.add(readInterpolation);
+                } 
+                if(!foundBgColor && bgColor != null) {
+                    paramList.add(bgColorParam);
+                }
+                readParams = (GeneralParameterValue[]) paramList.toArray(new GeneralParameterValue[paramList
+                        .size()]);
+            }
+            coverage = (GridCoverage2D) reader.read(readParams);
+        } else { 
+            // if for any reason the previous block did not produce a coverage (no params, empty params)
             if(bgColorParam != null) {
                 coverage = (GridCoverage2D) reader.read(new GeneralParameterValue[] {readGG ,readInterpolation, bgColorParam});
             } else {
