@@ -39,6 +39,7 @@ import org.geotools.data.DataAccessFinder;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.Hints;
+import org.geotools.image.io.ImageIOExt;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.ReferencingFactoryFinder;
 import org.geotools.referencing.factory.AbstractAuthorityFactory;
@@ -108,7 +109,7 @@ public class GeoserverInitStartupListener implements ServletContextListener {
         } else {
             // in any case, the native png reader is worse than the pure java ones, so
             // let's disable it (the native png writer is on the other side faster)...
-            ImageUtilities.allowNativeCodec("png", ImageReaderSpi.class, false);
+            ImageIOExt.allowNativeCodec("png", ImageReaderSpi.class, false);
         }
         
         // initialize geotools factories so that we don't make a spi lookup every time a factory is needed
