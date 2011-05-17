@@ -19,6 +19,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.validation.validator.MinimumValidator;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.config.LoggingInfo;
@@ -53,7 +54,12 @@ public class GlobalSettingsPage extends ServerAdminPage {
         logLevelsAppend(form, loggingInfoModel);
         form.add(new CheckBox("stdOutLogging", new PropertyModel( loggingInfoModel, "stdOutLogging")));
         form.add(new TextField("loggingLocation", new PropertyModel( loggingInfoModel, "location")) );
-        
+
+        TextField xmlPostRequestLogBufferSize = new TextField("xmlPostRequestLogBufferSize", new PropertyModel(
+                globalInfoModel, "xmlPostRequestLogBufferSize"));
+        xmlPostRequestLogBufferSize.add(new MinimumValidator<Integer>(0));
+        form.add(xmlPostRequestLogBufferSize);
+
         form.add(new TextField("featureTypeCacheSize"));
         
         Button submit = new Button("submit", new StringResourceModel("submit", this, null)) {
@@ -103,5 +109,5 @@ public class GlobalSettingsPage extends ServerAdminPage {
 
         form.add(new ListChoice("log4jConfigFile", new PropertyModel(loggingInfoModel,
                 "level"), logProfiles));
-    }    
+    }
 };

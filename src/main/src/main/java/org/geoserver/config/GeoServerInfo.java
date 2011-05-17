@@ -222,6 +222,16 @@ public interface GeoServerInfo extends Info {
      * Sets the flag forcing access to services only through virtual services. 
      */
     void setGlobalServices(Boolean globalServices);
+
+    /**
+     * Sets logging buffer size of incoming XML Post Requests for WFS,WMS,...
+     */
+    void setXmlPostRequestLogBufferSize(Integer requestBufferSize);
+
+    /**
+     * Gets log buffer size of XML Post Request for WFS,WMS,...
+     */
+    Integer getXmlPostRequestLogBufferSize();
     
     /**
      * A map of metadata for services.

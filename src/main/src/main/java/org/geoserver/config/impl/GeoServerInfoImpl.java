@@ -56,6 +56,8 @@ public class GeoServerInfoImpl implements GeoServerInfo {
     
     protected transient GeoServer geoServer;
 
+    protected Integer xmlPostRequestLogBufferSize;
+
     public GeoServerInfoImpl(GeoServer geoServer) {
         this.geoServer = geoServer;
     }
@@ -203,7 +205,16 @@ public class GeoServerInfoImpl implements GeoServerInfo {
     public void setGlobalServices(Boolean forceVirtualServices) {
         this.globalServices = forceVirtualServices;
     }
-    
+
+    public void setXmlPostRequestLogBufferSize(Integer bufferSize) {
+        this.xmlPostRequestLogBufferSize = bufferSize;
+
+    }
+
+    public Integer getXmlPostRequestLogBufferSize() {
+        return this.xmlPostRequestLogBufferSize;
+    }
+
     public MetadataMap getMetadata() {
         return metadata;
     }
@@ -254,6 +265,7 @@ public class GeoServerInfoImpl implements GeoServerInfo {
         result = prime * result + (verbose ? 1231 : 1237);
         result = prime * result + (verboseExceptions ? 1231 : 1237);
         result = prime * result + (globalServices ? 1231 : 1237);
+        result = prime * result + xmlPostRequestLogBufferSize;
         return result;
     }
 
@@ -321,6 +333,14 @@ public class GeoServerInfoImpl implements GeoServerInfo {
             return false;
         if (globalServices != other.isGlobalServices())
             return false;
+        if (xmlPostRequestLogBufferSize == null) {
+            if (other.getXmlPostRequestLogBufferSize() != null) {
+                return false;
+            }
+        }
+        else if (!xmlPostRequestLogBufferSize.equals(other.getXmlPostRequestLogBufferSize())) {
+            return false;
+        }
         return true;
     }
 
@@ -329,14 +349,16 @@ public class GeoServerInfoImpl implements GeoServerInfo {
         return new StringBuilder(getClass().getSimpleName()).append('[').append(title).append(']')
                 .toString();
     }
-    
-    
+
     /*
      * XStream specific method, needed to initialize members that are added over time.
      */
     public Object readResolve() {
         if (this.globalServices == null) {
             this.globalServices = true;
+        }
+        if (this.xmlPostRequestLogBufferSize == null) {
+            this.xmlPostRequestLogBufferSize = 1024;
         }
         return this;
     }
