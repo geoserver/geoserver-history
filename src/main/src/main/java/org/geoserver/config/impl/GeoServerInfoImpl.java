@@ -56,7 +56,7 @@ public class GeoServerInfoImpl implements GeoServerInfo {
     
     protected transient GeoServer geoServer;
 
-    protected Integer xmlPostRequestLogBufferSize;
+    protected Integer xmlPostRequestLogBufferSize = 1024;
 
     public GeoServerInfoImpl(GeoServer geoServer) {
         this.geoServer = geoServer;
