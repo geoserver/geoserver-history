@@ -206,7 +206,7 @@ Using the java ddl generation utility
 -------------------------------------
 
 
-The full documentation is here: `<http://docs.codehaus.org/display/GEOTDOC/Using+the+java+ddl+generation+utility>`_
+The full documentation is here: `<http://docs.geotools.org/latest/userguide/library/coverage/jdbc/ddl.html>`_
 
 To create the proper sql tables, we can use the java ddl generation utility. This utility is included in the :file:`gt-imagemosaic-jdbc-{version}.jar`. Assure that this jar file is in your :file:`WEB-INF/lib` directory of your GeoServer installation.
 
