@@ -25,6 +25,7 @@ import org.custommonkey.xmlunit.XpathEngine;
 import org.custommonkey.xmlunit.exceptions.XpathException;
 import org.geoserver.wfs.WFSInfo;
 import org.geotools.data.complex.AppSchemaDataAccess;
+import org.geotools.data.complex.AppSchemaDataAccessRegistry;
 import org.geotools.data.complex.DataAccessRegistry;
 import org.geotools.xml.AppSchemaCache;
 import org.geotools.xml.AppSchemaResolver;
@@ -131,6 +132,7 @@ public abstract class AbstractAppSchemaWfsTestSupport extends GeoServerAbstractT
     protected void oneTimeTearDown() throws Exception {
         super.oneTimeTearDown();
         DataAccessRegistry.unregisterAll();
+        AppSchemaDataAccessRegistry.clearAppSchemaProperties();
         AppSchemaXSDRegistry.getInstance().dispose();
     }
 
