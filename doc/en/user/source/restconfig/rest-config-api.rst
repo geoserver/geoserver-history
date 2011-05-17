@@ -494,7 +494,7 @@ request is the absolute path to the existing file.
      - 200
      - See :ref:`notes <datastore_file_put_notes>` below.
      - 
-     - :ref:`configure <configure_parameter>`, :ref:`target <target_parameter>`, :ref:`update <update_parameter>`
+     - :ref:`configure <configure_parameter>`, :ref:`target <target_parameter>`, :ref:`update <update_parameter>`, :ref:`charset <charset_parameter>`
    * - DELETE
      -
      - 405
@@ -543,6 +543,11 @@ schema that matches the content of the file. It can take one of the two values
 
 - ``append`` - Data being uploaded is appended to the existing data. This is the default.
 - ``overwrite`` - Data being uploaded replaces any existing data.
+
+.. _charset_parameter:
+
+The ``charset`` parameter is used to specify the character encoding of the file
+being uploaded. For example "ISO-8559-1". 
 
 Feature types
 -------------
