@@ -573,11 +573,24 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
      * @throws Exception
      */
     protected MockHttpServletResponse getAsServletResponse( String path ) throws Exception {
+        return getAsServletResponse(path, null);
+    }
+    
+    /**
+     * Executes an ows request using the GET method.
+     *
+     * @param path The porition of the request after hte context, 
+     *      example: 'wms?request=GetMap&version=1.1.1&..."
+     * @param charset The character set of the response.
+     * 
+     * @return the mock servlet response
+     */
+    protected MockHttpServletResponse getAsServletResponse( String path, String charset ) throws Exception {
         MockHttpServletRequest request = createRequest( path ); 
         request.setMethod( "GET" );
         request.setBodyContent(new byte[]{});
         
-        return dispatch( request );
+        return dispatch( request, charset );
     }
         
     /**
@@ -1143,11 +1156,23 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
     }
 
     protected MockHttpServletResponse dispatch( HttpServletRequest request ) throws Exception {
-        MockHttpServletResponse response = new MockHttpServletResponse() {
-            public void setCharacterEncoding( String encoding ) {
-                    
-            }
-        };
+        return dispatch(request, (String) null);
+    }
+    
+    protected MockHttpServletResponse dispatch( HttpServletRequest request, String charset ) 
+        throws Exception {
+        MockHttpServletResponse response = null;
+        if (charset == null) {
+            response = new MockHttpServletResponse() {
+                public void setCharacterEncoding( String encoding ) {
+                        
+                }
+            };
+        }
+        else {
+            response = new MockHttpServletResponse();
+            response.setCharacterEncoding(charset);
+        }
 
         dispatch(request, response);
         return response;

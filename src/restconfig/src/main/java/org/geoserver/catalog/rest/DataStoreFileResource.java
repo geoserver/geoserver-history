@@ -221,12 +221,18 @@ public class DataStoreFileResource extends StoreFileResource {
         boolean save = false;
         boolean canRemoveFiles = false;
         
+        String charset = form.getFirstValue("charset");
+        
         if (info == null) {
             LOGGER.info("Auto-configuring datastore: " + datastore);
             
             info = builder.buildDataStore( datastore );
             add = true;
             
+            //TODO: should check if the store actually supports charset
+            if (charset != null && charset.length() > 0) {
+                info.getConnectionParameters().put("charset", charset);
+            }
             DataStoreFactorySpi targetFactory = factory;
             if (!targetDataStoreFormat.equals(sourceDataStoreFormat)) {
                 //target is different, we need to create it
@@ -276,6 +282,9 @@ public class DataStoreFileResource extends StoreFileResource {
         
         //create an instanceof the source datastore
         HashMap params = new HashMap();
+        if (charset != null && charset.length() > 0) {
+            params.put("charset",charset);	
+        }
         updateParameters(params, factory, uploadedFile);
         DataStore source;
         try {
@@ -449,7 +458,6 @@ public class DataStoreFileResource extends StoreFileResource {
         updateParameters(connectionParameters, factory, uploadedFile);
 
         connectionParameters.put( "namespace", namespace.getURI() );
-        
         // ensure the parameters are valid
         if ( !factory.canProcess( connectionParameters ) ) {
             //TODO: log the parameters at the debug level
