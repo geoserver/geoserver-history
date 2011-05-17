@@ -32,7 +32,7 @@ import org.w3c.dom.Document;
 
 import com.mockrunner.mock.web.MockHttpServletResponse;
 
-public class DataStoreFileUploadTest extends GeoServerTestSupport {
+public class DataStoreFileUploadTest extends CatalogRESTTestSupport {
 
     @Override
     protected void setUpInternal() throws Exception {
@@ -41,6 +41,7 @@ public class DataStoreFileUploadTest extends GeoServerTestSupport {
         //JD: temporary measure until the h2 dependency problem gets sorted
         DeleteDbFiles.execute(".", "foo", true);
         DeleteDbFiles.execute(".", "pds", true);
+        DeleteDbFiles.execute(".", "chinese_poly", true);
     }
     
     public void testPropertyFileUpload() throws Exception {
@@ -109,7 +110,20 @@ public class DataStoreFileUploadTest extends GeoServerTestSupport {
         Document dom = getAsDOM( "wfs?request=getfeature&typename=gs:pds" );
         assertFeatures( dom );
     }
-   
+
+
+    public void testShapeFileUploadWithCharset() throws Exception {
+        /* Requires that a zipped shapefile (chinese_poly.zip) be in test-data directory */
+    	byte[] bytes = shpChineseZipAsBytes();
+        MockHttpServletResponse response = 
+             putAsServletResponse("/rest/workspaces/gs/datastores/chinese_poly/file.shp?charset=UTF-8", bytes, "application/zip");
+        assertEquals( 201, response.getStatusCode() );
+         
+        MockHttpServletResponse response2 = 
+            getAsServletResponse("wfs?request=getfeature&typename=gs:chinese_poly", "GB18030");
+        assertTrue(response2.getOutputStreamContent().contains("\u951f\u65a4\u62f7"));
+     }    
+        
     byte[] shpZipAsBytes() throws IOException {
         InputStream in = getClass().getResourceAsStream( "test-data/pds.zip" );
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -120,6 +134,17 @@ public class DataStoreFileUploadTest extends GeoServerTestSupport {
         }
         return out.toByteArray();
     }
+
+    byte[] shpChineseZipAsBytes() throws IOException {
+        InputStream in = getClass().getResourceAsStream( "test-data/chinese_poly.zip" );
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        
+        int c = -1;
+        while ( ( c = in.read() ) != -1 ) {
+            out.write( c );
+        }
+        return out.toByteArray();
+    }    
     
     public void testShapeFileUploadExternal() throws Exception {
         Document dom = getAsDOM( "wfs?request=getfeature&typename=gs:pds" );
