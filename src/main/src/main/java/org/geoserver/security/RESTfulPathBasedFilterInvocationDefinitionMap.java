@@ -3,14 +3,12 @@ package org.geoserver.security;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 
-import org.springframework.security.ConfigAttributeDefinition;
-import org.springframework.security.intercept.web.DefaultFilterInvocationDefinitionSource;
-import org.springframework.security.intercept.web.FilterInvocation;
-import org.springframework.security.intercept.web.FilterInvocationDefinitionSource;
+import org.springframework.security.access.ConfigAttribute;
+import org.springframework.security.web.FilterInvocation;
+import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.util.AntPathMatcher;
@@ -24,14 +22,13 @@ import org.springframework.util.PathMatcher;
  */
 
 public class RESTfulPathBasedFilterInvocationDefinitionMap 
-    //extends DefaultFilterInvocationDefinitionSource
-    implements FilterInvocationDefinitionSource {
+    implements FilterInvocationSecurityMetadataSource {
        
     static private Log log = LogFactory.getLog(RESTfulPathBasedFilterInvocationDefinitionMap.class);
 
     //~ Instance fields ================================================================================================
 
-    private List requestMap = new Vector();
+    private Collection<EntryHolder> requestMap = new Vector<EntryHolder>();
     private PathMatcher pathMatcher = new AntPathMatcher();
     private boolean convertUrlToLowercaseBeforeComparison = false;
 
@@ -41,11 +38,11 @@ public class RESTfulPathBasedFilterInvocationDefinitionMap
     }
 
     
-    public void addSecureUrl(String antPath, String[] httpMethods, ConfigAttributeDefinition attr) {
-        requestMap.add( new EntryHolder(antPath, httpMethods, attr) );
+    public void addSecureUrl(String antPath, String[] httpMethods, Collection<ConfigAttribute> attrs) {
+        requestMap.add( new EntryHolder(antPath, httpMethods, attrs) );
 
         if (log.isDebugEnabled()) {
-            log.debug("Added Ant path: " + antPath + "; attributes: " + attr + ", httpMethods: " +  httpMethods);
+            log.debug("Added Ant path: " + antPath + "; attributes: " + attrs + ", httpMethods: " +  httpMethods);
             if ( httpMethods != null ) {
                 for( int ii=0; ii <  httpMethods.length; ii++ ) 
                     log.debug("httpMethods[" + ii + "]: " +  httpMethods[ii] );   
@@ -53,18 +50,17 @@ public class RESTfulPathBasedFilterInvocationDefinitionMap
         }
     }
 
-    public void addSecureUrl(String antPath, ConfigAttributeDefinition attr) {
-        throw new IllegalArgumentException( "addSecureUrl(String, ConfigAttributeDefinition) is INVALID for RESTfulDefinitionSource" );
+    public void addSecureUrl(String antPath, Collection<ConfigAttribute> attrs) {
+        throw new IllegalArgumentException( "addSecureUrl(String, Collection<ConfigAttribute> ) is INVALID for RESTfulDefinitionSource" );
     }
 
-    public Collection getConfigAttributeDefinitions() {
-        Set set = new HashSet();
-        Iterator iter = requestMap.iterator();
-
-        while (iter.hasNext()) {
-            EntryHolder entryHolder = (EntryHolder) iter.next();
-            set.add( entryHolder.getConfigAttributeDefinition() );
+    public Collection<ConfigAttribute> getAllConfigAttributes() {
+        Set<ConfigAttribute> set = new HashSet<ConfigAttribute>();
+        
+        for (EntryHolder h : requestMap) {
+            set.addAll(h.getConfigAttributes());
         }
+            
         return set;
         //return set.iterator();
     }
@@ -81,10 +77,7 @@ public class RESTfulPathBasedFilterInvocationDefinitionMap
         this.convertUrlToLowercaseBeforeComparison = convertUrlToLowercaseBeforeComparison;
     }
 
-    /** 
-     * override the method in AbstractFilterInvocationDefinitionSource
-     */
-    public ConfigAttributeDefinition getAttributes(Object object)
+    public Collection<ConfigAttribute> getAttributes(Object object)
         throws IllegalArgumentException {
         if ((object == null) || !this.supports(object.getClass())) {
             throw new IllegalArgumentException("Object must be a FilterInvocation");
@@ -96,11 +89,11 @@ public class RESTfulPathBasedFilterInvocationDefinitionMap
         return this.lookupAttributes( url, method );
     }
 
-    public ConfigAttributeDefinition lookupAttributes( String url ) { 
+    public Collection<ConfigAttribute> lookupAttributes( String url ) { 
         throw new IllegalArgumentException( "lookupAttributes(String url) is INVALID for RESTfulDefinitionSource" );
     }
 
-    public ConfigAttributeDefinition lookupAttributes( String url, String httpMethod ) {
+    public Collection<ConfigAttribute> lookupAttributes( String url, String httpMethod ) {
         // Strip anything after a question mark symbol, as per SEC-161. See also SEC-321
         int firstQuestionMarkIndex = url.indexOf("?");
 
@@ -147,7 +140,7 @@ public class RESTfulPathBasedFilterInvocationDefinitionMap
                           + "; matchedPath=" + matchedPath  + "; matchedMethods=" + matchedMethods );
 
             if ( matchedPath && matchedMethods ) {
-                return entryHolder.getConfigAttributeDefinition();
+                return entryHolder.getConfigAttributes();
             }
         }
         return null;
@@ -156,13 +149,13 @@ public class RESTfulPathBasedFilterInvocationDefinitionMap
     //~ Inner Classes ==================================================================================================
 
     protected class EntryHolder {
-        private ConfigAttributeDefinition configAttributeDefinition;
+        private Collection <ConfigAttribute>  configAttributes;
         private String antPath;
         private String[] httpMethodList; 
 
-        public EntryHolder( String antPath, String[] httpMethodList, ConfigAttributeDefinition attr ) {
+        public EntryHolder( String antPath, String[] httpMethodList, Collection<ConfigAttribute> attrs ) {
             this.antPath = antPath;
-            this.configAttributeDefinition = attr;
+            this.configAttributes = attrs;
             this.httpMethodList = httpMethodList; 
         }
 
@@ -178,8 +171,8 @@ public class RESTfulPathBasedFilterInvocationDefinitionMap
             return httpMethodList;
         }
 
-        public ConfigAttributeDefinition getConfigAttributeDefinition() {
-            return configAttributeDefinition;
+        public Collection <ConfigAttribute> getConfigAttributes() {
+            return configAttributes;
         }
     }
 }

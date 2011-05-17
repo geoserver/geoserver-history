@@ -20,7 +20,7 @@ import org.springframework.jdbc.support.nativejdbc.NativeJdbcExtractor;
 import org.springframework.jdbc.support.nativejdbc.SimpleNativeJdbcExtractor;
 import org.springframework.jdbc.support.nativejdbc.WebLogicNativeJdbcExtractor;
 import org.springframework.jdbc.support.nativejdbc.WebSphereNativeJdbcExtractor;
-import org.springframework.jdbc.support.nativejdbc.XAPoolNativeJdbcExtractor;
+//import org.springframework.jdbc.support.nativejdbc.XAPoolNativeJdbcExtractor;
 
 /**
  * Wires up the rich set of Spring native connection and statements un-wrappers to the
@@ -57,9 +57,9 @@ public class SpringUnWrapper implements UnWrapper {
         try {
             extractors.add(new WebSphereNativeJdbcExtractor());
         } catch(Throwable e) {};
-        try {
-            extractors.add(new XAPoolNativeJdbcExtractor());
-        } catch(Throwable e) {};
+//        try {
+//            extractors.add(new XAPoolNativeJdbcExtractor());
+//        } catch(Throwable e) {};
         try {
             extractors.add(new C3P0NativeJdbcExtractor());
         } catch(Throwable e) {};

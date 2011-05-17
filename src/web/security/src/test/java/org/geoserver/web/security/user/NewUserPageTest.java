@@ -2,7 +2,7 @@ package org.geoserver.web.security.user;
 
 import java.util.Locale;
 
-import org.springframework.security.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.apache.wicket.extensions.markup.html.form.palette.component.Recorder;
 import org.apache.wicket.util.tester.FormTester;
 import org.geoserver.security.impl.GeoserverUserDao;
@@ -45,7 +45,7 @@ public class NewUserPageTest extends GeoServerWicketTestSupport {
         dao.reload();
         UserDetails user = dao.loadUserByUsername("user");
         assertEquals("pwd", user.getPassword());
-        assertEquals(1, user.getAuthorities().length);
+        assertEquals(1, user.getAuthorities().size());
     }
     
     public void testPasswordsDontMatch() {

@@ -7,11 +7,13 @@ package org.geoserver.web;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.springframework.security.Authentication;
-import org.springframework.security.providers.anonymous.AnonymousAuthenticationToken;
-import org.springframework.security.ui.AbstractProcessingFilter;
-import org.springframework.security.ui.ExceptionTranslationFilter;
-import org.springframework.security.ui.savedrequest.SavedRequest;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.web.PortResolverImpl;
+import org.springframework.security.web.WebAttributes;
+import org.springframework.security.web.access.ExceptionTranslationFilter;
+import org.springframework.security.web.savedrequest.DefaultSavedRequest;
+import org.springframework.security.web.savedrequest.SavedRequest;
 import org.apache.wicket.protocol.http.WebRequest;
 
 
@@ -31,11 +33,12 @@ public class GeoServerSecuredPage extends GeoServerBasePage {
         if(auth == null || !auth.isAuthenticated() || auth instanceof AnonymousAuthenticationToken) {
             // emulate what spring security url control would do so that we get a proper redirect after login
             HttpServletRequest httpRequest = ((WebRequest) getRequest()).getHttpServletRequest();
-            ExceptionTranslationFilter translator = (ExceptionTranslationFilter) getGeoServerApplication().getBean("consoleExceptionTranslationFilter");
-            SavedRequest savedRequest = new SavedRequest(httpRequest, translator.getPortResolver());
+            //ExceptionTranslationFilter translator = (ExceptionTranslationFilter) getGeoServerApplication().getBean("consoleExceptionTranslationFilter");
+            SavedRequest savedRequest = new DefaultSavedRequest(httpRequest, new PortResolverImpl());
             
             HttpSession session = httpRequest.getSession();
-            session.setAttribute(AbstractProcessingFilter.SPRING_SECURITY_SAVED_REQUEST_KEY, savedRequest);
+            session.setAttribute(WebAttributes.SAVED_REQUEST, savedRequest);
+            
             
             // then redirect to the login page
             setResponsePage(GeoServerLoginPage.class);

@@ -4,9 +4,9 @@ import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 
-import org.springframework.security.SpringSecurityException;
 import org.geoserver.security.WrapperPolicy;
 import org.geoserver.security.decorators.SecuredObjects;
+import org.geoserver.util.SecurityUtils;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.VersioningDataStore;
 import org.geotools.data.VersioningFeatureStore;
@@ -48,18 +48,21 @@ public class ReadOnlyVersioningFeatureStoreTest extends SecuredVersioningTest {
     public void testRemove() throws Exception {
         try {
             secured.removeFeatures(Filter.INCLUDE);
-            fail("Should have thrown a security exception");
-        } catch(SpringSecurityException e) {
-            // fine
+            fail("Should have thrown a security exception...");
+        } catch(Throwable e) {
+            if (SecurityUtils.isSecurityException(e)==false)
+                fail("Should have thrown a security exception...");            
+
         }
     }
     
     public void testRollback() throws Exception {
         try {
             secured.rollback("'", Filter.INCLUDE, null);
-            fail("Should have thrown a security exception");
-        } catch(SpringSecurityException e) {
-            // fine
+            fail("Should have thrown a security exception...");
+        } catch(Throwable e) {
+            if (SecurityUtils.isSecurityException(e)==false)
+                fail("Should have thrown a security exception...");            
         }
     }
 }

@@ -46,11 +46,10 @@ import org.geoserver.security.impl.DataAccessRuleDAO;
 import org.geoserver.security.impl.DefaultDataAccessManager;
 import org.opengis.feature.type.Name;
 import org.opengis.filter.Filter;
-import org.springframework.security.AccessDeniedException;
-import org.springframework.security.Authentication;
-import org.springframework.security.InsufficientAuthenticationException;
-import org.springframework.security.SpringSecurityException;
-import org.springframework.security.context.SecurityContextHolder;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
  * Wraps the catalog and applies the security directives provided by a {@link ResourceAccessManager}
@@ -644,11 +643,11 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
         return WrapperPolicy.readWrite(limits);
     }
 
-    public static SpringSecurityException unauthorizedAccess(String resourceName) {
+    public static RuntimeException unauthorizedAccess(String resourceName) {
         // not hide, and not filtering out a list, this
         // is an unauthorized direct resource access, complain
         Authentication user = user();
-        if (user == null || user.getAuthorities().length == 0)
+        if (user == null || user.getAuthorities().size() == 0)
             return new InsufficientAuthenticationException("Cannot access "
                     + resourceName + " as anonymous");
         else
@@ -656,11 +655,11 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
                     + resourceName + " with the current privileges");
     }
     
-    public static SpringSecurityException unauthorizedAccess() {
+    public static RuntimeException unauthorizedAccess() {
         // not hide, and not filtering out a list, this
         // is an unauthorized direct resource access, complain
         Authentication user = user();
-        if (user == null || user.getAuthorities().length == 0)
+        if (user == null || user.getAuthorities().size() == 0)
             return new InsufficientAuthenticationException("Operation unallowed with the current privileges");
         else
             return new AccessDeniedException("Operation unallowed with the current privileges");

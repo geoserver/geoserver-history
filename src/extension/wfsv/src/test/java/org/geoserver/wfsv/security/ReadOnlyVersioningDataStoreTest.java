@@ -4,9 +4,9 @@ import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 
-import org.springframework.security.SpringSecurityException;
 import org.geoserver.security.WrapperPolicy;
 import org.geoserver.security.decorators.SecuredObjects;
+import org.geoserver.util.SecurityUtils;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.VersioningDataStore;
 import org.geotools.data.VersioningFeatureStore;
@@ -55,10 +55,11 @@ public class ReadOnlyVersioningDataStoreTest extends SecuredVersioningTest {
                 mock, WrapperPolicy.readOnlyChallenge(null));
         assertTrue(secured.isVersioned(SCHEMA));
         try {
-            secured.setVersioned(SCHEMA, true, null, null);
+            secured.setVersioned(SCHEMA, true, null, null);        
             fail("Should have thrown a security exception...");
-        } catch (SpringSecurityException e) {
-            // fine
+        } catch (Throwable e) {
+            if (SecurityUtils.isSecurityException(e)==false)
+                fail("Should have thrown a security exception...");            
         }
         // make sure we get a read only wrapper, a source instead of a store
         ReadOnlyVersioningFeatureStore store = (ReadOnlyVersioningFeatureStore) secured
@@ -67,8 +68,9 @@ public class ReadOnlyVersioningDataStoreTest extends SecuredVersioningTest {
         try {
             store.removeFeatures(Filter.INCLUDE);
             fail("Should have thrown a security exception");
-        } catch(SpringSecurityException e) {
-            // fine
+        } catch(Throwable e) {
+            if (SecurityUtils.isSecurityException(e)==false)
+                fail("Should have thrown a security exception...");            
         }
     }
 }

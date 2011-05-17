@@ -6,7 +6,7 @@ package org.geoserver.web;
 
 import java.io.Serializable;
 
-import org.springframework.security.Authentication;;
+import org.springframework.security.core.Authentication;;
 
 /**
  * Controls access to a component.

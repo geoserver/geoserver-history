@@ -1,6 +1,5 @@
 package org.geoserver.security.decorators;
 
-import org.springframework.security.SpringSecurityException;
 import org.geoserver.security.WrapperPolicy;
 import org.geoserver.security.impl.AbstractAuthorizationTest;
 
@@ -42,8 +41,9 @@ public class ReadSecuredCatalogDecoratorsTest extends AbstractAuthorizationTest 
         try {
             ro.getFeatureSource(null, null);
             fail("This should have failed with a security exception");
-        } catch (SpringSecurityException e) {
-            // ok
+        } catch (Exception e) {
+            if (ReadOnlyDataStoreTest.isSpringSecurityException(e)==false)
+                fail("Should have failed with a security exception");
         }
         SecuredDataStoreInfo store = (SecuredDataStoreInfo) ro.getStore();
         assertTrue(((SecuredDataStoreInfo) store).policy.isMetadata());
@@ -72,8 +72,9 @@ public class ReadSecuredCatalogDecoratorsTest extends AbstractAuthorizationTest 
         try {
             ReadOnlyDataStore dataStore = (ReadOnlyDataStore) ro.getDataStore(null);
             fail("This should have failed with a security exception");
-        } catch (SpringSecurityException e) {
-            // ok
+        } catch (Exception e) {
+            if (ReadOnlyDataStoreTest.isSpringSecurityException(e)==false)
+                fail("Should have failed with a security exception");
         }
     }
 

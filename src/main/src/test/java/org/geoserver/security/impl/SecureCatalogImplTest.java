@@ -1,13 +1,13 @@
 package org.geoserver.security.impl;
 
-import org.springframework.security.SpringSecurityException;
-import org.springframework.security.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.ows.Dispatcher;
 import org.geoserver.ows.Request;
 import org.geoserver.security.ResourceAccessManager;
 import org.geoserver.security.SecureCatalogImpl;
+import org.geoserver.security.decorators.ReadOnlyDataStoreTest;
 import org.geoserver.security.decorators.SecuredDataStoreInfo;
 import org.geoserver.security.decorators.SecuredFeatureTypeInfo;
 import org.geoserver.security.decorators.SecuredLayerInfo;
@@ -84,45 +84,53 @@ public class SecureCatalogImplTest extends AbstractAuthorizationTest {
         try {
             sc.getFeatureTypeByName("topp:states").getFeatureSource(null, null);
             fail("Should have failed with a security exception");
-        } catch(SpringSecurityException e) {
-            //
+        } catch(Exception e) {
+            if (ReadOnlyDataStoreTest.isSpringSecurityException(e)==false)
+                fail("Should have failed with a security exception");
         }
         try {
             sc.getCoverageByName("nurc:arcgrid").getGridCoverage(null, null);
             fail("Should have failed with a security exception");
-        } catch(SpringSecurityException e) {
-            //
+        } catch(Exception e) {
+            if (ReadOnlyDataStoreTest.isSpringSecurityException(e)==false)
+                fail("Should have failed with a security exception");
+
         }
         try {
             sc.getResourceByName("topp:states", FeatureTypeInfo.class).getFeatureSource(null, null);
             fail("Should have failed with a security exception");
-        } catch(SpringSecurityException e) {
-            //
+        } catch(Exception e) {
+            if (ReadOnlyDataStoreTest.isSpringSecurityException(e)==false)
+                fail("Should have failed with a security exception");
         }
         try {
             sc.getResourceByName("nurc:arcgrid", CoverageInfo.class).getGridCoverage(null, null);
             fail("Should have failed with a security exception");
-        } catch(SpringSecurityException e) {
-            //
+        } catch(Exception e) {
+            if (ReadOnlyDataStoreTest.isSpringSecurityException(e)==false)
+                fail("Should have failed with a security exception");
         }
         sc.getWorkspaceByName("topp");
         try {
             sc.getDataStoreByName("states").getDataStore(null);
             fail("Should have failed with a security exception");
-        } catch(SpringSecurityException e) {
-            //
+        } catch(Exception e) {
+            if (ReadOnlyDataStoreTest.isSpringSecurityException(e)==false)
+                fail("Should have failed with a security exception");
         }
         try {
             sc.getDataStoreByName("roads").getDataStore(null);
             fail("Should have failed with a security exception");
-        } catch(SpringSecurityException e) {
-            //
+        } catch(Exception e) {
+            if (ReadOnlyDataStoreTest.isSpringSecurityException(e)==false)
+                fail("Should have failed with a security exception");
         }
         try {
             sc.getCoverageStoreByName("arcGrid").getFormat();
             fail("Should have failed with a security exception");
-        } catch(SpringSecurityException e) {
-            //
+        } catch(Exception e) {
+            if (ReadOnlyDataStoreTest.isSpringSecurityException(e)==false)
+                fail("Should have failed with a security exception");
         }
         
         // check we still get the lists out so that capabilities can be built
@@ -161,50 +169,58 @@ public class SecureCatalogImplTest extends AbstractAuthorizationTest {
         try {
             sc.getFeatureTypeByName("topp:states");
             fail("Should have failed with a security exception");
-        } catch(SpringSecurityException e) {
-            //
+        } catch(Exception e) {
+            if (ReadOnlyDataStoreTest.isSpringSecurityException(e)==false)
+                fail("Should have failed with a security exception");
         }
         try {
             sc.getCoverageByName("nurc:arcgrid");
             fail("Should have failed with a security exception");
-        } catch(SpringSecurityException e) {
-            //
+        } catch(Exception e) {
+            if (ReadOnlyDataStoreTest.isSpringSecurityException(e)==false)
+                fail("Should have failed with a security exception");
         }
         try {
             sc.getResourceByName("topp:states", FeatureTypeInfo.class);
             fail("Should have failed with a security exception");
-        } catch(SpringSecurityException e) {
-            //
+        } catch(Exception e) {
+            if (ReadOnlyDataStoreTest.isSpringSecurityException(e)==false)
+                fail("Should have failed with a security exception");
         }
         try {
             sc.getResourceByName("nurc:arcgrid", CoverageInfo.class);
             fail("Should have failed with a security exception");
-        } catch(SpringSecurityException e) {
-            //
+        } catch(Exception e) {
+            if (ReadOnlyDataStoreTest.isSpringSecurityException(e)==false)
+                fail("Should have failed with a security exception");
         }
         try {
             sc.getWorkspaceByName("topp");
             fail("Should have failed with a security exception");
-        } catch(SpringSecurityException e) {
-            //
+        } catch(Exception e) {
+            if (ReadOnlyDataStoreTest.isSpringSecurityException(e)==false)
+                fail("Should have failed with a security exception");
         }
         try {
             sc.getDataStoreByName("states");
             fail("Should have failed with a security exception");
-        } catch(SpringSecurityException e) {
-            //
+        } catch(Exception e) {
+            if (ReadOnlyDataStoreTest.isSpringSecurityException(e)==false)
+                fail("Should have failed with a security exception");
         }
         try {
             sc.getDataStoreByName("roads");
             fail("Should have failed with a security exception");
-        } catch(SpringSecurityException e) {
-            //
+        } catch(Exception e) {
+            if (ReadOnlyDataStoreTest.isSpringSecurityException(e)==false)
+                fail("Should have failed with a security exception");
         }
         try {
             sc.getCoverageStoreByName("arcGrid");
             fail("Should have failed with a security exception");
-        } catch(SpringSecurityException e) {
-            //
+        } catch(Exception e) {
+            if (ReadOnlyDataStoreTest.isSpringSecurityException(e)==false)
+                fail("Should have failed with a security exception");
         }
         
         // try with a getCapabilities, make sure the lists are empty

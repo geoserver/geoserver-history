@@ -7,7 +7,7 @@ import org.geoserver.catalog.CatalogInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.WorkspaceInfo;
-import org.springframework.security.Authentication;
+import org.springframework.security.core.Authentication;
 
 /**
  * A simple {@link ResourceAccessManager} that keeps all the limits in a in memory hash map. 

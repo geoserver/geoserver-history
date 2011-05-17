@@ -32,7 +32,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
 
-import org.springframework.security.SpringSecurityException;
 import org.eclipse.emf.ecore.EObject;
 import org.geoserver.ows.util.EncodingInfo;
 import org.geoserver.ows.util.KvpMap;
@@ -44,6 +43,7 @@ import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.Service;
 import org.geoserver.platform.ServiceException;
+import org.geoserver.util.SecurityUtils;
 import org.geotools.util.Version;
 import org.geotools.xml.EMFUtils;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
@@ -232,10 +232,10 @@ public class Dispatcher extends AbstractController {
             if (result != null) {
                 response(result, request, operation);
             }
-        } catch (SpringSecurityException e) {
-            // make Spring security exceptions flow so that exception transformer filter can handle them
-            throw e;
         } catch (Throwable t) {
+         // make Spring security exceptions flow so that exception transformer filter can handle them
+            if (isSecurityException(t))
+                throw (Exception) t;
             exception(t, service, request);
         } finally {
             fireFinishedCallback(request);
@@ -1262,7 +1262,7 @@ public class Dispatcher extends AbstractController {
 
     void exception(Throwable t, Service service, Request request) {
         Throwable current = t;
-        while (current != null && !(current instanceof ClientStreamAbortedException) && !(current instanceof SpringSecurityException)) {
+        while (current != null && !(current instanceof ClientStreamAbortedException) && !(isSecurityException(current))) {
             if(current instanceof SAXException)
                 current = ((SAXException) current).getException();
             else
@@ -1272,8 +1272,8 @@ public class Dispatcher extends AbstractController {
             logger.log(Level.FINER, "Client has closed stream", t);
             return;
         }
-        if ( current instanceof SpringSecurityException)
-            throw (SpringSecurityException) current;
+        if ( isSecurityException(current))
+            throw (RuntimeException) current;
         
         
         //unwind the exception stack until we find one we know about 
@@ -1285,7 +1285,7 @@ public class Dispatcher extends AbstractController {
             if ( cause instanceof HttpErrorCodeException ) {
                 break;
             }
-            if ( cause instanceof SpringSecurityException ) {
+            if ( isSecurityException(cause) ) {
                 break;
             }
             
@@ -1368,5 +1368,8 @@ public class Dispatcher extends AbstractController {
         handler.handleServiceException(se, request);
     }
 
+    protected boolean  isSecurityException(Throwable t) {
+        return SecurityUtils.isSecurityException(t);        
+    }
     
 }

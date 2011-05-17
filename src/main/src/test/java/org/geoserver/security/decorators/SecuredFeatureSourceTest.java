@@ -2,7 +2,6 @@ package org.geoserver.security.decorators;
 
 import static org.easymock.EasyMock.*;
 
-import org.springframework.security.SpringSecurityException;
 import org.geoserver.security.WrapperPolicy;
 import org.geoserver.security.impl.SecureObjectsTest;
 import org.geotools.data.DataAccess;
@@ -50,8 +49,9 @@ public class SecuredFeatureSourceTest extends SecureObjectsTest {
         try {
             ro.addFeatures(createNiceMock(FeatureCollection.class));
             fail("This should have thrown a security exception");
-        } catch(SpringSecurityException e) {
-            // ok
+        } catch(Exception e) {
+            if (ReadOnlyDataStoreTest.isSpringSecurityException(e)==false)
+                fail("Should have failed with a security exception");
         }
     }
     

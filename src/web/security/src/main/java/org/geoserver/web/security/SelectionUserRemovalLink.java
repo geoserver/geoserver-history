@@ -3,7 +3,7 @@ package org.geoserver.web.security;
 import java.io.IOException;
 import java.util.List;
 
-import org.springframework.security.userdetails.User;
+import org.springframework.security.core.userdetails.User;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;

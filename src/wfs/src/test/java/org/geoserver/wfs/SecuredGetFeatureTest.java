@@ -2,7 +2,6 @@ package org.geoserver.wfs;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -81,7 +80,7 @@ public class SecuredGetFeatureTest extends WFSTestSupport {
         dao.setCatalogMode(CatalogMode.CHALLENGE);
         
         MockHttpServletRequest request = createRequest("wfs?request=GetFeature&version=1.0.0&service=wfs&typeName=" + getLayerId(MockData.BUILDINGS));
-        request.addHeader("Authorization",  "Basic " + Base64.encodeBase64("cite:wrongpassword".getBytes())); 
+        request.addHeader("Authorization",  "Basic " + new String(Base64.encodeBase64("cite:wrongpassword".getBytes())));
 
         MockHttpServletResponse resp = dispatch(request);
         assertEquals(401, resp.getErrorCode());

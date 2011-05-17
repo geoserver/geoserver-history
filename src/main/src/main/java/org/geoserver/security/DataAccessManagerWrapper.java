@@ -4,7 +4,7 @@
  */
 package org.geoserver.security;
 
-import org.springframework.security.Authentication;
+import org.springframework.security.core.Authentication;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.WorkspaceInfo;

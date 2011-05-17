@@ -15,13 +15,13 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import org.springframework.security.GrantedAuthority;
-import org.springframework.security.GrantedAuthorityImpl;
-import org.springframework.security.userdetails.User;
-import org.springframework.security.userdetails.UserDetails;
-import org.springframework.security.userdetails.UserDetailsService;
-import org.springframework.security.userdetails.memory.UserAttribute;
-import org.springframework.security.userdetails.memory.UserAttributeEditor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.GrantedAuthorityImpl;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.memory.UserAttribute;
+import org.springframework.security.core.userdetails.memory.UserAttributeEditor;
 import org.geoserver.config.GeoServer;
 import org.geoserver.security.PropertyFileWatcher;
 import org.vfny.geoserver.global.ConfigurationException;
@@ -219,8 +219,8 @@ public class EditableUserDAO implements UserDetailsService {
       UserDetails details = (UserDetails)it.next();
       String key = details.getUsername();
       String value = details.getPassword();
-      for (int i = 0; i < details.getAuthorities().length; i++){
-	value+= "," + details.getAuthorities()[i].getAuthority();
+      for (GrantedAuthority auth: details.getAuthorities()) {
+          value+= "," + auth.getAuthority();
       }
       if (!details.isEnabled()){
 	value+=",disabled";

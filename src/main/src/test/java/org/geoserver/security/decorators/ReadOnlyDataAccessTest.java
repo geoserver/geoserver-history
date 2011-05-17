@@ -4,9 +4,9 @@ import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 
-import org.springframework.security.SpringSecurityException;
 import org.geoserver.security.WrapperPolicy;
 import org.geoserver.security.impl.SecureObjectsTest;
+import org.geoserver.util.SecurityUtils;
 import org.geotools.data.DataAccess;
 import org.geotools.data.FeatureSource;
 import org.geotools.feature.NameImpl;
@@ -60,12 +60,17 @@ public class ReadOnlyDataAccessTest extends SecureObjectsTest {
         try {
             ro.createSchema(null);
             fail("Should have failed with a security exception");
-        } catch (SpringSecurityException e) {
+        } catch (Throwable e) {
+            if (SecurityUtils.isSecurityException(e)==false)
+                fail("Should have thrown a security exception...");            
         }
         try {
             ro.updateSchema(null, null);
             fail("Should have failed with a security exception");
-        } catch (SpringSecurityException e) {
+        } catch (Throwable e) {
+            if (SecurityUtils.isSecurityException(e)==false)
+                fail("Should have thrown a security exception...");            
+
         }
     }
 

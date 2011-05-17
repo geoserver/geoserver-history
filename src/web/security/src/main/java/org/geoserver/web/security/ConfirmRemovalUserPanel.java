@@ -3,7 +3,7 @@ package org.geoserver.web.security;
 import java.util.Arrays;
 import java.util.List;
 
-import org.springframework.security.userdetails.User;
+import org.springframework.security.core.userdetails.User;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -13,7 +13,7 @@ import org.apache.wicket.model.StringResourceModel;
 public class ConfirmRemovalUserPanel extends Panel {
 
     List<User> roots;
-    
+
     public ConfirmRemovalUserPanel(String id, User... roots) {
         this(id, Arrays.asList(roots));
     }

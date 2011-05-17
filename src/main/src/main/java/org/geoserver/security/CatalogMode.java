@@ -1,6 +1,5 @@
 package org.geoserver.security;
 
-import org.springframework.security.SpringSecurityException;
 
 /**
  * The security mode in which the catalog should be operating

@@ -7,7 +7,7 @@ package org.geoserver.web;
 import java.util.Collections;
 import java.util.List;
 
-import org.springframework.security.Authentication;
+import org.springframework.security.core.Authentication;
 
 /**
  * Shows the tools link only if there is at least one tool around

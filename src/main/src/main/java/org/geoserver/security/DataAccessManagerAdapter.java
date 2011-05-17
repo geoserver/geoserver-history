@@ -15,7 +15,7 @@ import org.geoserver.catalog.WMSLayerInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geotools.util.logging.Logging;
 import org.opengis.filter.Filter;
-import org.springframework.security.Authentication;
+import org.springframework.security.core.Authentication;
 
 /**
  * Adapts a {@link DataAccessManager} to the {@link ResourceAccessManager} interface

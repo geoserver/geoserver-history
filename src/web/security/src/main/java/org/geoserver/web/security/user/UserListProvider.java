@@ -8,8 +8,8 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
-import org.springframework.security.GrantedAuthority;
-import org.springframework.security.userdetails.User;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.geoserver.security.impl.GeoserverUserDao;
@@ -38,7 +38,7 @@ public class UserListProvider extends GeoServerDataProvider<User> {
         }
 
         public Object getPropertyValue(User item) {
-            if(item.getAuthorities().length == 0)
+            if(item.getAuthorities().size() == 0)
                 return "";
             
             StringBuffer sb = new StringBuffer();

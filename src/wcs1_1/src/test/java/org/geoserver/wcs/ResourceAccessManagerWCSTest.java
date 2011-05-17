@@ -18,6 +18,7 @@ import org.geoserver.security.CatalogMode;
 import org.geoserver.security.CoverageAccessLimits;
 import org.geoserver.security.ResourceAccessManager;
 import org.geoserver.security.TestResourceAccessManager;
+import org.geoserver.util.SecurityUtils;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.geometry.DirectPosition2D;
 import org.geotools.referencing.CRS;
@@ -25,11 +26,10 @@ import org.opengis.coverage.grid.GridCoverage;
 import org.opengis.filter.Filter;
 import org.opengis.geometry.DirectPosition;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.springframework.security.GrantedAuthority;
-import org.springframework.security.GrantedAuthorityImpl;
-import org.springframework.security.SpringSecurityException;
-import org.springframework.security.context.SecurityContextHolder;
-import org.springframework.security.providers.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.GrantedAuthorityImpl;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.vfny.geoserver.wcs.WcsException;
 
 import com.vividsolutions.jts.geom.MultiPolygon;
@@ -171,11 +171,11 @@ public class ResourceAccessManagerWCSTest extends AbstractGetCoverageTest {
             fail("This should have failed with a security exception");
         } catch (Throwable e) {
             // make sure we are dealing with some security exception
-            SpringSecurityException se = null;
+            Throwable se = null;
             while(e.getCause() != null && e.getCause() != e) {
                 e = e.getCause();
-                if(e instanceof SpringSecurityException) {
-                    se = (SpringSecurityException) e;
+                if (SecurityUtils.isSecurityException(e)) {
+                    se = e;
                 }
             }
             

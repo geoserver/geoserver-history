@@ -6,18 +6,18 @@ package org.geoserver.security;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.security.ui.webapp.AuthenticationProcessingFilter;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
 /**
- * A little variant on the {@link AuthenticationProcessingFilter} that uses
+ * A little variant on the {@link UsernamePasswordAuthenticationFilter} that uses
  * different keys for username and password ("username", "password") in order to
  * ensure backwards compatibility with the old login page
  *
  * @author Andrea Aime - TOPP
  *
  */
-public class GeoserverAuthenticationProcessingFilter extends AuthenticationProcessingFilter {
+public class GeoserverAuthenticationProcessingFilter extends UsernamePasswordAuthenticationFilter {
     protected String obtainPassword(HttpServletRequest request) {
         return request.getParameter("password");
     }

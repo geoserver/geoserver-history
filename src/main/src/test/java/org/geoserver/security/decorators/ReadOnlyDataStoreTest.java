@@ -4,9 +4,9 @@ import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 
-import org.springframework.security.SpringSecurityException;
 import org.geoserver.security.WrapperPolicy;
 import org.geoserver.security.impl.SecureObjectsTest;
+import org.geoserver.util.SecurityUtils;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.Transaction;
@@ -78,40 +78,50 @@ public class ReadOnlyDataStoreTest extends SecureObjectsTest {
         try {
             ro.createSchema(null);
             fail("Should have failed with a security exception");
-        } catch (SpringSecurityException e) {
-            //
+        } catch (Exception e) {
+            if (ReadOnlyDataStoreTest.isSpringSecurityException(e)==false)
+                fail("Should have failed with a security exception");
         }
         try {
             ro.updateSchema((String) null, null);
             fail("Should have failed with a security exception");
-        } catch (SpringSecurityException e) {
-            //
+        } catch (Exception e) {
+            if (ReadOnlyDataStoreTest.isSpringSecurityException(e)==false)
+                fail("Should have failed with a security exception");
         }
 
         try {
             ro.updateSchema((Name) null, null);
             fail("Should have failed with a security exception");
-        } catch (SpringSecurityException e) {
-            //
+        } catch (Exception e) {
+            if (ReadOnlyDataStoreTest.isSpringSecurityException(e)==false)
+                fail("Should have failed with a security exception");
         }
         try {
             ro.getFeatureWriter("states", Transaction.AUTO_COMMIT);
             fail("Should have failed with a security exception");
-        } catch (SpringSecurityException e) {
-            //
+        } catch (Exception e) {
+            if (ReadOnlyDataStoreTest.isSpringSecurityException(e)==false)
+                fail("Should have failed with a security exception");
         }
         try {
             ro.getFeatureWriter("states", Filter.INCLUDE,
                     Transaction.AUTO_COMMIT);
             fail("Should have failed with a security exception");
-        } catch (SpringSecurityException e) {
-            //
+        } catch (Exception e) {
+            if (ReadOnlyDataStoreTest.isSpringSecurityException(e)==false)
+                fail("Should have failed with a security exception");
         }
         try {
             ro.getFeatureWriterAppend("states", Transaction.AUTO_COMMIT);
             fail("Should have failed with a security exception");
-        } catch (SpringSecurityException e) {
-            //
+        } catch (Exception e) {
+            if (ReadOnlyDataStoreTest.isSpringSecurityException(e)==false)
+                fail("Should have failed with a security exception");
         }
+    }
+    
+    static public boolean isSpringSecurityException (Exception ex) {
+        return SecurityUtils.isSecurityException(ex);
     }
 }

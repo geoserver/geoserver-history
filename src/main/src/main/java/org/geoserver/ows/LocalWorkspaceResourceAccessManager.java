@@ -4,7 +4,7 @@
  */
 package org.geoserver.ows;
 
-import org.springframework.security.Authentication;
+import org.springframework.security.core.Authentication;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerInfo;

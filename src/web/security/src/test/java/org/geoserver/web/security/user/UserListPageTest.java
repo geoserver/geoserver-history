@@ -1,8 +1,10 @@
 package org.geoserver.web.security.user;
 
-import org.springframework.security.GrantedAuthority;
-import org.springframework.security.GrantedAuthorityImpl;
-import org.springframework.security.userdetails.User;
+import java.util.ArrayList;
+import java.util.Collection;
+
+import org.springframework.security.core.authority.GrantedAuthorityImpl;
+import org.springframework.security.core.userdetails.User;
 import org.geoserver.security.impl.GeoserverUserDao;
 import org.geoserver.web.GeoServerWicketTestSupport;
 
@@ -13,8 +15,11 @@ public class UserListPageTest extends GeoServerWicketTestSupport {
     @Override
     protected void setUpInternal() throws Exception {
         dao = GeoserverUserDao.get();
-        dao.putUser(new User("user", "pwd", true, true, true, true, 
-                new GrantedAuthority[] {new GrantedAuthorityImpl("ROLE_WFS_ALL"), new GrantedAuthorityImpl("ROLE_WMS_ALL")}));
+        Collection<GrantedAuthorityImpl> auths = new ArrayList<GrantedAuthorityImpl>();
+        auths.add(new GrantedAuthorityImpl("ROLE_WFS_ALL"));
+        auths.add(new GrantedAuthorityImpl("ROLE_WMS_ALL"));
+        
+        dao.putUser(new User("user", "pwd", true, true, true, true,auths)); 
         login();
         tester.startPage(UserPage.class);
     }

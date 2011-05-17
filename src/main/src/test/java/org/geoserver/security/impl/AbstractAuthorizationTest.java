@@ -23,10 +23,11 @@ import org.geotools.data.DataStore;
 import org.geotools.data.FeatureStore;
 import org.geotools.factory.Hints;
 import org.opengis.util.ProgressListener;
-import org.springframework.security.Authentication;
-import org.springframework.security.GrantedAuthority;
-import org.springframework.security.GrantedAuthorityImpl;
-import org.springframework.security.providers.TestingAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.GrantedAuthorityImpl;
+import org.springframework.security.authentication.TestingAuthenticationToken;
+
 
 public abstract class AbstractAuthorizationTest extends SecureObjectsTest {
 

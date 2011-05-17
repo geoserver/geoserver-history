@@ -2,9 +2,9 @@ package org.geoserver.security.impl;
 
 import java.io.File;
 
-import org.springframework.security.SpringSecurityException;
 import org.geoserver.data.test.MockData;
 import org.geoserver.data.util.IOUtils;
+import org.geoserver.security.decorators.ReadOnlyDataStoreTest;
 import org.geoserver.test.GeoServerTestSupport;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.FeatureStore;
@@ -41,8 +41,9 @@ public class SecureCatalogIntegrationTest extends GeoServerTestSupport {
         try {
             getFeatureSource(MockData.BUILDINGS);
             fail("This should have failed with a security exception!");
-        } catch (SpringSecurityException e) {
-            // fine, we should not be able to get to the feature source
+        } catch (Exception e) {
+            if (ReadOnlyDataStoreTest.isSpringSecurityException(e)==false)
+                fail("Should have failed with a security exception");
         }
     }
 
@@ -52,8 +53,9 @@ public class SecureCatalogIntegrationTest extends GeoServerTestSupport {
         try {
             fs.removeFeatures(Filter.INCLUDE);
             fail("This should have failed with a security exception!");
-        } catch (SpringSecurityException e) {
-            // fine, we should not be able to get to the feature source
+        } catch (Exception e) {
+            if (ReadOnlyDataStoreTest.isSpringSecurityException(e)==false)
+                fail("Should have failed with a security exception");
         }
     }
 }

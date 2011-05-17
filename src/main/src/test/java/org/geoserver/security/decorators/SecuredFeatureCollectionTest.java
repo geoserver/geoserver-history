@@ -7,7 +7,6 @@ import static org.easymock.EasyMock.replay;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import org.springframework.security.SpringSecurityException;
 import org.geoserver.security.WrapperPolicy;
 import org.geoserver.security.impl.SecureObjectsTest;
 import org.geotools.feature.FeatureCollection;
@@ -118,40 +117,46 @@ public class SecuredFeatureCollectionTest extends SecureObjectsTest {
         try {
             ro.add(feature);
             fail("Should have failed with a spring security exception");
-        } catch (SpringSecurityException e) {
-            // ok
+        } catch (Exception e) {
+            if (ReadOnlyDataStoreTest.isSpringSecurityException(e)==false)
+                fail("Should have failed with a security exception");
         }
         try {
             ro.addAll(new ArrayList());
             fail("Should have failed with a spring security exception");
-        } catch (SpringSecurityException e) {
-            // ok
+        } catch (Exception e) {
+            if (ReadOnlyDataStoreTest.isSpringSecurityException(e)==false)
+                fail("Should have failed with a security exception");
         }
         try {
             ro.clear();
             fail("Should have failed with a spring security exception");
-        } catch (SpringSecurityException e) {
-            // ok
+        } catch (Exception e) {
+            if (ReadOnlyDataStoreTest.isSpringSecurityException(e)==false)
+                fail("Should have failed with a security exception");
         }
         try {
             ro.remove(feature);
             fail("Should have failed with a spring security exception");
-        } catch (SpringSecurityException e) {
-            // ok
+        } catch (Exception e) {
+            if (ReadOnlyDataStoreTest.isSpringSecurityException(e)==false)
+                fail("Should have failed with a security exception");
         }
         try {
             ro.removeAll(new ArrayList());
             fail("Should have failed with a spring security exception");
-        } catch (SpringSecurityException e) {
-            // ok
+        } catch (Exception e) {
+            if (ReadOnlyDataStoreTest.isSpringSecurityException(e)==false)
+                fail("Should have failed with a security exception");
         }
         try {
             ro.retainAll(new ArrayList());
             fail("Should have failed with a spring security exception");
-        } catch (SpringSecurityException e) {
-            // ok
         } catch(UnsupportedOperationException e) {
-            // ok as well
+            // ok 
+        }  catch (Exception e) {
+            if (ReadOnlyDataStoreTest.isSpringSecurityException(e)==false)
+                fail("Should have failed with a security exception");
         }
 
         // let's check the iterator, should allow read but not remove
@@ -161,8 +166,9 @@ public class SecuredFeatureCollectionTest extends SecureObjectsTest {
         try {
             roit.remove();
             fail("Should have failed with a spring security exception");
-        } catch (SpringSecurityException e) {
-            // ok
+        } catch (Exception e) {
+            if (ReadOnlyDataStoreTest.isSpringSecurityException(e)==false)
+                fail("Should have failed with a security exception");
         }
 
         // check derived collections are still read only and share the same

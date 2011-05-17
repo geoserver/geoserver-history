@@ -10,8 +10,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.geoserver.security.AccessMode;
-import org.springframework.security.Authentication;
-import org.springframework.security.GrantedAuthority;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 
 /**
  * Represents a hierarchical security tree node. The tree as a whole is

@@ -1,12 +1,14 @@
 package org.geoserver.web;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
-import org.springframework.security.GrantedAuthority;
-import org.springframework.security.GrantedAuthorityImpl;
-import org.springframework.security.context.SecurityContextHolder;
-import org.springframework.security.context.SecurityContextImpl;
-import org.springframework.security.providers.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.GrantedAuthorityImpl;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextImpl;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.apache.wicket.Component;
 import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
@@ -41,28 +43,19 @@ public abstract class GeoServerWicketTestSupport extends GeoServerTestSupport {
 
     public void login(){
         SecurityContextHolder.setContext(new SecurityContextImpl());
+        List<GrantedAuthority> l= new ArrayList<GrantedAuthority>();
+        l.add(new GrantedAuthorityImpl("ROLE_ADMINISTRATOR"));
+        
         SecurityContextHolder.getContext().setAuthentication(
-            new UsernamePasswordAuthenticationToken(
-            "admin",
-            "geoserver",
-            new GrantedAuthority[]{
-                new GrantedAuthorityImpl("ROLE_ADMINISTRATOR")
-            }
-            )
-        );
+            new org.springframework.security.authentication.UsernamePasswordAuthenticationToken("admin","geoserver",l));                                  
     }
 
     public void logout(){
         SecurityContextHolder.setContext(new SecurityContextImpl());
+        List<GrantedAuthority> l= new ArrayList<GrantedAuthority>();
+        l.add(new GrantedAuthorityImpl("ROLE_ANONYMOUS"));
         SecurityContextHolder.getContext().setAuthentication(
-            new UsernamePasswordAuthenticationToken(
-            "anonymousUser",
-            "",
-            new GrantedAuthority[]{
-                new GrantedAuthorityImpl("ROLE_ANONYMOUS")
-            }
-            )
-        );
+                new org.springframework.security.authentication.UsernamePasswordAuthenticationToken("anonymousUser","",l));                                  
     }
     
     /**

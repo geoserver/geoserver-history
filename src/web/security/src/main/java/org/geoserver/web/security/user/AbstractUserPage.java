@@ -8,10 +8,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.security.GrantedAuthority;
-import org.springframework.security.GrantedAuthorityImpl;
-import org.springframework.security.userdetails.User;
-import org.springframework.security.userdetails.UserDetails;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.GrantedAuthorityImpl;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.SubmitLink;
@@ -128,7 +128,7 @@ public abstract class AbstractUserPage extends GeoServerSecuredPage {
          * From {@link GrantedAuthority}[] to {@link List}<String>
          */
         List<String> toRoleList(UserDetails springUser) {
-            List<String> result = new ArrayList<String>(springUser.getAuthorities().length);
+            List<String> result = new ArrayList<String>(springUser.getAuthorities().size());
             for (GrantedAuthority ga : springUser.getAuthorities()) {
                 result.add(ga.getAuthority());
             }

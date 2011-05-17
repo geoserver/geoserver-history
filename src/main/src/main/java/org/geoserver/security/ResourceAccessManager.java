@@ -7,7 +7,7 @@ package org.geoserver.security;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.WorkspaceInfo;
-import org.springframework.security.Authentication;
+import org.springframework.security.core.Authentication;
 
 /**
  * Provides the {@link SecureCatalogImpl} with directives on what the specified user can access.

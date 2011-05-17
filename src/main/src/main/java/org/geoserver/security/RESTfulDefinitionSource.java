@@ -8,11 +8,10 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import org.springframework.security.ConfigAttributeDefinition;
-import org.springframework.security.SecurityConfig;
-import org.springframework.security.intercept.web.FilterInvocation;
-import org.springframework.security.intercept.web.FilterInvocationDefinitionSource;
-import org.springframework.security.util.StringSplitUtils;
+import org.springframework.security.web.FilterInvocation;
+import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
+import org.springframework.security.access.ConfigAttribute;
+import org.springframework.security.access.SecurityConfig;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geoserver.security.impl.RESTAccessRuleDAO;
@@ -28,14 +27,14 @@ import org.springframework.util.StringUtils;
  * http://opensource.atlassian.com/projects/spring/browse/SEC-531
  *
  */
-public class RESTfulDefinitionSource implements FilterInvocationDefinitionSource {
+public class RESTfulDefinitionSource implements FilterInvocationSecurityMetadataSource {
        
     static private Log log = LogFactory.getLog(RESTfulDefinitionSource.class);
 
     static private final String[] validMethodNames = { "GET", "PUT", "DELETE", "POST" };
 
     /**
-     * Underlying objectDefinitionSource object
+     * Underlying SecurityMetedataSource object
      */
     private RESTfulPathBasedFilterInvocationDefinitionMap delegate = null;   
     /**
@@ -44,9 +43,10 @@ public class RESTfulDefinitionSource implements FilterInvocationDefinitionSource
     private RESTAccessRuleDAO dao;
     
     /** 
-     * Override the method in AbstractFilterInvocationDefinitionSource
+     * Override the method in FilterInvocationSecurityMetadataSource
      */
-    public ConfigAttributeDefinition getAttributes( Object object )
+    
+    public Collection<ConfigAttribute> getAttributes( Object object )
         throws IllegalArgumentException {
         
         if ((object == null) || !this.supports(object.getClass())) {
@@ -62,21 +62,18 @@ public class RESTfulDefinitionSource implements FilterInvocationDefinitionSource
     /**
      * this form is invalid for this implementation
      */
-    public ConfigAttributeDefinition lookupAttributes( String url ) { 
+    public Collection<ConfigAttribute> lookupAttributes( String url ) { 
         throw new IllegalArgumentException( "lookupAttributes(String url) is INVALID for RESTfulDefinitionSource" );
     }
 
-    public ConfigAttributeDefinition lookupAttributes( String url, String method ) { 
+    public Collection<ConfigAttribute> lookupAttributes( String url, String method ) { 
         return delegate().lookupAttributes(cleanURL(url), method );
     }
 
-    public Collection getConfigAttributeDefinitions() {
-        return delegate().getConfigAttributeDefinitions();        
+    public Collection<ConfigAttribute> getAllConfigAttributes() {
+        return delegate().getAllConfigAttributes();        
     }
 
-    /**
-     * Duplicated from AbstractFilterInvocationDefinitionSource
-     */
     public boolean supports(Class clazz) {
         return FilterInvocation.class.isAssignableFrom(clazz);
     }
@@ -111,9 +108,6 @@ public class RESTfulDefinitionSource implements FilterInvocationDefinitionSource
         return delegate;
     }
     
-    /**
-     * this is completely bogus. I am duplicating code in FilterInvocationDefinitionSourceEditor 
-     */
     private void processPathList( String pathToRoleList ) throws IllegalArgumentException {
 
         /*
@@ -127,7 +121,7 @@ public class RESTfulDefinitionSource implements FilterInvocationDefinitionSource
         int counter = 0;
         String line;
         
-        List mappings = new ArrayList();
+        List<RESTfulDefinitionSourceMapping> mappings = new ArrayList<RESTfulDefinitionSourceMapping>();
         
         while (true) {
             counter++;           
@@ -162,9 +156,10 @@ public class RESTfulDefinitionSource implements FilterInvocationDefinitionSource
             
             // Tokenize the line into its name/value tokens
             // As per SEC-219, use the LAST equals as the delimiter between LHS and RHS
-            String name = StringSplitUtils.substringBeforeLast(line, "=");
-            String value = StringSplitUtils.substringAfterLast(line, "=");
             
+            String name = substringBeforeLast(line, "=");
+            String value = substringAfterLast(line, "=");
+                        
             if (!StringUtils.hasText(name) || !StringUtils.hasText(value)) {
                 throw new IllegalArgumentException("Failed to parse a valid name/value pair from " + line);
             }
@@ -227,7 +222,7 @@ public class RESTfulDefinitionSource implements FilterInvocationDefinitionSource
             String[] tokens = StringUtils.commaDelimitedListToStringArray(value);
 
             for (int i = 0; i < tokens.length; i++) {
-                mapping.addConfigAttribute( tokens[i].trim() );
+                mapping.addConfigAttribute( new SecurityConfig(tokens[i].trim()) );
             }
             mappings.add(mapping);
         }   
@@ -238,15 +233,12 @@ public class RESTfulDefinitionSource implements FilterInvocationDefinitionSource
         setMappings( mappings );
     }
 
-    public void setMappings( List mappings ) {
+    public void setMappings( List<RESTfulDefinitionSourceMapping> mappings ) {
 
-        Iterator it = mappings.iterator();
+        Iterator<RESTfulDefinitionSourceMapping> it = mappings.iterator();
         while (it.hasNext()) {
-            RESTfulDefinitionSourceMapping mapping = (RESTfulDefinitionSourceMapping)it.next();
-            String[] stringArray = new String[mapping.getConfigAttributes().size()];
-            mapping.configAttributes.toArray(stringArray);
-            ConfigAttributeDefinition configDefinition = new ConfigAttributeDefinition(stringArray);
-            delegate.addSecureUrl(mapping.getUrl(), mapping.getHttpMethods(), configDefinition);
+            RESTfulDefinitionSourceMapping mapping = it.next();
+            delegate.addSecureUrl(mapping.getUrl(), mapping.getHttpMethods(), mapping.getConfigAttributes());
         }
 
         
@@ -273,10 +265,36 @@ public class RESTfulDefinitionSource implements FilterInvocationDefinitionSource
         return url;
     }
     
+    private String substringBeforeLast(String str, String separator) {
+        if (str == null || separator == null || str.length() == 0 || separator.length() == 0) {
+            return str;
+        }
+        int pos = str.lastIndexOf(separator);
+        if (pos == -1) {
+            return str;
+        }
+        return str.substring(0, pos);
+    }
+
+    private String substringAfterLast(String str, String separator) {
+        if (str == null || str.length() == 0) {
+            return str;
+        }
+        if (separator == null || separator.length() == 0) {
+            return "";
+        }
+        int pos = str.lastIndexOf(separator);
+        if (pos == -1 || pos == (str.length() - separator.length())) {
+            return "";
+        }
+        return str.substring(pos + separator.length());
+    }
+
+    
     //++++++++++++++++++++++++
     static public class RESTfulDefinitionSourceMapping {        
         private String url = null;      
-        private List configAttributes = new ArrayList();
+        private Collection<ConfigAttribute> configAttributes = new ArrayList<ConfigAttribute>();
         private String[] httpMethods = null; 
 
         public void setHttpMethods( String[] httpMethods ) 
@@ -294,13 +312,13 @@ public class RESTfulDefinitionSource implements FilterInvocationDefinitionSource
         public String getUrl() 
         { return url; }
         
-        public void setConfigAttributes( List roles ) 
+        public void setConfigAttributes( Collection<ConfigAttribute> roles ) 
         { this.configAttributes = roles; }
 
-        public List getConfigAttributes() 
+        public Collection<ConfigAttribute> getConfigAttributes() 
         { return configAttributes; }
 
-        public void addConfigAttribute( String configAttribute )
+        public void addConfigAttribute( ConfigAttribute configAttribute )
         { configAttributes.add(configAttribute); }       
     }
 

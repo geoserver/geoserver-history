@@ -20,13 +20,13 @@ import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.springframework.security.GrantedAuthority;
-import org.springframework.security.userdetails.User;
-import org.springframework.security.userdetails.UserDetails;
-import org.springframework.security.userdetails.UserDetailsService;
-import org.springframework.security.userdetails.UsernameNotFoundException;
-import org.springframework.security.userdetails.memory.UserAttribute;
-import org.springframework.security.userdetails.memory.UserAttributeEditor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.core.userdetails.memory.UserAttribute;
+import org.springframework.security.core.userdetails.memory.UserAttributeEditor;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.platform.GeoServerExtensions;
@@ -259,7 +259,7 @@ public class GeoserverUserDao implements UserDetailsService {
         return users;
     }
 
-    protected User createUserObject(String username,String password, boolean isEnabled,GrantedAuthority[] authorities) {
+    protected User createUserObject(String username,String password, boolean isEnabled,List<GrantedAuthority> authorities) {
        return new User(username, password, isEnabled, true, true,
                 true, authorities);
     }

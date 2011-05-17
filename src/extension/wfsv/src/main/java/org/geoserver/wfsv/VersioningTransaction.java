@@ -8,9 +8,9 @@ import java.io.IOException;
 
 import net.opengis.wfs.TransactionType;
 
-import org.springframework.security.Authentication;
-import org.springframework.security.context.SecurityContextHolder;
-import org.springframework.security.userdetails.UserDetails;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.wfs.Transaction;
 import org.geoserver.wfs.WFSInfo;

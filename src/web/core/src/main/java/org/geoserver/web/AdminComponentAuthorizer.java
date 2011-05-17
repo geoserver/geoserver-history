@@ -4,8 +4,8 @@
  */
 package org.geoserver.web;
 
-import org.springframework.security.Authentication;
-import org.springframework.security.GrantedAuthority;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 
 /**
  * Authorizer that only allows access to the admin.

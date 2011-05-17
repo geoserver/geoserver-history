@@ -2,18 +2,20 @@ package org.geoserver.security.impl;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
 import junit.framework.TestCase;
 
 import org.geoserver.security.PropertyFileWatcher;
 import org.springframework.dao.DataAccessResourceFailureException;
-import org.springframework.security.GrantedAuthority;
-import org.springframework.security.GrantedAuthorityImpl;
-import org.springframework.security.userdetails.User;
-import org.springframework.security.userdetails.UserDetails;
-import org.springframework.security.userdetails.UsernameNotFoundException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.GrantedAuthorityImpl;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 public class GeoServerUserDaoTest extends TestCase {
 
@@ -54,8 +56,8 @@ public class GeoServerUserDaoTest extends TestCase {
         UserDetails admin = dao.loadUserByUsername("admin");
         assertEquals("admin", admin.getUsername());
         assertEquals("gs", admin.getPassword());
-        assertEquals(1, admin.getAuthorities().length);
-        assertEquals("ROLE_ADMINISTRATOR", admin.getAuthorities()[0].getAuthority());
+        assertEquals(1, admin.getAuthorities().size());
+        assertEquals("ROLE_ADMINISTRATOR", admin.getAuthorities().iterator().next().getAuthority());
     }
     
     public void testMissingUser() throws Exception {
@@ -73,10 +75,14 @@ public class GeoServerUserDaoTest extends TestCase {
         UserDetails user = dao.loadUserByUsername("wfs");
         assertEquals("wfs", user.getUsername());
         assertEquals("pwd", user.getPassword());
-        assertEquals(2, user.getAuthorities().length);
-        // ok... order dependent... making one non order dep takes too much time...
-        assertEquals("ROLE_WFS_ALL", user.getAuthorities()[0].getAuthority());
-        assertEquals("ROLE_WMS_ALL", user.getAuthorities()[1].getAuthority());
+        assertEquals(2, user.getAuthorities().size());
+        Set<String> authorities = new HashSet<String>();
+        for (GrantedAuthority ga : user.getAuthorities()) {
+            authorities.add(ga.getAuthority());
+        }
+        //  order independent
+        assertTrue(authorities.contains("ROLE_WFS_ALL"));
+        assertTrue(authorities.contains("ROLE_WMS_ALL"));
     }
     
     public void testSetMissingUser() throws Exception {

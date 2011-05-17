@@ -7,11 +7,11 @@ package org.geoserver.security;
 import java.util.List;
 import java.util.Set;
 
-import org.springframework.security.AccessDeniedException;
-import org.springframework.security.Authentication;
-import org.springframework.security.GrantedAuthority;
-import org.springframework.security.InsufficientAuthenticationException;
-import org.springframework.security.context.SecurityContextHolder;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.geoserver.ows.DispatcherCallback;
 import org.geoserver.ows.Request;
 import org.geoserver.ows.Response;
@@ -67,7 +67,7 @@ public class OperationSecurityCallback implements DispatcherCallback {
             if(!allowedRoles.contains(ServiceAccessRule.ANY) && !allowedRoles.isEmpty()) {
                 Authentication user = SecurityContextHolder.getContext().getAuthentication();
                 
-                if (user == null || user.getAuthorities().length == 0)
+                if (user == null || user.getAuthorities().size() == 0)
                     throw new InsufficientAuthenticationException("Cannot access "
                             + service + "." + method + " as anonymous");
                 

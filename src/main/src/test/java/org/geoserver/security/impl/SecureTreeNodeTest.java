@@ -4,7 +4,7 @@ import junit.framework.TestCase;
 
 import org.geoserver.security.AccessMode;
 import org.geoserver.security.impl.SecureTreeNode;
-import org.springframework.security.providers.TestingAuthenticationToken;;
+import org.springframework.security.authentication.TestingAuthenticationToken;
 
 public class SecureTreeNodeTest extends TestCase {
 
