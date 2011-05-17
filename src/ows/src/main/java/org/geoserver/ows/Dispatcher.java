@@ -114,6 +114,11 @@ public class Dispatcher extends AbstractController {
 
     /** flag to control wether the dispatcher is cite compliant */
     boolean citeCompliant = false;
+    
+    /**
+     * buffer size for incoming XML POST requests
+     */
+    int xmlPostRequestLogBufferSize = 1024;
 
     /** thread local variable for the request */
     public static final ThreadLocal<Request> REQUEST = new InheritableThreadLocal<Request>();
@@ -149,7 +154,7 @@ public class Dispatcher extends AbstractController {
     public boolean isCiteCompliant() {
         return citeCompliant;
     }
-    
+
     @Override
     protected void initApplicationContext(ApplicationContext context) {
         //load life cycle callbacks
@@ -265,14 +270,16 @@ public class Dispatcher extends AbstractController {
             //wrap the input stream in a buffered input stream
             request.setInput(reader(httpRequest));
 
-            char[] req = new char[1024];
-            int read = request.getInput().read(req, 0, 1024);
-            
+            char[] req = new char[xmlPostRequestLogBufferSize];
+            int read = request.getInput().read(req, 0, xmlPostRequestLogBufferSize);
+
             if (logger.isLoggable(Level.FINE)) {
                 if (read == -1) {
                     request.setInput(null);
-                } else if (read < 1024) {
-                    logger.fine("Raw XML request starts with: " + new String(req));
+                } else if (read < xmlPostRequestLogBufferSize) {
+                    logger.fine("Raw XML request: " + new String(req));
+                } else if (xmlPostRequestLogBufferSize == 0) {
+                    // logging disabled --> do nothing
                 } else {
                     logger.fine("Raw XML request starts with: " + new String(req) + "...");
                 }
@@ -282,7 +289,6 @@ public class Dispatcher extends AbstractController {
             else
                 request.getInput().reset();
         }
-
         // parse the request path into two components. (1) the 'path' which
         // is the string after the last '/', and the 'context' which is the 
         // string before the last '/'
@@ -1370,6 +1376,14 @@ public class Dispatcher extends AbstractController {
 
     protected boolean  isSecurityException(Throwable t) {
         return SecurityUtils.isSecurityException(t);        
+    }
+
+    public int getXMLPostRequestLogBufferSize() {
+        return xmlPostRequestLogBufferSize;
+    }
+
+    public void setXMLPostRequestLogBufferSize(int bufferSize) {
+        this.xmlPostRequestLogBufferSize = bufferSize;
     }
     
 }
