@@ -98,7 +98,7 @@ public class DataAccessRuleDAO extends AbstractAccessRuleDAO<DataAccessRule> {
     protected void loadRules(Properties props) {
         TreeSet<DataAccessRule> result = new TreeSet<DataAccessRule>();
         catalogMode = CatalogMode.HIDE;
-        for (Map.Entry entry : props.entrySet()) {
+        for (Map.Entry<Object,Object> entry : props.entrySet()) {
             String ruleKey = (String) entry.getKey();
             String ruleValue = (String) entry.getValue();
 

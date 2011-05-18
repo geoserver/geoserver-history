@@ -9,6 +9,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -46,7 +48,7 @@ public class EditableUserDAO implements UserDetailsService {
   /**
    * The Map used for in-memory storage of user details
    */
-  private Map myDetailStorage;
+  private Map<String,UserDetails> myDetailStorage;
   
   /**
    * A PropertyFileWatcher to track outside changes to the user properties file
@@ -85,7 +87,7 @@ public class EditableUserDAO implements UserDetailsService {
    * If no user information is found, a default user will be created.
    */
   public EditableUserDAO(){
-    myDetailStorage = new HashMap();
+    myDetailStorage = new HashMap<String,UserDetails>();
     try {
       myWatcher = new PropertyFileWatcher(getUserFile());
     } catch (Exception e){
@@ -105,15 +107,15 @@ public class EditableUserDAO implements UserDetailsService {
     String name = (geoServer == null ? "admin" : geoServer.getGlobal().getAdminUsername());
     String passwd = (geoServer == null ? "geoserver" : geoServer.getGlobal().getAdminPassword());
 
+    Collection<GrantedAuthority> auths = new ArrayList<GrantedAuthority>();
+    auths.add(new GrantedAuthorityImpl("ROLE_ADMINISTRATOR"));
     myDetailStorage.put(name, new User(name,
 	  passwd,
 	  true,
 	  true,
 	  true,
 	  true,
-	  new GrantedAuthority[]{
-	  new GrantedAuthorityImpl("ROLE_ADMINISTRATOR")
-	  }
+	  auths
 	  ));
   }
 
@@ -169,7 +171,7 @@ public class EditableUserDAO implements UserDetailsService {
 	UserAttributeEditor uae = new UserAttributeEditor();
 	myDetailStorage.clear();
 
-	Iterator it = prop.keySet().iterator();
+	Iterator<Object> it = prop.keySet().iterator();
 	while  (it.hasNext()){
 	  String username = (String)it.next();
 	  uae.setAsText(prop.getProperty(username));
@@ -214,9 +216,7 @@ public class EditableUserDAO implements UserDetailsService {
   private void syncChanges() throws IOException, ConfigurationException{
     Properties prop = new Properties();
 
-    Iterator it = myDetailStorage.values().iterator();
-    while (it.hasNext()){
-      UserDetails details = (UserDetails)it.next();
+    for (UserDetails details : myDetailStorage.values()) {
       String key = details.getUsername();
       String value = details.getPassword();
       for (GrantedAuthority auth: details.getAuthorities()) {
@@ -253,7 +253,7 @@ public class EditableUserDAO implements UserDetailsService {
    * TODO: Actually document this!
    * @author David Winslow
    */
-  public Set getNameSet(){
+  public Set<String> getNameSet(){
     return myDetailStorage.keySet();
   }
 

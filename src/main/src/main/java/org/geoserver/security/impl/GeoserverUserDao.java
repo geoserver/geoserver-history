@@ -160,7 +160,7 @@ public class GeoserverUserDao implements UserDetailsService {
     public List<User> getUsers() {
         checkUserMap();
         
-        return new ArrayList(userMap.values());
+        return new ArrayList<User>(userMap.values());
     }
     
     /**
@@ -242,7 +242,7 @@ public class GeoserverUserDao implements UserDetailsService {
         TreeMap<String, User> users = new TreeMap<String, User>();
         UserAttributeEditor configAttribEd = new UserAttributeEditor();
 
-        for (Iterator iter = props.keySet().iterator(); iter.hasNext();) {
+        for (Iterator<Object> iter = props.keySet().iterator(); iter.hasNext();) {
             // the attribute editors parses the list of strings into password, username and enabled
             // flag
             String username = (String) iter.next();

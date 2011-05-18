@@ -34,7 +34,7 @@ import org.geoserver.security.PropertyFileWatcher;
  *
  * @param <R> The access rule class.
  */
-public abstract class AbstractAccessRuleDAO<R extends Comparable> {
+public abstract class AbstractAccessRuleDAO<R extends Comparable<?>> {
 
     /**
      * logging instance, subclasses need to set this

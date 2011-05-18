@@ -79,7 +79,7 @@ public class ServiceAccessRuleDAO extends AbstractAccessRuleDAO<ServiceAccessRul
      */
     protected void loadRules(Properties props) {
         TreeSet<ServiceAccessRule> result = new TreeSet<ServiceAccessRule>();
-        for (Map.Entry entry : props.entrySet()) {
+        for (Map.Entry<Object,Object> entry : props.entrySet()) {
             String ruleKey = (String) entry.getKey();
             String ruleValue = (String) entry.getValue();
 
