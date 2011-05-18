@@ -780,10 +780,10 @@ public class MockData implements TestData {
 
         final ParameterValueGroup readParams = reader.getFormat().getReadParameters();
         final Map parameters = CoverageUtils.getParametersKVP(readParams);
-        double[] minCP = envelope.getLowerCorner().getCoordinates();
+        double[] minCP = envelope.getLowerCorner().getCoordinate();
         double[] maxCP = new double[] {
-                minCP[0] + (envelope.getLength(0) / 20.0),
-                minCP[1] + (envelope.getLength(1) / 20.0)
+                minCP[0] + (envelope.getSpan(0) / 20.0),
+                minCP[1] + (envelope.getSpan(1) / 20.0)
             };
         final GeneralEnvelope subEnvelope = new GeneralEnvelope(minCP, maxCP);
         subEnvelope.setCoordinateReferenceSystem(reader.getCrs());
