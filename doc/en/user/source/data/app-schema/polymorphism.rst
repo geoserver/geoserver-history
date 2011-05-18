@@ -256,13 +256,31 @@ If the type is pre-determined and would always be the same, we just need to spec
 
     <AttributeMapping>
 	  <targetAttribute>om:result</targetAttribute>
-        <targetAttributeNode>gsml:MappedFeatureType<targetAttributeNode>
+          <targetAttributeNode>gsml:MappedFeatureType<targetAttributeNode>
     </AttributeMapping>	
     <AttributeMapping>
-        <targetAttribute>om:result/gsml:MappedFeature/gml:name</targetAttribute>
-        <sourceExpression>
-            <OCQL>NAME</OCQL>
-        </sourceExpression>
+          <targetAttribute>om:result/gsml:MappedFeature/gml:name</targetAttribute>
+          <sourceExpression>
+              <OCQL>NAME</OCQL>
+          </sourceExpression>
+    </AttributeMapping>
+
+Another example::
+
+    <AttributeMapping>
+	  <targetAttribute>om:result</targetAttribute>
+          <targetAttributeNode>gml:MeasureType<targetAttributeNode>
+          <sourceExpression>
+              <OCQL>TOPAGE</OCQL>
+          </sourceExpression>
+          <ClientProperty>
+              <name>xsi:type</name>
+              <value>'gml:MeasureType'</value>
+          </ClientProperty>
+          <ClientProperty>
+              <name>uom</name>
+              <value>'http://www.opengis.net/def/uom/UCUM/0/Ma&#39;&lt;/value>
+          </ClientProperty> 
     </AttributeMapping>
 
 Using feature chaining, we just chain it as usual::
