@@ -252,20 +252,8 @@ To encode an attribute as xlink:href that represents missing value on the top le
 Any type 
 --------
 Having xs:anyType as the attribute type itself infers that it is polymorphic, since they can be encoded as any type.
-If the type is pre-determined and would always be the same, we just need to specify targetAttributeNode for inline mappings. E.g.::
-
-    <AttributeMapping>
-	  <targetAttribute>om:result</targetAttribute>
-          <targetAttributeNode>gsml:MappedFeatureType<targetAttributeNode>
-    </AttributeMapping>	
-    <AttributeMapping>
-          <targetAttribute>om:result/gsml:MappedFeature/gml:name</targetAttribute>
-          <sourceExpression>
-              <OCQL>NAME</OCQL>
-          </sourceExpression>
-    </AttributeMapping>
-
-Another example::
+If the type is pre-determined and would always be the same, we just need to specify targetAttributeNode.
+E.g.::
 
     <AttributeMapping>
 	  <targetAttribute>om:result</targetAttribute>
@@ -278,12 +266,27 @@ Another example::
               <value>'gml:MeasureType'</value>
           </ClientProperty>
           <ClientProperty>
-              <name>uom</name>
-              <value>'http://www.opengis.net/def/uom/UCUM/0/Ma&#39;&lt;/value>
+              <name>uom</name> 
+              <value>'http://www.opengis.net/def/uom/UCUM/0/Ma'</value>
           </ClientProperty> 
     </AttributeMapping>
 
-Using feature chaining, we just chain it as usual::
+If the casting type is complex, we need to specify targetAttributeNode for the root node, and map the children attributes as per normal. 
+E.g.::
+
+    <AttributeMapping>
+	  <targetAttribute>om:result</targetAttribute>
+          <targetAttributeNode>gsml:MappedFeatureType<targetAttributeNode>
+    </AttributeMapping>	
+    <AttributeMapping>
+          <targetAttribute>om:result/gsml:MappedFeature/gml:name</targetAttribute>
+          <sourceExpression>
+              <OCQL>NAME</OCQL>
+          </sourceExpression>
+    </AttributeMapping>
+
+
+Alternatively, we can use feature chaining. For the same example above, the mapping would be::
 
     <AttributeMapping>
 	  <targetAttribute>om:result</targetAttribute>
