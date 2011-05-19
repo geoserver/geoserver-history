@@ -6,7 +6,7 @@ package org.geoserver.ftp;
 
 import java.io.File;
 
-import org.springframework.security.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetails;
 
 /**
  * Interface defining a GeoServer extension point for FTP file activity event notification.

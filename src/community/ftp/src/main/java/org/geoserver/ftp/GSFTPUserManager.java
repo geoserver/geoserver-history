@@ -23,10 +23,10 @@ import org.apache.ftpserver.usermanager.impl.ConcurrentLoginPermission;
 import org.apache.ftpserver.usermanager.impl.WritePermission;
 import org.geoserver.config.GeoServerDataDirectory;
 import org.geotools.util.logging.Logging;
-import org.springframework.security.AuthenticationManager;
-import org.springframework.security.GrantedAuthority;
-import org.springframework.security.providers.UsernamePasswordAuthenticationToken;
-import org.springframework.security.userdetails.UserDetailsService;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 /**
  * Maps GeoServer users to Apache's FTP Server {@link User}s.
@@ -89,11 +89,11 @@ public class GSFTPUserManager implements org.apache.ftpserver.ftplet.UserManager
         final UsernamePasswordAuthentication upa = (UsernamePasswordAuthentication) ftpAuthRequest;
         final String principal = upa.getUsername();
         final String credentials = upa.getPassword();
-        org.springframework.security.Authentication gsAuth = new UsernamePasswordAuthenticationToken(
+        org.springframework.security.core.Authentication gsAuth = new UsernamePasswordAuthenticationToken(
                 principal, credentials);
         try {
             gsAuth = authManager.authenticate(gsAuth);
-        } catch (org.springframework.security.AuthenticationException authEx) {
+        } catch (org.springframework.security.core.AuthenticationException authEx) {
             throw new AuthenticationFailedException(authEx);
         }
 

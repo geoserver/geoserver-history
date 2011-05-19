@@ -16,8 +16,8 @@ import org.apache.ftpserver.ftplet.FtpSession;
 import org.apache.ftpserver.ftplet.Ftplet;
 import org.apache.ftpserver.ftplet.FtpletResult;
 import org.apache.ftpserver.ftplet.User;
-import org.springframework.security.GrantedAuthority;
-import org.springframework.security.userdetails.UserDetails;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 /**
  * Adapts an {@link FTPCallback}s as an {@link Ftplet}
@@ -42,7 +42,7 @@ class FtpLetCallBackAdapter extends DefaultFtplet {
         boolean accountNonExpired = true;
         boolean credentialsNonExpired = true;
         boolean accountNonLocked = true;
-        UserDetails userDetails = new org.springframework.security.userdetails.User(username,
+        UserDetails userDetails = new org.springframework.security.core.userdetails.User(username,
                 password, isEnabled, accountNonExpired, credentialsNonExpired, accountNonLocked,
                 authorities);
 

@@ -8,7 +8,7 @@ import static org.geoserver.ftp.CallbackAction.CONTINUE;
 
 import java.io.File;
 
-import org.springframework.security.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetails;
 
 /**
  * Default empty implementation of {@link FTPCallback} that acts as base class for subclasses
