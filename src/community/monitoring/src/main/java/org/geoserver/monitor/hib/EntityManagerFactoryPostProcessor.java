@@ -70,7 +70,7 @@ public class EntityManagerFactoryPostProcessor implements BeanPostProcessor {
                 
                 for (Map.Entry e : props.entrySet()) {
                     if (((String)e.getKey()).startsWith("hibernate")) {
-                        factory.getJpaPropertyMap().put(e.getKey(), e.getValue());
+                        factory.getJpaPropertyMap().put((String)e.getKey(), e.getValue());
                     }
                 }
             }
