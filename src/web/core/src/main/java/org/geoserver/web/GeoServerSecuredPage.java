@@ -11,7 +11,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.web.PortResolverImpl;
 import org.springframework.security.web.WebAttributes;
-import org.springframework.security.web.access.ExceptionTranslationFilter;
 import org.springframework.security.web.savedrequest.DefaultSavedRequest;
 import org.springframework.security.web.savedrequest.SavedRequest;
 import org.apache.wicket.protocol.http.WebRequest;
@@ -25,7 +24,7 @@ import org.apache.wicket.protocol.http.WebRequest;
  */
 public class GeoServerSecuredPage extends GeoServerBasePage {
 
-    public static final PageAuthorizer DEFAULT_AUTHORIZER = new DefaultPageAuthorizer();
+    public static final ComponentAuthorizer DEFAULT_AUTHORIZER = new DefaultPageAuthorizer();
 
     public GeoServerSecuredPage() {
         super();
@@ -54,7 +53,7 @@ public class GeoServerSecuredPage extends GeoServerBasePage {
      * 
      * @return
      */
-    protected PageAuthorizer getPageAuthorizer() {
+    protected ComponentAuthorizer getPageAuthorizer() {
         return DEFAULT_AUTHORIZER;
     }
 }
