@@ -21,6 +21,8 @@ public class GetMapIntegrationTest extends WMSTestSupport {
                 GetMapIntegrationTest.class.getResource("indexed.sld"));
         dataDirectory.addCoverage(new QName(MockData.SF_URI, "indexed", MockData.SF_PREFIX),
                 GetMapIntegrationTest.class.getResource("indexed.tif"), "tif", "indexed");
+        dataDirectory.addCoverage(new QName(MockData.SF_URI, "paletted", MockData.SF_PREFIX),
+                GetMapIntegrationTest.class.getResource("paletted.tif"), "tif", "raster");
         
         // this also adds the raster style
         dataDirectory.addWcs10Coverages();
@@ -77,5 +79,25 @@ public class GetMapIntegrationTest extends WMSTestSupport {
         assertEquals(0, pixel[0]);
         assertEquals(255, pixel[1]);
         assertEquals(0, pixel[2]);
+    }
+    
+    public void testIndexedTransparency() throws Exception {
+        String request = "wms?LAYERS=sf:paletted&STYLES=&FORMAT=image%2Fpng&SERVICE=WMS" +
+        		"&VERSION=1.1.1&REQUEST=GetMap&SRS=EPSG%3A3174" +
+        		"&BBOX=-3256153.625,826440.25,-2756153.625,1326440.25" +
+        		"&WIDTH=256&HEIGHT=256&transparent=true";
+        MockHttpServletResponse response = getAsServletResponse(request);
+        assertEquals("image/png", response.getContentType());
+        
+        RenderedImage image = ImageIO.read(getBinaryInputStream(response));
+        assertTrue(image.getColorModel().hasAlpha());
+
+        int[] rgba = new int[4];
+        // transparent pixel in the top left corner
+        image.getData().getPixel(0, 0, rgba);
+        assertEquals(0, (int) rgba[3]);
+        // solid pixel in the lower right corner
+        image.getData().getPixel(255, 255, rgba);
+        assertEquals(255, (int) rgba[3]);
     }
 }

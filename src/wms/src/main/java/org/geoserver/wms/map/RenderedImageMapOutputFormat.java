@@ -843,7 +843,7 @@ public class RenderedImageMapOutputFormat extends AbstractMapOutputFormat {
                               mapCRS,
                               mapEnvelope, mapRasterArea, worldToScreen,
                               new RenderingHints(JAI.KEY_INTERPOLATION,interpolation));
-                    }else{
+                    } else {
                         //
                         // SG added gutter to the drawing. We need to investigate much more and also we need to do this only when needed
                         //
@@ -921,13 +921,22 @@ public class RenderedImageMapOutputFormat extends AbstractMapOutputFormat {
         if (cm instanceof IndexColorModel) {
             final IndexColorModel icm = (IndexColorModel) cm;
             // try to find the index that matches the requested background color
-            final int bgColorIndex = ColorUtilities.findColorIndex(bgColor, icm);
+            final int bgColorIndex;
+            if(transparent) {
+                bgColorIndex = icm.getTransparentPixel();
+            } else {
+                bgColorIndex = ColorUtilities.findColorIndex(bgColor, icm);
+            }
             
             //we did not find the background color, well we have to expand to RGB and then tell Mosaic to use the RGB(A) color as the
             // background
             if (bgColorIndex == -1) {
                 // we need to expand the image to RGB
                 image = worker.forceComponentColorModel().getRenderedImage();
+                if(transparent) {
+                    image = addAlphaChannel(image);
+                    worker.setImage(image);
+                }
                 bgValues = new double[] { bgColor.getRed(), bgColor.getGreen(), bgColor.getBlue(),
                         transparent ? 0 : 255 };
                 cm = image.getColorModel();
@@ -943,7 +952,7 @@ public class RenderedImageMapOutputFormat extends AbstractMapOutputFormat {
                 worker.forceComponentColorModel();
                 final RenderedImage alpha =worker.retainLastBand().getRenderedImage();
                 alphaChannels = new PlanarImage[] { PlanarImage.wrapRenderedImage(alpha) };
-            }
+            } 
         }
         
         //
@@ -1045,12 +1054,10 @@ public class RenderedImageMapOutputFormat extends AbstractMapOutputFormat {
                     .getSampleModel().getDataType()) } };
             // apply the mosaic
             image = MosaicDescriptor.create(new RenderedImage[] { image },
-//                    MosaicDescriptor.MOSAIC_TYPE_OVERLAY,
                     alphaChannels != null && transparencyType==Transparency.TRANSLUCENT ? MosaicDescriptor.MOSAIC_TYPE_BLEND: MosaicDescriptor.MOSAIC_TYPE_OVERLAY,
                     alphaChannels, rois, thresholds, bgValues, new RenderingHints(
                             JAI.KEY_IMAGE_LAYOUT, layout));
-        }
-        else
+        } else {
             // Check if we need to crop a subset of the produced image, else return it right away
             if (imageBounds.contains(mapRasterArea) && !imageBounds.equals(mapRasterArea)) { // the produced image does not need a final mosaicking operation but a crop!
                 // reduce the image to the actually required size
@@ -1062,34 +1069,7 @@ public class RenderedImageMapOutputFormat extends AbstractMapOutputFormat {
                         (float)mapHeight,
                          null);
             }
-            
-//        // is there any chance we have translucent pixels that we need to blend with a background?
-//        if(!transparent && alphaChannels != null && transparencyType==Transparency.TRANSLUCENT&& cm instanceof ComponentColorModel) {
-//            Byte[] bg = new Byte[bgValues.length - 1];
-//            for (int i = 0; i < bg.length; i++) {
-//                bg[i] = (byte) bgValues[i];
-//            }
-//            Byte[] bgAlpha = new Byte[] {(byte) 0xFF};
-//            
-//            RenderingHints hints = new RenderingHints(JAI.KEY_IMAGE_LAYOUT, layout);
-//            RenderedImage background = ConstantDescriptor.create((float) image.getWidth(), 
-//                    (float) image.getHeight(), bg, hints);
-//            RenderedImage bgAlphaImage = ConstantDescriptor.create((float) image.getWidth(), 
-//                    (float) image.getHeight(), bgAlpha, hints);
-//            
-//            ImageWorker iwRGB = new ImageWorker(image);
-//            ImageWorker iwAlpha = new ImageWorker(image);
-//            iwRGB.setRenderingHints(hints);
-//            image = iwRGB.retainBands(iwRGB.getNumBands() - 1).getRenderedImage();
-//            iwAlpha.setRenderingHints(hints);
-//            RenderedImage alphaImage = iwAlpha.retainLastBand().getRenderedImage();
-//            
-//            image = CompositeDescriptor.create(image, background, alphaImage,  bgAlphaImage, false, 
-//                    CompositeDescriptor.NO_DESTINATION_ALPHA, 
-//                    hints);
-//        }
-
-//         RenderedImageBrowser.showChain(image);
+        }
         
         return image;
     }
