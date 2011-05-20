@@ -22,9 +22,15 @@ import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.WfsFactory;
 
+import org.apache.commons.io.IOUtils;
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.MetadataMap;
 import org.geoserver.catalog.WorkspaceInfo;
+import org.geoserver.config.GeoServer;
 import org.geoserver.data.test.MockData;
+import org.geoserver.platform.GeoServerResourceLoader;
 import org.geoserver.platform.Operation;
+import org.geoserver.wfs.WFSInfo;
 import org.geoserver.wfs.WFSTestSupport;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.shapefile.ShapefileDataStore;
@@ -285,6 +291,81 @@ public class ShapeZipTest extends WFSTestSupport {
     	assertEquals("application/zip", response.getContentType());
     }
     
+    public void testESRIFormat() throws Exception {
+        setupESRIPropertyFile();
+        FeatureSource<? extends FeatureType, ? extends Feature> fs;
+        fs = getFeatureSource(MockData.BASIC_POLYGONS);
+        ShapeZipOutputFormat zip = new ShapeZipOutputFormat(getGeoServer(), getCatalog(),
+                getResourceLoader());
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        FeatureCollectionType fct = WfsFactory.eINSTANCE.createFeatureCollectionType();
+        fct.getFeature().add(fs.getFeatures());
+
+        // add the charset
+        Map options = new HashMap();
+        options.put("PRJFILEFORMAT", "ESRI");
+        gft.setFormatOptions(options);
+        zip.write(fct, bos, op);
+
+        byte[] byteArrayZip = bos.toByteArray();
+        checkShapefileIntegrity(new String[] { "BasicPolygons" }, new ByteArrayInputStream(
+                byteArrayZip));
+
+        checkFileContent("BasicPolygons.prj", new ByteArrayInputStream(byteArrayZip),
+                get4326_ESRI_WKTContent());
+    }
+
+    public void testESRIFormatMultiType() throws Exception {
+        setupESRIPropertyFile();
+        ShapeZipOutputFormat zip = new ShapeZipOutputFormat(getGeoServer(), getCatalog(),
+                getResourceLoader());
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        FeatureCollectionType fct = WfsFactory.eINSTANCE.createFeatureCollectionType();
+        fct.getFeature().add(getFeatureSource(ALL_TYPES).getFeatures());
+        Map options = new HashMap();
+        options.put("PRJFILEFORMAT", "ESRI");
+        gft.setFormatOptions(options);
+        zip.write(fct, bos, op);
+        byte[] byteArrayZip = bos.toByteArray();
+
+        final String[] expectedTypes = new String[] { "AllTypesPoint", "AllTypesMPoint",
+                "AllTypesPolygon", "AllTypesLine" };
+        checkShapefileIntegrity(expectedTypes, new ByteArrayInputStream(byteArrayZip));
+
+        for (String fileName : expectedTypes) {
+            checkFileContent(fileName + ".prj", new ByteArrayInputStream(byteArrayZip),
+                    get4326_ESRI_WKTContent());
+        }
+    }
+
+    public void testESRIFormatFromDefaultValue() throws Exception {
+        setupESRIPropertyFile();
+
+        final GeoServer geoServer = getGeoServer();
+        setupESRIFormatByDefault(geoServer, true);
+
+        final FeatureSource fs = getFeatureSource(MockData.BASIC_POLYGONS);
+        final Catalog catalog = getCatalog();
+        final GeoServerResourceLoader resourceLoader = getResourceLoader();
+
+        ShapeZipOutputFormat zip = new ShapeZipOutputFormat(geoServer, catalog, resourceLoader);
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        FeatureCollectionType fct = WfsFactory.eINSTANCE.createFeatureCollectionType();
+        fct.getFeature().add(fs.getFeatures());
+
+        // add the charset
+        Map options = new HashMap();
+        gft.setFormatOptions(options);
+        zip.write(fct, bos, op);
+
+        byte[] byteArrayZip = bos.toByteArray();
+        checkShapefileIntegrity(new String[] { "BasicPolygons" }, new ByteArrayInputStream(
+                byteArrayZip));
+
+        checkFileContent("BasicPolygons.prj", new ByteArrayInputStream(byteArrayZip),
+                get4326_ESRI_WKTContent());
+    }
+
     /**
      * Saves the feature source contents into a zipped shapefile, returns the
      * output as a byte array 
@@ -370,6 +451,30 @@ public class ShapeZipTest extends WFSTestSupport {
 
 	}
     	
+    
+    /**
+     * Writes out an {@code esri.properties} file to {@code <data_dir>/user_projections/} with the
+     * single entry: {@code 4326=<esri version of 4326 WKT>}
+     * 
+     * @throws IOException
+     */
+    private void setupESRIPropertyFile() throws IOException {
+        String esri_properties = "4326=" + get4326_ESRI_WKTContent();
+        InputStream input = new ByteArrayInputStream(esri_properties.getBytes());
+        File directory = getResourceLoader().findOrCreateDirectory("user_projections");
+        File file = new File(directory, "esri.properties");
+        if (file.exists()) {
+            file.delete();
+        }
+        org.geoserver.data.util.IOUtils.copy(input, file);
+    }
+
+    private void setupESRIFormatByDefault(GeoServer geoServer, Boolean value) throws IOException {
+        WFSInfo wfsInfo = geoServer.getService(WFSInfo.class);
+        MetadataMap metadata = wfsInfo.getMetadata();
+        metadata.put(ShapeZipOutputFormat.SHAPE_ZIP_DEFAULT_PRJ_IS_ESRI, value);
+        geoServer.save(wfsInfo);
+    }
 
     private void checkShapefileIntegrity(String[] typeNames, final InputStream in) throws IOException {
         ZipInputStream zis = new ZipInputStream(in);
@@ -391,6 +496,34 @@ public class ShapeZipTest extends WFSTestSupport {
         zis.close();
     }
     
+    /**
+     * Asserts the contents for the file named {@code fileName} contained in the zip file given by the {@code zippedIn}
+     * matched the {@code expectedContent}
+     */
+    private void checkFileContent(final String fileName, final InputStream zippedIn,
+            final String expectedContent) throws IOException {
+
+        ZipInputStream zis = new ZipInputStream(zippedIn);
+        ZipEntry entry = null;
+        try {
+            while ((entry = zis.getNextEntry()) != null) {
+                try {
+                    final String name = entry.getName();
+                    if (name.toLowerCase().endsWith(fileName.toLowerCase())) {
+                        String unzippedFileContents = IOUtils.toString(zis);
+                        assertEquals(expectedContent, unzippedFileContents);
+                        return;
+                    }
+                } finally {
+                    zis.closeEntry();
+                }
+            }
+        } finally {
+            zis.close();
+        }
+        fail(fileName + " was not found in the provided stream");
+    }
+
     private String getCharset(final InputStream in) throws IOException {
         ZipInputStream zis = new ZipInputStream(in);
         ZipEntry entry = null;
@@ -406,5 +539,14 @@ public class ShapeZipTest extends WFSTestSupport {
             return null;
         else
             return new String(bytes).trim();
+    }
+
+    /**
+     * @return
+     */
+    private String get4326_ESRI_WKTContent() {
+        return "GEOGCS[\"GCS_WGS_1984\",DATUM[\"D_WGS_1984\","
+                + "SPHEROID[\"WGS_1984\",6378137.0,298.257223563]]," + "PRIMEM[\"Greenwich\",0.0],"
+                + "UNIT[\"Degree\",0.0174532925199433]]";
     }
 }
