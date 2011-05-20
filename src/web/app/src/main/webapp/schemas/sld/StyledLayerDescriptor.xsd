@@ -544,8 +544,20 @@
       </xsd:sequence>
     </xsd:complexType>
   </xsd:element>
-  <xsd:element name="WellKnownName" type="xsd:string"/>
-
+  
+  <xsd:element name="WellKnownName">
+    <xsd:annotation>
+      <xsd:documentation>
+        As a GeoServer specific extensions all expressions are actually accepted.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType mixed="true">
+  	  <xsd:sequence>
+	    <xsd:element ref="ogc:expression" minOccurs="0"/>
+  	  </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  
 <!-- *********************************************************************** -->
   <xsd:annotation>
     <xsd:documentation>
