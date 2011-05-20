@@ -82,7 +82,7 @@
 		</DataStore>
 	</sourceDataStores>
 	<includedTypes>
-		<Include>CGITermValue.xml</Include>					
+		<Include>MF_CGITermValue.xml</Include>					
 	</includedTypes>
 	<catalog>../../../schemas/catalog.xml</catalog>
 	<targetTypes>

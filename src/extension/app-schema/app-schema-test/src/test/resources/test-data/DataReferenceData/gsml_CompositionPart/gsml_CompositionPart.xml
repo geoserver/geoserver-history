@@ -82,7 +82,7 @@
 	</sourceDataStores>
 	<includedTypes>
 		<Include>RockMaterial.xml</Include>	
-		<Include>CGITermValue.xml</Include>
+		<Include>CP_CGITermValue.xml</Include>
 	</includedTypes>
 	<catalog>../../../schemas/catalog.xml</catalog>
 	<targetTypes>

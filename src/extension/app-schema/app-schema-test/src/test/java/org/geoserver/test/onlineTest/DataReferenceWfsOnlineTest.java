@@ -7,7 +7,6 @@ package org.geoserver.test.onlineTest;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-
 import org.geoserver.test.AbstractAppSchemaMockData;
 import org.geoserver.test.onlineTest.support.AbstractDataReferenceWfsTest;
 import org.geoserver.wfs.WFSInfo;
@@ -39,7 +38,7 @@ public abstract class DataReferenceWfsOnlineTest extends AbstractDataReferenceWf
         LOGGER.info("WFS =GetCapabilities response:\n" + prettyString(doc));
 
         assertEquals("wfs:WFS_Capabilities", doc.getDocumentElement().getNodeName());
-        assertXpathCount(7, "//wfs:FeatureType", doc);
+        assertXpathCount(6, "//wfs:FeatureType", doc);
 
         // make sure non-feature types don't appear in FeatureTypeList
 
@@ -50,10 +49,9 @@ public abstract class DataReferenceWfsOnlineTest extends AbstractDataReferenceWf
         featureTypeNames.add(evaluate("//wfs:FeatureType[4]/wfs:Name", doc));
         featureTypeNames.add(evaluate("//wfs:FeatureType[5]/wfs:Name", doc));
         featureTypeNames.add(evaluate("//wfs:FeatureType[6]/wfs:Name", doc));
-        featureTypeNames.add(evaluate("//wfs:FeatureType[7]/wfs:Name", doc));
+       
 
-        // gsml:CompositionPart
-        assertTrue(featureTypeNames.contains("gsml:CompositionPart"));
+       
         // gsml:Contact
         assertTrue(featureTypeNames.contains("gsml:Contact"));
         // gsml:DisplacementEvent
@@ -1072,27 +1070,516 @@ public abstract class DataReferenceWfsOnlineTest extends AbstractDataReferenceWf
         assertXpathEvaluatesTo("5", "/wfs:FeatureCollection/@numberOfFeatures", doc);
     }
 
-    public void _testGeologicUnit() {
+    public void testGeologicUnit() {
         String path = "wfs?request=GetFeature&typename=gsml:GeologicUnit&featureid=gsml.geologicunit.16777549126930540,gsml.geologicunit.167775491107838881,gsml.geologicunit.16777549126931275,gsml.geologicunit.167775491233249211,gsml.geologicunit.1677754911513318041,gsml.geologicunit.167775491107843155,gsml.geologicunit.16777549126932958,gsml.geologicunit.16777549126932676,gsml.geologicunit.16777549126932776,gsml.geologicunit.167775491110573732,gsml.geologicunit.1677754911513320744";
+        validateGet(path);
         Document doc = getAsDOM(path);
         LOGGER.info(prettyString(doc));
+        // test number of features
+        assertXpathEvaluatesTo("11", "//wfs:FeatureCollection/@numberOfFeatures", doc);
+        // tests geologicHistory
+        assertXpathEvaluatesTo(
+                "urn:cgi:classifier:ICS:StratChart:2008:Pleistocene",
+                "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.16777549126930540']/gsml:geologicHistory/gsml:GeologicEvent[@gml:id='gsml.geologicevent.16777549126930541']/gsml:eventAge/gsml:CGI_TermRange/gsml:lower/gsml:CGI_TermValue/gsml:value",
+                doc);
+        assertXpathEvaluatesTo(
+                "urn:cgi:classifier:ICS:StratChart:2008:Miocene",
+                "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.16777549126930540']/gsml:geologicHistory/gsml:GeologicEvent[@gml:id='gsml.geologicevent.16777549126930541']/gsml:eventAge/gsml:CGI_TermRange/gsml:upper/gsml:CGI_TermValue/gsml:value",
+                doc);
+        assertXpathEvaluatesTo(
+                "fluvial",
+                "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.16777549126930540']/gsml:geologicHistory/gsml:GeologicEvent[@gml:id='gsml.geologicevent.16777549126930541']/gsml:eventEnvironment/gsml:CGI_TermValue/gsml:value",
+                doc);
+        assertXpathEvaluatesTo(
+                "channelled stream flow",
+                "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.16777549126930540']/gsml:geologicHistory/gsml:GeologicEvent[@gml:id='gsml.geologicevent.16777549126930541']/gsml:eventProcess/gsml:CGI_TermValue/gsml:value",
+                doc);
+        assertXpathCount(
+                1,
+                "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.16777549126930540']/gsml:geologicHistory",
+                doc);
+
+        // test outcrop character
+        assertXpathEvaluatesTo(
+                "recessive",
+                "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.167775491107838881']/gsml:outcropCharacter/gsml:CGI_TermValue/gsml:value",
+                doc);
+
+        // test bodymorphology
+        assertXpathEvaluatesTo(
+                "dyke",
+                "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.16777549126931275']/gsml:bodyMorphology/gsml:CGI_TermValue/gsml:value",
+                doc);
+        assertXpathEvaluatesTo(
+                "urn:cgi:classifierScheme:GSV:Morphology",
+                "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.16777549126931275']/gsml:bodyMorphology/gsml:CGI_TermValue/gsml:value/@codeSpace",
+                doc);
+        // test composition
+        assertXpathCount(
+                2,
+                "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.167775491233249211']/gsml:composition/gsml:CompositionPart",
+                doc);
+        assertXpathCount(
+                2,
+                "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.167775491233249211']/gsml:composition/gsml:CompositionPart/gsml:material/gsml:RockMaterial[@gml:id='gsml.rockmaterial.167775491107855939']/gsml:part",
+                doc);
+        assertXpathEvaluatesTo(
+                "indurated",
+                "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.167775491233249211']/gsml:composition/gsml:CompositionPart/gsml:material/gsml:RockMaterial[@gml:id='gsml.rockmaterial.167775491107855939']/gsml:consolidationDegree/gsml:CGI_TermValue/gsml:value",
+                doc);
+        assertXpathEvaluatesTo(
+                "urn:cgi:classifierScheme:GSV:ConsolidationDegree",
+                "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.167775491233249211']/gsml:composition/gsml:CompositionPart/gsml:material/gsml:RockMaterial[@gml:id='gsml.rockmaterial.167775491107855939']/gsml:consolidationDegree/gsml:CGI_TermValue/gsml:value/@codeSpace",
+                doc);
+        assertXpathEvaluatesTo(
+                "indurated",
+                "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.167775491233249211']/gsml:composition/gsml:CompositionPart/gsml:material/gsml:RockMaterial[@gml:id='gsml.rockmaterial.167775491107855964']/gsml:consolidationDegree/gsml:CGI_TermValue/gsml:value",
+                doc);
+        assertXpathEvaluatesTo(
+                "urn:cgi:classifierScheme:GSV:ConsolidationDegree",
+                "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.167775491233249211']/gsml:composition/gsml:CompositionPart/gsml:material/gsml:RockMaterial[@gml:id='gsml.rockmaterial.167775491107855964']/gsml:consolidationDegree/gsml:CGI_TermValue/gsml:value/@codeSpace",
+                doc);
+        assertXpathEvaluatesTo(
+                "indurated",
+                "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.1677754911513318041']/gsml:composition/gsml:CompositionPart/gsml:material/gsml:RockMaterial[@gml:id='gsml.rockmaterial.167775491107856083']/gsml:consolidationDegree/gsml:CGI_TermValue/gsml:value",
+                doc);
+        assertXpathEvaluatesTo(
+                "urn:cgi:classifierScheme:GSV:ConsolidationDegree",
+                "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.1677754911513318041']/gsml:composition/gsml:CompositionPart/gsml:material/gsml:RockMaterial[@gml:id='gsml.rockmaterial.167775491107856083']/gsml:consolidationDegree/gsml:CGI_TermValue/gsml:value/@codeSpace",
+                doc);
+        assertXpathEvaluatesTo(
+                "urn:cgi:classifier:CGI:SimpleLithology:2008:granodiorite",
+                "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.1677754911513318041']/gsml:composition/gsml:CompositionPart/gsml:material/gsml:RockMaterial[@gml:id='gsml.rockmaterial.167775491107856083']/gsml:lithology/@xlink:href",
+                doc);
+        assertXpathEvaluatesTo(
+                "all",
+                "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.1677754911513318041']/gsml:composition/gsml:CompositionPart/gsml:proportion/gsml:CGI_TermValue/gsml:value",
+                doc);
+        assertXpathEvaluatesTo(
+                "urn:cgi:classifierScheme:GSV:Proportion",
+                "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.1677754911513318041']/gsml:composition/gsml:CompositionPart/gsml:proportion/gsml:CGI_TermValue/gsml:value/@codeSpace",
+                doc);
+        assertXpathCount(
+                3,
+                "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.167775491107843155']/gsml:composition/gsml:CompositionPart",
+                doc);
+        assertXpathCount(
+                1,
+                "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.167775491107843155']/gsml:composition/gsml:CompositionPart/gsml:material/gsml:RockMaterial[@gml:id='gsml.rockmaterial.167775491107858185']",
+                doc);
+        assertXpathCount(
+                1,
+                "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.167775491107843155']/gsml:composition/gsml:CompositionPart/gsml:material/gsml:RockMaterial[@gml:id='gsml.rockmaterial.167775491107858173']",
+                doc);
+        assertXpathCount(
+                1,
+                "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.167775491107843155']/gsml:composition/gsml:CompositionPart/gsml:material/gsml:RockMaterial[@gml:id='gsml.rockmaterial.167775491107858161']",
+                doc);
+
+        assertXpathEvaluatesTo(
+                "urn:cgi:classifier:CGI:SimpleLithology:2008:shale",
+                "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.167775491107843155']/gsml:composition/gsml:CompositionPart/gsml:material/gsml:RockMaterial[@gml:id='gsml.rockmaterial.167775491107858185']/gsml:lithology/@xlink:href",
+                doc);
+        assertXpathEvaluatesTo(
+                "urn:cgi:classifier:CGI:SimpleLithology:2008:sandstone",
+                "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.167775491107843155']/gsml:composition/gsml:CompositionPart/gsml:material/gsml:RockMaterial[@gml:id='gsml.rockmaterial.167775491107858173']/gsml:lithology/@xlink:href",
+                doc);
+        assertXpathEvaluatesTo(
+                "urn:cgi:classifier:CGI:SimpleLithology:2008:mudstone",
+                "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.167775491107843155']/gsml:composition/gsml:CompositionPart/gsml:material/gsml:RockMaterial[@gml:id='gsml.rockmaterial.167775491107858161']/gsml:lithology/@xlink:href",
+                doc);
+        // test parts
+        assertXpathCount(4,
+                "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.16777549126932958']/gsml:part", doc);
+        assertXpathEvaluatesTo(
+                "http://urn.opengis.net/",
+                "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.16777549126932958']/gsml:part/gsml:GeologicUnitPart/gsml:proportion/gsml:CGI_TermValue/gsml:value/@codeSpace",
+                doc);
+        // test density
+        assertXpathEvaluatesTo(
+                "2.707",
+                "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.16777549126932676']/gsml:physicalProperty/gsml:PhysicalDescription/gsml:density/gsml:CGI_NumericValue/gsml:principalValue",
+                doc);
+        assertXpathEvaluatesTo(
+                "urn:ogc:def:uom:UCUM:g.cm-3",
+                "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.16777549126932676']/gsml:physicalProperty/gsml:PhysicalDescription/gsml:density/gsml:CGI_NumericValue/gsml:principalValue/@uom",
+                doc);
+        assertXpathEvaluatesTo(
+                "2.114",
+                "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.16777549126932776']/gsml:physicalProperty/gsml:PhysicalDescription/gsml:density/gsml:CGI_NumericRange/gsml:lower/gsml:CGI_NumericValue/gsml:principalValue",
+                doc);
+        assertXpathEvaluatesTo(
+                "2.955",
+                "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.16777549126932776']/gsml:physicalProperty/gsml:PhysicalDescription/gsml:density/gsml:CGI_NumericRange/gsml:upper/gsml:CGI_NumericValue/gsml:principalValue",
+                doc);
+        // test magnetic susceptibility
+        assertXpathEvaluatesTo(
+                "900.0",
+                "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.167775491110573732']/gsml:physicalProperty/gsml:PhysicalDescription/gsml:magneticSusceptibility/gsml:CGI_NumericValue/gsml:principalValue",
+                doc);
+        assertXpathEvaluatesTo(
+                "urn:ogc:def:uom:UCUM::SI",
+                "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.167775491110573732']/gsml:physicalProperty/gsml:PhysicalDescription/gsml:magneticSusceptibility/gsml:CGI_NumericValue/gsml:principalValue/@uom",
+                doc);
+        assertXpathEvaluatesTo(
+                "55.0",
+                "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.1677754911513320744']/gsml:physicalProperty/gsml:PhysicalDescription/gsml:magneticSusceptibility/gsml:CGI_NumericRange/gsml:lower/gsml:CGI_NumericValue/gsml:principalValue",
+                doc);
+        assertXpathEvaluatesTo(
+                "230.0",
+                "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.1677754911513320744']/gsml:physicalProperty/gsml:PhysicalDescription/gsml:magneticSusceptibility/gsml:CGI_NumericRange/gsml:upper/gsml:CGI_NumericValue/gsml:principalValue",
+                doc);
+        // test the rest of geologic unit
+        assertXpathCount(2,
+                "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.167775491107838881']/gml:name", doc);
+
+        ArrayList<String> ls = new ArrayList<String>();
+        ls.add(evaluate(
+                "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.167775491107838881']/gml:name[1]",
+                doc));
+        ls.add(evaluate(
+                "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.167775491107838881']/gml:name[2]",
+                doc));
+        assertTrue(ls.contains("Silverband Formation (Sks)"));
+        assertTrue(ls.contains("urn:cgi:feature:GSV:GeologicUnit:167775491107838881"));
+        ls.clear();
+        ls.add(evaluate(
+               "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.167775491107838881']/gml:name[1]/@codeSpace",
+                doc));
+        ls.add(evaluate(
+               "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.167775491107838881']/gml:name[2]/@codeSpace",
+                doc));
+        assertTrue(ls.contains("http://www.dpi.vic.gov.au/earth-resources"));
+        assertTrue(ls.contains("http://www.ietf.org/rfc/rfc2141"));
+
+        assertXpathEvaluatesTo("Intrusion [rank]",
+                "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.1677754911513318041']/gsml:rank",
+                doc);
+        assertXpathEvaluatesTo(
+                "urn:cgi:classifierScheme:GSV:Lithodemic_IntrusiveUnitRank",
+                "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.1677754911513318041']/gsml:rank/@codeSpace",
+                doc);
+        assertXpathEvaluatesTo("typicalNorm",
+                "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.16777549126932676']/gsml:purpose",
+                doc);
+
     }
 
-    public void _testContact() {
+    public void testContact() {
         String path = "wfs?request=GetFeature&typename=gsml:Contact&featureid=gsml.contact.46233,gsml.contact.46235";
+        validateGet(path);
         Document doc = getAsDOM(path);
         LOGGER.info(prettyString(doc));
+
+        assertXpathEvaluatesTo("2", "//wfs:FeatureCollection/@numberOfFeatures", doc);
+        assertXpathCount(153,
+                "//gsml:Contact[@gml:id='gsml.contact.46233']/gsml:occurrence/gsml:MappedFeature",
+                doc);
+        assertXpathCount(
+                1,
+                "//gsml:Contact[@gml:id='gsml.contact.46233']/gsml:observationMethod/gsml:CGI_TermValue/gsml:value",
+                doc);
+        assertXpathEvaluatesTo(
+                "http://urn.opengis.net/",
+                "//gsml:Contact[@gml:id='gsml.contact.46233']/gsml:observationMethod/gsml:CGI_TermValue/gsml:value/@codeSpace",
+                doc);
+
+        assertXpathEvaluatesTo("urn:cgi:feature:GSV:Contact:46233",
+                "//gsml:Contact[@gml:id='gsml.contact.46233']/gml:name", doc);
+        assertXpathEvaluatesTo(
+                "urn:cgi:classifier:CGI:ContactType:200811:igneous_intrusive_contact",
+                "//gsml:Contact[@gml:id='gsml.contact.46233']/gsml:contactType/@xlink:href", doc);
+
+        assertXpathCount(3,
+                "//gsml:Contact[@gml:id='gsml.contact.46235']/gsml:occurrence/gsml:MappedFeature",
+                doc);
+        assertXpathCount(
+                1,
+                "//gsml:Contact[@gml:id='gsml.contact.46235']/gsml:observationMethod/gsml:CGI_TermValue/gsml:value",
+                doc);
+        assertXpathEvaluatesTo(
+                "http://urn.opengis.net/",
+                "//gsml:Contact[@gml:id='gsml.contact.46235']/gsml:observationMethod/gsml:CGI_TermValue/gsml:value/@codeSpace",
+                doc);
+
+        assertXpathEvaluatesTo("urn:cgi:feature:GSV:Contact:46235",
+                "//gsml:Contact[@gml:id='gsml.contact.46235']/gml:name", doc);
+        assertXpathEvaluatesTo("urn:cgi:classifier:CGI:ContactType:200811:igneous_phase_contact",
+                "//gsml:Contact[@gml:id='gsml.contact.46235']/gsml:contactType/@xlink:href", doc);
+        assertXpathCount(
+                1,
+                "//gsml:Contact[@gml:id='gsml.contact.46235']/gsml:occurrence/gsml:MappedFeature[@gml:id='gsml.mappedfeature.182366']",
+                doc);
+        assertXpathCount(
+                1,
+                "//gsml:Contact[@gml:id='gsml.contact.46235']/gsml:occurrence/gsml:MappedFeature[@gml:id='gsml.mappedfeature.185193']",
+                doc);
+        assertXpathCount(
+                1,
+                "//gsml:Contact[@gml:id='gsml.contact.46235']/gsml:occurrence/gsml:MappedFeature[@gml:id='gsml.mappedfeature.185608']",
+                doc);
+
     }
 
-    public void _testShearDisplacement() {
+    public void testShearDisplacement() {
         String path = "wfs?request=GetFeature&typename=gsml:ShearDisplacementStructure&featureid=gsml.sheardisplacementstructure.46179,gsml.sheardisplacementstructure.46181,gsml.sheardisplacementstructure.46188,gsml.sheardisplacementstructure.46199,gsml.sheardisplacementstructure.46216";
+        validateGet(path);
         Document doc = getAsDOM(path);
         LOGGER.info(prettyString(doc));
+        assertXpathEvaluatesTo("5", "//wfs:FeatureCollection/@numberOfFeatures", doc);
+
+        assertXpathCount(
+                12,
+                "//gsml:ShearDisplacementStructure[@gml:id='gsml.sheardisplacementstructure.46179']/gsml:occurrence/gsml:MappedFeature",
+                doc);
+        assertXpathCount(
+                2,
+                "//gsml:ShearDisplacementStructure[@gml:id='gsml.sheardisplacementstructure.46181']/gsml:occurrence/gsml:MappedFeature",
+                doc);
+        assertXpathCount(
+                1,
+                "//gsml:ShearDisplacementStructure[@gml:id='gsml.sheardisplacementstructure.46188']/gsml:occurrence/gsml:MappedFeature",
+                doc);
+        assertXpathCount(
+                4,
+                "//gsml:ShearDisplacementStructure[@gml:id='gsml.sheardisplacementstructure.46199']/gsml:occurrence/gsml:MappedFeature",
+                doc);
+        assertXpathCount(
+                1,
+                "//gsml:ShearDisplacementStructure[@gml:id='gsml.sheardisplacementstructure.46216']/gsml:occurrence/gsml:MappedFeature",
+                doc);
+
+        assertXpathEvaluatesTo(
+                "urn:cgi:classifier:ICS:StratChart:2008:Holocene",
+                "//gsml:ShearDisplacementStructure[@gml:id='gsml.sheardisplacementstructure.46179']/gsml:geologicHistory/gsml:DisplacementEvent[@gml:id='gsml.displacementevent.1000003']/gsml:eventAge/gsml:CGI_TermRange/gsml:lower/gsml:CGI_TermValue/gsml:value",
+                doc);
+        assertXpathEvaluatesTo(
+                "urn:cgi:classifierScheme:ICS:StratChart:2008",
+                "//gsml:ShearDisplacementStructure[@gml:id='gsml.sheardisplacementstructure.46179']/gsml:geologicHistory/gsml:DisplacementEvent[@gml:id='gsml.displacementevent.1000003']/gsml:eventAge/gsml:CGI_TermRange/gsml:lower/gsml:CGI_TermValue/gsml:value/@codeSpace",
+                doc);
+        assertXpathEvaluatesTo(
+                "reverse",
+                "//gsml:ShearDisplacementStructure[@gml:id='gsml.sheardisplacementstructure.46179']/gsml:geologicHistory/gsml:DisplacementEvent[@gml:id='gsml.displacementevent.1000003']/gsml:incrementalDisplacement/gsml:DisplacementValue/gsml:movementSense/gsml:CGI_TermValue/gsml:value",
+                doc);
+        assertXpathEvaluatesTo(
+                "urn:cgi:classifierScheme:GSV:Provisional:MovementSense",
+                "//gsml:ShearDisplacementStructure[@gml:id='gsml.sheardisplacementstructure.46179']/gsml:geologicHistory/gsml:DisplacementEvent[@gml:id='gsml.displacementevent.1000003']/gsml:incrementalDisplacement/gsml:DisplacementValue/gsml:movementSense/gsml:CGI_TermValue/gsml:value/@codeSpace",
+                doc);
+        assertXpathEvaluatesTo(
+                "dip-slip",
+                "//gsml:ShearDisplacementStructure[@gml:id='gsml.sheardisplacementstructure.46179']/gsml:geologicHistory/gsml:DisplacementEvent[@gml:id='gsml.displacementevent.1000003']/gsml:incrementalDisplacement/gsml:DisplacementValue/gsml:movementType/gsml:CGI_TermValue/gsml:value",
+                doc);
+        assertXpathEvaluatesTo(
+                "urn:cgi:classifierScheme:GSV:Provisional:MovementType",
+                "//gsml:ShearDisplacementStructure[@gml:id='gsml.sheardisplacementstructure.46179']/gsml:geologicHistory/gsml:DisplacementEvent[@gml:id='gsml.displacementevent.1000003']/gsml:incrementalDisplacement/gsml:DisplacementValue/gsml:movementType/gsml:CGI_TermValue/gsml:value/@codeSpace",
+                doc);
+        assertXpathEvaluatesTo(
+                "SSE",
+                "//gsml:ShearDisplacementStructure[@gml:id='gsml.sheardisplacementstructure.46179']/gsml:geologicHistory/gsml:DisplacementEvent[@gml:id='gsml.displacementevent.1000003']/gsml:incrementalDisplacement/gsml:DisplacementValue/gsml:hangingWallDirection/gsml:CGI_LinearOrientation/gsml:descriptiveOrientation/gsml:CGI_TermValue/gsml:value",
+                doc);
+        assertXpathEvaluatesTo(
+                "urn:cgi:classifierScheme:GSV:GmlCompassPointEnumeration",
+                "//gsml:ShearDisplacementStructure[@gml:id='gsml.sheardisplacementstructure.46179']/gsml:geologicHistory/gsml:DisplacementEvent[@gml:id='gsml.displacementevent.1000003']/gsml:incrementalDisplacement/gsml:DisplacementValue/gsml:hangingWallDirection/gsml:CGI_LinearOrientation/gsml:descriptiveOrientation/gsml:CGI_TermValue/gsml:value/@codeSpace",
+                doc);
+
+        assertXpathCount(
+                1,
+                "//gsml:ShearDisplacementStructure[@gml:id='gsml.sheardisplacementstructure.46181']/gsml:occurrence/gsml:MappedFeature[@gml:id='gsml.mappedfeature.185969']",
+                doc);
+        assertXpathCount(
+                1,
+                "//gsml:ShearDisplacementStructure[@gml:id='gsml.sheardisplacementstructure.46181']/gsml:occurrence/gsml:MappedFeature[@gml:id='gsml.mappedfeature.186045']",
+                doc);
+
+        assertXpathCount(
+                1,
+                "//gsml:ShearDisplacementStructure[@gml:id='gsml.sheardisplacementstructure.46181']/gsml:geologicHistory/gsml:DisplacementEvent[@gml:id='gsml.displacementevent.1000008']",
+                doc);
+        assertXpathCount(
+                1,
+                "//gsml:ShearDisplacementStructure[@gml:id='gsml.sheardisplacementstructure.46181']/gsml:geologicHistory/gsml:DisplacementEvent[@gml:id='gsml.displacementevent.1000007']",
+                doc);
+
+        assertXpathCount(10,
+                "//gsml:ShearDisplacementStructure/gsml:geologicHistory/gsml:DisplacementEvent",
+                doc);
+        assertXpathEvaluatesTo(
+                "typicalNorm",
+                "//gsml:ShearDisplacementStructure[@gml:id='gsml.sheardisplacementstructure.46216']/gsml:purpose",
+                doc);
+        assertXpathEvaluatesTo(
+                "urn:cgi:feature:CGI:EarthNaturalSurface",
+                "//gsml:ShearDisplacementStructure[@gml:id='gsml.sheardisplacementstructure.46216']/gsml:occurrence/gsml:MappedFeature[@gml:id='gsml.mappedfeature.185911']/gsml:samplingFrame/@xlink:href",
+                doc);
+        assertXpathCount(
+                2,
+                "//gsml:ShearDisplacementStructure[@gml:id='gsml.sheardisplacementstructure.46188']/gml:name",
+                doc);
+
+        ArrayList<String> ls = new ArrayList<String>();
+        ls.add(evaluate(
+               "//gsml:ShearDisplacementStructure[@gml:id='gsml.sheardisplacementstructure.46188']/gml:name[1]",
+                doc));
+        ls.add(evaluate(
+              "//gsml:ShearDisplacementStructure[@gml:id='gsml.sheardisplacementstructure.46188']/gml:name[2]",
+               doc));
+        assertTrue(ls.contains("Castle Cove Fault"));
+        assertTrue(ls.contains("urn:cgi:feature:GSV:ShearDisplacementStructure:46188"));
+
+        ls.clear();
+        ls.add(evaluate(
+               "//gsml:ShearDisplacementStructure[@gml:id='gsml.sheardisplacementstructure.46188']/gml:name[1]/@codeSpace",
+                doc));
+        ls.add(evaluate(
+               "//gsml:ShearDisplacementStructure[@gml:id='gsml.sheardisplacementstructure.46188']/gml:name[2]/@codeSpace",
+                doc));
+        assertTrue(ls.contains("http://www.dpi.vic.gov.au/earth-resources"));
+        assertTrue(ls.contains("http://www.ietf.org/rfc/rfc2141"));
+
+        assertXpathEvaluatesTo(
+                "S",
+                "//gsml:ShearDisplacementStructure[@gml:id='gsml.sheardisplacementstructure.46199']/gsml:geologicHistory/gsml:DisplacementEvent[@gml:id='gsml.displacementevent.1000037']/gsml:incrementalDisplacement/gsml:DisplacementValue/gsml:hangingWallDirection/gsml:CGI_LinearOrientation/gsml:descriptiveOrientation/gsml:CGI_TermValue/gsml:value",
+                doc);
+        assertXpathEvaluatesTo(
+                "urn:cgi:classifierScheme:GSV:GmlCompassPointEnumeration",
+                "//gsml:ShearDisplacementStructure[@gml:id='gsml.sheardisplacementstructure.46199']/gsml:geologicHistory/gsml:DisplacementEvent[@gml:id='gsml.displacementevent.1000037']/gsml:incrementalDisplacement/gsml:DisplacementValue/gsml:hangingWallDirection/gsml:CGI_LinearOrientation/gsml:descriptiveOrientation/gsml:CGI_TermValue/gsml:value/@codeSpace",
+                doc);
+        assertXpathEvaluatesTo(
+                "normal",
+                "//gsml:ShearDisplacementStructure[@gml:id='gsml.sheardisplacementstructure.46199']/gsml:geologicHistory/gsml:DisplacementEvent[@gml:id='gsml.displacementevent.1000037']/gsml:incrementalDisplacement/gsml:DisplacementValue/gsml:movementSense/gsml:CGI_TermValue/gsml:value",
+                doc);
+        assertXpathEvaluatesTo(
+                "urn:cgi:classifierScheme:GSV:Provisional:MovementSense",
+                "//gsml:ShearDisplacementStructure[@gml:id='gsml.sheardisplacementstructure.46199']/gsml:geologicHistory/gsml:DisplacementEvent[@gml:id='gsml.displacementevent.1000037']/gsml:incrementalDisplacement/gsml:DisplacementValue/gsml:movementSense/gsml:CGI_TermValue/gsml:value/@codeSpace",
+                doc);
+
+        assertXpathEvaluatesTo(
+                "dip-slip",
+                "//gsml:ShearDisplacementStructure[@gml:id='gsml.sheardisplacementstructure.46199']/gsml:geologicHistory/gsml:DisplacementEvent[@gml:id='gsml.displacementevent.1000037']/gsml:incrementalDisplacement/gsml:DisplacementValue/gsml:movementType/gsml:CGI_TermValue/gsml:value",
+                doc);
+        assertXpathEvaluatesTo(
+                "urn:cgi:classifierScheme:GSV:Provisional:MovementType",
+                "//gsml:ShearDisplacementStructure[@gml:id='gsml.sheardisplacementstructure.46199']/gsml:geologicHistory/gsml:DisplacementEvent[@gml:id='gsml.displacementevent.1000037']/gsml:incrementalDisplacement/gsml:DisplacementValue/gsml:movementType/gsml:CGI_TermValue/gsml:value/@codeSpace",
+                doc);
+        assertXpathEvaluatesTo(
+                "urn:cgi:classifier:ICS:StratChart:2008:Permian",
+                "//gsml:ShearDisplacementStructure[@gml:id='gsml.sheardisplacementstructure.46199']/gsml:geologicHistory/gsml:DisplacementEvent[@gml:id='gsml.displacementevent.1000037']/gsml:eventAge/gsml:CGI_TermRange/gsml:lower/gsml:CGI_TermValue/gsml:value",
+                doc);
+        assertXpathEvaluatesTo(
+                "urn:cgi:classifierScheme:ICS:StratChart:2008",
+                "//gsml:ShearDisplacementStructure[@gml:id='gsml.sheardisplacementstructure.46199']/gsml:geologicHistory/gsml:DisplacementEvent[@gml:id='gsml.displacementevent.1000037']/gsml:eventAge/gsml:CGI_TermRange/gsml:lower/gsml:CGI_TermValue/gsml:value/@codeSpace",
+                doc);
+        assertXpathEvaluatesTo(
+                "urn:cgi:classifier:ICS:StratChart:2008:Permian",
+                "//gsml:ShearDisplacementStructure[@gml:id='gsml.sheardisplacementstructure.46199']/gsml:geologicHistory/gsml:DisplacementEvent[@gml:id='gsml.displacementevent.1000037']/gsml:eventAge/gsml:CGI_TermRange/gsml:upper/gsml:CGI_TermValue/gsml:value",
+                doc);
+        assertXpathEvaluatesTo(
+                "urn:cgi:classifierScheme:ICS:StratChart:2008",
+                "//gsml:ShearDisplacementStructure[@gml:id='gsml.sheardisplacementstructure.46199']/gsml:geologicHistory/gsml:DisplacementEvent[@gml:id='gsml.displacementevent.1000037']/gsml:eventAge/gsml:CGI_TermRange/gsml:upper/gsml:CGI_TermValue/gsml:value/@codeSpace",
+                doc);
+
     }
 
-    public void _testMappedFeature() {
+    public void testMappedFeature() {
         String path = "wfs?request=GetFeature&typename=gsml:MappedFeature&featureid=gsml.mappedfeature.195201,gsml.mappedfeature.192654,gsml.mappedfeature.191921,gsml.mappedfeature.179239,gsml.mappedfeature.185969,gsml.mappedfeature.186037,gsml.mappedfeature.185817,gsml.mappedfeature.185911,gsml.mappedfeature.178855,gsml.mappedfeature.185608";
+        validateGet(path);
         Document doc = getAsDOM(path);
         LOGGER.info(prettyString(doc));
+        assertXpathEvaluatesTo("10", "//wfs:FeatureCollection/@numberOfFeatures", doc);
+        assertXpathCount(10, "//gsml:MappedFeature", doc);
+        assertXpathEvaluatesTo(
+                "previous mapping",
+                "//gsml:MappedFeature[@gml:id='gsml.mappedfeature.179239']/gsml:observationMethod/gsml:CGI_TermValue/gsml:value",
+                doc);
+        assertXpathEvaluatesTo(
+                "urn:cgi:classifierScheme:GSV:InterpretationMethod",
+                "//gsml:MappedFeature[@gml:id='gsml.mappedfeature.179239']/gsml:observationMethod/gsml:CGI_TermValue/gsml:value/@codeSpace",
+                doc);
+        assertXpathEvaluatesTo(
+                "approximate",
+                "//gsml:MappedFeature[@gml:id='gsml.mappedfeature.185608']/gsml:positionalAccuracy/gsml:CGI_TermValue/gsml:value",
+                doc);
+        assertXpathEvaluatesTo(
+                "urn:cgi:classifierScheme:GSV:PositionalAccuracy",
+                "//gsml:MappedFeature[@gml:id='gsml.mappedfeature.185608']/gsml:positionalAccuracy/gsml:CGI_TermValue/gsml:value/@codeSpace",
+                doc);
+        assertXpathEvaluatesTo(
+                "urn:cgi:feature:CGI:EarthNaturalSurface",
+                "//gsml:MappedFeature[@gml:id='gsml.mappedfeature.185911']/gsml:samplingFrame/@xlink:href",
+                doc);
+
+        ArrayList<String> specs = new ArrayList<String>();
+        
+        for (int i = 1; i <= 10; i++) {
+            specs.add(this.evaluate("/wfs:FeatureCollection/gml:featureMember[" + i
+                    + "]/gsml:MappedFeature/gsml:specification/@xlink:href", doc));
+        }
+        int[] countType = new int[3];
+        for (String spec : specs) {           
+            if (spec.contains("ShearDisplacementStructure")) {
+                countType[0]++;
+            }
+            if (spec.contains("GeologicUnit")) {
+                countType[1]++;
+            }
+            if (spec.contains("Contact")) {
+                countType[2]++;
+            }
+        }
+        assertEquals(5, countType[0]);
+        assertEquals(3, countType[1]);
+        assertEquals(2, countType[2]);
+
+        String expected = "-38.410785700000325 143.86545265833303 -38.40925703333365 143.86857949166634";
+        String actual = evaluate(
+                "//gsml:MappedFeature[@gml:id='gsml.mappedfeature.179239']/gsml:shape/gml:Curve/gml:segments/gml:LineStringSegment/gml:posList",
+                doc);
+        assertTrue(this.isEqualGeometry(actual, expected, 5));
+
+        expected = "-38.139133550000324 144.2364237333331 -38.13991570000029 144.2415325499997";
+        actual = evaluate(
+                "//gsml:MappedFeature[@gml:id='gsml.mappedfeature.185969']/gsml:shape/gml:Curve/gml:segments/gml:LineStringSegment/gml:posList",
+                doc);
+        assertTrue(this.isEqualGeometry(actual, expected, 5));
+        assertXpathEvaluatesTo(
+                "2",
+                "//gsml:MappedFeature[@gml:id='gsml.mappedfeature.192654']/gsml:shape/gml:MultiSurface/@srsDimension",
+                doc);
+        expected = "-37.469102166666666 143.76702998333334 -37.470454841666665 143.76797201666668 -37.4716163 "
+                + "143.76817698333332 -37.472777758333336 143.7679037 -37.473939216666665 143.76776705833333 -37.475100675 143.76797201666668 " 
+                + "-37.475715566666665 143.76899683333335 -37.476877025 143.76927011666666 -37.478038483333336 143.76933844166666 "
+                + "-37.4790633 143.76988500833335 -37.480224766666666 143.76974836666668 -37.480293083333336 "
+                + "143.76858690833333 -37.480088125 143.76742545 -37.478516733333336 143.76571741666666 " 
+                + "-37.479336591666666 143.76489756666666 -37.47954155 143.76257465 -37.480429725 143.76332618333333 "
+                + "-37.481591183333336 143.7633945 -37.482684325 143.76291625 -37.483367533333336 143.760729975 "
+                + "-37.4835725 143.75956851666666 -37.48364083333333 143.75840705833335 -37.483504175 143.7572456 "
+                + "-37.482889291666666 143.75622078333333 -37.48213775833334 143.75533260833333 -37.481864475 "
+                + "143.75417114166666 -37.4822744 143.751848225 -37.4822744 143.75068676666666 -37.48213775833334 "
+                + "143.74952530833335 -37.479814833333336 143.749252025 -37.479609875 143.74809055833333 -37.47954155 "
+                + "143.7469291 -37.47865338333333 143.74617756666666 -37.477560241666666 143.74583596666668 "
+                + "-37.47721863333334 143.744742825 -37.47721863333334 143.74358136666666 -37.47694535 143.74241990833335 "
+                + "-37.476193808333335 143.740233625 -37.476193808333335 143.73907216666666 -37.476398775 "
+                + "143.73791070833335 -37.4774236 143.73579275 -37.476877025 143.73476793333333 -37.4764671 143.7336748 "
+                + "-37.475783891666666 143.7327183 -37.474827391666665 143.730532025 -37.474622425 143.72937056666666 "
+                + "-37.474554108333336 143.72820910833335 -37.474622425 143.7265694 -37.473460966666664 143.7265694 "
+                + "-37.47236784166667 143.726979325 -37.471547975 143.727799175 -37.470386516666665 143.727799175 "
+                + "-37.469293375 143.72738925 -37.4684052 143.72663771666666 -37.468131916666664 143.72547625833334 "
+                + "-37.467312066666665 143.72445143333334 -37.466355566666664 143.72410983333333 -37.465262433333336 143.72438313333333 "
+                + "-37.464784183333336 143.72547625833334 -37.464647541666665 143.72663771666666 -37.464784183333336 143.727799175 -37.465262433333336 "
+                + "143.72889231666667 -37.465809 143.72991713333334 -37.466492208333335 143.73087363333335 -37.467380383333335 143.73169348333334 "
+                + "-37.469498341666664 143.734426325 -37.4703182 143.73531450833335 -37.470933083333335 143.736339325 -37.472299508333336 "
+                + "143.73825231666666 -37.473051041666665 143.73914049166666 -37.474075858333336 143.74125845 -37.474417466666665 "
+                + "143.74235158333335 -37.474485783333336 143.74351304166666 -37.474759075 143.74467450833333 -37.47544228333334 "
+                + "143.745631 -37.475783891666666 143.74672414166668 -37.47598885 143.7478856 -37.4764671 143.74897873333333 "
+                + "-37.476535425 143.75246311666666 -37.476125491666664 143.75355625833333 -37.4755106 143.754581075 -37.473597608333336 "
+                + "143.75594749166666 -37.472777758333336 143.75676735 -37.472299508333336 143.75786048333333 -37.47236784166667 "
+                + "143.76018340833332 -37.47209455 143.76134486666666 -37.469293375 143.76517085 -37.469020091666664 143.76633230833335 -37.469102166666666 143.76702998333334";
+        actual = evaluate(
+                "//gsml:MappedFeature[@gml:id='gsml.mappedfeature.192654']/gsml:shape/gml:MultiSurface/gml:surfaceMember/gml:Polygon/gml:exterior/gml:LinearRing/gml:posList",
+                doc);
+        assertTrue(this.isEqualGeometry(actual, expected, 5));
+        
     }
+    
+   
 }

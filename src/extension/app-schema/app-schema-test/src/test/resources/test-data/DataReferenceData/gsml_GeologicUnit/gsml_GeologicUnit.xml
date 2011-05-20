@@ -82,8 +82,9 @@
 		</DataStore>
 	</sourceDataStores>
 	<includedTypes>
-		<Include>CGITermValue.xml</Include>			
-		<Include>gsml_PhysicalDescription.xml</Include>	
+		<Include>GU_CGITermValue.xml</Include>			
+		<Include>gsml_PhysicalDescription.xml</Include>
+		<Include>gsml_CompositionPart.xml</Include>			
 	</includedTypes>
 	<catalog>../../../schemas/catalog.xml</catalog>
 	<targetTypes>
