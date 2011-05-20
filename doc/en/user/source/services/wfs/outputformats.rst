@@ -51,3 +51,19 @@ The properties available in the template are:
   * ``workspace``: the workspace of the feature type
   * ``timestamp``: a Date object with the request timestamp
   * ``iso_timestamp``: a string, the ISO timestamp of the request at GMT, in the yyyyMMdd_HHmmss format
+  
+Format options as parameter in WFS requests
+-------------------------------------------
+
+The ``format_options`` vendor specific parameter is a container for parameters that are format specific. The options in it are expressed as:
+
+	param1:value1;param2:value2;...
+	
+The currently recognized format options are:
+
+``filename``: Applies only to the SHAPE-ZIP output format. If a file name is indicated, it is used as the output file name. For example:: 
+
+  format_options=FILENAME:roads.zip
+	
+Otherwise a file name is inferred from the requested feature type(s) name.
+
