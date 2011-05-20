@@ -277,6 +277,31 @@ public class ShapeZipTest extends WFSTestSupport {
     	assertEquals("application/zip", response.getContentType());
     }
     
+    public void testOutputZipFileNameSpecifiedInFormatOptions() throws Exception {
+        ShapeZipOutputFormat zip = new ShapeZipOutputFormat(getGeoServer(), getCatalog(),
+                getResourceLoader());
+
+        FeatureCollectionType mockResult = WfsFactory.eINSTANCE.createFeatureCollectionType();
+        mockResult.getFeature().add(getFeatureSource(ALL_DOTS).getFeatures(Filter.INCLUDE));
+        GetFeatureType mockRequest = WfsFactory.eINSTANCE.createGetFeatureType();
+
+        Operation mockOperation = new Operation("GetFeature", getServiceDescriptor10(), null,
+                new Object[] { mockRequest });
+
+        String[][] headers = zip.getHeaders(mockResult, mockOperation);
+        assertEquals(1, headers.length);
+        assertEquals("Content-Disposition", headers[0][0]);
+        assertEquals("attachment; filename=All_Types_Dots.zip", headers[0][1]);
+
+        mockRequest.getFormatOptions().put("FILENAME", "REQUEST_SUPPLIED_FILENAME.zip");
+
+        headers = zip.getHeaders(mockResult, mockOperation);
+        assertEquals(1, headers.length);
+        assertEquals("Content-Disposition", headers[0][0]);
+        assertEquals("attachment; filename=REQUEST_SUPPLIED_FILENAME.zip", headers[0][1]);
+
+    }
+
     public void testTemplatePOSTRequest11() throws Exception {
     	String xml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" + 
     			"<GetFeature xmlns=\"http://www.opengis.net/wfs\" xmlns:DigitalGlobe=\"http://www.digitalglobe.com\"\n" + 
