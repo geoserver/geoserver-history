@@ -40,7 +40,7 @@
     
     <!-- hibernate open session in view filter -->
     <bean id="openSessionInViewFilter" 
-       class="org.springframework.orm.hibernate3.support.OpenSessionInViewFilter">
+       class="org.geoserver.monitor.OpenSessionInViewFilter">
        <property name="sessionFactoryBeanName" value="hibSessionFactory"/>
     </bean>
     <!-- rest bindings -->

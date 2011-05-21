@@ -146,7 +146,7 @@ don't  want to change these values unless instructed by a developer.</value>
        <property name="geoServerFacade" ref="hibGeoServerFacade"/>
     </bean>
     
-    <bean id="hibSessionFilter" class="org.springframework.orm.hibernate3.support.OpenSessionInViewFilter">
+    <bean id="hibSessionFilter" class="org.geoserver.hibernate.OpenSessionInViewFilter">
       <property name="sessionFactoryBeanName" value="hibSessionFactory"/>
     </bean>
     
