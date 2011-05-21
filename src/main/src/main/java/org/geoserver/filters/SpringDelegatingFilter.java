@@ -14,24 +14,30 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
+import org.geoserver.platform.ExtensionPriority;
 import org.geoserver.platform.GeoServerExtensions;
 
 /**
- * @author Justin Deoliveira, OpenGeo
- * 
  * <p>
  * A composite servlet filter that loaders delegate filters from a spring context, rather then from
  * the traditional web.xml. This class allows for servlet filters to be dynamically contributed via 
  * a spring context.
  * </p>
+ * <p>It will pick up any filter declared in the Spring context that implements the 
+ * {@link GeoServerFilter} interface</p>.
+ * Ordering of the filters won't normally be predictable, but as with all other extension points
+ * it's possible to force a specific ordering by having filters implement the 
+ * {@link ExtensionPriority} interface
+ * </p> 
  *
+ * @author Justin Deoliveira, OpenGeo
  */
 public class SpringDelegatingFilter implements Filter {
 
-    List<Filter> filters;
+    List<GeoServerFilter> filters;
     
     public void init(FilterConfig filterConfig) throws ServletException {
-        filters = GeoServerExtensions.extensions(Filter.class);
+        filters = GeoServerExtensions.extensions(GeoServerFilter.class);
     }
     
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)

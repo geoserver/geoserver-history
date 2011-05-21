@@ -28,12 +28,13 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
+import org.geoserver.filters.GeoServerFilter;
 import org.geoserver.monitor.RequestData.Status;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geotools.util.logging.Logging;
 
-public class MonitorFilter implements Filter {
+public class MonitorFilter implements GeoServerFilter {
 
     static Logger LOGGER = Logging.getLogger("org.geoserver.monitor");
     

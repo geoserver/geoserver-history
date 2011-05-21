@@ -27,6 +27,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.geoserver.filters.GeoServerFilter;
 import org.springframework.security.Authentication;
 import org.springframework.security.AuthenticationException;
 import org.springframework.security.AuthenticationManager;
@@ -50,7 +51,7 @@ import sun.misc.BASE64Decoder;
  * @author David Winslow - TOPP
  * @note This class is heavily based on the BasicProcessingFilter provided in the main Spring Security Security code.
  */
-public class OpenPlansProcessingFilter implements Filter, InitializingBean {
+public class OpenPlansProcessingFilter implements GeoServerFilter, InitializingBean {
     //~ Static fields/initializers =====================================================================================
 
     static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.community");

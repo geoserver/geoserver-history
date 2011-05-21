@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 
+import org.geoserver.filters.GeoServerFilter;
 import org.springframework.security.AuthenticationException;
 import org.springframework.security.AccessDeniedException;
 import org.springframework.security.context.SecurityContextHolder;
@@ -27,7 +28,7 @@ import org.springframework.security.providers.anonymous.AnonymousAuthenticationT
  *
  * @author David Winslow <dwinslow@openplans.org>
  */
-public class HTTPExceptionTranslationFilter implements Filter{
+public class HTTPExceptionTranslationFilter implements GeoServerFilter {
 
     static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.community");
 
