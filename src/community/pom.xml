@@ -45,12 +45,6 @@
   <!-- profiles for individual modules -->
   <profiles>
     <profile>
-      <id>openplans-authentication</id>
-      <modules>
-        <module>openplans-authentication</module>
-      </modules>
-    </profile>
-    <profile>
       <id>proxy</id>
       <modules>
         <module>proxy</module>
