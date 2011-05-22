@@ -22,13 +22,14 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.validation.validator.MinimumValidator;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.GeoServerResourceLoader;
 import org.geoserver.web.services.BaseServiceAdminPage;
 import org.geoserver.web.util.MapModel;
 import org.geoserver.wfs.GMLInfo;
-import org.geoserver.wfs.GMLInfo.SrsNameStyle;
 import org.geoserver.wfs.WFSInfo;
+import org.geoserver.wfs.GMLInfo.SrsNameStyle;
 import org.geoserver.wfs.response.ShapeZipOutputFormat;
 
 @SuppressWarnings("serial")
@@ -40,7 +41,7 @@ public class WFSAdminPage extends BaseServiceAdminPage<WFSInfo> {
     
     @SuppressWarnings({ "rawtypes", "unchecked" })
     protected void build(final IModel info, Form form) {
-        form.add( new TextField( "maxFeatures" ) );
+        form.add( new TextField<Integer>( "maxFeatures" ).add(new MinimumValidator<Integer>(0)) );
         form.add( new CheckBox("featureBounding") );
         
         //service level

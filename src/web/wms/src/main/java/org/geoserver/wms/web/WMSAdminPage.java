@@ -23,7 +23,9 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.util.convert.IConverter;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
-import org.apache.wicket.validation.validator.NumberValidator;
+import org.apache.wicket.validation.validator.MinimumValidator;
+import org.apache.wicket.validation.validator.RangeValidator;
+import org.apache.wicket.validation.validator.UrlValidator;
 import org.geoserver.web.services.BaseServiceAdminPage;
 import org.geoserver.web.util.MapModel;
 import org.geoserver.web.wicket.LiveCollectionModel;
@@ -65,22 +67,22 @@ public class WMSAdminPage extends BaseServiceAdminPage<WMSInfo> {
         form.add(srsList);
 
         // general
-    	form.add(new DropDownChoice("interpolation", Arrays.asList(WMSInfo.WMSInterpolation.values()), new InterpolationRenderer()));
-    	// resource limits
-    	TextField maxMemory = new TextField("maxRequestMemory");
-    	maxMemory.add(NumberValidator.minimum(0.0));
-    	form.add(maxMemory);
-    	TextField maxTime = new TextField("maxRenderingTime");
-    	maxTime.add(NumberValidator.minimum(0.0));
+        form.add(new DropDownChoice("interpolation", Arrays.asList(WMSInfo.WMSInterpolation.values()), new InterpolationRenderer()));
+        // resource limits
+        TextField<Integer> maxMemory = new TextField<Integer>("maxRequestMemory");
+        maxMemory.add(new MinimumValidator<Integer>(0));
+        form.add(maxMemory);
+        TextField<Integer> maxTime = new TextField<Integer>("maxRenderingTime");
+        maxTime.add(new MinimumValidator<Integer>(0));
         form.add(maxTime);
-        TextField maxErrors = new TextField("maxRenderingErrors");
-        maxErrors.add(NumberValidator.minimum(0.0));
+        TextField<Integer> maxErrors = new TextField<Integer>("maxRenderingErrors");
+        maxErrors.add(new MinimumValidator<Integer>(0));
         form.add(maxErrors);
     	// watermark
     	form.add(new CheckBox("watermark.enabled"));
-    	form.add(new TextField("watermark.uRL"));
-    	TextField transparency = new TextField("watermark.transparency");
-    	transparency.add(NumberValidator.range(0, 100));
+    	form.add(new TextField("watermark.uRL").add(new UrlValidator()));
+    	TextField<Integer> transparency = new TextField<Integer>("watermark.transparency");
+    	transparency.add(new RangeValidator<Integer>(0,100));
         form.add(transparency);
     	form.add(new DropDownChoice("watermark.position", Arrays.asList(Position.values()), new WatermarkPositionRenderer()));
     	// svg
@@ -89,12 +91,13 @@ public class WMSAdminPage extends BaseServiceAdminPage<WMSInfo> {
     	form.add(new DropDownChoice("svg.producer", new MapModel(metadataModel, "svgRenderer"), SVG_RENDERERS, new SVGMethodRenderer()));
     	// png compression levels
     	MapModel pngCompression = defaultedModel(metadataModel, WMS.PNG_COMPRESSION, WMS.PNG_COMPRESSION_DEFAULT);
-        TextField pngCompressionField = new TextField("png.compression", pngCompression, Integer.class);
-        pngCompressionField.add(new NumberValidator.RangeValidator(0, 100));
+        TextField<Integer> pngCompressionField = new TextField<Integer>("png.compression", pngCompression, Integer.class);
+        pngCompressionField.add(new RangeValidator<Integer>(0, 100));
         form.add(pngCompressionField);
         // jpeg compression levels
     	MapModel jpegCompression = defaultedModel(metadataModel, WMS.JPEG_COMPRESSION, WMS.JPEG_COMPRESSION_DEFAULT);
-        TextField jpegCompressionField = new TextField("jpeg.compression", jpegCompression, Integer.class);
+        TextField<Integer> jpegCompressionField = new TextField<Integer>("jpeg.compression", jpegCompression, Integer.class);
+        jpegCompressionField.add(new RangeValidator<Integer>(0,100));
         form.add(jpegCompressionField);
         
         // kml handling
@@ -108,8 +111,8 @@ public class WMSAdminPage extends BaseServiceAdminPage<WMSInfo> {
         form.add(new CheckBox("kml.kmlplacemark", defaultedModel(metadataModel, WMS.KML_KMLPLACEMARK, WMS.KML_KMLPLACEMARK_DEFAULT)));
         
         MapModel kmScore = defaultedModel(metadataModel, WMS.KML_KMSCORE, WMS.KML_KMSCORE_DEFAULT);
-        TextField kmScoreField = new TextField("kml.kmscore", kmScore, Integer.class);
-        kmScoreField.add(new NumberValidator.RangeValidator(0, 100));
+        TextField<Integer> kmScoreField = new TextField<Integer>("kml.kmscore", kmScore, Integer.class);
+        kmScoreField.add(new RangeValidator<Integer>(0, 100));
         form.add(kmScoreField);
     }
     
