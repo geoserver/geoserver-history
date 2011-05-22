@@ -20,6 +20,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.validation.validator.MinimumValidator;
+import org.apache.wicket.validation.validator.UrlValidator;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.config.LoggingInfo;
@@ -47,9 +48,9 @@ public class GlobalSettingsPage extends ServerAdminPage {
         form.add(new CheckBox("verbose"));
         form.add(new CheckBox("verboseExceptions"));
         form.add(new CheckBox("globalServices"));
-        form.add(new TextField("numDecimals"));
+        form.add(new TextField<Integer>("numDecimals").add(new MinimumValidator<Integer>(0)));
         form.add(new DropDownChoice("charset", AVAILABLE_CHARSETS));
-        form.add(new TextField("proxyBaseUrl"));
+        form.add(new TextField("proxyBaseUrl").add(new UrlValidator()));
         
         logLevelsAppend(form, loggingInfoModel);
         form.add(new CheckBox("stdOutLogging", new PropertyModel( loggingInfoModel, "stdOutLogging")));
@@ -60,7 +61,7 @@ public class GlobalSettingsPage extends ServerAdminPage {
         xmlPostRequestLogBufferSize.add(new MinimumValidator<Integer>(0));
         form.add(xmlPostRequestLogBufferSize);
 
-        form.add(new TextField("featureTypeCacheSize"));
+        form.add(new TextField<Integer>("featureTypeCacheSize").add(new MinimumValidator<Integer>(0)));
         
         Button submit = new Button("submit", new StringResourceModel("submit", this, null)) {
             @Override
