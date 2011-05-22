@@ -112,12 +112,6 @@
       </modules>
     </profile>
     <profile>
-      <id>hibernate</id>
-      <modules>
-        <module>hibernate</module>
-      </modules>
-    </profile>
-    <profile>
       <id>dbconfig</id>
       <modules>
         <module>dbconfig</module>
