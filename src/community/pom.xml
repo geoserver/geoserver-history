@@ -75,12 +75,6 @@
       </modules>
     </profile>
     <profile>
-      <id>kml-ows5</id>
-      <modules> 
-        <module>kml-ows5</module>
-      </modules>
-    </profile>
-    <profile>
       <id>dds</id>
       <modules>
         <module>dds</module>
