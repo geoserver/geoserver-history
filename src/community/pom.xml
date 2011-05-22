@@ -51,12 +51,6 @@
       </modules>
     </profile>
     <profile>
-      <id>geosync</id>
-      <modules>
-        <module>geosync</module>
-      </modules>
-    </profile>
-    <profile>
       <id>proxy</id>
       <modules>
         <module>proxy</module>
