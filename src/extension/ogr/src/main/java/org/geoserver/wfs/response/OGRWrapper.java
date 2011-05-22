@@ -99,28 +99,40 @@ public class OGRWrapper {
      */
     public Set<String> getSupportedFormats() {
         try {
+            // this one works up to ogr2ogr 1.7
             List<String> commands = new ArrayList<String>();
             commands.add(ogrExecutable);
             commands.add("--help");
-
-            StringBuilder sb = new StringBuilder();
-            // can't trust the exit code, --help exits with -1 on my pc
-            run(commands, sb);
-
+            
             Set<String> formats = new HashSet<String>();
-            String[] lines = sb.toString().split("\n");
-            for (String line : lines) {
-                if (line.matches("\\s*-f \".*")) {
-                    String format = line.substring(line.indexOf('"') + 1, line.lastIndexOf('"'));
-                    formats.add(format);
-                }
-            }
+            addFormats(commands, formats);
+            
+            // this one is required starting with ogr2ogr 1.8
+            commands = new ArrayList<String>();
+            commands.add(ogrExecutable);
+            commands.add("--long-usage");
+            addFormats(commands, formats);
 
             return formats;
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE,
                     "Could not get the list of output formats supported by ogr2ogr", e);
             return Collections.emptySet();
+        }
+    }
+
+    private void addFormats(List<String> commands, Set<String> formats) throws IOException,
+            InterruptedException {
+        StringBuilder sb = new StringBuilder();
+        // can't trust the exit code, --help exits with -1 on my pc
+        run(commands, sb);
+        
+        String[] lines = sb.toString().split("\n");
+        for (String line : lines) {
+            if (line.matches("\\s*-f \".*")) {
+                String format = line.substring(line.indexOf('"') + 1, line.lastIndexOf('"'));
+                formats.add(format);
+            }
         }
     }
 
