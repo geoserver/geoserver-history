@@ -393,16 +393,6 @@
       </dependencies>
     </profile>
     <profile>
-      <id>importer</id>
-      <dependencies>
-        <dependency>
-          <groupId>org.geoserver</groupId>
-          <artifactId>importer</artifactId>
-          <version>${project.version}</version> 
-        </dependency>
-      </dependencies>
-    </profile>
-    <profile>
       <id>printing</id>
       <dependencies>
         <dependency>

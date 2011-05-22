@@ -87,12 +87,6 @@
       </modules>
     </profile>
     <profile>
-      <id>importer</id>
-      <modules>
-        <module>importer</module>
-      </modules>
-    </profile>
-    <profile>
       <id>printing</id>
       <modules>
         <module>printing</module>
