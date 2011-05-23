@@ -5,18 +5,104 @@ Teradata
 
 .. note:: Teradata database support is not enabled by default and requires the Teradata extension to be installed prior to use.  Please see the section on :ref:`community_teradata_install` for details.
 
-The Teradata Database is a commercial relational database (RDBMS) that specializes in parallel processing and scalability.  (NOT SURE HOW MUCH I SHOULD SAY HERE.)  From version 12.0, Teradata has added geospatial support, closely following the standard known as SQL/MM (SQL Multimedia and Applications Packages) Geospatial support was available through an add-on in version 12.0 and became standard in version 13.0.
+The Teradata Database is a commercial relational database (RDBMS) that specializes in parallel processing and scalability.  From version 12.0, Teradata has added geospatial support, closely following the SQL/MM standard (SQL Multimedia and Applications Packages).  Geospatial support was available through an add-on in version 12.0 and became standard in version 13.0.
 
-GeoServer connects to a Teradata database via a JDBC connection.  
-
-.. warning:: More details here.
+GeoServer connects to a Teradata database via JDBC.
 
 For more information on Teradata and the Teradata Database system, please go to `<http://www.teradata.com>`_.
 
 Compatibility
 -------------
 
-The GeoServer Teradata extension is compatible with GeoServer 2.2.x and higher.  GeoServer can connect to Teradata databases with version 12.0 or higher.  Version 12.0 of the Teradata Database requires the optional geospatial extension to be installed.
+The GeoServer Teradata extension is compatible with GeoServer 2.2.x and higher.  GeoServer can connect to Teradata databases version 12.0 or higher.  Version 12.0 of the Teradata Database requires the optional geospatial extension to be installed.
+
+Query Banding
+-------------
+
+The GeoServer Teradata extension supports Query Banding.  Query Banding is a feature which allows any application to associate context information with each query it issues to the database.  In practice this can be used for purposes of workload management (i.e. request prioritization), debugging, and logging.
+
+GeoServer sends the following information as part of a standard request:
+
+ * Name of application (i.e. GeoServer)
+ * Authenticated username (if set up)
+ * Hostname (if available) 
+ * Type of statement (i.e. "SELECT", "INSERT", "DELETE")
+
+It is not possible to modify this information from within GeoServer.
+
+Spatial indexes
+---------------
+
+GeoServer will read from a spatial index if its exists.  The convention for a spatial index table name is::
+
+   [TABLENAME]_[GEOMETRYCOLUMN]_idx
+
+So for a layer called "STATES" with a geometry column called "GEOM", the index table should be called :guilabel:`STATES_GEOM_idx`.
+
+This index table should contain two columns:
+
+ * A column that maps to the primary key of the spatial data table
+ * The tessellation cell ID (cellid)
+
+The tessellation cell ID is the ID of the cell where that feature is contained.
+
+Geometry column
+---------------
+
+As per the SQL/MM standard, in order to make a Teradata table spatially enabled, an entry needs to be created for that table in the ``geometry_columns`` table.  This table is stored, like all other spatially-related tables, in the SYSSPATIAL database.
+
+Tessellation
+------------
+
+Tessellation is the name of Teradata's spatial index.  In order to activate tessellation for a given layer, an entry (row) needs to be placed in the ``SYSSPATIAL.tessellation`` table.  This table should have the following schema:
+
+.. list-table::
+   :widths: 30 20 50
+   :header-rows: 1
+
+   * - Table name
+     - Type
+     - Description
+   * - F_TABLE_SCHEMA
+     - varchar
+     - Name of the spatial database/schema containing the table
+   * - F_TABLE_NAME
+     - varchar
+     - Name of the spatial table
+   * - F_GEOMETRY_COLUMN
+     - varchar
+     - Column that contains the spatial data
+   * - U_XMIN
+     - float
+     - Minimum X value for the tessellation universe
+   * - U_YMIN
+     - float
+     - Minimum Y value for the tessellation universe
+   * - U_XMAX
+     - float
+     - Maximum X value for the tessellation universe
+   * - U_YMAX
+     - float
+     - Maximum Y value for the tessellation universe
+   * - G_NX
+     - integer
+     - Number of X grids 
+   * - G_NY
+     - integer
+     - Number of Y grids 
+   * - LEVELS
+     - integer
+     - Number of levels in the grid 
+   * - SCALE
+     - float
+     - Scale value for the grid 
+   * - SHIFT
+     - float
+     - Shift value for the grid 
+
+For more information about Tessellation, please see the Teradata documentation.
+
+
 
 
 .. _community_teradata_install:
@@ -40,7 +126,7 @@ The latest community extension builds on the nightly build server are located at
 Teradata artifacts
 ~~~~~~~~~~~~~~~~~~
 
-In addition to the GeoServer artifacts, it is also necessary to download the Teradata JDBC driver.  This file cannot be redistributed, so must be downloaded directly from the Teradata website.  
+In addition to the GeoServer artifacts, it is also necessary to download the Teradata JDBC driver.  This file cannot be redistributed and so must be downloaded directly from the Teradata website.  
 
 #. Download the Teradata JDBC driver at `<https://downloads.teradata.com/download/connectivity/jdbc-driver>`_.
 
@@ -120,7 +206,7 @@ On the next screen, enter in the details on how to connect to the Teradata datab
    * - :guilabel:`estimatedBounds`
      - .. warning:: TBD
    * - :guilabel:`Max open prepared statements`
-     - The miximum number of prepared statements.
+     - The maximum number of prepared statements.
 
 When finished, click :guilabel:`Save`.
 
@@ -186,5 +272,5 @@ Adding layers
 
 One the store has been loaded into GeoServer, the process for loading data layers from database tables is the same as any other database source.  Please see the :ref:`webadmin_layers` section for more information. 
 
-.. note:: Only those database tables that have spatial information will be able to be loaded into GeoServer.
+.. note:: Only those database tables that have spatial information and an entry in the ``SYSSPATIAL.geometry_columns`` table can be served through GeoServer.
 
