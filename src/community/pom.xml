@@ -37,6 +37,7 @@
           <descriptor>release/ext-inspire.xml</descriptor>
           <descriptor>release/ext-sfs.xml</descriptor>
           <descriptor>release/ext-teradata.xml</descriptor>
+	  <descriptor>release/ext-dds.xml</descriptor>
         </descriptors>
       </configuration>
      </plugin>
