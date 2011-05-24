@@ -12,7 +12,7 @@ import org.geoserver.web.GeoServerApplication;
  * Model for layer groups
  */
 @SuppressWarnings("serial")
-public class LayerGroupDetachableModel extends LoadableDetachableModel {
+public class LayerGroupDetachableModel extends LoadableDetachableModel<LayerGroupInfo> {
 
     String id;
     LayerGroupInfo layerGroup;
@@ -25,7 +25,7 @@ public class LayerGroupDetachableModel extends LoadableDetachableModel {
     }
     
     @Override
-    protected Object load() {
+    protected LayerGroupInfo load() {
         if(id != null) {
             return GeoServerApplication.get().getCatalog().getLayerGroup( id );
         } else {

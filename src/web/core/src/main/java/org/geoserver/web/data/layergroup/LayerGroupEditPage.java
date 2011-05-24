@@ -11,7 +11,6 @@ import org.geoserver.web.wicket.ParamResourceModel;
 /**
  * Edits a layer group
  */
-@SuppressWarnings("serial")
 public class LayerGroupEditPage extends AbstractLayerGroupPage {
 
     public static final String GROUP = "group";
