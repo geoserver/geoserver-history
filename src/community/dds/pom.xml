@@ -12,7 +12,7 @@
 		<version>2.2-SNAPSHOT</version>
 	</parent>
 
-	<groupId>org.geoserver</groupId>
+	<groupId>org.geoserver.community</groupId>
 	<artifactId>dds</artifactId>
 	<packaging>jar</packaging>
 	<version>2.2-SNAPSHOT</version>
