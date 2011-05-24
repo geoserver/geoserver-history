@@ -18,6 +18,8 @@ import org.geoserver.catalog.LayerInfo;
  * <p>
  * All the components in the panel must be contained in a {@link Form} to make
  * sure the whole tab switch and page submit workflow function properly
+ * 
+ * @see LayerGroupConfigurationPanel
  */
 public class LayerConfigurationPanel extends Panel {
 	private static final long serialVersionUID = 4881474189619124359L;

@@ -12,7 +12,6 @@ import org.geoserver.catalog.LayerGroupInfo;
 /**
  * Allows creation of a new layer group
  */
-@SuppressWarnings("serial")
 public class LayerGroupNewPage extends AbstractLayerGroupPage {
     
     public LayerGroupNewPage() {

@@ -4,6 +4,7 @@
  */
 package org.geoserver.web.data.layergroup;
 
+import java.lang.reflect.Constructor;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -15,41 +16,44 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.SubmitLink;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.form.validation.IFormValidator;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
 import org.geoserver.catalog.CatalogBuilder;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.StyleInfo;
+import org.geoserver.web.GeoServerApplication;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.data.layer.LayerDetachableModel;
 import org.geoserver.web.data.style.StyleDetachableModel;
-import org.geoserver.web.wicket.CRSPanel;
+import org.geoserver.web.publish.LayerConfigurationPanel;
+import org.geoserver.web.publish.LayerConfigurationPanelInfo;
+import org.geoserver.web.publish.LayerGroupConfigurationPanel;
+import org.geoserver.web.publish.LayerGroupConfigurationPanelInfo;
 import org.geoserver.web.wicket.EnvelopePanel;
 import org.geoserver.web.wicket.GeoServerAjaxFormLink;
 import org.geoserver.web.wicket.GeoServerDataProvider;
+import org.geoserver.web.wicket.GeoServerDataProvider.BeanProperty;
+import org.geoserver.web.wicket.GeoServerDataProvider.Property;
 import org.geoserver.web.wicket.GeoServerTablePanel;
 import org.geoserver.web.wicket.ParamResourceModel;
 import org.geoserver.web.wicket.SimpleAjaxLink;
-import org.geoserver.web.wicket.GeoServerDataProvider.BeanProperty;
-import org.geoserver.web.wicket.GeoServerDataProvider.Property;
-import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-
-import com.vividsolutions.jts.geom.Envelope;
 
 /**
  * Handles layer group
  */
-@SuppressWarnings("serial")
+@SuppressWarnings({ "rawtypes", "unchecked", "serial" })
 public abstract class AbstractLayerGroupPage extends GeoServerSecuredPage {
 
     public static final String GROUP = "group";
-    IModel lgModel;
+    IModel<LayerGroupInfo> lgModel;
     EnvelopePanel envelopePanel;
     LayerGroupEntryPanel lgEntryPanel;
     String layerGroupId;
@@ -109,7 +113,50 @@ public abstract class AbstractLayerGroupPage extends GeoServerSecuredPage {
         });
         
         form.add(lgEntryPanel = new LayerGroupEntryPanel( "layers", layerGroup ));
-        form.add(new SubmitLink("save"){
+        
+        //Add panels contributed through extension point
+        form.add(extensionPanels());
+        
+        form.add(saveLink());
+        form.add(cancelLink());
+    }
+
+    private Component extensionPanels() {
+
+        final GeoServerApplication gsapp = getGeoServerApplication();
+        final List<LayerGroupConfigurationPanelInfo> extensions;
+        extensions = gsapp.getBeansOfType(LayerGroupConfigurationPanelInfo.class);
+
+        Component list;
+        list = new ListView<LayerGroupConfigurationPanelInfo>("contributedPanels", extensions) {
+
+            @Override
+            protected void populateItem(ListItem<LayerGroupConfigurationPanelInfo> item) {
+                final LayerGroupConfigurationPanelInfo panelInfo = item.getModelObject();
+                try {
+                    LayerGroupConfigurationPanel panel;
+                    Class<LayerGroupConfigurationPanel> componentClass;
+                    Constructor<? extends LayerGroupConfigurationPanel> constructor;
+
+                    componentClass = panelInfo.getComponentClass();
+                    constructor = componentClass.getConstructor(String.class, IModel.class);
+                    panel = constructor.newInstance("content", lgModel);
+                    item.add(panel);
+                } catch (Exception e) {
+                    throw new WicketRuntimeException(
+                            "Failed to add pluggable layergroup configuration panels", e);
+                }
+            }
+        };
+        return list;
+    }
+
+    private BookmarkablePageLink cancelLink() {
+        return new BookmarkablePageLink("cancel", LayerGroupPage.class);
+    }
+
+    private SubmitLink saveLink() {
+        return new SubmitLink("save"){
             @Override
             public void onSubmit() {
                 if(lgEntryPanel.getEntries().size() == 0) {
@@ -129,8 +176,7 @@ public abstract class AbstractLayerGroupPage extends GeoServerSecuredPage {
                 
                 AbstractLayerGroupPage.this.onSubmit();
             }
-        });
-        form.add(new BookmarkablePageLink("cancel", LayerGroupPage.class));
+        };
     }
     
     /**
