@@ -1,4 +1,4 @@
-package org.geoserver.geosearch.deprecated;
+package org.geoserver.geosearch.rest;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathExists;
