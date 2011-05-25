@@ -36,30 +36,6 @@
    <version>2.2-SNAPSHOT</version>
   </dependency>
   <dependency>
-   <groupId>com.h2database</groupId>
-   <artifactId>h2</artifactId>
-  </dependency>
-  <dependency>
-   <groupId>jaxen</groupId>
-   <artifactId>jaxen</artifactId>
-   <version>1.1-beta-8</version>
-  </dependency>
-  <dependency>
-   <groupId>org.geotools</groupId>
-   <artifactId>gt-api</artifactId>
-  </dependency>
-  <dependency>
-   <groupId>jdom</groupId>
-   <artifactId>jdom</artifactId>
-   <version>1.0</version>
-   <exclusions>
-    <exclusion>
-     <groupId>xerces</groupId>
-     <artifactId>xerces</artifactId>
-    </exclusion>
-   </exclusions>
-  </dependency>
-  <dependency>
    <groupId>org.geoserver</groupId>
    <artifactId>main</artifactId>
    <version>2.2-SNAPSHOT</version>
@@ -71,6 +47,18 @@
    <artifactId>mockrunner</artifactId>
    <scope>test</scope>
   </dependency>
+  <dependency>
+    <groupId>xmlunit</groupId>
+    <artifactId>xmlunit</artifactId>
+    <scope>test</scope>
+  </dependency>
  </dependencies>
 
+  <build>
+    <testResources>
+      <testResource>
+        <directory>src/test/resources</directory>
+      </testResource>     
+    </testResources>
+  </build>
 </project>

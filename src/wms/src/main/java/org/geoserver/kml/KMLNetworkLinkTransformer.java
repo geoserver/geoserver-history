@@ -56,10 +56,41 @@ public class KMLNetworkLinkTransformer extends TransformerBase {
      */
     boolean cachedMode = false;
 
+    private boolean standalone;
+
+    /**
+     * @see #setInline
+     */
+    private boolean inline;
+
     private WMS wms;
 
     public KMLNetworkLinkTransformer(WMS wms) {
         this.wms = wms;
+        standalone = true;
+    }
+
+    public void setStandalone(boolean standalone){
+        this.standalone = standalone;
+    }
+    
+    public boolean isStandalone(){
+        return standalone;
+    }
+
+    /**
+     * @return {@code true} if the document is to be generated inline (i.e. without an enclosing
+     *         Folder element). Defaults to {@code false}
+     */
+    public boolean isInline() {
+        return inline;
+    }
+
+    /**
+     * @param inline if {@code true} network links won't be enclosed inside a Folder element
+     */
+    public void setInline(boolean inline) {
+        this.inline = inline;
     }
 
     public void setCachedMode(boolean cachedMode) {
@@ -90,9 +121,12 @@ public class KMLNetworkLinkTransformer extends TransformerBase {
                 request.setFormat(KMZMapOutputFormat.MIME_TYPE);
             }
 
-            start("kml");
-            start("Folder");
-
+            if(standalone){
+                start("kml");
+            }
+            if (!inline) {
+                start("Folder");
+            }
             final List<MapLayerInfo> layers = request.getLayers();
 
             final KMLLookAt lookAt = parseLookAtOptions(request);
@@ -112,8 +146,12 @@ public class KMLNetworkLinkTransformer extends TransformerBase {
             // look at
             encodeLookAt(aggregatedBounds, lookAt);
 
-            end("Folder");
-            end("kml");
+            if (!inline) {
+                end("Folder");
+            }
+            if (standalone) {
+                end("kml");
+            }
         }
 
         /**
