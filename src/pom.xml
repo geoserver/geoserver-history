@@ -1141,6 +1141,7 @@
       <descriptor>release/ext-control-flow.xml</descriptor>
       <descriptor>release/ext-wps.xml</descriptor>
       <descriptor>release/ext-querylayer.xml</descriptor>
+      <descriptor>release/ext-teradata.xml</descriptor>
      </descriptors>
      <finalName>geoserver-2.1-SNAPSHOT</finalName>
      <outputDirectory>${project.build.directory}/release</outputDirectory>

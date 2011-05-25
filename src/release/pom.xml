@@ -207,6 +207,11 @@
    <artifactId>querylayer</artifactId>
    <version>${project.version}</version>
   </dependency>
+  <dependency>
+   <groupId>org.geoserver.extension</groupId>
+   <artifactId>teradata</artifactId>
+   <version>${project.version}</version>
+  </dependency>
  </dependencies>
  <build>
   <plugins>
