@@ -55,7 +55,8 @@ public class LayerKMLDocumentFormat extends StreamDataFormat {
         try {
             transformer.transform(transformerSubject, out);
         } catch (TransformerException e) {
-            throw new IOException(e);
+            throw (IOException) new IOException("Error creating KML document: " + e.getMessage())
+                    .initCause(e.getCause() == null ? e : e.getCause());
         }
 
         // final WMSMapContext context = (WMSMapContext) object;

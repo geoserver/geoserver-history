@@ -83,15 +83,18 @@ public class SiteMapXMLFormat extends StreamDataFormat {
         final XMLStreamWriter writer;
         try {
             XMLOutputFactory factory;
-            try {
-                factory = XMLOutputFactory.newInstance();
-            } catch (FactoryConfigurationError e) {
-                throw new IOException(e);
-            }
+            factory = XMLOutputFactory.newInstance();
             writer = factory.createXMLStreamWriter(out, "UTF-8");
+        } catch (FactoryConfigurationError e) {
+            throw new RuntimeException(e);
+        } catch (XMLStreamException e) {
+            throw new RuntimeException(e);
+        }
+        try {
             encode(catalog, writer);
         } catch (XMLStreamException e) {
-            throw new IOException(e);
+            throw (IOException) new IOException("Error encoding sitemap: " + e.getMessage())
+                    .initCause(e);
         }
     }
 
