@@ -92,6 +92,7 @@ public class SiteMapXMLFormat extends StreamDataFormat {
         }
         try {
             encode(catalog, writer);
+            writer.flush();
         } catch (XMLStreamException e) {
             throw (IOException) new IOException("Error encoding sitemap: " + e.getMessage())
                     .initCause(e);
