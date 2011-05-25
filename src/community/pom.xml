@@ -138,12 +138,6 @@
       </modules>
     </profile>
     <profile>
-      <id>translator</id>
-      <modules>
-        <module>translator</module>
-      </modules>
-    </profile>
-    <profile>
       <id>monitoring</id>
       <modules>
         <module>monitoring</module>
