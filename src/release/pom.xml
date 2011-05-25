@@ -166,7 +166,7 @@
    <artifactId>app-schema</artifactId>
    <version>${project.version}</version>
    <type>pom</type>
-  </dependency> 
+  </dependency>
   <dependency>
    <groupId>org.geoserver.extension</groupId>
    <artifactId>feature-pregeneralized</artifactId>
@@ -210,6 +210,11 @@
   <dependency>
    <groupId>org.geoserver.extension</groupId>
    <artifactId>querylayer</artifactId>
+   <version>${project.version}</version>
+  </dependency>
+  <dependency>
+   <groupId>org.geoserver.extension</groupId>
+   <artifactId>teradata</artifactId>
    <version>${project.version}</version>
   </dependency>
  </dependencies>

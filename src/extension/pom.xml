@@ -172,6 +172,13 @@
       </modules>
     </profile>
 
+    <profile>
+      <id>teradata</id>
+      <modules>
+        <module>teradata</module>
+      </modules>
+    </profile>
+
     <!-- allExtensions profile, includes all modules -->
     <profile>
       <id>allExtensions</id>
@@ -197,6 +204,7 @@
         <module>control-flow</module>
         <module>wps</module>
         <module>querylayer</module>
+        <module>teradata</module>
       </modules>
     </profile>
 
@@ -225,6 +233,7 @@
         <module>control-flow</module>
         <module>wps</module>
         <module>querylayer</module>
+        <module>teradata</module>
       </modules>
     </profile>
 

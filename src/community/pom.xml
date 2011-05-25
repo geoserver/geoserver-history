@@ -36,7 +36,6 @@
           <descriptor>release/ext-dbconfig.xml</descriptor>
           <descriptor>release/ext-inspire.xml</descriptor>
           <descriptor>release/ext-sfs.xml</descriptor>
-          <descriptor>release/ext-teradata.xml</descriptor>
 	  <descriptor>release/ext-dds.xml</descriptor>
         </descriptors>
       </configuration>
@@ -126,7 +125,6 @@
         <module>dbconfig</module>
         <module>inspire</module>
         <module>sfs</module>
-        <module>teradata</module>
       </modules>
     </profile>
     <profile>
@@ -181,12 +179,6 @@
       <id>sfs</id>
       <modules>
         <module>sfs</module>
-      </modules>
-    </profile>
-    <profile>      
-      <id>teradata</id>
-      <modules>
-        <module>teradata</module>
       </modules>
     </profile>
   </profiles>
