@@ -16,7 +16,7 @@ import org.geotools.data.DataAccessFactory.Param;
  * 
  * @author Gabriel Roldan
  */
-class ParamInfo implements Serializable {
+public class ParamInfo implements Serializable {
 
     private static final long serialVersionUID = 886996604911751174L;
 
