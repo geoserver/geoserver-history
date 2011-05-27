@@ -28,6 +28,14 @@
                 <include>LICENSE.txt</include>
             </includes>
         </fileSet>
+        <fileSet>
+            <directory>../data/app-schema-tutorial</directory>
+            <outputDirectory>tutorial</outputDirectory>
+            <!-- might have been manually added as an eclipse project -->
+            <excludes>
+                <exclude>**/.project</exclude>
+            </excludes>
+        </fileSet>
     </fileSets>
 </assembly>
 

@@ -27,17 +27,19 @@ Installation
 
 * Install GeoServer as usual.
 
-* Install the app-schema plugin (place the jar files in ``WEB-INF/lib``).
+* Install the app-schema plugin ``geoserver-*-app-schema-plugin.zip``:
 
-* The tutorial configuration is a complete working GeoServer data directory. It includes all the schema (XSD) files required to use GeoSciML 2.0, the data files, and the app-schema configuration files. There are two ways you can get it:
+    * Place the jar files in ``WEB-INF/lib``.
 
-    #. Download :download:`geoserver-app-schema-tutorial-config.zip` and unzip it into the folder that you will use as your data directory.
-
-    #. Check it out from the `AuScope subversion repository <https://svn.auscope.org/subversion/AuScope/geoserver/config/geoserver-app-schema-tutorial-config/trunk/>`_.
-
-* If the data directory differs from the default, edit ``WEB-INF/web.xml`` to set ``GEOSERVER_DATA_DIR``. (Be sure to uncomment the section that sets ``GEOSERVER_DATA_DIR``.)
+    * The ``tutorial`` folder contains the GeoServer configuraration (data directory) used for this tutorial.
+    
+        * Either replace your existing ``data`` directory with the tutorial data directory,
+        
+        * Or edit ``WEB-INF/web.xml`` to set ``GEOSERVER_DATA_DIR`` to point to the tutorial data directory. (Be sure to uncomment the section that sets ``GEOSERVER_DATA_DIR``.)
 
 * Perform any configuration required by your servlet container, and then start the servlet. For example, if you are using Tomcat, configure a new context in ``server.xml`` and then restart Tomcat.
+
+* The first time GeoServer starts with the tutorial configuration, it will download all the schema (XSD) files it needs and store them in the ``app-schema-cache`` folder in the data directory. **You must be connected to the internet for this to work.**
 
 
 datastore.xml
@@ -140,26 +142,10 @@ For this example, each feature type uses an identical source data store configur
 See :ref:`app-schema.data-stores` for a description of how to use other types of data stores such as databases.
 
 
-Catalog
-```````
-
-Both feature types use the same OASIS XML Catalog, given as a path relative to the mapping file::
-
-	<catalog>../../../schemas/catalog.xml</catalog>
-
-* The catalog contains the the XSD schemas for GeoSciML 2.0 its dependencies.
-
-* Note that some dependencies are imported as relative filesystem paths, and so are not resolved through the OASIS Catalog, but are still present on the filesystem.
-
-* GML 3.1.1 is also a dependency, but is not required because it is distributed with GeoServer.
-
-* Use of a catalog is required because the implementation otherwise fails to honour relative imports.
-
-
 Target types
 ````````````
 
-Both feature types are defined the same XML Schema, the top-level schema for GeoSciML 2.0. This is specified in the ``targetTypes`` section. The type of the output feature is defined in ``targetElement`` in the ``typeMapping`` section below``::
+Both feature types are defined the same XML Schema, the top-level schema for GeoSciML 2.0. This is specified in the ``targetTypes`` section. The type of the output feature is defined in ``targetElement`` in the ``typeMapping`` section below::
 
     <targetTypes>
         <FeatureType>
@@ -332,13 +318,15 @@ When GeoServer is running, test app-schema WFS in a web browser. If GeoServer is
 
 * http://localhost:8080/geoserver/wfs?request=GetFeature&typeName=gsml:MappedFeature
 
+You can also obtain WFS responses by using the *Demo requests* page in the GeoServer web interface. (Note that the web interface does not yet support app-schema store or layer administration.)
+
+* http://localhost:8080/geoserver/web/?wicket:bookmarkablePage=:org.geoserver.web.demo.DemoRequestsPage
+
 
 gsml:GeologicUnit
 `````````````````
 
-* :download:`The WFS response for gsml:GeologicUnit <gsml_GeologicUnit-wfs-response.xml>` contains two features corresponding to the two rows in ``gsml_GeologicUnit.properties``. The response document has been manually pretty-printed, so contains more whitespace than the original GeoServer response, but is otherwise a complete WFS response.
-
-* Feature chaining has been used to construct the multivalued property ``gsml:occurrence`` of ``gsml:GeologicUnit``. This property is a ``gsml:MappedFeature``. The WFS response for ``gsml:GeologicUnit`` combines the output of both feature types into a single response. The first ``gsml:GeologicUnit`` has two ``gsml:occurrence`` properties, while the second has one. The relationships between the feature instances are data driven.
+Feature chaining has been used to construct the multivalued property ``gsml:occurrence`` of ``gsml:GeologicUnit``. This property is a ``gsml:MappedFeature``. The WFS response for ``gsml:GeologicUnit`` combines the output of both feature types into a single response. The first ``gsml:GeologicUnit`` has two ``gsml:occurrence`` properties, while the second has one. The relationships between the feature instances are data driven.
 
 .. note:: The data in this tutorial is fictitious. Some of the text and numbers have been taken from real data, but have been modified to the extent that they have no real-world meaning.
 

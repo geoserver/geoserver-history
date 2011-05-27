@@ -1,6 +1,7 @@
 GeoServer Application Schema Support Extension
 ==============================================
 
+
 Installation
 ------------
 
@@ -13,4 +14,11 @@ Installation
    - xml-commons-resolver-{something}.jar
 
 3. Restart GeoServer by reloading the servlet or restarting your servlet container.
+
+
+Tutorial
+--------
+
+The tutorial data directory is described in the GeoServer user manual:
+http://docs.geoserver.org/latest/en/user/data/app-schema/tutorial.html
 
