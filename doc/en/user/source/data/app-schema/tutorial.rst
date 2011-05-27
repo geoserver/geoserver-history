@@ -145,7 +145,7 @@ See :ref:`app-schema.data-stores` for a description of how to use other types of
 Target types
 ````````````
 
-Both feature types are defined the same XML Schema, the top-level schema for GeoSciML 2.0. This is specified in the ``targetTypes`` section. The type of the output feature is defined in ``targetElement`` in the ``typeMapping`` section below::
+Both feature types are defined by the same XML Schema, the top-level schema for GeoSciML 2.0. This is specified in the ``targetTypes`` section. The type of the output feature is defined in ``targetElement`` in the ``typeMapping`` section below::
 
     <targetTypes>
         <FeatureType>
@@ -327,6 +327,8 @@ gsml:GeologicUnit
 `````````````````
 
 Feature chaining has been used to construct the multivalued property ``gsml:occurrence`` of ``gsml:GeologicUnit``. This property is a ``gsml:MappedFeature``. The WFS response for ``gsml:GeologicUnit`` combines the output of both feature types into a single response. The first ``gsml:GeologicUnit`` has two ``gsml:occurrence`` properties, while the second has one. The relationships between the feature instances are data driven.
+
+Because the mapping files in the tutorial configuration do not contain attribute mappings for all mandatory properties of these feature types, the WFS response is not *schema-valid* against the GeoSciML 2.0 schemas. Schema-validity can be achieved by adding more attribute mappings to the mapping files.
 
 .. note:: The data in this tutorial is fictitious. Some of the text and numbers have been taken from real data, but have been modified to the extent that they have no real-world meaning.
 
