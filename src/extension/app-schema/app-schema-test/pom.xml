@@ -139,6 +139,8 @@
 					<excludes>
 						<exclude>**/DataReferenceWfsOracleTest.java</exclude>
 						<exclude>**/DataReferenceWfsPostgisTest.java</exclude>
+                                                <exclude>**/DataReferenceWfsOracleWithJoiningTest.java</exclude>
+                                                <exclude>**/DataReferenceWfsPostgisWithJoiningTest.java</exclude>
 						<exclude>**/WfsOnlineOracleTest.java</exclude>
 						<exclude>**/WfsOnlinePostgisTest.java</exclude>
 					</excludes>
