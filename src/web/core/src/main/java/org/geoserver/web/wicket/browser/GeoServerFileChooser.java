@@ -237,7 +237,13 @@ public class GeoServerFileChooser extends Panel {
 			    return new ParamResourceModel("dataDirectory", GeoServerFileChooser.this).getString();
 			}
 			
-			return FileSystemView.getFileSystemView().getSystemDisplayName(f);
+			try {
+			    return FileSystemView.getFileSystemView().getSystemDisplayName(f);
+			} catch(Exception e) {
+			    // on windows we can get the occasional NPE due to 
+			    // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6973685
+			    return f.getName();
+			}
 		}
 
 		public String getIdValue(Object o, int count) {
