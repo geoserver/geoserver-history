@@ -396,6 +396,25 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
                 throw new ServiceException(msg, getClass().getName());
             }
         }
+        
+        // check the view params
+        List<Map<String, String>> viewParams = getMap.getViewParams();
+        if(viewParams != null && viewParams.size() > 0) {
+            int layerCount = getMap.getLayers().size();
+            
+            // if we have just one replicate over all layers
+            if(viewParams.size() == 1 && layerCount > 1) {
+                List<Map<String, String>> replacement = new ArrayList<Map<String,String>>();
+                for (int i = 0; i < layerCount; i++) {
+                    replacement.add(viewParams.get(0));
+                }
+                getMap.setViewParams(replacement);
+            } else if(viewParams.size() != layerCount) {
+                String msg = layerCount + " layers requested, but found " + viewParams.size()
+                + " view params specified. ";
+                throw new ServiceException(msg, getClass().getName());
+            }
+        }
 
         return getMap;
     }

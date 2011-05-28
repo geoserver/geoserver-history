@@ -49,7 +49,7 @@ public class GetMapRequest extends WMSRequest {
     private Map /* <String,Object> */env = new HashMap();
 
     /** sql view parameters */
-    private Map<String, String> viewParams = new HashMap<String, String>();
+    private List<Map<String, String>> viewParams = null;
 
     private Map<String, String> httpRequestHeaders;
 
@@ -110,7 +110,7 @@ public class GetMapRequest extends WMSRequest {
      * 
      * @return
      */
-    public Map<String, String> getViewParams() {
+    public List<Map<String, String>> getViewParams() {
         return viewParams;
     }
 
@@ -382,7 +382,7 @@ public class GetMapRequest extends WMSRequest {
      * 
      * @param viewParams
      */
-    public void setViewParams(Map<String, String> viewParams) {
+    public void setViewParams(List<Map<String, String>> viewParams) {
         this.viewParams = viewParams;
     }
 

@@ -81,6 +81,8 @@ In order to get all the states having between 2 and 5 millions inhabintants the 
 .. figure:: images/sqlview-2m-5m.png
    :align: center
    
+   
+The ``viewparams`` can be also specified on a layer per layer basis using the syntax ``viewparams=l1p1:v1;l1p2:v2,l2p1:v1;l2p2:v2,...``, that is, separating each layer map with a comma. In this case the number of parameter maps must match the number of layers (or feature types) included in the request.
 
 Parameters and validation
 -------------------------

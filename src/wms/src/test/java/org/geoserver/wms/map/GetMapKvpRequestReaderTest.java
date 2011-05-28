@@ -467,9 +467,63 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
         GetMapRequest request = (GetMapRequest) reader.createRequest();
         request = (GetMapRequest) reader.read(request, parseKvp(raw), caseInsensitiveKvp(raw));
 
-        Map viewParams = request.getViewParams();
-        assertEquals(2, viewParams.size());
+        List<Map<String, String>> viewParamsList = request.getViewParams();
+        assertEquals(1, viewParamsList.size());
+        Map viewParams = viewParamsList.get(0);
         assertEquals("WHERE PERSONS > 1000000", viewParams.get("where"));
         assertEquals("ABCD", viewParams.get("str"));
     }
+    
+    public void testMultipleViewParams() throws Exception {
+        HashMap raw = new HashMap();
+        raw.put("layers", getLayerId(MockData.BASIC_POLYGONS) + "," + getLayerId(MockData.BASIC_POLYGONS));
+        raw.put("styles", "");
+        raw.put("format", "image/jpeg");
+        raw.put("srs", "epsg:3003");
+        raw.put("bbox", "-10,-10,10,10");
+        raw.put("height", "600");
+        raw.put("width", "800");
+        raw.put("request", "GetMap");
+        raw.put("service", "wms");
+        raw.put("viewParams", "where:WHERE PERSONS > 1000000;str:ABCD,where:WHERE PERSONS > 10;str:FOO");
+
+        GetMapRequest request = (GetMapRequest) reader.createRequest();
+        request = (GetMapRequest) reader.read(request, parseKvp(raw), caseInsensitiveKvp(raw));
+
+        List<Map<String, String>> viewParamsList = request.getViewParams();
+        assertEquals(2, viewParamsList.size());
+        Map viewParams = viewParamsList.get(0);
+        assertEquals("WHERE PERSONS > 1000000", viewParams.get("where"));
+        assertEquals("ABCD", viewParams.get("str"));
+        viewParams = viewParamsList.get(1);
+        assertEquals("WHERE PERSONS > 10", viewParams.get("where"));
+        assertEquals("FOO", viewParams.get("str"));
+    }
+    
+    public void testFanOutViewParams() throws Exception {
+        HashMap raw = new HashMap();
+        raw.put("layers", getLayerId(MockData.BASIC_POLYGONS) + "," + getLayerId(MockData.BASIC_POLYGONS));
+        raw.put("styles", "");
+        raw.put("format", "image/jpeg");
+        raw.put("srs", "epsg:3003");
+        raw.put("bbox", "-10,-10,10,10");
+        raw.put("height", "600");
+        raw.put("width", "800");
+        raw.put("request", "GetMap");
+        raw.put("service", "wms");
+        raw.put("viewParams", "where:WHERE PERSONS > 1000000;str:ABCD");
+
+        GetMapRequest request = (GetMapRequest) reader.createRequest();
+        request = (GetMapRequest) reader.read(request, parseKvp(raw), caseInsensitiveKvp(raw));
+
+        List<Map<String, String>> viewParamsList = request.getViewParams();
+        assertEquals(2, viewParamsList.size());
+        Map viewParams = viewParamsList.get(0);
+        assertEquals("WHERE PERSONS > 1000000", viewParams.get("where"));
+        assertEquals("ABCD", viewParams.get("str"));
+        viewParams = viewParamsList.get(1);
+        assertEquals("WHERE PERSONS > 1000000", viewParams.get("where"));
+        assertEquals("ABCD", viewParams.get("str"));
+    }
+    
 }

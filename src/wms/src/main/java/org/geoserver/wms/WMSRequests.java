@@ -372,19 +372,18 @@ public class WMSRequests {
     /**
      * Encodes a map of formation options to be used as the value in a kvp.
      * 
-     * @param formatOptions
-     *            The map of formation options.
+     * @param formatOptions The map of formation options.
+     * @param sb StringBuffer to append to.
      * 
      * @return A string of the form 'key1:value1,value2;key2:value1;...', or the empty string if the
      *         formatOptions map is empty.
      * 
      */
-    public static String encodeFormatOptions(Map formatOptions) {
+    public static void encodeFormatOptions(Map formatOptions, StringBuffer sb) {
         if (formatOptions == null || formatOptions.isEmpty()) {
-            return "";
+            return;
         }
 
-        StringBuffer sb = new StringBuffer();
         for (Iterator e = formatOptions.entrySet().iterator(); e.hasNext();) {
             Map.Entry entry = (Map.Entry) e.next();
             String key = (String) entry.getKey();
@@ -410,6 +409,50 @@ public class WMSRequests {
                 sb.append(val.toString());
             }
             sb.append(";");
+        }
+
+        sb.setLength(sb.length());
+    }
+
+    /**
+     * Encodes a map of format options to be used as the value in a kvp.
+     * 
+     * @param formatOptions The map of format options.
+     * 
+     * @return A string of the form 'key1:value1,value2;key2:value1;...', or the empty string if the
+     *         formatOptions map is empty.
+     * 
+     */
+    public static String encodeFormatOptions(Map formatOptions) {
+    	StringBuffer sb = new StringBuffer();
+    	encodeFormatOptions(formatOptions, sb);
+    	return sb.toString();
+    }
+    
+    /**
+     * Encodes a list of format option maps to be used as the value in a kvp.
+     * 
+     * @param formatOptions The list of formation option maps.
+     * @param sb StringBuffer to append to.
+     * 
+     * @return A string of the form 'key1.1:value1.1,value1.2;key1.2:value1.1;...[,key2.1:value2.1,value2.2;key2.2:value2.1]', 
+     * 	or the empty string if the formatOptions list is empty.
+     * 
+     */
+    public static String encodeFormatOptions(List<Map<String, String>> formatOptions) {
+        if (formatOptions == null || formatOptions.isEmpty()) {
+            return "";
+        }
+        
+        StringBuffer sb = new StringBuffer();
+        boolean first = true;
+        for (Map<String, String> map : formatOptions) {
+        	if (first) {
+        		first = false;
+        	} else {
+                sb.append(",");
+        	}
+            encodeFormatOptions(map, sb);
         }
 
         sb.setLength(sb.length());

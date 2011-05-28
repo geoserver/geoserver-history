@@ -253,8 +253,7 @@
     <bean id="charsetKvpParser" class="org.geoserver.ows.kvp.CharsetKVPParser">
         <constructor-arg value="charset"/>
     </bean>
-  <bean id="wfsSqlViewKvpParser" class="org.geoserver.ows.kvp.FormatOptionsKvpParser">
-    <constructor-arg index="0" value="viewParams"/>
+  <bean id="wfsSqlViewKvpParser" class="org.geoserver.ows.kvp.ViewParamsKvpParser">
     <property name="service" value="WFS"/>
   </bean>
 

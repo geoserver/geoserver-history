@@ -24,6 +24,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.NamespaceInfo;
+import org.geoserver.platform.ServiceException;
 import org.geoserver.wfs.GetFeature;
 import org.geoserver.wfs.WFSException;
 import org.geotools.geometry.jts.ReferencedEnvelope;
@@ -258,7 +259,27 @@ public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
             if(gft.getMetadata() == null) {
                 gft.setMetadata(new HashMap());
             } 
-            gft.getMetadata().put(GetFeature.SQL_VIEW_PARAMS, kvp.get("viewParams"));
+            
+            // fan out over all layers if necessary
+            List<Map<String, String>> viewParams = (List<Map<String, String>>) kvp.get("viewParams");
+            if(viewParams.size() > 0) {
+                int layerCount = gft.getQuery().size();
+                
+                // if we have just one replicate over all layers
+                if(viewParams.size() == 1 && layerCount > 1) {
+                    List<Map<String, String>> replacement = new ArrayList<Map<String,String>>();
+                    for (int i = 0; i < layerCount; i++) {
+                        replacement.add(viewParams.get(0));
+                    }
+                    viewParams = replacement;
+                } else if(viewParams.size() != layerCount) {
+                    String msg = layerCount + " feature types requested, but found " + viewParams.size()
+                    + " view params specified. ";
+                    throw new ServiceException(msg, getClass().getName());
+                }
+            }
+            
+            gft.getMetadata().put(GetFeature.SQL_VIEW_PARAMS, viewParams);
         }
 
         return request;

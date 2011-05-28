@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -141,6 +142,8 @@ public class GetMap {
         }
 
         final List<MapLayerInfo> layers = request.getLayers();
+        final List<Map<String, String>> viewParams = request.getViewParams();
+        
         final Style[] styles = request.getStyles().toArray(new Style[] {});
         final Filter[] filters = buildLayersFilters(request.getFilter(), layers);
 
@@ -260,10 +263,9 @@ public class GetMap {
                 final Query definitionQuery = new Query(source.getSchema().getName().getLocalPart());
                 definitionQuery.setVersion(featureVersion);
                 definitionQuery.setFilter(layerFilter);
-                if (request.getViewParams() != null && request.getViewParams().size() > 0) {
-                    definitionQuery.setHints(new Hints(Hints.VIRTUAL_TABLE_PARAMETERS, request
-                            .getViewParams()));
-                }
+            	if (viewParams != null) {
+                    definitionQuery.setHints(new Hints(Hints.VIRTUAL_TABLE_PARAMETERS, viewParams.get(i)));
+            	}
 
                 // check for startIndex + offset
                 final Integer startIndex = request.getStartIndex();
