@@ -90,6 +90,10 @@ public class GeoserverInitStartupListener implements ServletContextListener {
         // between projections (increases the chance of matching a random prj file content
         // to an actual EPSG code
         Hints.putSystemDefault(Hints.COMPARISON_TOLERANCE, 1e-9);
+        
+        // don't allow the connection to the EPSG database to time out. This is a server app,
+        // we can afford keeping the EPSG db always on
+        System.setProperty("org.geotools.epsg.factory.timeout", "-1");
 
         // HACK: java.util.prefs are awful. See
         // http://www.allaboutbalance.com/disableprefs. When the site comes
