@@ -92,6 +92,7 @@ public class DescribeProcess {
     public ProcessDescriptionsType run(DescribeProcessType request) {
         
         ProcessDescriptionsType pds = wpsf.createProcessDescriptionsType();
+        pds.setLang("en");
         
         for ( Iterator i = request.getIdentifier().iterator(); i.hasNext(); ) {
             CodeType id = (CodeType) i.next();

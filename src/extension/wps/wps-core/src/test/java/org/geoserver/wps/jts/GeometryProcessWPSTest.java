@@ -26,14 +26,14 @@ public class GeometryProcessWPSTest extends WPSTestSupport {
 		checkValidationErrors(d);
 		
 		// check we get the right type declarations for primitives
-		assertXpathEvaluatesTo("xs:double", "//wps:Input[ows:Identifier/text()='distance']/wps:LiteralData/ows:DataType/text()", d);
-		assertXpathEvaluatesTo("xs:int", "//wps:Input[ows:Identifier/text()='quadrantSegments']/wps:LiteralData/ows:DataType/text()", d);
+		assertXpathEvaluatesTo("xs:double", "//Input[ows:Identifier/text()='distance']/LiteralData/ows:DataType/text()", d);
+		assertXpathEvaluatesTo("xs:int", "//Input[ows:Identifier/text()='quadrantSegments']/LiteralData/ows:DataType/text()", d);
 		
 		// check we have the list of possible values for enumerations
-		assertXpathEvaluatesTo("3", "count(//wps:Input[ows:Identifier/text()='capStyle']/wps:LiteralData/ows:AllowedValues/ows:Value)", d);
-		assertXpathEvaluatesTo("Round", "//wps:Input[ows:Identifier/text()='capStyle']/wps:LiteralData/ows:AllowedValues/ows:Value[1]/text()", d);
-		assertXpathEvaluatesTo("Flat", "//wps:Input[ows:Identifier/text()='capStyle']/wps:LiteralData/ows:AllowedValues/ows:Value[2]/text()", d);
-		assertXpathEvaluatesTo("Square", "//wps:Input[ows:Identifier/text()='capStyle']/wps:LiteralData/ows:AllowedValues/ows:Value[3]/text()", d);
+		assertXpathEvaluatesTo("3", "count(//Input[ows:Identifier/text()='capStyle']/LiteralData/ows:AllowedValues/ows:Value)", d);
+		assertXpathEvaluatesTo("Round", "//Input[ows:Identifier/text()='capStyle']/LiteralData/ows:AllowedValues/ows:Value[1]/text()", d);
+		assertXpathEvaluatesTo("Flat", "//Input[ows:Identifier/text()='capStyle']/LiteralData/ows:AllowedValues/ows:Value[2]/text()", d);
+		assertXpathEvaluatesTo("Square", "//Input[ows:Identifier/text()='capStyle']/LiteralData/ows:AllowedValues/ows:Value[3]/text()", d);
 	}                                        
 	
 	public void testExecuteBuffer() throws Exception {
