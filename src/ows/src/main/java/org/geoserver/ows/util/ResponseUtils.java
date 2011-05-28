@@ -397,8 +397,11 @@ public class ResponseUtils {
         for (Map.Entry<String, String> entry : kvpBuffer.entrySet()) {
             params.append(entry.getKey());
             params.append("=");
-            String encoded = urlEncode(entry.getValue());
-            params.append(encoded);
+            String value = entry.getValue();
+            if (value != null) {
+                String encoded = urlEncode(value);
+                params.append(encoded);
+            }
             params.append("&");
         }
         if(params.length() > 1) {

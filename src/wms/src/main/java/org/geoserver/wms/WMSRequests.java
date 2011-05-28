@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.geoserver.config.GeoServer;
+import org.geoserver.ows.URLMangler.URLType;
 import org.geoserver.ows.util.KvpUtils;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.ServiceException;
@@ -45,7 +46,9 @@ public class WMSRequests {
      *            GeoServer configuration.
      * 
      * @return The base for wms requests.
+     * @deprecated use {@link ResponseUtils#buildUrl}
      */
+    @Deprecated
     public static String getBaseUrl(String baseUrl) {
         baseUrl = ResponseUtils.appendPath(baseUrl, "wms");
         return baseUrl;
@@ -62,7 +65,9 @@ public class WMSRequests {
      *            The wms request.
      * 
      * @return The base for wms requests.
+     * @deprecated use {@link ResponseUtils#buildUrl}
      */
+    @Deprecated
     public static String getBaseUrl(WMSRequest request) {
         return getBaseUrl(request.getBaseUrl());
     }
@@ -78,7 +83,9 @@ public class WMSRequests {
      *            A wms map context.
      * 
      * @return The base for wms requests.
+     * @deprecated use {@link ResponseUtils#buildUrl}
      */
+    @Deprecated
     public static String getBaseUrl(WMSMapContext map) {
         return getBaseUrl(map.getRequest());
     }
@@ -115,15 +122,16 @@ public class WMSRequests {
      */
     public static String getTiledGetMapUrl(GeoServer geoserver, GetMapRequest req, MapLayer layer,
             int layerIndex, Envelope bbox, String[] kvp) {
+
+        HashMap<String,String> params = getGetMapParams(req, layer.getTitle(), layerIndex, layer.getStyle().getName(), bbox, kvp);
+        
         String baseUrl = getTileCacheBaseUrl(req, geoserver);
 
         if (baseUrl == null) {
-            return getGetMapUrl(req, layer, layerIndex, bbox, kvp);
-
+            return ResponseUtils.buildURL(req.getBaseUrl(), "wms", params, URLType.SERVICE);
         }
 
-        return getGetMapUrl(baseUrl, req, layer.getTitle(), layerIndex, layer.getStyle().getName(),
-                bbox, kvp);
+        return ResponseUtils.buildURL(baseUrl, "", params, URLType.EXTERNAL);
     }
 
     /**
@@ -200,13 +208,12 @@ public class WMSRequests {
      */
     public static String getGetMapUrl(GetMapRequest req, MapLayer layer, int layerIndex,
             Envelope bbox, String[] kvp) {
-        // base url
-        String baseUrl = getBaseUrl(req);
 
         String layerName = layer != null ? layer.getTitle() : null;
         String style = layer != null ? layer.getStyle().getName() : null;
 
-        return getGetMapUrl(baseUrl, req, layerName, layerIndex, style, bbox, kvp);
+        HashMap<String,String> params = getGetMapParams(req, layerName, layerIndex, style, bbox, kvp);
+        return ResponseUtils.buildURL(req.getBaseUrl(), "wms", params, URLType.SERVICE);
     }
 
     /**
@@ -241,10 +248,8 @@ public class WMSRequests {
      */
     public static String getGetMapUrl(GetMapRequest req, String layer, int layerIndex,
             String style, Envelope bbox, String[] kvp) {
-        // base url
-        String baseUrl = getBaseUrl(req);
-
-        return getGetMapUrl(baseUrl, req, layer, layerIndex, style, bbox, kvp);
+        HashMap<String,String> params = getGetMapParams(req, layer, layerIndex, style, bbox, kvp);
+        return ResponseUtils.buildURL(req.getBaseUrl(), "wms", params, URLType.SERVICE);
     }
 
     /**
@@ -261,7 +266,7 @@ public class WMSRequests {
      */
     public static String getGetLegendGraphicUrl(WMSRequest req, MapLayer layer, String[] kvp) {
         // parameters
-        HashMap params = new HashMap();
+        HashMap<String,String> params = new HashMap<String,String>();
 
         params.put("service", "wms");
         params.put("request", "GetLegendGraphic");
@@ -277,18 +282,17 @@ public class WMSRequests {
             params.put(kvp[i], kvp[i + 1]);
         }
 
-        return encode(getBaseUrl(req), params);
-
+        return ResponseUtils.buildURL(req.getBaseUrl(), "wms", params, URLType.SERVICE);
     }
 
     /**
-     * Helper method for encoding GetMap request.
+     * Helper method for encoding GetMap request parameters.
      * 
      */
-    static String getGetMapUrl(String baseUrl, GetMapRequest req, String layer, int layerIndex,
+    static HashMap<String,String> getGetMapParams(GetMapRequest req, String layer, int layerIndex,
             String style, Envelope bbox, String[] kvp) {
         // parameters
-        HashMap params = new HashMap();
+        HashMap<String,String> params = new HashMap<String,String>();
 
         params.put("service", "wms");
         params.put("request", "GetMap");
@@ -365,14 +369,14 @@ public class WMSRequests {
                 // split out the filter we need
                 List filters = KvpUtils.readFlat((String) req.getRawKvp().get("filter"),
                         KvpUtils.OUTER_DELIMETER);
-                params.put("filter", filters.get(index));
+                params.put("filter", (String)filters.get(index));
             } else if (req.getRawKvp().get("cql_filter") != null) {
                 // split out the filter we need
                 List filters = KvpUtils.readFlat((String) req.getRawKvp().get("cql_filter"),
                         KvpUtils.CQL_DELIMITER);
-                params.put("cql_filter", filters.get(index));
+                params.put("cql_filter", (String)filters.get(index));
             } else if (req.getRawKvp().get("featureid") != null) {
-                // semantics of feautre id slightly different, replicate entire value
+                // semantics of feature id slightly different, replicate entire value
                 params.put("featureid", req.getRawKvp().get("featureid"));
             }
 
@@ -418,7 +422,7 @@ public class WMSRequests {
             params.put(kvp[i], kvp[i + 1]);
         }
 
-        return encode(baseUrl, params);
+        return params;
     }
 
     /**
@@ -474,40 +478,5 @@ public class WMSRequests {
     static String encode(Envelope box) {
         return new StringBuffer().append(box.getMinX()).append(",").append(box.getMinY())
                 .append(",").append(box.getMaxX()).append(",").append(box.getMaxY()).toString();
-    }
-
-    /**
-     * Helper method for encoding a baseurl and some kvp params into a single url.
-     * 
-     * @param baseUrl
-     *            The base url of the encoded request.
-     * @param kvp
-     *            The key value pairts of the request.
-     * 
-     * @return The full request url.
-     */
-    static String encode(String baseUrl, Map kvp) {
-        StringBuffer query = new StringBuffer();
-
-        for (Iterator e = kvp.entrySet().iterator(); e.hasNext();) {
-            Map.Entry entry = (Map.Entry) e.next();
-            String name = (String) entry.getKey();
-            String value = (String) entry.getValue();
-            try {
-                name = URLEncoder.encode(name, "UTF-8");
-                if (value == null) {
-                    value = "";
-                } else {
-                    value = URLEncoder.encode(value, "UTF-8");
-                }
-            } catch (UnsupportedEncodingException uex) {
-                throw new ServiceException("Error encoding name-value pairs" + uex.getMessage(),
-                        uex);
-            }
-            query.append(name).append("=").append(value).append("&");
-        }
-
-        query.setLength(query.length() - 1);
-        return Requests.appendQueryString(baseUrl, query.toString());
     }
 }

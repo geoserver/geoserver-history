@@ -6,6 +6,7 @@ import java.net.URLDecoder;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.geoserver.ows.URLMangler.URLType;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.wms.GetMapRequest;
 import org.geoserver.wms.MapLayerInfo;
@@ -108,10 +109,9 @@ public class KMLNetworkLinkTransformer extends TransformerBase {
             
             start("Link");
 
-            String baseURL = request.getBaseUrl();
             String type = mapLayer.getType() == MapLayerInfo.TYPE_RASTER ? "png" : "kml";
-            String url = ResponseUtils.appendPath(baseURL, "gwc/service/kml/" 
-                    + prefixedName + "." + type + ".kml");
+            String url = ResponseUtils.buildURL(request.getBaseUrl(), "gwc/service/kml/" + 
+                    prefixedName + "." + type + ".kml", null, URLType.SERVICE);
             element("href", url);
             element("viewRefreshMode", "never");
 
