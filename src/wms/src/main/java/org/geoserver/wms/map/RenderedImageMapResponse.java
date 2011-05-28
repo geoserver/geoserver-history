@@ -8,9 +8,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Vector;
 
 import javax.media.jai.PlanarImage;
 
@@ -21,6 +19,7 @@ import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSMapContext;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.image.palette.InverseColorMapOp;
+import org.geotools.resources.image.ImageUtilities;
 import org.springframework.util.Assert;
 
 /**
@@ -121,38 +120,13 @@ public abstract class RenderedImageMapResponse extends AbstractMapResponse {
 
                 // let go of the image chain as quick as possible to free memory
                 if (image instanceof PlanarImage) {
-                    disposePlanarImageChain((PlanarImage) image, new HashSet<PlanarImage>());
+                    ImageUtilities.disposePlanarImageChain((PlanarImage) image);
                 } else if (image instanceof BufferedImage) {
                     ((BufferedImage) image).flush();
                 }
             }
         } finally {
             imageMap.dispose();
-        }
-    }
-
-    static void disposePlanarImageChain(PlanarImage pi, HashSet<PlanarImage> visited) {
-        Vector sinks = pi.getSinks();
-        if (sinks != null) {
-            for (Object sink : sinks) {
-                if (sink instanceof PlanarImage && !visited.contains(sink))
-                    disposePlanarImageChain((PlanarImage) sink, visited);
-                else if (sink instanceof BufferedImage) {
-                    ((BufferedImage) sink).flush();
-                }
-            }
-        }
-        pi.dispose();
-        visited.add(pi);
-        Vector sources = pi.getSources();
-        if (sources != null) {
-            for (Object child : sources) {
-                if (child instanceof PlanarImage && !visited.contains(child))
-                    disposePlanarImageChain((PlanarImage) child, visited);
-                else if (child instanceof BufferedImage) {
-                    ((BufferedImage) child).flush();
-                }
-            }
         }
     }
 
