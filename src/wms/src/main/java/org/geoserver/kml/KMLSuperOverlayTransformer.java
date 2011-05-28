@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.ows.HttpErrorCodeException;
+import org.geoserver.ows.URLMangler.URLType;
 import org.geoserver.ows.util.CaseInsensitiveMap;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.ServiceException;
@@ -165,15 +166,15 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
 
             start("Link");
 
-            String baseURL = mapContext.getRequest().getBaseUrl();
             SimpleFeatureType ft = (SimpleFeatureType) mapLayer.getFeatureSource().getSchema();
             String type = "kml";
             if (FeatureUtilities.isWrappedCoverage(ft)
                     || FeatureUtilities.isWrappedCoverageReader(ft)) {
                 type = "png";
             }
-            String url = ResponseUtils.appendPath(baseURL, "gwc/service/kml/" + mapLayer.getTitle()
-                    + "." + type + ".kml");
+            String url = ResponseUtils.buildURL(mapContext.getRequest().getBaseUrl(), 
+                    "gwc/service/kml/" + mapLayer.getTitle() + "." + type + ".kml", 
+                    null, URLType.SERVICE);
             element("href", url);
             element("viewRefreshMode", "never");
 
