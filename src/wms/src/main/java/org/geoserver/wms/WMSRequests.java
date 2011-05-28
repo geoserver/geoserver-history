@@ -33,62 +33,6 @@ import com.vividsolutions.jts.geom.Envelope;
  * @see Requests
  */
 public class WMSRequests {
-    /**
-     * Returns the base url for a wms request, something of the form:
-     * 
-     * <pre>
-     * &lt;protocol>://&lt;server>:&lt;port>/&lt;context>/wms
-     * </pre>
-     * 
-     * @param request
-     *            The request.
-     * @param geoServer
-     *            GeoServer configuration.
-     * 
-     * @return The base for wms requests.
-     * @deprecated use {@link ResponseUtils#buildUrl}
-     */
-    @Deprecated
-    public static String getBaseUrl(String baseUrl) {
-        baseUrl = ResponseUtils.appendPath(baseUrl, "wms");
-        return baseUrl;
-    }
-
-    /**
-     * Returns the base url for a wms request, something of the form:
-     * 
-     * <pre>
-     * &lt;protocol>://&lt;server>:&lt;port>/&lt;context>/wms
-     * </pre>
-     * 
-     * @param req
-     *            The wms request.
-     * 
-     * @return The base for wms requests.
-     * @deprecated use {@link ResponseUtils#buildUrl}
-     */
-    @Deprecated
-    public static String getBaseUrl(WMSRequest request) {
-        return getBaseUrl(request.getBaseUrl());
-    }
-
-    /**
-     * Returns the base url for a wms request, something of the form:
-     * 
-     * <pre>
-     * &lt;protocol>://&lt;server>:&lt;port>/&lt;context>/wms
-     * </pre>
-     * 
-     * @param map
-     *            A wms map context.
-     * 
-     * @return The base for wms requests.
-     * @deprecated use {@link ResponseUtils#buildUrl}
-     */
-    @Deprecated
-    public static String getBaseUrl(WMSMapContext map) {
-        return getBaseUrl(map.getRequest());
-    }
 
     /**
      * Encodes the url of a GetMap request pointing to a tile cache if one exists.
