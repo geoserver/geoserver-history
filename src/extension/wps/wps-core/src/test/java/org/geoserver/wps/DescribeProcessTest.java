@@ -13,7 +13,7 @@ public class DescribeProcessTest extends WPSTestSupport {
     
     public void testGetBuffer() throws Exception { // Standard Test A.4.3.1
         Document d = getAsDOM( root() + "service=wps&request=describeprocess&identifier=gt:buffer");
-        // print(d);
+        print(d);
         testBufferDescription(d);
     }
     
@@ -26,7 +26,7 @@ public class DescribeProcessTest extends WPSTestSupport {
         		"    <ows:Identifier>gt:buffer</ows:Identifier>\r\n" + 
         		"</DescribeProcess>";
         Document d = postAsDOM(root(), request);
-        // print(d);
+        print(d);
         testBufferDescription(d);
     }
 
@@ -36,34 +36,34 @@ public class DescribeProcessTest extends WPSTestSupport {
         checkValidationErrors(d);
         assertXpathExists( "/wps:ProcessDescriptions", d );
         
-        String base = "/wps:ProcessDescriptions/wps:ProcessDescription/wps:DataInputs";
+        String base = "/wps:ProcessDescriptions/ProcessDescription/DataInputs";
         
         //first parameter
-        assertXpathExists( base + "/wps:Input[1]", d );
-        assertXpathEvaluatesTo("buffer", base + "/wps:Input[1]/ows:Identifier/child::text()", d );
-        assertXpathExists( base + "/wps:Input[1]/wps:LiteralData", d );
+        assertXpathExists( base + "/Input[1]", d );
+        assertXpathEvaluatesTo("buffer", base + "/Input[1]/ows:Identifier/child::text()", d );
+        assertXpathExists( base + "/Input[1]/LiteralData", d );
 
-        assertXpathEvaluatesTo("xs:double", base + "/wps:Input[1]/wps:LiteralData/ows:DataType/child::text()", d );
+        assertXpathEvaluatesTo("xs:double", base + "/Input[1]/LiteralData/ows:DataType/child::text()", d );
         
         //second parameter
-        base += "/wps:Input[2]";
+        base += "/Input[2]";
         assertXpathExists( base , d );
-        assertXpathExists( base + "/wps:ComplexData", d );
+        assertXpathExists( base + "/ComplexData", d );
         
-        base += "/wps:ComplexData";
+        base += "/ComplexData";
         assertXpathEvaluatesTo("text/xml; subtype=gml/3.1.1", 
-                base + "/wps:Default/wps:Format/wps:MimeType/child::text()", d);
+                base + "/Default/Format/MimeType/child::text()", d);
         assertXpathEvaluatesTo("text/xml; subtype=gml/3.1.1", 
-                base + "/wps:Supported/wps:Format[1]/wps:MimeType/child::text()", d);
+                base + "/Supported/Format[1]/MimeType/child::text()", d);
         assertXpathEvaluatesTo("text/xml; subtype=gml/2.1.2", 
-                base + "/wps:Supported/wps:Format[2]/wps:MimeType/child::text()", d);
+                base + "/Supported/Format[2]/MimeType/child::text()", d);
         assertXpathEvaluatesTo("application/wkt", 
-                base + "/wps:Supported/wps:Format[3]/wps:MimeType/child::text()", d);
+                base + "/Supported/Format[3]/MimeType/child::text()", d);
     
         //output
-        base = "/wps:ProcessDescriptions/wps:ProcessDescription/wps:ProcessOutputs";
-        assertXpathExists( base + "/wps:Output", d );
-        assertXpathExists( base + "/wps:Output/wps:ComplexOutput", d );
+        base = "/wps:ProcessDescriptions/ProcessDescription/ProcessOutputs";
+        assertXpathExists( base + "/Output", d );
+        assertXpathExists( base + "/Output/ComplexOutput", d );
     }
     
     /**
@@ -74,8 +74,8 @@ public class DescribeProcessTest extends WPSTestSupport {
         Document d = getAsDOM( root() + "service=wps&request=describeprocess&identifier=gt:RasterToVector");
         // print(d);
         checkValidationErrors(d);
-        assertXpathEvaluatesTo("EPSG:4326", "//wps:Input[ows:Identifier='bounds']/wps:BoundingBoxData/wps:Default/wps:CRS", d);
-        assertXpathEvaluatesTo("EPSG:4326", "//wps:Input[ows:Identifier='bounds']/wps:BoundingBoxData/wps:Supported/wps:CRS", d);
+        assertXpathEvaluatesTo("EPSG:4326", "//Input[ows:Identifier='bounds']/BoundingBoxData/Default/CRS", d);
+        assertXpathEvaluatesTo("EPSG:4326", "//Input[ows:Identifier='bounds']/BoundingBoxData/Supported/CRS", d);
     }
     
     /**
@@ -86,8 +86,8 @@ public class DescribeProcessTest extends WPSTestSupport {
         Document d = getAsDOM( root() + "service=wps&request=describeprocess&identifier=gs:Bounds");
         // print(d);
         checkValidationErrors(d);
-        assertXpathEvaluatesTo("EPSG:4326", "//wps:Output[ows:Identifier='bounds']/wps:BoundingBoxOutput/wps:Default/wps:CRS", d);
-        assertXpathEvaluatesTo("EPSG:4326", "//wps:Output[ows:Identifier='bounds']/wps:BoundingBoxOutput/wps:Supported/wps:CRS", d);
+        assertXpathEvaluatesTo("EPSG:4326", "//Output[ows:Identifier='bounds']/BoundingBoxOutput/Default/CRS", d);
+        assertXpathEvaluatesTo("EPSG:4326", "//Output[ows:Identifier='bounds']/BoundingBoxOutput/Supported/CRS", d);
     }
     
     /* TODO Language Negotiation tests
