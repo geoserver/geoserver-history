@@ -152,9 +152,58 @@ public class GetFeatureKvpRequestReaderTest extends KvpRequestReaderTestSupport 
         Object read = reader.read(req, parsed, raw);
         GetFeatureType parsedReq = (GetFeatureType) read;
         assertEquals(1, parsedReq.getMetadata().size());
-        Map viewParams = (Map) parsedReq.getMetadata().get(GetFeature.SQL_VIEW_PARAMS);
+        List<Map<String, String>> viewParams = (List<Map<String, String>>) parsedReq.getMetadata().get(GetFeature.SQL_VIEW_PARAMS);
+        assertEquals(1, viewParams.size());
+        Map<String, String> vp1 = viewParams.get(0);
+        assertEquals("WHERE PERSONS > 1000000", vp1.get("where"));
+        assertEquals("ABCD", vp1.get("str"));
+    }
+    
+    public void testViewParamsMulti() throws Exception {
+        Map<String, String> raw = new HashMap<String, String>();
+        raw.put("service", "WFS");
+        raw.put("version", "1.1.0");
+        raw.put("request", "GetFeature");
+        raw.put("typeName", getLayerId(MockData.STREAMS) + "," + getLayerId(MockData.BASIC_POLYGONS));
+        raw.put("viewParams", "where:WHERE PERSONS > 1000000;str:ABCD,where:WHERE PERSONS > 10;str:FOO");
+
+        Map<String, Object> parsed = parseKvp(raw);
+
+        GetFeatureType req = WfsFactory.eINSTANCE.createGetFeatureType();
+        Object read = reader.read(req, parsed, raw);
+        GetFeatureType parsedReq = (GetFeatureType) read;
+        assertEquals(1, parsedReq.getMetadata().size());
+        List<Map<String, String>> viewParams = (List<Map<String, String>>) parsedReq.getMetadata().get(GetFeature.SQL_VIEW_PARAMS);
         assertEquals(2, viewParams.size());
-        assertEquals("WHERE PERSONS > 1000000", viewParams.get("where"));
-        assertEquals("ABCD", viewParams.get("str"));
+        Map<String, String> vp1 = viewParams.get(0);
+        assertEquals("WHERE PERSONS > 1000000", vp1.get("where"));
+        assertEquals("ABCD", vp1.get("str"));
+        Map<String, String> vp2 = viewParams.get(1);
+        assertEquals("WHERE PERSONS > 10", vp2.get("where"));
+        assertEquals("FOO", vp2.get("str"));
+    }
+    
+    public void testViewParamsFanOut() throws Exception {
+        Map<String, String> raw = new HashMap<String, String>();
+        raw.put("service", "WFS");
+        raw.put("version", "1.1.0");
+        raw.put("request", "GetFeature");
+        raw.put("typeName", getLayerId(MockData.STREAMS) + "," + getLayerId(MockData.BASIC_POLYGONS));
+        raw.put("viewParams", "where:WHERE PERSONS > 1000000;str:ABCD");
+
+        Map<String, Object> parsed = parseKvp(raw);
+
+        GetFeatureType req = WfsFactory.eINSTANCE.createGetFeatureType();
+        Object read = reader.read(req, parsed, raw);
+        GetFeatureType parsedReq = (GetFeatureType) read;
+        assertEquals(1, parsedReq.getMetadata().size());
+        List<Map<String, String>> viewParams = (List<Map<String, String>>) parsedReq.getMetadata().get(GetFeature.SQL_VIEW_PARAMS);
+        assertEquals(2, viewParams.size());
+        Map<String, String> vp1 = viewParams.get(0);
+        assertEquals("WHERE PERSONS > 1000000", vp1.get("where"));
+        assertEquals("ABCD", vp1.get("str"));
+        Map<String, String> vp2 = viewParams.get(1);
+        assertEquals("WHERE PERSONS > 1000000", vp2.get("where"));
+        assertEquals("ABCD", vp2.get("str"));
     }
 }

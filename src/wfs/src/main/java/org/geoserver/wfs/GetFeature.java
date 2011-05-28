@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
@@ -29,8 +30,8 @@ import org.geoserver.catalog.AttributeTypeInfo;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geotools.data.DataUtilities;
-import org.geotools.data.Query;
 import org.geotools.data.FeatureSource;
+import org.geotools.data.Query;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.factory.Hints;
 import org.geotools.feature.FeatureCollection;
@@ -153,9 +154,14 @@ public class GetFeature {
         // take into consideration the wfs max features
         int maxFeatures = Math.min(request.getMaxFeatures().intValue(),
                 wfs.getMaxFeatures());
+        
+        // grab the view params is any
+        List<Map<String, String>> viewParams = null;
+        if(request.getMetadata() != null) {
+            viewParams = (List<Map<String, String>>) request.getMetadata().get(SQL_VIEW_PARAMS);
+        }
 
         int count = 0; //should probably be long
-
         List results = new ArrayList();
         try {
             for (int i = 0; (i < request.getQuery().size()) && (count < maxFeatures); i++) {
@@ -358,7 +364,8 @@ public class GetFeature {
                 int queryMaxFeatures = maxFeatures - count;
                 if(meta.getMaxFeatures() > 0 && meta.getMaxFeatures() < queryMaxFeatures)
                     queryMaxFeatures = meta.getMaxFeatures();
-                org.geotools.data.Query gtQuery = toDataQuery(query, queryMaxFeatures, source, request);
+                Map<String, String> viewParam = viewParams != null ? viewParams.get(i) : null;
+                org.geotools.data.Query gtQuery = toDataQuery(query, queryMaxFeatures, source, request, viewParam);
                 
                 LOGGER.fine("Query is " + query + "\n To gt2: " + gtQuery);
 
@@ -483,8 +490,9 @@ public class GetFeature {
      *
      */
     public org.geotools.data.Query toDataQuery(QueryType query, int maxFeatures,
-        FeatureSource<? extends FeatureType, ? extends Feature> source, GetFeatureType request) throws WFSException {
-        
+        FeatureSource<? extends FeatureType, ? extends Feature> source, GetFeatureType request, 
+        Map<String, String> viewParams) throws WFSException {
+       
         String wfsVersion = request.getVersion();
         
         if (maxFeatures <= 0) {
@@ -594,8 +602,8 @@ public class GetFeature {
         hints.put(Hints.JTS_COORDINATE_SEQUENCE_FACTORY, new LiteCoordinateSequenceFactory());
         
         // check for sql view parameters
-        if(request.getMetadata() != null && request.getMetadata().containsKey(SQL_VIEW_PARAMS)) {
-            hints.put(Hints.VIRTUAL_TABLE_PARAMETERS, request.getMetadata().get(SQL_VIEW_PARAMS));
+        if(viewParams != null) {
+            hints.put(Hints.VIRTUAL_TABLE_PARAMETERS, viewParams);
         }
         
 

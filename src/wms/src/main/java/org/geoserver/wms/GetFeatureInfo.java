@@ -124,7 +124,7 @@ public class GetFeatureInfo {
         } finally {
             EnvFunction.clearLocalValues();
         }
-
+        
         FeatureCollectionType ret = buildResults(results);
 
         return ret;
@@ -194,7 +194,7 @@ public class GetFeatureInfo {
         final int x = request.getXPixel();
         final int y = request.getYPixel();
         final int buffer = request.getGetMapRequest().getBuffer();
-        final Map<String, String> viewParams = request.getGetMapRequest().getViewParams();
+        final List<Map<String, String>> viewParams = request.getGetMapRequest().getViewParams();
         final GetMapRequest getMapReq = request.getGetMapRequest();
         final CoordinateReferenceSystem requestedCRS = getMapReq.getCrs(); // optional, may be null
 
@@ -230,7 +230,8 @@ public class GetFeatureInfo {
 
             FeatureCollection collection = null;
             if (layer.getType() == MapLayerInfo.TYPE_VECTOR) {
-                collection = identifyVectorLayer(filters, x, y, buffer, viewParams,
+                final Map<String, String> viewParam = viewParams != null ? viewParams.get(i) : null;
+                collection = identifyVectorLayer(filters, x, y, buffer, viewParam,
                         requestedCRS, width, height, bbox, ff, results, i, layer, rules, maxFeatures);
 
             } else if (layer.getType() == MapLayerInfo.TYPE_RASTER) {

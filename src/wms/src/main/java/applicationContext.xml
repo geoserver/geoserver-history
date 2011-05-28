@@ -193,8 +193,7 @@
  	<bean id="wmsEnviromentKvpParser" class="org.geoserver.ows.kvp.FormatOptionsKvpParser">
  		<constructor-arg index="0" value="env"/>
  	</bean>
-  <bean id="wmsSqlViewKvpParser" class="org.geoserver.ows.kvp.FormatOptionsKvpParser">
-    <constructor-arg index="0" value="viewParams"/>
+  <bean id="wmsSqlViewKvpParser" class="org.geoserver.ows.kvp.ViewParamsKvpParser">
     <!-- cannot set the service or it won't work for the reflectors -->
   </bean>
  	<bean id="bgColorKvpParser" class="org.geoserver.wms.kvp.ColorKvpParser">
