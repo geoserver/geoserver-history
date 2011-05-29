@@ -203,7 +203,7 @@
                         INFO_FORMAT: 'text/html',
                         QUERY_LAYERS: map.layers[0].params.LAYERS,
                         FEATURE_COUNT: 50,
-                        <#assign skipped=["request","bbox","width","height","format"]>
+                        <#assign skipped=["request","bbox","width","height","format", "styles"]>
                         <#list parameters as param>            
                         <#if !(skipped?seq_contains(param.name?lower_case))>
                         ${param.name?capitalize}: '${param.value?js_string}',
@@ -212,6 +212,7 @@
                         WIDTH: map.size.w,
                         HEIGHT: map.size.h,
                         format: format,
+                        styles: map.layers[0].params.STYLES,
                         srs: map.layers[0].params.SRS};
                     OpenLayers.loadURL("${baseUrl}/${servicePath}", params, this, setHTML, setHTML);
                     OpenLayers.Event.stop(e);
