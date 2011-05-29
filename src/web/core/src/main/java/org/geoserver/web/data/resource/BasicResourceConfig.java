@@ -143,6 +143,16 @@ public class BasicResourceConfig extends ResourceConfigurationPanel {
                 
                 ReferencedEnvelope nativeBounds = (ReferencedEnvelope) nativeBBox.getModelObject();
                 try {
+                    // if the native bounds are not around compute them
+                    if(nativeBounds == null) {
+                        ResourceInfo resource = (ResourceInfo) BasicResourceConfig.this.getDefaultModelObject();
+                        CatalogBuilder cb = new CatalogBuilder(GeoServerApplication.get().getCatalog());
+                        nativeBounds = cb.getNativeBounds(resource);
+                        resource.setNativeBoundingBox(nativeBounds);
+                        nativeBBox.setModelObject(nativeBounds);
+                        target.addComponent(nativeBBox);
+                    }
+                
                     CatalogBuilder cb = new CatalogBuilder(GeoServerApplication.get().getCatalog());
                     latLonPanel.setModelObject(cb.getLatLonBounds(nativeBounds, declaredCRS.getCRS()));
                 } catch(IOException e) {
