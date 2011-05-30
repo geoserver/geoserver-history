@@ -12,6 +12,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,6 +26,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -82,6 +84,7 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
             xslt = new DOMSource(xsdDocument);
         } catch (Exception e) {
             xslt = null;
+            LOGGER.log(Level.INFO, e.getMessage(), e);
         }
     }
 
@@ -251,10 +254,14 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
         encoder.encode(results, org.geoserver.wfs.xml.v1_1_0.WFS.FEATURECOLLECTION, output);
     }
     
+    protected DOMSource getXSLT() {
+        return GML3OutputFormat.xslt;
+    }
+
     private void complexFeatureStreamIntercept(FeatureCollectionType results, OutputStream output,
             Encoder encoder) throws IOException {
-        if (xslt == null) {
-            throw new IOException("Unable to locate xslt resource file");
+        if (this.getXSLT() == null) {
+            throw new FileNotFoundException("Unable to locate xslt resource file");
         }
 
         // Create a temporary file for the xml dump. _dump is added to ensure the hash create is
@@ -267,9 +274,9 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
         try {
             // the output file has to be unique with each Class object to ensure concurrency
             encode(results, out, encoder);
-            this.transform(in, xslt, output);
+            this.transform(in, this.getXSLT(), output);
         } catch (TransformerException e) {
-            throw (IOException) new IOException(e.getMessage()).initCause(e);
+            throw (IOException) new IOException(e.getMessage()).initCause(e);           
         } finally {
             out.close();
             in.close();

@@ -96,4 +96,23 @@ public class Gsml30WfsTest extends AbstractAppSchemaWfsTestSupport {
         assertXpathEvaluatesTo("Second", "//gsml:MappedFeature[@gml:id='mf.2']/gml:name", doc);
     }
 
+    /**
+     * Test namespace of GetFeature response.
+     */
+    public void testNamespace() throws Exception {
+        String path = "wfs?request=GetFeature&typename=gsml:MappedFeature&outputFormat=gml32";
+        String newline = System.getProperty("line.separator");
+        Document doc = getAsDOM(path);
+        LOGGER.info("Response for " + path + " :" + newline + prettyString(doc));
+        assertXpathEvaluatesTo("2", "/wfs:FeatureCollection/@numberReturned", doc);
+        assertXpathEvaluatesTo("unknown", "/wfs:FeatureCollection/@numberMatched", doc);
+
+        // test the right number of attribute exist in wfs:FeatureCollection
+        assertEquals(11, doc.getFirstChild().getAttributes().getLength());
+        assertXpathCount(2, "/wfs:FeatureCollection/wfs:member", doc);
+        assertEquals(0, doc.getFirstChild().getChildNodes().item(0).getAttributes().getLength());
+        assertEquals(0, doc.getFirstChild().getChildNodes().item(1).getAttributes().getLength());
+
+    }
+
 }

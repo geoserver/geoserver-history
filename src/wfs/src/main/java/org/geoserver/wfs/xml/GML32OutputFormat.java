@@ -10,6 +10,10 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.dom.DOMSource;
 
 import net.opengis.wfs.BaseRequestType;
 import net.opengis.wfs.FeatureCollectionType;
@@ -21,10 +25,28 @@ import org.geoserver.wfs.xml.v1_1_0.WFSConfiguration;
 import org.geotools.wfs.v2_0.WFS;
 import org.geotools.xml.Configuration;
 import org.geotools.xml.Encoder;
+import org.w3c.dom.Document;
 
 public class GML32OutputFormat extends GML3OutputFormat {
 
     GeoServer geoServer;
+
+    protected static DOMSource xslt;
+
+    static {
+        DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+        docFactory.setNamespaceAware(true);
+        Document xsdDocument = null;
+        try {
+            xsdDocument = docFactory.newDocumentBuilder().parse(
+                    GML3OutputFormat.class.getResourceAsStream("/ChangeNumberOfFeature32.xslt"));
+            xslt = new DOMSource(xsdDocument);
+        } catch (Exception e) {
+            xslt = null;
+            LOGGER.log(Level.INFO, e.getMessage(), e);
+        }
+    }
+
     public GML32OutputFormat(GeoServer geoServer, WFSConfiguration configuration) {
         super(new HashSet(Arrays.asList("gml32", "text/xml; subtype=gml/3.2")), 
             geoServer, configuration);
@@ -54,7 +76,7 @@ public class GML32OutputFormat extends GML3OutputFormat {
     @Override
     protected void encode(FeatureCollectionType results, OutputStream output, Encoder encoder)
             throws IOException {
-        //encoder.getNamespaces().declarePrefix("gml", GML.NAMESPACE);
+        // encoder.getNamespaces().declarePrefix("gml", GML.NAMESPACE);
         encoder.encode(results, WFS.FeatureCollection, output);
     }
     
@@ -72,5 +94,10 @@ public class GML32OutputFormat extends GML3OutputFormat {
     protected String getRelativeWfsSchemaLocation() {
         return "wfs/2.0/wfs.xsd";
     }
-    
+
+    @Override
+    protected DOMSource getXSLT() {
+        return GML32OutputFormat.xslt;
+    }
+
 }
