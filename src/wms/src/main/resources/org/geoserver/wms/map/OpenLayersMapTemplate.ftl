@@ -214,6 +214,16 @@
                         format: format,
                         styles: map.layers[0].params.STYLES,
                         srs: map.layers[0].params.SRS};
+                    // merge filters
+                    if(map.layers[0].params.CQL_FILTER != null) {
+                        params.cql_filter = map.layers[0].params.CQL_FILTER;
+                    } 
+                    if(map.layers[0].params.FILTER != null) {
+                        params.filter = map.layers[0].params.FILTER;
+                    }
+                    if(map.layers[0].params.FEATUREID) {
+                        params.featureid = map.layers[0].params.FEATUREID;
+                    }
                     OpenLayers.loadURL("${baseUrl}/${servicePath}", params, this, setHTML, setHTML);
                     OpenLayers.Event.stop(e);
                 });
