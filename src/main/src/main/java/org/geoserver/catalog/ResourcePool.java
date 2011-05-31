@@ -52,17 +52,16 @@ import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.data.DataAccess;
 import org.geotools.data.DataAccessFactory;
-import org.geotools.data.DataAccessFactory.Param;
 import org.geotools.data.DataAccessFinder;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.FeatureSource;
+import org.geotools.data.DataAccessFactory.Param;
 import org.geotools.data.ows.Layer;
 import org.geotools.data.ows.WMSCapabilities;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.data.wms.WebMapServer;
-import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.Hints;
 import org.geotools.feature.AttributeTypeBuilder;
 import org.geotools.feature.FeatureTypes;
@@ -142,7 +141,7 @@ public class ResourcePool {
     FeatureTypeAttributeCache featureTypeAttributeCache;
     WMSCache wmsCache;
     CoverageReaderCache coverageReaderCache;
-    CoverageReaderCache hintCoverageReaderCache;
+    CoverageHintReaderCache hintCoverageReaderCache;
     HashMap<StyleInfo,Style> styleCache;
     List<Listener> listeners;
     ThreadPoolExecutor coverageExecutor;
@@ -155,7 +154,7 @@ public class ResourcePool {
         
         featureTypeAttributeCache = new FeatureTypeAttributeCache(FEATURETYPE_CACHE_SIZE_DEFAULT);
         coverageReaderCache = new CoverageReaderCache();
-        hintCoverageReaderCache = new CoverageReaderCache();
+        hintCoverageReaderCache = new CoverageHintReaderCache();
         
         wmsCache = new WMSCache();
         
@@ -930,24 +929,38 @@ public class ResourcePool {
     public GridCoverageReader getGridCoverageReader( CoverageStoreInfo info, Hints hints ) 
         throws IOException {
         
+        final AbstractGridFormat gridFormat = info.getFormat();
         GridCoverageReader reader = null;
+        Object key;
         if ( hints != null ) {
-            reader = (GridCoverageReader) hintCoverageReaderCache.get( info );    
-        }
-        else {
-            reader = (GridCoverageReader) coverageReaderCache.get( info );
+            // expand the hints if necessary
+            final String formatName = gridFormat.getName();
+            if (formatName.equalsIgnoreCase(IMAGE_MOSAIC) || formatName.equalsIgnoreCase(IMAGE_PYRAMID)){
+                if (coverageExecutor != null){
+                    if (hints != null){
+                        hints.add(new RenderingHints(Hints.EXECUTOR_SERVICE, coverageExecutor));
+                    } else {
+                        hints = new Hints(new RenderingHints(Hints.EXECUTOR_SERVICE, coverageExecutor));
+                    }
+                }
+            }
+            
+            key = new CoverageHintReaderKey(info, hints);
+            reader = (GridCoverageReader) hintCoverageReaderCache.get( key );    
+        } else {
+            key = info;
+            reader = (GridCoverageReader) coverageReaderCache.get( key );
         }
         
         if (reader != null) {
             return reader;
         }
-
         
         synchronized ( hints != null ? hintCoverageReaderCache : coverageReaderCache ) {
             if (hints != null) {
-                reader = (GridCoverageReader) hintCoverageReaderCache.get(info);
+                reader = (GridCoverageReader) hintCoverageReaderCache.get(key);
             } else {
-                reader = (GridCoverageReader) coverageReaderCache.get(info);
+                reader = (GridCoverageReader) coverageReaderCache.get(key);
             }
             if (reader == null) {
                 /////////////////////////////////////////////////////////
@@ -957,20 +970,8 @@ public class ResourcePool {
                 // /////////////////////////////////////////////////////////
                 final File obj = GeoserverDataDirectory.findDataFile(info.getURL());
     
-                // XXX CACHING READERS HERE
-                final AbstractGridFormat gridFormat = info.getFormat();
-                final String formatName = gridFormat.getName();
-                if (formatName.equalsIgnoreCase(IMAGE_MOSAIC) || formatName.equalsIgnoreCase(IMAGE_PYRAMID)){
-                    if (coverageExecutor != null){
-                        if (hints != null){
-                            hints.add(new RenderingHints(Hints.EXECUTOR_SERVICE, coverageExecutor));
-                        } else {
-                            hints = new Hints(new RenderingHints(Hints.EXECUTOR_SERVICE, coverageExecutor));
-                        }
-                    }
-                }
                 reader = gridFormat.getReader(obj,hints);
-                (hints != null ? hintCoverageReaderCache : coverageReaderCache ).put(info, reader);
+                (hints != null ? hintCoverageReaderCache : coverageReaderCache ).put(key, reader);
             }
         }
         
@@ -1431,6 +1432,90 @@ public class ResourcePool {
             }
             super.clear();
         }
+    }
+    
+    class CoverageHintReaderCache extends LRUMap {
+        
+        protected boolean removeLRU(LinkEntry entry) {
+            CoverageHintReaderKey key = (CoverageHintReaderKey) entry.getKey();
+            dispose( key.info, (GridCoverageReader) entry.getValue() );
+            return super.removeLRU(entry);
+        }
+        
+        void dispose( CoverageStoreInfo info, GridCoverageReader reader ) {
+            LOGGER.info( "Disposing grid coverage reader '" + info.getName() + "'");
+            fireDisposed(info, reader);
+            try {
+                reader.dispose();
+            }
+            catch( Exception e ) {
+                LOGGER.warning( "Error occured disposing coverage reader '" + info.getName() + "'");
+                LOGGER.log(Level.FINE, "", e );
+            }
+        }
+        
+        protected void destroyEntry(HashEntry entry) {
+            CoverageHintReaderKey key = (CoverageHintReaderKey) entry.getKey();
+            dispose( key.info, (GridCoverageReader) entry.getValue() );
+            super.destroyEntry(entry);
+        }
+        
+        public void clear() {
+            for ( Iterator e = entrySet().iterator(); e.hasNext(); ) {
+                Map.Entry<CoverageHintReaderKey,GridCoverageReader> entry = 
+                    (Entry<CoverageHintReaderKey, GridCoverageReader>) e.next();
+                dispose( entry.getKey().info, entry.getValue() );
+            }
+            super.clear();
+        }
+        
+    }
+    
+    /**
+     * The key in the {@link CoverageHintReaderCache}
+     * 
+     * @author Andrea Aime - GeoSolutions
+     */
+    static class CoverageHintReaderKey {
+        CoverageStoreInfo info;
+        Hints hints;
+        
+        public CoverageHintReaderKey(CoverageStoreInfo info, Hints hints) {
+            this.info = info;
+            this.hints = hints;
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((hints == null) ? 0 : hints.hashCode());
+            result = prime * result + ((info == null) ? 0 : info.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            CoverageHintReaderKey other = (CoverageHintReaderKey) obj;
+            if (hints == null) {
+                if (other.hints != null)
+                    return false;
+            } else if (!hints.equals(other.hints))
+                return false;
+            if (info == null) {
+                if (other.info != null)
+                    return false;
+            } else if (!info.equals(other.info))
+                return false;
+            return true;
+        }
+        
     }
     
     static class FeatureTypeAttributeCache extends LRUMap {
