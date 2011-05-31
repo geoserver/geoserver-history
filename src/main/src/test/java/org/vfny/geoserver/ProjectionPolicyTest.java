@@ -3,13 +3,21 @@ package org.vfny.geoserver;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.CoverageInfo;
+import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.ProjectionPolicy;
+import org.geoserver.catalog.ResourcePool;
 import org.geoserver.data.test.MockData;
+import org.geoserver.data.test.TestData;
 import org.geoserver.test.GeoServerTestSupport;
+import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
+import org.geotools.factory.GeoTools;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.referencing.CRS;
+import org.opengis.coverage.grid.GridCoverageReader;
 import org.opengis.feature.Feature;
 
 import com.vividsolutions.jts.geom.Geometry;
@@ -38,6 +46,8 @@ public class ProjectionPolicyTest extends GeoServerTestSupport {
         props.put(MockData.KEY_SRS_NUMBER, 4326);
         props.put(MockData.KEY_ALIAS, "MyPoints");
         dataDirectory.addWellKnownType(MockData.POINTS, props);
+        
+        dataDirectory.addWcs10Coverages();
     }
     
     public void testForce() throws Exception {
@@ -101,4 +111,33 @@ public class ProjectionPolicyTest extends GeoServerTestSupport {
         fi.close();
         assertEquals(CRS.decode("EPSG:4326"), f.getType().getCoordinateReferenceSystem());
     }
+    
+    public void testForceCoverage() throws Exception {
+        // force the data to another projection
+        Catalog catalog = getCatalog();
+        CoverageInfo ci = catalog.getCoverageByName("usa");
+        ci.setProjectionPolicy(ProjectionPolicy.FORCE_DECLARED);
+        ci.setSRS("EPSG:3857");
+        catalog.save(ci);
+        
+        ci = catalog.getCoverageByName("usa");
+        assertEquals(ProjectionPolicy.FORCE_DECLARED, ci.getProjectionPolicy());
+        assertEquals("EPSG:3857", ci.getSRS());
+        
+        // now get the reader via the coverage info
+        AbstractGridCoverage2DReader r;
+        r = (AbstractGridCoverage2DReader) ci.getGridCoverageReader(null, GeoTools.getDefaultHints());
+        assertTrue(CRS.equalsIgnoreMetadata(CRS.decode("EPSG:3857"), r.getCrs()));
+        
+        // and again without any hint
+        r = (AbstractGridCoverage2DReader) ci.getGridCoverageReader(null, null);
+        assertTrue(CRS.equalsIgnoreMetadata(CRS.decode("EPSG:3857"), r.getCrs()));
+        
+        // get the reader straight: we should get back the native projection
+        CoverageStoreInfo store = catalog.getCoverageStoreByName("usa");
+        final ResourcePool rpool = catalog.getResourcePool();
+        r = (AbstractGridCoverage2DReader) rpool.getGridCoverageReader(store, GeoTools.getDefaultHints());
+        assertTrue(CRS.equalsIgnoreMetadata(CRS.decode("EPSG:4326"), r.getCrs()));
+
+   }
 }
