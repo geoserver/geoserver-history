@@ -11,4 +11,4 @@ Policies and Procedures
    community-process.rst
    gsip.rst
    community-modules.rst
-   
+   psc.rst
