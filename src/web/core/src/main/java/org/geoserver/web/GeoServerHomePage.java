@@ -5,9 +5,11 @@
 package org.geoserver.web;
 
 import java.util.HashMap;
+import java.util.List;
 
 import org.springframework.security.Authentication;
 import org.springframework.security.GrantedAuthority;
+import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.ExternalLink;
@@ -30,10 +32,17 @@ import org.geoserver.web.data.store.NewDataPage;
 import org.geoserver.web.data.store.StorePage;
 import org.geoserver.web.data.workspace.WorkspaceNewPage;
 import org.geoserver.web.data.workspace.WorkspacePage;
-import org.geotools.util.Version;
 
 /**
- * Hope page, shows just the introduction and the capabilities link
+ * Home page, shows just the introduction and the capabilities link
+ * 
+ * <p>
+ * This page uses the {@link CapabilitiesHomePageLinkProvider} extension point to enable other
+ * modules to contribute links for GetCapabilities documents. The default
+ * {@link ServiceInfoCapabilitiesProvider} contributes the capabilities links for all the available
+ * {@link ServiceInfo} implementations. Other extension point implementations may contribute service
+ * description document links non backed by ServiceInfo objects.
+ * </p>
  * 
  * @author Andrea Aime - TOPP
  * 
@@ -79,29 +88,56 @@ public class GeoServerHomePage extends GeoServerBasePage {
             placeHolder.setVisible(false);
             add(placeHolder);
         }
-        
-        // when hacking this service listing code please refer to 
-        // http://jira.codehaus.org/browse/GEOS-2114
-        ListView view = new ListView("services", getServices()) {
+
+        final IModel<List<GeoServerHomePageContentProvider>> contentProviders;
+        contentProviders = getContentProviders(GeoServerHomePageContentProvider.class);
+        ListView<GeoServerHomePageContentProvider> contentView = new ListView<GeoServerHomePageContentProvider>(
+                "contributedContent", contentProviders) {
+            private static final long serialVersionUID = 1L;
+
             @Override
-            protected void populateItem(ListItem item) {
-                ServiceInfo service = (ServiceInfo) item.getModelObject();
-                final String serviceId = service.getId();
-                item.add( new Label("service", service.getId().toUpperCase()) );
-                item.add( new ListView( "versions", service.getVersions()) {
-                    @Override
-                    protected void populateItem(ListItem item) {
-                        Version version = (Version) item.getModelObject();
-                        ExternalLink link = new ExternalLink("link", "../ows?service=" + serviceId
-                                + "&version=" + version.toString() + "&request=GetCapabilities");
-                        item.add( link );
-                        
-                        link.add( new Label( "version", version.toString() ) );
-                    }
-                });
+            protected void populateItem(ListItem<GeoServerHomePageContentProvider> item) {
+                GeoServerHomePageContentProvider provider = item.getModelObject();
+                Component extraContent = provider.getPageBodyComponent("contentList");
+                if(null == extraContent){
+                    Label placeHolder = new Label("contentList");
+                    placeHolder.setVisible(false);
+                    extraContent = placeHolder;
+                }
+                item.add(extraContent);
             }
         };
-        add(view);
+        add(contentView);
+
+        final IModel<List<CapabilitiesHomePageLinkProvider>> capsProviders;
+        capsProviders = getContentProviders(CapabilitiesHomePageLinkProvider.class);
+
+        ListView<CapabilitiesHomePageLinkProvider> capsView = new ListView<CapabilitiesHomePageLinkProvider>(
+                "providedCaps", capsProviders) {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            protected void populateItem(ListItem<CapabilitiesHomePageLinkProvider> item) {
+                CapabilitiesHomePageLinkProvider provider = item.getModelObject();
+                Component capsList = provider.getCapabilitiesComponent("capsList");
+                item.add(capsList);
+            }
+        };
+        add(capsView);
+    }
+
+    private <T> IModel<List<T>> getContentProviders(final Class<T> providerClass) {
+        IModel<List<T>> providersModel = new LoadableDetachableModel<List<T>>() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            protected List<T> load() {
+                GeoServerApplication app = getGeoServerApplication();
+                List<T> providers = app.getBeansOfType(providerClass);
+                return providers;
+            }
+        };
+        return providersModel;
     }
     
     /**
@@ -118,12 +154,4 @@ public class GeoServerHomePage extends GeoServerBasePage {
         return false;
     }
 
-    private IModel getServices() {
-        return new LoadableDetachableModel() {
-            @Override
-            protected Object load() {
-                return getGeoServerApplication().getGeoServer().getServices();
-            }
-        };
-    }
 }

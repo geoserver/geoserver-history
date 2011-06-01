@@ -5,7 +5,14 @@
 <p>
 <wicket:message key="GeoServerHomePage.belongsTo">This GeoServer belongs to</wicket:message> <a wicket:id="contactURL"><span wicket:id="contactName"></span></a>.
 </p>
+<p>
 <div wicket:id="catalogLinks"></div>
+</p>
+<p>
+<wicket:fragment wicket:id="contributedContent">
+      <span wicket:id="contentList"/>
+</wicket:fragment>
+</p>
 <p>
   <span wicket:id="footerMessage"></span>
 </p>
@@ -18,15 +25,8 @@
       </div>
       <div>
         <ul class="navigation-tab-content plain">
-          <li wicket:id="services" class="selfclear">
-            <span wicket:id="service"></span>
-            <ul class="flat">
-              <li wicket:id="versions">
-                <a wicket:id="link" class="external icon">
-                  <span wicket:id="version">
-                </span></a>
-              </li>
-            </ul>
+          <li wicket:id="providedCaps" class="selfclear">
+            <span wicket:id="capsList"/>
           </li>
         </ul>
       </div>
