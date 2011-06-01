@@ -46,6 +46,8 @@ public class LayerInfoImpl implements LayerInfo {
 
     protected boolean enabled;
 
+    protected Boolean queryable;
+
     protected MetadataMap metadata = new MetadataMap();
 
     protected AttributionInfo attribution;
@@ -252,5 +254,13 @@ public class LayerInfoImpl implements LayerInfo {
     public String toString() {
         return new StringBuilder(getClass().getSimpleName()).append('[').append(getName()).append(
                 ", resource:").append(resource).append(']').toString();
+    }
+
+    public void setQueryable(boolean queryable) {
+        this.queryable = queryable;
+    }
+
+    public boolean isQueryable() {
+        return this.queryable == null? true : this.queryable.booleanValue();
     }
 }

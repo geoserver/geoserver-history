@@ -10,6 +10,7 @@ import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.extensions.markup.html.form.palette.Palette;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.image.Image;
@@ -33,6 +34,8 @@ public class WMSLayerConfig extends LayerConfigurationPanel {
 
     public WMSLayerConfig(String id, IModel layerModel) {
         super(id, layerModel);
+        
+        add(new CheckBox("queryableEnabled", new PropertyModel(layerModel,"queryable")));
         
         // styles block container
         WebMarkupContainer styleContainer = new WebMarkupContainer("styles");
@@ -93,7 +96,6 @@ public class WMSLayerConfig extends LayerConfigurationPanel {
         styleContainer.add(renderingBuffer);
         
         add(new TextField("wmsPath", new PropertyModel(layerModel, "path")));
-        
         
     }
 }

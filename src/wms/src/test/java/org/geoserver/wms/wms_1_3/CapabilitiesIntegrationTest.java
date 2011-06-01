@@ -300,4 +300,22 @@ public class CapabilitiesIntegrationTest extends WMSTestSupport {
         assertXpathEvaluatesTo("__fax", cinfo + "wms:ContactFacsimileTelephone", doc);
         assertXpathEvaluatesTo("e@mail", cinfo + "wms:ContactElectronicMailAddress", doc);
     }
+
+    public void testQueryable() throws Exception {
+        LayerInfo lines = getCatalog().getLayerByName(MockData.LINES.getLocalPart());
+        lines.setQueryable(true);
+        getCatalog().save(lines);
+        LayerInfo points = getCatalog().getLayerByName(MockData.POINTS.getLocalPart());
+        points.setQueryable(false);
+        getCatalog().save(points);
+
+        String linesName = MockData.LINES.getPrefix() + ":" + MockData.LINES.getLocalPart();
+        String pointsName = MockData.POINTS.getPrefix() + ":" + MockData.POINTS.getLocalPart();
+
+        Document doc = getAsDOM("wms?service=WMS&request=getCapabilities&version=1.3.0", true);
+        // print(doc);
+
+        assertXpathEvaluatesTo("1", "//wms:Layer[wms:Name='" + linesName + "']/@queryable", doc);
+        assertXpathEvaluatesTo("0", "//wms:Layer[wms:Name='" + pointsName + "']/@queryable", doc);
+    }
 }

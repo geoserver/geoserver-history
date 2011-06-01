@@ -46,6 +46,7 @@ public class CapabilitiesTest extends WMSTestSupport {
         GeoServerInfo global = getGeoServer().getGlobal();
         global.setProxyBaseUrl("src/test/resources/geoserver");
         getGeoServer().save(global);
+        
     }
 
     @Override
@@ -247,7 +248,7 @@ public class CapabilitiesTest extends WMSTestSupport {
         getGeoServer().save(service);
 
         Document doc = getAsDOM("wms?service=WMS&request=getCapabilities&version=1.1.1", true);
-        print(doc);
+        // print(doc);
 
         String base = "WMT_MS_Capabilities/Service/";
         assertXpathEvaluatesTo("OGC:WMS", base + "Name", doc);
@@ -270,5 +271,23 @@ public class CapabilitiesTest extends WMSTestSupport {
         assertXpathEvaluatesTo("__phone", cinfo + "ContactVoiceTelephone", doc);
         assertXpathEvaluatesTo("__fax", cinfo + "ContactFacsimileTelephone", doc);
         assertXpathEvaluatesTo("e@mail", cinfo + "ContactElectronicMailAddress", doc);
+    }
+    
+    public void testQueryable() throws Exception{
+        LayerInfo lines = getCatalog().getLayerByName(MockData.LINES.getLocalPart());
+        lines.setQueryable(true);
+        getCatalog().save(lines);
+        LayerInfo points = getCatalog().getLayerByName(MockData.POINTS.getLocalPart());
+        points.setQueryable(false);
+        getCatalog().save(points);        
+
+        String linesName = MockData.LINES.getPrefix() + ":" + MockData.LINES.getLocalPart();
+        String pointsName = MockData.POINTS.getPrefix() + ":" + MockData.POINTS.getLocalPart();
+        
+        Document doc = getAsDOM("wms?service=WMS&request=getCapabilities&version=1.1.1", true);
+        // print(doc);
+
+        assertXpathEvaluatesTo("1", "//Layer[Name='" + linesName + "']/@queryable", doc);
+        assertXpathEvaluatesTo("0", "//Layer[Name='" + pointsName + "']/@queryable", doc);
     }
 }
