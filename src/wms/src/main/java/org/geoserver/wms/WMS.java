@@ -639,8 +639,9 @@ public class WMS implements ApplicationContextAware {
                     return false;
                 }
             }
-            // all other layers are queryable
-            return true;
+
+            return layer.isQueryable();
+            
         } catch (IOException e) {
             LOGGER.log(Level.INFO,
                     "Failed to determin if the layer is queryable, assuming it's not", e);

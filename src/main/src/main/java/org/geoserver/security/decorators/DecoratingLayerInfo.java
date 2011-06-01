@@ -112,4 +112,13 @@ public class DecoratingLayerInfo extends AbstractDecorator<LayerInfo> implements
         return new StringBuilder(getClass().getSimpleName()).append('[').append(delegate).append(
                 ']').toString();
     }
+
+    public void setQueryable(boolean _queryableEnabled) {
+        delegate.setQueryable(_queryableEnabled);
+
+    }
+
+    public boolean isQueryable() {
+        return delegate.isQueryable();
+    }
 }

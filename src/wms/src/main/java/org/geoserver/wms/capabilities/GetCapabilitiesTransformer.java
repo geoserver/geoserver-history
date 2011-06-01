@@ -58,8 +58,6 @@ import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSInfo;
 import org.geoserver.wms.describelayer.DescribeLayerResponse;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
-import org.geotools.data.ows.Layer;
-import org.geotools.data.ows.WMSCapabilities;
 import org.geotools.factory.GeoTools;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
@@ -761,8 +759,8 @@ public class GetCapabilitiesTransformer extends TransformerBase {
             // HACK: by now all our layers are queryable, since they reference
             // only featuretypes managed by this server
             AttributesImpl qatts = new AttributesImpl();
-            qatts.addAttribute("", "queryable", "queryable", "", isLayerQueryable(layer) ? "1"
-                    : "0");
+            boolean queryable = wmsConfig.isQueryable(layer);
+            qatts.addAttribute("", "queryable", "queryable", "", queryable ? "1" : "0");
             start("Layer", qatts);
             element("Name", layer.getResource().getNamespace().getPrefix() + ":" + layer.getName());
             // REVISIT: this is bad, layer should have title and anbstract by itself
@@ -1023,32 +1021,6 @@ public class GetCapabilitiesTransformer extends TransformerBase {
         // return (String[]) finalArray.toArray(new String[1]);
         // }
 
-        /**
-         * Returns true if the layer can be queried
-         */
-        boolean isLayerQueryable(LayerInfo layer) {
-            try {
-                if (layer.getResource() instanceof WMSLayerInfo) {
-                    WMSLayerInfo info = (WMSLayerInfo) layer.getResource();
-                    Layer wl = info.getWMSLayer(null);
-                    if (!wl.isQueryable()) {
-                        return false;
-                    }
-                    WMSCapabilities caps = info.getStore().getWebMapServer(null).getCapabilities();
-                    if (!caps.getRequest().getGetFeatureInfo().getFormats()
-                            .contains("application/vnd.ogc.gml")) {
-                        return false;
-                    }
-                }
-                // all other layers are queryable
-                return true;
-            } catch (IOException e) {
-                LOGGER.log(Level.SEVERE,
-                        "Failed to determin if the layer is queryable, assuming it's not", e);
-                return false;
-            }
-        }
-
         protected void handleLayerGroups(List<LayerGroupInfo> layerGroups) throws FactoryException,
                 TransformException {
             if (layerGroups == null || layerGroups.size() == 0) {
@@ -1065,7 +1037,8 @@ public class GetCapabilitiesTransformer extends TransformerBase {
                 String layerName = layerGroup.getName();
 
                 AttributesImpl qatts = new AttributesImpl();
-                qatts.addAttribute("", "queryable", "queryable", "", "0");
+                boolean queryable = wmsConfig.isQueryable(layerGroup);
+                qatts.addAttribute("", "queryable", "queryable", "", queryable? "1" : "0");
                 // qatts.addAttribute("", "opaque", "opaque", "", "1");
                 // qatts.addAttribute("", "cascaded", "cascaded", "", "1");
                 start("Layer", qatts);

@@ -171,6 +171,22 @@ public interface LayerInfo extends CatalogInfo {
     void setEnabled(boolean enabled);
 
     /**
+     * Sets the queryable status
+     * 
+     * @param {@code true} to set this Layer as queryable and subject of GetFeatureInfo requests,
+     *        {@code false} to make the layer not queryable.
+     */
+    void setQueryable(boolean queryable);
+
+    /**
+     * Whether the layer is queryable and hence can be subject of a GetFeatureInfo request.
+     * <p>
+     * Defaults to {@code true}
+     * </p>
+     */
+    boolean isQueryable();
+
+    /**
      * A persistent map of metadata.
      * <p>
      * Data in this map is intended to be persisted. Common case of use is to
