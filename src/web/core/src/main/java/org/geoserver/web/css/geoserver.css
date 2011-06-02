@@ -335,7 +335,7 @@ width: 90%;
 }
 
 textarea.medium {
-height: 10em;
+height: 7em;
 }
 
 input.large, select.large, textarea.large {
@@ -387,8 +387,8 @@ height: 18px;
 
 textarea.textarea {
 font-family: "Lucida Grande",Tahoma,Arial,sans-serif;
-height: 15em;
-width: 33em;
+height: 7em;
+width: 40em;
 }
 
 input.text, input.file, textarea.textarea, select.select {
