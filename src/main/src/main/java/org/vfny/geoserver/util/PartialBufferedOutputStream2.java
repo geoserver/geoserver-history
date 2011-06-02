@@ -199,6 +199,8 @@ public class PartialBufferedOutputStream2 extends OutputStream {
             return;
         }
         
+        forceFlush();
+        
         closed = true;
 
         out_buffer.close();
