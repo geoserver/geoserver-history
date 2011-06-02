@@ -71,6 +71,7 @@ public class PolymorphismWfsTest extends AbstractAppSchemaWfsTestSupport {
                 + "xmlns:ogc=\"http://www.opengis.net/ogc\" " //
                 + "xmlns:wfs=\"http://www.opengis.net/wfs\" " //
                 + "xmlns:gml=\"http://www.opengis.net/gml\" " //
+                + "xmlns:ex=\"http://example.com\" " //                
                 + "xmlns:gsml=\""
                 + AbstractAppSchemaMockData.GSML_URI
                 + "\" " //
@@ -123,6 +124,7 @@ public class PolymorphismWfsTest extends AbstractAppSchemaWfsTestSupport {
                 + "xmlns:ogc=\"http://www.opengis.net/ogc\" " //
                 + "xmlns:wfs=\"http://www.opengis.net/wfs\" " //
                 + "xmlns:gml=\"http://www.opengis.net/gml\" " //
+                + "xmlns:ex=\"http://example.com\" " //  
                 + "xmlns:gsml=\""
                 + AbstractAppSchemaMockData.GSML_URI
                 + "\" " //
@@ -185,6 +187,7 @@ public class PolymorphismWfsTest extends AbstractAppSchemaWfsTestSupport {
                 + "xmlns:ogc=\"http://www.opengis.net/ogc\" " //
                 + "xmlns:wfs=\"http://www.opengis.net/wfs\" " //
                 + "xmlns:gml=\"http://www.opengis.net/gml\" " //
+                + "xmlns:ex=\"http://example.com\" " //  
                 + "xmlns:gsml=\""
                 + AbstractAppSchemaMockData.GSML_URI
                 + "\" " //
@@ -244,6 +247,7 @@ public class PolymorphismWfsTest extends AbstractAppSchemaWfsTestSupport {
                 + "xmlns:ogc=\"http://www.opengis.net/ogc\" " //
                 + "xmlns:wfs=\"http://www.opengis.net/wfs\" " //
                 + "xmlns:gml=\"http://www.opengis.net/gml\" " //
+                + "xmlns:ex=\"http://example.com\" " //  
                 + "xmlns:gsml=\""
                 + AbstractAppSchemaMockData.GSML_URI
                 + "\" " //
