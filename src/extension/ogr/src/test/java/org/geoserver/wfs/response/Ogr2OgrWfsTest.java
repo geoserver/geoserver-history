@@ -65,7 +65,17 @@ public class Ogr2OgrWfsTest extends GeoServerTestSupport {
         
         // read back
         ZipInputStream zis = new ZipInputStream(getBinaryInputStream(resp));
-        ZipEntry entry = zis.getNextEntry();
+
+        // get buildings entry
+        ZipEntry entry = null;
+        entry = zis.getNextEntry();
+        while (entry != null) {
+            if (entry.getName().equals("Buildings.kml")) {
+                break;
+            }
+            entry = zis.getNextEntry();
+        }
+        
         assertNotNull(entry);
         assertEquals("Buildings.kml", entry.getName());
 
