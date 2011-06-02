@@ -346,7 +346,7 @@ public class GetCapabilitiesTransformer extends TransformerBase {
          * 
          * @param keywords
          */
-        private void handleMetadataList(List<MetadataLinkInfo> metadataURLs) {
+        private void handleMetadataList(Collection<MetadataLinkInfo> metadataURLs) {
             if (metadataURLs == null) {
                 return;
             }
@@ -1057,6 +1057,17 @@ public class GetCapabilitiesTransformer extends TransformerBase {
 
                 handleLatLonBBox(latLonBounds);
                 handleBBox(layerGroupBounds, authority);
+
+                // Aggregated metadata links (see GEOS-4500)
+                List<LayerInfo> layers = layerGroup.getLayers();
+                Set<MetadataLinkInfo> aggregatedLinks = new HashSet<MetadataLinkInfo>();
+                for (LayerInfo layer : layers) {
+                    List<MetadataLinkInfo> metadataLinks = layer.getResource().getMetadataLinks();
+                    if (metadataLinks != null) {
+                        aggregatedLinks.addAll(metadataLinks);
+                    }
+                }
+                handleMetadataList(aggregatedLinks);
 
                 // the layer style is not provided since the group does just have
                 // one possibility, the lack of styles that will make it use
