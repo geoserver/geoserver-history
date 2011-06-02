@@ -67,6 +67,10 @@ background: #fff;
 color: #000;
 }
 
+input[readonly] {
+	border: 1px solid Lightgrey;
+}
+
 
 
 /*-----------------------
