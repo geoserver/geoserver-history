@@ -272,8 +272,8 @@ public abstract class CachedHierarchyRegionatingStrategy implements
 
             return readFeaturesForTile(tile, conn);
         } finally {
-            JDBCUtils.close(st);
-            JDBCUtils.close(conn, null, null);
+            //JDBCUtils.close(st);
+            //JDBCUtils.close(conn, null, null);
         }
     }
 

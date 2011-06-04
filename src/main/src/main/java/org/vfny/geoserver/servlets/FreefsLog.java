@@ -11,9 +11,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.geotools.data.jdbc.ConnectionPoolManager;
-
-
 /**
  * Initializes all logging functions.
  *
@@ -72,7 +69,7 @@ public class FreefsLog extends HttpServlet {
      */
     public void destroy() {
         super.destroy();
-        ConnectionPoolManager.getInstance().closeAll();
+        //ConnectionPoolManager.getInstance().closeAll();
 
         /*
            HACK: we must get a standard API way for releasing resources...

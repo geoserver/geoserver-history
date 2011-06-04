@@ -23,7 +23,7 @@ import org.geoserver.data.util.IOUtils;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.Transaction;
-import org.geotools.data.jdbc.JDBCDataStore;
+//import org.geotools.data.jdbc.JDBCDataStore;
 import org.geotools.data.jdbc.JDBCUtils;
 import org.geotools.util.logging.Logging;
 
@@ -171,9 +171,9 @@ public class LiveDbmsData extends LiveData {
                     return;
                 }
 
-                if (ds instanceof JDBCDataStore) {
-                    conn = ((JDBCDataStore) ds).getConnection(Transaction.AUTO_COMMIT);
-                }
+//                if (ds instanceof JDBCDataStore) {
+//                    conn = ((JDBCDataStore) ds).getConnection(Transaction.AUTO_COMMIT);
+//                }
                 // TODO: add a way to extract a connection from the new JDBC
                 // datastores
 
