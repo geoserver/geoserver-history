@@ -40,6 +40,10 @@
            <groupId>xalan</groupId>
            <artifactId>xalan</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>org.apache.xmlgraphics</groupId>
+          <artifactId>fop</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
