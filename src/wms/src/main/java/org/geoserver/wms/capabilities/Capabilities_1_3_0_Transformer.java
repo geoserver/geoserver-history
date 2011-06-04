@@ -4,10 +4,7 @@
  */
 package org.geoserver.wms.capabilities;
 
-import static org.geoserver.ows.util.ResponseUtils.appendQueryString;
-import static org.geoserver.ows.util.ResponseUtils.buildSchemaURL;
-import static org.geoserver.ows.util.ResponseUtils.buildURL;
-import static org.geoserver.ows.util.ResponseUtils.params;
+import static org.geoserver.ows.util.ResponseUtils.*;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -27,7 +24,6 @@ import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.xalan.transformer.TransformerIdentityImpl;
 import org.geoserver.catalog.AttributionInfo;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CoverageInfo;
@@ -35,12 +31,12 @@ import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
-import org.geoserver.catalog.LayerInfo.Type;
 import org.geoserver.catalog.LegendInfo;
 import org.geoserver.catalog.MetadataLinkInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.catalog.WMSLayerInfo;
+import org.geoserver.catalog.LayerInfo.Type;
 import org.geoserver.config.ContactInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.ows.URLMangler.URLType;
@@ -70,6 +66,7 @@ import org.opengis.referencing.operation.TransformException;
 import org.springframework.util.Assert;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
+import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.helpers.AttributesImpl;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -1181,16 +1178,9 @@ public class Capabilities_1_3_0_Transformer extends TransformerBase {
          * @param comment
          */
         public void comment(String comment) {
-            if (contentHandler instanceof TransformerIdentityImpl) // HACK HACK
-                                                                   // HACK --
-                                                                   // not sure
-                                                                   // of the
-                                                                   // proper
-                                                                   // way to do
-                                                                   // this.
-            {
+            if (contentHandler instanceof LexicalHandler) {
                 try {
-                    TransformerIdentityImpl ch = (TransformerIdentityImpl) contentHandler;
+                    LexicalHandler ch = (LexicalHandler) contentHandler;
                     ch.comment(comment.toCharArray(), 0, comment.length());
                 } catch (Exception e) {
                     e.printStackTrace();

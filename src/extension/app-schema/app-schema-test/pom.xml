@@ -115,6 +115,11 @@
 			<version>1.0.5</version>				
 			<scope>test</scope>
 		</dependency>
+                <dependency>
+                    <groupId>xalan</groupId>
+                    <artifactId>xalan</artifactId>
+                    <scope>test</scope>
+                </dependency>
         <dependency>
             <groupId>org.geotools.schemas</groupId>
             <artifactId>geosciml-3.0-seegrid</artifactId>

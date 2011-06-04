@@ -35,6 +35,12 @@
     <dependency>
       <groupId>org.geotools</groupId>
       <artifactId>gt-svg</artifactId>
+      <exclusions>
+        <exclusion>
+           <groupId>xalan</groupId>
+           <artifactId>xalan</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.geotools</groupId>

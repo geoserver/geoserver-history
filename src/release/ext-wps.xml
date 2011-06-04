@@ -17,6 +17,7 @@
         <include>gt-geojson*</include>
         <include>net.opengis.wps*</include>
         <include>jt-*</include>
+        <include>serializer*</include>
       </includes>
     </fileSet>
   </fileSets>

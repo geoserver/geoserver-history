@@ -50,6 +50,12 @@
 			<artifactId>gt-sample-data-access</artifactId>
 			<version>${gt.version}</version>
 		</dependency>
+
+                <dependency>
+                    <groupId>xalan</groupId>
+                    <artifactId>xalan</artifactId>
+                    <scope>test</scope>
+                </dependency>
 	</dependencies>
 
 	<build>

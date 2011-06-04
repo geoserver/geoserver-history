@@ -7,7 +7,7 @@ import java.util.Date;
 
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.util.CellReference;
-import org.apache.xml.utils.XMLChar;
+import org.apache.xerces.util.XMLChar;
 
 /**
  * Spreadsheet writer to directly generate OOXML spreadsheets instead of builing them in the Apache

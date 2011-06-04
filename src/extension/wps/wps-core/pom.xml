@@ -111,7 +111,7 @@
           <groupId>com.googlecode.jaitools</groupId>
           <artifactId>jt-utils</artifactId>
           <version>${jt.version}</version>
-        </dependency>  
+        </dependency>
         
         <!-- test dependencies -->
         <dependency>
