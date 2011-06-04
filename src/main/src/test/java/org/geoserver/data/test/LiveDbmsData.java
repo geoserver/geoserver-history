@@ -8,6 +8,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -23,8 +24,8 @@ import org.geoserver.data.util.IOUtils;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.Transaction;
-//import org.geotools.data.jdbc.JDBCDataStore;
 import org.geotools.data.jdbc.JDBCUtils;
+import org.geotools.jdbc.JDBCDataStore;
 import org.geotools.util.logging.Logging;
 
 /**
@@ -171,11 +172,7 @@ public class LiveDbmsData extends LiveData {
                     return;
                 }
 
-//                if (ds instanceof JDBCDataStore) {
-//                    conn = ((JDBCDataStore) ds).getConnection(Transaction.AUTO_COMMIT);
-//                }
-                // TODO: add a way to extract a connection from the new JDBC
-                // datastores
+                conn = getDatabaseConnection(ds);
 
                 if (conn == null) {
                     final String warning = "Disabling online test based on '" + fixtureId + "', "
@@ -216,6 +213,22 @@ public class LiveDbmsData extends LiveData {
             }
         }
 
+    }
+
+    /**
+     * Uses the current {@link JDBCDataStore} facilities to grab a connection, subclasses can
+     * override to use other methods
+     * 
+     * @param ds
+     * @return
+     * @throws IOException
+     */
+    protected Connection getDatabaseConnection(DataStore ds) throws IOException {
+        if (ds instanceof JDBCDataStore) {
+            return ((JDBCDataStore) ds).getConnection(Transaction.AUTO_COMMIT);
+        } else {
+            return null;
+        }
     }
 
     /**

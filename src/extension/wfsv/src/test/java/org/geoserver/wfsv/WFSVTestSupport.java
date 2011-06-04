@@ -7,7 +7,6 @@ import java.util.Map;
 import org.custommonkey.xmlunit.SimpleNamespaceContext;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.custommonkey.xmlunit.XpathEngine;
-import org.geoserver.data.test.LiveDbmsData;
 import org.geoserver.data.test.TestData;
 import org.geoserver.test.GeoServerAbstractTestSupport;
 
@@ -29,7 +28,7 @@ public abstract class WFSVTestSupport extends GeoServerAbstractTestSupport {
     @Override
     public TestData buildTestData() throws Exception {
         File base = new File("./src/test/resources/");
-        return new LiveDbmsData(new File(base, "versioning"), "wfsv", new File(base,
+        return new LegacyDbmsTestData(new File(base, "versioning"), "wfsv", new File(base,
                 "versioning.sql"));
     }
     
