@@ -51,7 +51,11 @@ public enum WMSErrorCode {
      * @return The error code, or the default if the version did not match.
      */
     public String get(String version) {
-        return get(new Version(version));
+        if(version != null) {
+            return get(new Version(version));
+        } else {
+            return get(new Version("1.1.1"));
+        }
     }
     
     /**
