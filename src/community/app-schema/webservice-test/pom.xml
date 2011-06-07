@@ -78,6 +78,11 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+			<groupId>xalan</groupId>
+			<artifactId>xalan</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt-app-schema</artifactId>
 			<version>${gt.version}</version>
