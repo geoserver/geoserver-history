@@ -885,3 +885,7 @@ color: #fff;
 margin: 1em 0 0;
 border-top: 2px solid #e4f1d0;
 }
+
+table.no-border td, table.no-border th {
+border-bottom: 0 none;
+}
