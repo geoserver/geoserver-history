@@ -88,6 +88,9 @@ public abstract class ProcessParameterIO {
         // grids
         defaults.add(new GeoTiffPPIO());
         defaults.add(new ArcGridPPIO());
+        
+        defaults.add(new ImagePPIO.PNGPPIO());
+        defaults.add(new ImagePPIO.JPEGPPIO());
 
         // envelopes
         defaults.add(new BoundingBoxPPIO(Envelope.class));

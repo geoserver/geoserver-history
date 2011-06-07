@@ -22,21 +22,33 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.geotools.data.Parameter;
+import org.geotools.data.Query;
 import org.geotools.process.Process;
 import org.geotools.process.ProcessException;
 import org.geotools.process.ProcessFactory;
+import org.geotools.process.RenderingProcess;
 import org.geotools.util.Converters;
 import org.geotools.util.SimpleInternationalString;
+import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.feature.type.Name;
 import org.opengis.util.InternationalString;
 import org.opengis.util.ProgressListener;
 
 public abstract class AnnotationDrivenProcessFactory implements ProcessFactory {
+
+    static final String INVERT_GRID_GEOMETRY = "invertGridGeometry";
+    static final String INVERT_QUERY = "invertQuery";
+
+    
     String namespace;
 
     InternationalString title;
@@ -212,7 +224,31 @@ public abstract class AnnotationDrivenProcessFactory implements ProcessFactory {
     }
 
     public Process create(Name name) {
-        return new ProcessInvocation(method(name.getLocalPart()), createProcessBean(name));
+    	Method meth = method(name.getLocalPart());
+    	Object process = createProcessBean(name); 
+    	if (lookupMethod(process, INVERT_GRID_GEOMETRY) != null 
+    	        || lookupMethod(process, INVERT_QUERY) != null) {
+    		return new RenderingProcessInvocation(meth, process);
+    	} else {
+    		return new ProcessInvocation(meth, process);
+    	}
+    }
+    
+    /**
+     * Looks up a method in an object (by simple name)
+     * @param targetObject
+     * @param methodName
+     * @return
+     */
+    Method lookupMethod(Object targetObject, String methodName) {
+        Method method = null;
+        for (Method m : targetObject.getClass().getMethods()) {
+            if (Modifier.isPublic(m.getModifiers()) &&  methodName.equals(m.getName())) {
+                method = m;
+                break;
+            }
+        }
+        return method;
     }
 
     /**
@@ -242,54 +278,7 @@ public abstract class AnnotationDrivenProcessFactory implements ProcessFactory {
         public Map<String, Object> execute(Map<String, Object> input, ProgressListener monitor)
                 throws ProcessException {
 
-            // build the array of arguments we'll use to invoke the method
-            Class<?>[] paramTypes = method.getParameterTypes();
-            Annotation[][] annotations = method.getParameterAnnotations();
-            Object args[] = new Object[paramTypes.length];
-            for (int i = 0; i < args.length; i++) {
-                if (ProgressListener.class.equals(paramTypes[i])) {
-                    // pass in the monitor
-                    args[i] = monitor;
-                } else {
-                    // find the corresponding argument in the input
-                    // map and set it
-                    Class<? extends Object> target = targetObject == null ? null : targetObject.getClass();
-					Parameter p = paramInfo(target, i, paramTypes[i], annotations[i]);
-                    Object value = input.get(p.key);
-
-                    // this takes care of array/collection conversions among
-                    // others
-                    args[i] = Converters.convert(value, paramTypes[i]);
-                    // check the conversion was successful
-                    if (args[i] == null && value != null) {
-                        throw new ProcessException("Could not convert " + value
-                                + " to target type " + paramTypes[i].getName());
-                    }
-
-                    // check multiplicity is respected
-                    if (p.minOccurs > 0 && value == null) {
-                        throw new ProcessException("Parameter " + p.key
-                                + " is missing but has min multiplicity > 0");
-                    } else if (p.maxOccurs > 1) {
-                        int size = -1;
-                        if(args[i] == null) {
-                            size = 0;
-                        } else if (paramTypes[i].isArray()) {
-                            size = Array.getLength(args[i]);
-                        } else {
-                            size = ((Collection) args[i]).size();
-                        }
-                        if (size < p.minOccurs) {
-                            throw new ProcessException("Parameter " + p.key + " has " + size
-                                    + " elements but min occurrences is " + p.minOccurs);
-                        }
-                        if (size > p.maxOccurs) {
-                            throw new ProcessException("Parameter " + p.key + " has " + size
-                                    + " elements but max occurrences is " + p.maxOccurs);
-                        }
-                    }
-                }
-            }
+            Object[] args = buildProcessArguments(method, input, monitor, false);
 
             // invoke and grab result
             Object value = null;
@@ -354,6 +343,131 @@ public abstract class AnnotationDrivenProcessFactory implements ProcessFactory {
             // handle the case where the method returns void
             return null;
         }
+
+        protected Object[] buildProcessArguments(Method method, Map<String, Object> input, ProgressListener monitor, boolean skip)
+                throws ProcessException {
+            // build the array of arguments we'll use to invoke the method
+            Class<?>[] paramTypes = method.getParameterTypes();
+            Annotation[][] annotations = method.getParameterAnnotations();
+            Object args[] = new Object[paramTypes.length];
+            for (int i = 0; i < args.length; i++) {
+                if (ProgressListener.class.equals(paramTypes[i])) {
+                    // pass in the monitor
+                    args[i] = monitor;
+                } else {
+                    // if we can skip and there is no annotation, skip
+                    if((annotations[i] == null || annotations[i].length == 0) && skip) {
+                        continue;
+                    }
+                    
+                    // find the corresponding argument in the input
+                    // map and set it
+                    Class<? extends Object> target = targetObject == null ? null : targetObject.getClass();
+					Parameter p = paramInfo(target, i, paramTypes[i], annotations[i]);
+                    Object value = input.get(p.key);
+
+                    // this takes care of array/collection conversions among
+                    // others
+                    args[i] = Converters.convert(value, paramTypes[i]);
+                    // check the conversion was successful
+                    if (args[i] == null && value != null) {
+                        throw new ProcessException("Could not convert " + value
+                                + " to target type " + paramTypes[i].getName());
+                    }
+
+                    // check multiplicity is respected
+                    if (p.minOccurs > 0 && value == null) {
+                        throw new ProcessException("Parameter " + p.key
+                                + " is missing but has min multiplicity > 0");
+                    } else if (p.maxOccurs > 1) {
+                        int size = -1;
+                        if(args[i] == null) {
+                            size = 0;
+                        } else if (paramTypes[i].isArray()) {
+                            size = Array.getLength(args[i]);
+                        } else {
+                            size = ((Collection) args[i]).size();
+                        }
+                        if (size < p.minOccurs) {
+                            throw new ProcessException("Parameter " + p.key + " has " + size
+                                    + " elements but min occurrences is " + p.minOccurs);
+                        }
+                        if (size > p.maxOccurs) {
+                            throw new ProcessException("Parameter " + p.key + " has " + size
+                                    + " elements but max occurrences is " + p.maxOccurs);
+                        }
+                    }
+                }
+            }
+            return args;
+        }
+    }
+    
+    
+    
+    /**
+     * Executes the method as a process
+     */
+    class RenderingProcessInvocation extends ProcessInvocation implements RenderingProcess {
+
+        public RenderingProcessInvocation(Method method, Object targetObject) {
+            super(method, targetObject);
+        }
+
+        public Query invertQuery(Map<String, Object> input, Query targetQuery,
+                GridGeometry gridGeometry) throws ProcessException {
+            Method method = lookupMethod(targetObject, INVERT_QUERY);
+
+            if (method == null) {
+                return targetQuery;
+            }
+
+            try {
+                Object[] args = buildProcessArguments(method, input, null, true);
+                args[args.length - 2] = targetQuery;
+                args[args.length - 1] = gridGeometry;
+
+
+                return (Query) method.invoke(targetObject, args);
+            } catch (IllegalAccessException e) {
+                throw new ProcessException(e);
+            } catch (InvocationTargetException e) {
+                Throwable t = e.getTargetException();
+                if (t instanceof ProcessException) {
+                    throw ((ProcessException) t);
+                } else {
+                    throw new ProcessException(t);
+                }
+            }
+
+        }
+
+        public GridGeometry invertGridGeometry(Map<String, Object> input, Query targetQuery,
+                GridGeometry targetGridGeometry) throws ProcessException {
+           Method method = lookupMethod(targetObject, INVERT_GRID_GEOMETRY);
+
+            if (method == null) {
+                return targetGridGeometry;
+            }
+
+            try {
+                Object[] args = buildProcessArguments(method, input, null, true);
+                args[args.length - 2] = targetQuery;
+                args[args.length - 1] = targetGridGeometry;
+
+                return (GridGeometry) method.invoke(targetObject, args);
+            } catch (IllegalAccessException e) {
+                throw new ProcessException(e);
+            } catch (InvocationTargetException e) {
+                Throwable t = e.getTargetException();
+                if (t instanceof ProcessException) {
+                    throw ((ProcessException) t);
+                } else {
+                    throw new ProcessException(t);
+                }
+            }
+        }
+        
     }
 
 }

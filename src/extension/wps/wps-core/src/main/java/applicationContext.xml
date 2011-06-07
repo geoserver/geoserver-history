@@ -162,7 +162,12 @@
     <bean id="rasterZonalStatistics" class="org.geoserver.wps.gs.RasterZonalStatistics" />
     <bean id="rangeLookupProcess" class="org.geoserver.wps.gs.RangeLookupProcess" />
     <bean id="gridProcess" class="org.geoserver.wps.gs.GridProcess" />
+    <bean id="georectifyConfiguration" class="org.geoserver.wps.gs.GeorectifyConfiguration" /> 
     
+    <bean id="georectifyCoverage" class="org.geoserver.wps.gs.GeorectifyCoverage">
+    	<property name="config" ref="georectifyConfiguration" /> 
+      <property name="resourceManager" ref="wpsResourceManager" />
+    </bean>
     
     <!-- 
        ==================================================================

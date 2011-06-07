@@ -14,10 +14,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.FactoryIteratorProvider;
+import org.geotools.factory.Hints;
 import org.geotools.feature.NameImpl;
+import org.geotools.filter.FunctionFactory;
+import org.geotools.filter.FunctionFinder;
 import org.geotools.process.ProcessFactory;
 import org.geotools.process.Processors;
+import org.geotools.process.function.ProcessFunctionFactory;
 import org.geotools.util.SimpleInternationalString;
 import org.opengis.feature.type.Name;
 import org.springframework.beans.BeansException;
@@ -64,7 +69,14 @@ public class SpringBeanProcessFactory extends AnnotationDrivenProcessFactory imp
             }
         };
         
+        // register the new process and make the process function factory lookup again the processes
         Processors.addProcessFactory(this);
+        for(FunctionFactory ff : CommonFactoryFinder.getFunctionFactories(null)) {
+            if(ff instanceof ProcessFunctionFactory) {
+                ProcessFunctionFactory pff = (ProcessFunctionFactory) ff;
+                pff.clear();
+            }
+        }
 
     }
 

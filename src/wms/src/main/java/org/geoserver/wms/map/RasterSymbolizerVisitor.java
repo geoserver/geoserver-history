@@ -45,7 +45,8 @@ import org.geotools.styling.UserLayer;
 import org.opengis.feature.type.FeatureType;
 
 /**
- * Extracts the active raster symbolizers, as long as there are some, and only raster symbolizers are available.
+ * Extracts the active raster symbolizers, as long as there are some, and only raster symbolizers 
+ * are available, without rendering transformations in place.
  * In the case of mixed symbolizers it will return null
  * TODO: extend this class so that it handles the case of other symbolizers applied after a raster
  * symbolizer one (e.g., to draw a rectangle around a coverage)
@@ -62,6 +63,8 @@ public class RasterSymbolizerVisitor implements StyleVisitor {
     List<RasterSymbolizer> symbolizers = new ArrayList<RasterSymbolizer>();
     
     boolean otherSymbolizers = false;
+    
+    boolean renderingTransformations = false;
 
     public RasterSymbolizerVisitor(double scaleDenominator, FeatureType featureType) {
         this.scaleDenominator = scaleDenominator;
@@ -71,10 +74,11 @@ public class RasterSymbolizerVisitor implements StyleVisitor {
     public void reset() {
         symbolizers.clear();
         otherSymbolizers = false;
+        renderingTransformations = false;
     }
     
     public List<RasterSymbolizer> getRasterSymbolizers() {
-        if(otherSymbolizers)
+        if(otherSymbolizers || renderingTransformations)
             return Collections.emptyList();
         else
             return symbolizers;
@@ -105,8 +109,12 @@ public class RasterSymbolizerVisitor implements StyleVisitor {
     }
 
     public void visit(Style style) {
-        for (FeatureTypeStyle fts : style.featureTypeStyles())
+        for (FeatureTypeStyle fts : style.featureTypeStyles()) {
+            if(fts.getTransformation() != null) {
+                renderingTransformations = true;
+            }
             fts.accept(this);
+        }
     }
 
     public void visit(Rule rule) {

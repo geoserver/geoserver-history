@@ -647,6 +647,16 @@
         </dependency>
       </dependencies>
     </profile>
+    <profile>
+      <id>imagecollection</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.geotools</groupId>
+          <artifactId>gt-imagecollection</artifactId>
+          <version>${gt.version}</version>
+        </dependency>
+      </dependencies>
+    </profile>
 
  </profiles>
 </project>

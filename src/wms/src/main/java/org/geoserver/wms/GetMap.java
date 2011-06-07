@@ -361,6 +361,10 @@ public class GetMap {
         }
 
         // setup the SLD variable substitution environment
+        Map envMap = request.getEnv();
+        envMap.put("wms_bbox", mapContext.getAreaOfInterest());
+        envMap.put("wms_width", mapContext.getMapWidth());
+        envMap.put("wms_height", mapContext.getMapHeight());
         EnvFunction.setLocalValues(request.getEnv());
 
         WebMap map;
