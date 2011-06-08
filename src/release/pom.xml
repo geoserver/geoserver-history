@@ -47,6 +47,10 @@
    <artifactId>xmlParserAPIs</artifactId>
   </dependency>
   <dependency>
+   <groupId>xalan</groupId>
+   <artifactId>xalan</artifactId>
+  </dependency>
+  <dependency>
    <groupId>commons-el</groupId>
    <artifactId>commons-el</artifactId>
   </dependency>
@@ -107,6 +111,11 @@
    <version>${gt.version}</version>
   </dependency>
   <dependency>
+   <groupId>org.geotools</groupId>
+   <artifactId>gt-app-schema</artifactId>
+   <version>${gt.version}</version>
+  </dependency>
+  <dependency>
    <groupId>org.geoserver</groupId>
    <artifactId>wfsv</artifactId>
    <version>${project.version}</version>
@@ -161,12 +170,6 @@
    <artifactId>charts</artifactId>
    <version>${project.version}</version>
   </dependency> 
-  <dependency>
-   <groupId>org.geoserver.extension</groupId>
-   <artifactId>app-schema</artifactId>
-   <version>${project.version}</version>
-   <type>pom</type>
-  </dependency>
   <dependency>
    <groupId>org.geoserver.extension</groupId>
    <artifactId>feature-pregeneralized</artifactId>

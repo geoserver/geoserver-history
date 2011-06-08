@@ -39,6 +39,12 @@
             <groupId>org.geoserver</groupId>
             <artifactId>wms</artifactId>
         </dependency>
+        <dependency>
+            <!-- required for complex feature WFS output (see GML3OutputFormat) -->
+            <groupId>xalan</groupId>
+            <artifactId>xalan</artifactId>
+            <scope>test</scope>
+        </dependency>
 		<dependency>
 			<groupId>com.mockrunner</groupId>
 			<artifactId>mockrunner</artifactId>
@@ -115,11 +121,6 @@
 			<version>1.0.5</version>				
 			<scope>test</scope>
 		</dependency>
-                <dependency>
-                    <groupId>xalan</groupId>
-                    <artifactId>xalan</artifactId>
-                    <scope>test</scope>
-                </dependency>
         <dependency>
             <groupId>org.geotools.schemas</groupId>
             <artifactId>geosciml-3.0-seegrid</artifactId>

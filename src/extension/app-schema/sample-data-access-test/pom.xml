@@ -32,6 +32,12 @@
 			<groupId>org.geoserver</groupId>
 			<artifactId>wfs</artifactId>
 		</dependency>
+        <dependency>
+            <!-- required for complex feature WFS output (see GML3OutputFormat) -->
+            <groupId>xalan</groupId>
+            <artifactId>xalan</artifactId>
+            <scope>test</scope>
+        </dependency>
 		<dependency>
 			<!-- text-feature-list runtime dependency -->
 			<groupId>com.mockrunner</groupId>
@@ -44,18 +50,11 @@
 			<artifactId>xmlunit</artifactId>
 			<scope>test</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt-sample-data-access</artifactId>
 			<version>${gt.version}</version>
 		</dependency>
-
-                <dependency>
-                    <groupId>xalan</groupId>
-                    <artifactId>xalan</artifactId>
-                    <scope>test</scope>
-                </dependency>
 	</dependencies>
 
 	<build>

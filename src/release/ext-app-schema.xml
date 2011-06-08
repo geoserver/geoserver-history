@@ -16,9 +16,11 @@
             <directory>release/target/dependency</directory>
             <outputDirectory></outputDirectory>
             <includes>
-                <!-- matches both gt-app-schema and gt-app-schema-resolver jars-->
+                <!-- gt-app-schema and gt-app-schema-resolver jars-->
                 <include>gt-app-schema-*.jar</include>
                 <include>xml-commons-resolver-*.jar</include>
+                <!-- required for complex feature WFS output (see GML3OutputFormat) -->
+                <include>xalan-*.jar</include>
             </includes>
         </fileSet>
         <fileSet>
@@ -31,9 +33,13 @@
         <fileSet>
             <directory>../data/app-schema-tutorial</directory>
             <outputDirectory>tutorial</outputDirectory>
-            <!-- might have been manually added as an eclipse project -->
             <excludes>
+                <!-- might have been manually added as an eclipse project -->
                 <exclude>**/.project</exclude>
+                <!-- might have been used for local testing -->
+                <exclude>**/app-schema-cache/**</exclude>
+                <exclude>**/geoserver.log</exclude>
+                <exclude>**/gwc/**</exclude>
             </excludes>
         </fileSet>
     </fileSets>

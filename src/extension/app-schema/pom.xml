@@ -14,14 +14,6 @@
   <packaging>pom</packaging>
   <name>Application Schema Support</name>
 
-  <dependencies>
-    <dependency>
-      <groupId>org.geotools</groupId>
-      <artifactId>gt-app-schema</artifactId>
-      <version>${gt.version}</version>
-    </dependency>
-  </dependencies>
-
   <modules>
     <module>app-schema-test</module>
     <module>sample-data-access-test</module>

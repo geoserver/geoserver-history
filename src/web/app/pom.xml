@@ -355,10 +355,14 @@
       <id>app-schema</id>
       <dependencies>
         <dependency>
-          <groupId>org.geoserver.extension</groupId>
-          <artifactId>app-schema</artifactId> 
-          <version>${project.version}</version>
-          <type>pom</type>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-app-schema</artifactId>
+            <version>${gt.version}</version>
+        </dependency>
+        <dependency>
+            <!-- required for complex feature WFS output (see GML3OutputFormat) -->
+            <groupId>xalan</groupId>
+            <artifactId>xalan</artifactId>
         </dependency>
       </dependencies>
     </profile>
