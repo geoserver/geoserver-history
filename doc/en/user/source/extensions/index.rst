@@ -10,6 +10,7 @@ This section describes the various extensions available to GeoServer.  For infor
 .. toctree::
    :maxdepth: 2
 
+   excel
    geosearch
    imagemap
    ogr
