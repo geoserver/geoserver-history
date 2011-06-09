@@ -101,7 +101,7 @@ public class DimensionsCapabilitiesTest extends WMSDimensionsTestSupport {
         assertXpathEvaluatesTo("1", "count(//wms:Layer/wms:Dimension)", dom);
         assertXpathEvaluatesTo("time", "//wms:Layer/wms:Dimension/@name", dom);
         assertXpathEvaluatesTo("current", "//wms:Layer/wms:Dimension/@default", dom);
-        assertXpathEvaluatesTo("2011-04-30T22:00:00.000Z,2011-05-01T22:00:00.000Z,2011-05-02T22:00:00.000Z,2011-05-03T22:00:00.000Z", "//wms:Layer/wms:Dimension", dom);
+        assertXpathEvaluatesTo("2011-05-01T00:00:00.000Z,2011-05-02T00:00:00.000Z,2011-05-03T00:00:00.000Z,2011-05-04T00:00:00.000Z", "//wms:Layer/wms:Dimension", dom);
     }
     
     public void testTimeContinuous() throws Exception {
@@ -118,7 +118,7 @@ public class DimensionsCapabilitiesTest extends WMSDimensionsTestSupport {
         assertXpathEvaluatesTo("1", "count(//wms:Layer/wms:Dimension)", dom);
         assertXpathEvaluatesTo("time", "//wms:Layer/wms:Dimension/@name", dom);
         assertXpathEvaluatesTo("current", "//wms:Layer/wms:Dimension/@default", dom);
-        assertXpathEvaluatesTo("2011-04-30T22:00:00.000Z/2011-05-03T22:00:00.000Z/P3D", "//wms:Layer/wms:Dimension", dom);
+        assertXpathEvaluatesTo("2011-05-01T00:00:00.000Z/2011-05-04T00:00:00.000Z/P3D", "//wms:Layer/wms:Dimension", dom);
     }
     
     public void testTimeResolution() throws Exception {
@@ -135,7 +135,7 @@ public class DimensionsCapabilitiesTest extends WMSDimensionsTestSupport {
         assertXpathEvaluatesTo("1", "count(//wms:Layer/wms:Dimension)", dom);
         assertXpathEvaluatesTo("time", "//wms:Layer/wms:Dimension/@name", dom);
         assertXpathEvaluatesTo("current", "//wms:Layer/wms:Dimension/@default", dom);
-        assertXpathEvaluatesTo("2011-04-30T22:00:00.000Z/2011-05-03T22:00:00.000Z/P1D", "//wms:Layer/wms:Dimension", dom);
+        assertXpathEvaluatesTo("2011-05-01T00:00:00.000Z/2011-05-04T00:00:00.000Z/P1D", "//wms:Layer/wms:Dimension", dom);
     }
     
     public void testTimeElevation() throws Exception {
@@ -156,7 +156,7 @@ public class DimensionsCapabilitiesTest extends WMSDimensionsTestSupport {
         // check we have the extent for time
         assertXpathEvaluatesTo("1", "count(//wms:Layer/wms:Dimension[@name='time'])", dom);
         assertXpathEvaluatesTo("current", "//wms:Layer/wms:Dimension[@name='time']/@default", dom);
-        assertXpathEvaluatesTo("2011-04-30T22:00:00.000Z,2011-05-01T22:00:00.000Z,2011-05-02T22:00:00.000Z,2011-05-03T22:00:00.000Z", 
+        assertXpathEvaluatesTo("2011-05-01T00:00:00.000Z,2011-05-02T00:00:00.000Z,2011-05-03T00:00:00.000Z,2011-05-04T00:00:00.000Z", 
                 "//wms:Layer/wms:Dimension[@name='time']", dom);
     }
 
