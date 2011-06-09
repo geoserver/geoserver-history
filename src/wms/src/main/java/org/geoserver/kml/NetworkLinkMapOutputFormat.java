@@ -10,6 +10,7 @@ import java.util.Map;
 
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.GetMapRequest;
+import org.geoserver.wms.MapProducerCapabilities;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSMapContext;
 import org.geoserver.wms.map.AbstractMapOutputFormat;
@@ -66,5 +67,9 @@ public class NetworkLinkMapOutputFormat extends AbstractMapOutputFormat {
         XMLTransformerMap wmsResponse = new XMLTransformerMap(mapContext, transformer, mapContext,
                 mimeType);
         return wmsResponse;
+    }
+
+    public MapProducerCapabilities getCapabilities(String format) {
+        return KMLMapOutputFormat.KML_CAPABILITIES;
     }
 }

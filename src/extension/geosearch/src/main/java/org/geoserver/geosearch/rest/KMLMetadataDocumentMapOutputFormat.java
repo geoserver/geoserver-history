@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.GetMapOutputFormat;
+import org.geoserver.wms.MapProducerCapabilities;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSMapContext;
 import org.geoserver.wms.map.XMLTransformerMap;
@@ -25,6 +26,8 @@ class KMLMetadataDocumentMapOutputFormat implements GetMapOutputFormat {
     /** standard logger */
     protected static final Logger LOGGER = Logging
             .getLogger(KMLMetadataDocumentMapOutputFormat.class);
+    
+    static final MapProducerCapabilities KML_CAPABILITIES = new MapProducerCapabilities(false, false, true, true);
 
     /**
      * Official KML mime type
@@ -77,5 +80,9 @@ class KMLMetadataDocumentMapOutputFormat implements GetMapOutputFormat {
                 MIME_TYPE);
 
         return map;
+    }
+    
+    public MapProducerCapabilities getCapabilities(String format) {
+        return KML_CAPABILITIES;
     }
 }

@@ -86,6 +86,7 @@ public abstract class WMSTestSupport extends GeoServerTestSupport {
         namespaces.put("wfs", "http://www.opengis.net/wfs");
         namespaces.put("wcs", "http://www.opengis.net/wcs/1.1.1");
         namespaces.put("gml", "http://www.opengis.net/gml");
+        namespaces.put("sf", "http://cite.opengeospatial.org/gmlsf");
         getTestData().registerNamespaces(namespaces);
         XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(namespaces));
         

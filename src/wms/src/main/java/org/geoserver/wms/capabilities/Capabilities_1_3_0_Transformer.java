@@ -25,9 +25,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.geoserver.catalog.AttributionInfo;
-import org.geoserver.catalog.Catalog;
-import org.geoserver.catalog.CoverageInfo;
-import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
@@ -49,8 +46,7 @@ import org.geoserver.wms.GetLegendGraphicRequest;
 import org.geoserver.wms.GetMapOutputFormat;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSInfo;
-import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
-import org.geotools.factory.GeoTools;
+import org.geoserver.wms.capabilities.DimensionHelper.Mode;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.CRS.AxisOrder;
@@ -166,6 +162,9 @@ public class Capabilities_1_3_0_Transformer extends TransformerBase {
         private WMS wmsConfig;
 
         private String schemaBaseURL;
+        
+        DimensionHelper dimensionHelper;
+
 
         /**
          * Creates a new CapabilitiesTranslator object.
@@ -184,6 +183,20 @@ public class Capabilities_1_3_0_Transformer extends TransformerBase {
             this.getMapFormats = getMapFormats;
             this.extCapsProviders = extCapsProviders;
             this.schemaBaseURL = schemaBaseURL;
+            
+            this.dimensionHelper = new DimensionHelper(Mode.WMS13, wmsConfig) {
+                
+                @Override
+                protected void element(String element, String content, Attributes atts) {
+                    Capabilities_1_3_0_Translator.this.element(element, content, atts);
+                    
+                }
+                
+                @Override
+                protected void element(String element, String content) {
+                    Capabilities_1_3_0_Translator.this.element(element, content);
+                }
+            };
 
             // register namespaces provided by extended capabilities
             for (ExtendedCapabilitiesProvider cp : extCapsProviders) {
@@ -804,7 +817,11 @@ public class Capabilities_1_3_0_Transformer extends TransformerBase {
             }
 
             // handle dimensions
-            handleDimensions(layer);
+            if (layer.getType() == Type.VECTOR) {
+                dimensionHelper.handleVectorLayerDimensions(layer);
+            } else if (layer.getType() == Type.RASTER) {
+                dimensionHelper.handleRasterLayerDimensions(layer);
+            }
 
             // handle data attribution
             handleAttribution(layer);
@@ -823,6 +840,7 @@ public class Capabilities_1_3_0_Transformer extends TransformerBase {
             end("Layer");
         }
 
+        
         private void handleStyles(final LayerInfo layer) {
             if (layer.getResource() instanceof WMSLayerInfo) {
                 // do nothing for the moment, we may want to list the set of cascaded named styles
@@ -866,71 +884,8 @@ public class Capabilities_1_3_0_Transformer extends TransformerBase {
             }
         }
 
-        private void handleDimensions(final LayerInfo layer) {
-            String timeMetadataExtent = null;
-            String elevationMetadataExtent = null;
-            if (layer.getType() == Type.RASTER) {
-                CoverageInfo cvinfo = ((CoverageInfo) layer.getResource());
 
-                if (cvinfo == null)
-                    throw new RuntimeException("Unable to acquire coverage resource for layer: "
-                            + layer.getName());
 
-                Catalog catalog = cvinfo.getCatalog();
-
-                if (catalog == null)
-                    throw new RuntimeException("Unable to acquire catalog resource for layer: "
-                            + layer.getName());
-
-                CoverageStoreInfo csinfo = cvinfo.getStore();
-
-                if (csinfo == null)
-                    throw new RuntimeException(
-                            "Unable to acquire coverage store resource for layer: "
-                                    + layer.getName());
-
-                AbstractGridCoverage2DReader reader = null;
-                try {
-                    reader = (AbstractGridCoverage2DReader) catalog.getResourcePool()
-                            .getGridCoverageReader(csinfo, GeoTools.getDefaultHints());
-                } catch (Throwable t) {
-                    LOGGER.severe("Unable to acquire a reader for this coverage with format: "
-                            + csinfo.getFormat().getName());
-                }
-
-                if (reader == null)
-                    throw new RuntimeException(
-                            "Unable to acquire a reader for this coverage with format: "
-                                    + csinfo.getFormat().getName());
-
-                final String[] metadataNames = reader.getMetadataNames();
-
-                if (metadataNames != null && metadataNames.length > 0) {
-                    // TIME DIMENSION
-                    timeMetadataExtent = reader.getMetadataValue("TIME_DOMAIN");
-
-                    if (timeMetadataExtent != null) {
-                        AttributesImpl timeDim = new AttributesImpl();
-                        timeDim.addAttribute("", "name", "name", "", "time");
-                        timeDim.addAttribute("", "units", "units", "", "ISO8601");
-                        timeDim.addAttribute("", "current", "current", "", "true");
-                        timeDim.addAttribute("", "default", "default", "", "current");
-                        element("Dimension", timeMetadataExtent, timeDim);
-                    }
-
-                    // ELEVATION DIMENSION
-                    elevationMetadataExtent = reader.getMetadataValue("ELEVATION_DOMAIN");
-                    if (elevationMetadataExtent != null) {
-                        final String[] elevationLevels = elevationMetadataExtent.split(",");
-                        AttributesImpl elevDim = new AttributesImpl();
-                        elevDim.addAttribute("", "name", "name", "", "elevation");
-                        elevDim.addAttribute("", "units", "units", "", "EPSG:5030");
-                        elevDim.addAttribute("", "default", "default", "", elevationLevels[0]);
-                        element("Dimension", elevationMetadataExtent, elevDim);
-                    }
-                }
-            }
-        }
 
         /**
          * Returns the layer hop count if the layer is cascaded

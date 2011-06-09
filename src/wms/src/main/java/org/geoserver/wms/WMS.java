@@ -7,15 +7,20 @@ package org.geoserver.wms;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CoverageInfo;
+import org.geoserver.catalog.DimensionInfo;
+import org.geoserver.catalog.DimensionPresentation;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
@@ -28,18 +33,39 @@ import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.config.JAIInfo;
 import org.geoserver.data.util.CoverageUtils;
+import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.WMSInfo.WMSInterpolation;
 import org.geoserver.wms.WatermarkInfo.Position;
 import org.geoserver.wms.featureinfo.GetFeatureInfoOutputFormat;
+import org.geoserver.wms.map.RenderedImageMapResponse;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
+import org.geotools.data.FeatureSource;
+import org.geotools.data.Query;
+import org.geotools.data.QueryCapabilities;
 import org.geotools.data.ows.Layer;
 import org.geotools.data.ows.WMSCapabilities;
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.factory.GeoTools;
+import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.visitor.MaxVisitor;
+import org.geotools.feature.visitor.MinVisitor;
+import org.geotools.feature.visitor.UniqueVisitor;
+import org.geotools.filter.Filters;
+import org.geotools.filter.SortByImpl;
+import org.geotools.resources.coverage.FeatureUtilities;
 import org.geotools.styling.Style;
 import org.geotools.util.Converters;
+import org.geotools.util.DateRange;
+import org.geotools.util.NumberRange;
 import org.geotools.util.Version;
 import org.geotools.util.logging.Logging;
 import org.opengis.feature.type.Name;
 import org.opengis.filter.Filter;
+import org.opengis.filter.FilterFactory;
+import org.opengis.filter.expression.PropertyName;
+import org.opengis.filter.sort.SortBy;
+import org.opengis.filter.sort.SortOrder;
 import org.opengis.parameter.GeneralParameterDescriptor;
 import org.opengis.parameter.GeneralParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
@@ -121,6 +147,8 @@ public class WMS implements ApplicationContextAware {
     public static final String KML_KMSCORE = "kmlKmscore";
 
     public static final int KML_KMSCORE_DEFAULT = 40;
+    
+    private static final FilterFactory ff = CommonFactoryFinder.getFilterFactory(null);
 
     private final GeoServer geoserver;
 
@@ -687,8 +715,8 @@ public class WMS implements ApplicationContextAware {
                     readParameters, request.getTime(), "TIME", "Time");
         }
 
-        final double elevationValue = request.getElevation();
-        final boolean hasElevation = !Double.isNaN(elevationValue);
+        final List<Object> elevation = request.getElevation();
+        final boolean hasElevation = elevation != null && elevation.size() > 0;
         if (hasElevation) {
             readParameters = CoverageUtils.mergeParameter(parameterDescriptors, 
                     readParameters, request.getElevation(), "ELEVATION", "Elevation");
@@ -700,5 +728,256 @@ public class WMS implements ApplicationContextAware {
         }
         return readParameters;
     }
+
+    public Collection<RenderedImageMapResponse> getAvailableMapResponses() {
+        return WMSExtensions.findMapResponses(applicationContext);
+    }
+    
+    /**
+     * Returns the list of time values for the specified typeInfo based on the dimension
+     * representation: all values for {@link DimensionPresentation#LIST}, otherwise min and max 
+     * @param typeInfo
+     * @return
+     * @throws IOException
+     */
+    public TreeSet<Date> getFeatureTypeTimes(FeatureTypeInfo typeInfo) throws IOException {
+        // grab the time metadata
+        DimensionInfo time = typeInfo.getMetadata().get(FeatureTypeInfo.TIME, DimensionInfo.class);
+        if(time == null || !time.isEnabled()) {
+        	throw new ServiceException(
+                    "Layer " + typeInfo.getPrefixedName() + " does not have time support enabled");
+        }
+    	
+    	FeatureCollection collection = getDimensionCollection(typeInfo, time);
+        
+        TreeSet<Date> result = new TreeSet<Date>();
+        if(time.getPresentation() == DimensionPresentation.LIST) {
+        	final UniqueVisitor visitor = new UniqueVisitor(time.getAttribute());
+            collection.accepts(visitor, null);
+
+            @SuppressWarnings("unchecked")
+            Set<Date> values = visitor.getUnique();
+            if (values.size() <= 0) {
+                result = null;
+            } else {
+                result.addAll(values);
+            }
+        } else {
+        	final MinVisitor min = new MinVisitor(time.getAttribute());
+            collection.accepts(min, null);
+            result.add((Date) min.getMin());
+            final MaxVisitor max = new MaxVisitor(time.getAttribute());
+            collection.accepts(max, null);
+            result.add((Date) max.getMax());
+        }
+        
+        return result;
+    }
+    
+    /**
+     * Returns the list of elevation values for the specified typeInfo based on the dimension
+     * representation: all values for {@link DimensionPresentation#LIST}, otherwise min and max 
+     * @param typeInfo
+     * @return
+     * @throws IOException
+     */
+    public TreeSet<Double> getFeatureTypeElevations(FeatureTypeInfo typeInfo) throws IOException {
+        // grab the time metadata
+        DimensionInfo elevation = typeInfo.getMetadata().get(FeatureTypeInfo.ELEVATION, DimensionInfo.class);
+        if(elevation == null || !elevation.isEnabled()) {
+        	throw new ServiceException(
+                    "Layer " + typeInfo.getPrefixedName() + " does not have elevation support enabled");
+        }
+    	
+    	FeatureCollection collection = getDimensionCollection(typeInfo, elevation);
+        
+        TreeSet<Double> result = new TreeSet<Double>();
+        if(elevation.getPresentation() == DimensionPresentation.LIST || (
+        		elevation.getPresentation() == DimensionPresentation.DISCRETE_INTERVAL &&
+        		elevation.getResolution() == null)) {
+        	final UniqueVisitor visitor = new UniqueVisitor(elevation.getAttribute());
+            collection.accepts(visitor, null);
+
+            @SuppressWarnings("unchecked")
+            Set<Object> values = visitor.getUnique();
+            if (values.size() <= 0) {
+                result = null;
+            } else {
+            	for (Object value : values) {
+                    result.add(((Number) value).doubleValue());
+                }
+            }
+        } else {
+        	final MinVisitor min = new MinVisitor(elevation.getAttribute());
+            collection.accepts(min, null);
+            result.add(((Number) min.getMin()).doubleValue());
+            final MaxVisitor max = new MaxVisitor(elevation.getAttribute());
+            collection.accepts(max, null);
+            result.add(((Number) max.getMax()).doubleValue());
+        }
+        
+        return result;
+    }
+    
+    /**
+     * Returns the current time for the specified type info 
+     * @param typeInfo
+     * @return
+     * @throws IOException
+     */
+    public Date getCurrentTime(FeatureTypeInfo typeInfo) throws IOException {
+        // grab the time metadata
+        DimensionInfo time = typeInfo.getMetadata().get(FeatureTypeInfo.TIME, DimensionInfo.class);
+        if(time == null || !time.isEnabled()) {
+        	throw new ServiceException(
+                    "Layer " + typeInfo.getPrefixedName() + " does not have time support enabled");
+        }
+    	
+    	FeatureCollection collection = getDimensionCollection(typeInfo, time);
+        final MaxVisitor max = new MaxVisitor(time.getAttribute());
+        collection.accepts(max, null);
+        return (Date) max.getMax();
+    }
+    
+    /**
+     * Returns the default elevation (the minimum one)
+     * @param typeInfo
+     * @return
+     */
+    Double getDefaultElevation(FeatureTypeInfo typeInfo) throws IOException {
+    	// grab the time metadata
+        DimensionInfo elevation = typeInfo.getMetadata().get(FeatureTypeInfo.ELEVATION, DimensionInfo.class);
+        if(elevation == null || !elevation.isEnabled()) {
+        	throw new ServiceException(
+                    "Layer " + typeInfo.getPrefixedName() + " does not have time support enabled");
+        }
+    	
+    	FeatureCollection collection = getDimensionCollection(typeInfo, elevation);
+        final MinVisitor min = new MinVisitor(elevation.getAttribute());
+        collection.accepts(min, null);
+        if(min.getMin() == null) {
+        	return null;
+        } else {
+        	return ((Number) min.getMin()).doubleValue();
+        }
+	}
+
+    /**
+     * Returns the collection of all values of the dimension attribute, eventually sorted if the native
+     * capabilities allow for it
+     * 
+     * @param typeInfo
+     * @param time
+     * @return
+     * @throws IOException
+     */
+	FeatureCollection getDimensionCollection(FeatureTypeInfo typeInfo,
+			DimensionInfo time) throws IOException {
+		// grab the feature source
+        FeatureSource source = null;
+        try {
+            source = typeInfo.getFeatureSource(null, GeoTools.getDefaultHints());
+        } catch (IOException e) {
+            throw new ServiceException(
+                    "Could not get the feauture source to list time info for layer "
+                            + typeInfo.getPrefixedName(), e);
+        }
+        
+        // build query to grab the time info
+        final Query dimQuery = new Query(source.getSchema().getName().getLocalPart());
+        final SortBy[] sortBy = new SortBy[] { new SortByImpl(
+                FeatureUtilities.DEFAULT_FILTER_FACTORY.property(time.getAttribute()),
+                SortOrder.ASCENDING) };
+
+        // are able to sort at the store level?
+        // if the store does not support sorting we have to do it by hand
+        final QueryCapabilities queryCapabilities = source.getQueryCapabilities();
+        if (queryCapabilities.supportsSorting(sortBy)) {
+            dimQuery.setSortBy(sortBy);
+        }
+        dimQuery.setPropertyNames(Arrays.asList(time.getAttribute()));
+        FeatureCollection collection = (SimpleFeatureCollection) source.getFeatures(dimQuery);
+		return collection;
+	}
+
+	/**
+     * Builds a filter for the current time and elevation, should the layer support them.
+     * Only one among time and elevation can be multi-valued
+     * 
+     * @param layerFilter
+     * @param currentTime
+     * @param currentElevation
+     * @param mapLayerInfo
+     * @return
+     */
+    public Filter getTimeElevationToFilter(List<Object> times, List<Object> elevations, FeatureTypeInfo typeInfo) throws IOException {
+		DimensionInfo timeInfo = typeInfo.getMetadata().get(FeatureTypeInfo.TIME, DimensionInfo.class);
+		DimensionInfo elevationInfo = typeInfo.getMetadata().get(FeatureTypeInfo.ELEVATION, DimensionInfo.class);
+
+		// handle time support
+		Filter result = null;
+		if(timeInfo != null && timeInfo.isEnabled() && times != null) {
+			final List<Filter> timeFilters = new ArrayList<Filter>();
+			
+			for (Object datetime : times) {
+			    if (datetime == null) {
+			    	// this is "current"
+			        datetime = getCurrentTime(typeInfo);
+			    }
+			    PropertyName attribute = ff.property(timeInfo.getAttribute());
+				if (datetime instanceof Date) {
+			        // Single element
+			        timeFilters.add(ff.equal(attribute, ff.literal(datetime), true));
+			    } else {
+			        // Range
+			        // convert to range and create a correct range filter
+			        final DateRange range = (DateRange) datetime;
+			        timeFilters.add(ff.between(attribute, ff.literal(range.getMinValue()), ff.literal(range.getMaxValue())));
+			    }
+			}
+			final int sizeTime = timeFilters.size();
+			if (sizeTime > 1) {
+			    result = ff.or(timeFilters);
+			} else if (sizeTime == 1) {
+			    result = timeFilters.get(0);
+			}
+		}
+		
+		// handle elevation support
+		if(elevationInfo != null && elevationInfo.isEnabled() && elevations != null) {
+			final List<Filter> elevationFilters = new ArrayList<Filter>();
+			
+			for (Object elevation : elevations) {
+			    if (elevation == null) {
+			    	// this is "current"
+			        elevation = getDefaultElevation(typeInfo);
+			    }
+			    PropertyName attribute = ff.property(elevationInfo.getAttribute());
+				if (elevation instanceof Double) {
+			        // Single element
+					elevationFilters.add(ff.equal(attribute, ff.literal(elevation), true));
+			    } else {
+			        // Range
+			        // convert to range and create a correct range filter
+			        final NumberRange range = (NumberRange) elevation;
+			        elevationFilters.add(ff.between(attribute, ff.literal(range.getMinValue()), ff.literal(range.getMaxValue())));
+			    }
+			}
+			final int size = elevationFilters.size();
+			Filter summary = null;
+			if (size > 1) {
+			    summary = ff.or(elevationFilters);
+			} else if (size == 1) {
+			    summary = elevationFilters.get(0);
+			}
+			
+			// mix with the previous filter
+			if(summary != null) {
+				result = Filters.and(ff, result, summary);
+			}
+		}
+
+		return result;
+	}
 
 }

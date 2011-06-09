@@ -26,6 +26,7 @@ import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.GetMapOutputFormat;
 import org.geoserver.wms.GetMapRequest;
+import org.geoserver.wms.MapProducerCapabilities;
 import org.geoserver.wms.WMSMapContext;
 import org.geoserver.wms.WebMap;
 import org.geoserver.wms.map.QuickTileCache.MetaTileKey;
@@ -55,7 +56,7 @@ public final class MetatileMapOutputFormat implements GetMapOutputFormat {
     private GetMapRequest request;
 
     private RenderedImageMapOutputFormat delegate;
-
+    
     public MetatileMapOutputFormat(GetMapRequest request, RenderedImageMapOutputFormat delegate) {
         if (tileCache == null) {
             tileCache = (QuickTileCache) GeoServerExtensions.bean("metaTileCache");
@@ -224,6 +225,10 @@ public final class MetatileMapOutputFormat implements GetMapOutputFormat {
         }
 
         return tiles;
+    }
+
+    public MapProducerCapabilities getCapabilities(String format) {
+        throw new RuntimeException("The meta-tile output format should never be invoked directly!");
     }
 
 }

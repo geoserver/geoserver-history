@@ -10,6 +10,7 @@ import java.util.Set;
 
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.GetMapOutputFormat;
+import org.geoserver.wms.MapProducerCapabilities;
 import org.geoserver.wms.WMSMapContext;
 import org.springframework.util.Assert;
 
@@ -24,6 +25,8 @@ public class HTMLImageMapMapProducer implements GetMapOutputFormat {
      * The ImageMap is served as text/html: it is an HTML fragment, after all.
      */
     static final String MIME_TYPE = "text/html";
+    
+    static final MapProducerCapabilities CAPABILITIES = new MapProducerCapabilities(false, false, true, true);
 
     public HTMLImageMapMapProducer() {
         //
@@ -57,5 +60,9 @@ public class HTMLImageMapMapProducer implements GetMapOutputFormat {
     public String getMimeType() {
         return MIME_TYPE;
     }
+
+	public MapProducerCapabilities getCapabilities(String format) {
+		return CAPABILITIES;
+	}
 
 }

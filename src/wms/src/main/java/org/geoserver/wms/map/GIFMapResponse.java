@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import org.geoserver.platform.ServiceException;
+import org.geoserver.wms.MapProducerCapabilities;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSMapContext;
 import org.geotools.image.ImageWorker;
@@ -29,6 +30,23 @@ public final class GIFMapResponse extends RenderedImageMapResponse {
     public GIFMapResponse(WMS wms) {
         super(MIME_TYPE, wms);
     }
+    
+    /** 
+     * Default capabilities for GIF .
+     * 
+     * <p>
+     * <ol>
+     *         <li>tiled = supported</li>
+     *         <li>multipleValues = unsupported</li>
+     *         <li>paletteSupported = supported</li>
+     *         <li>transparency = supported</li>
+     * </ol>
+     * 
+     * <p>
+     * We should soon support multipage tiff.
+     */
+    private static MapProducerCapabilities CAPABILITIES= new MapProducerCapabilities(true, false, true, true); 
+    
 
     /**
      * Transforms the rendered image into the appropriate format, streaming to the output stream.
@@ -54,5 +72,11 @@ public final class GIFMapResponse extends RenderedImageMapResponse {
         RenderedImage renderedImage = super.forceIndexed8Bitmask(originalImage, paletteInverter);
         ImageWorker imageWorker = new ImageWorker(renderedImage);
         imageWorker.writeGIF(outStream, "LZW", 0.75f);
+    }
+
+
+    @Override
+    public MapProducerCapabilities getCapabilities(String outputFormat) {
+        return CAPABILITIES;
     }
 }

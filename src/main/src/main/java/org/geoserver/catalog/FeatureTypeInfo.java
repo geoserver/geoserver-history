@@ -23,7 +23,20 @@ import org.opengis.util.ProgressListener;
  */
 public interface FeatureTypeInfo extends ResourceInfo {
     
+    /**
+     * The sql view definition
+     */
     static final String JDBC_VIRTUAL_TABLE = "JDBC_VIRTUAL_TABLE";
+    
+    /**
+     * The time dimension
+     */
+    static final String TIME = "time";
+
+    /**
+     * The elevation dimension
+     */
+    static final String ELEVATION = "elevation";
 
     /**
      * The data store the feature type is a part of.

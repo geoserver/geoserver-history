@@ -48,6 +48,7 @@ import org.geoserver.catalog.impl.CoverageInfoImpl;
 import org.geoserver.catalog.impl.CoverageStoreInfoImpl;
 import org.geoserver.catalog.impl.DataStoreInfoImpl;
 import org.geoserver.catalog.impl.DefaultCatalogFacade;
+import org.geoserver.catalog.impl.DimensionInfoImpl;
 import org.geoserver.catalog.impl.FeatureTypeInfoImpl;
 import org.geoserver.catalog.impl.LayerGroupInfoImpl;
 import org.geoserver.catalog.impl.LayerInfoImpl;
@@ -373,6 +374,7 @@ public class XStreamPersister {
         
         // register VirtulaTable handling
         registerBreifMapComplexType("virtualTable", VirtualTable.class);
+        registerBreifMapComplexType("dimensionInfo", DimensionInfoImpl.class);
         
         callback = new Callback();
     }

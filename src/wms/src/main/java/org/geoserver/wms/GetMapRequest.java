@@ -18,6 +18,8 @@ import java.util.Map;
 import org.geoserver.ows.util.CaseInsensitiveMap;
 import org.geotools.image.palette.InverseColorMapOp;
 import org.geotools.styling.Style;
+import org.geotools.util.DateRange;
+import org.geotools.util.NumberRange;
 import org.opengis.filter.Filter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
@@ -289,16 +291,17 @@ public class GetMapRequest extends WMSRequest {
     }
 
     /**
-     * @return The time request parameter.
+     * @return The time request parameter. The list may contain {@link Date} or {@link DateRange} objects
      */
-    public List<Date> getTime() {
+    public List<Object> getTime() {
         return this.optionalParams.time;
     }
 
     /**
-     * @return The elevation request parameter.
+     * Returns the chosen elevations. The list may contain {@link Date} or {@link NumberRange} objects
+     * @return
      */
-    public double getElevation() {
+    public List<Object> getElevation() {
         return this.optionalParams.elevation;
     }
 
@@ -551,18 +554,26 @@ public class GetMapRequest extends WMSRequest {
     }
 
     /**
-     * Sets the time request parameter.
+     * Sets the time request parameter (a list of Date or DateRange objects)
      * 
      */
-    public void setTime(List<Date> time) {
-        this.optionalParams.time = new ArrayList<Date>(time);
+    public void setTime(List<Object> time) {
+        this.optionalParams.time = new ArrayList<Object>(time);
     }
 
     /**
      * Sets the elevation request parameter.
      */
     public void setElevation(double elevation) {
-        this.optionalParams.elevation = elevation;
+        this.optionalParams.elevation = new ArrayList<Object>();
+        this.optionalParams.elevation.add(elevation);
+    }
+
+    /**
+     * Sets the elevation set as a request parameter.
+     */
+    public void setElevation(List<Object> elevation) {
+        this.optionalParams.elevation = new ArrayList<Object>(elevation);
     }
 
     /**
@@ -694,13 +705,14 @@ public class GetMapRequest extends WMSRequest {
         InverseColorMapOp paletteInverter;
 
         /**
-         * time elevation parameter, a list since many pattern setup can be possible, see for
-         * example http://mapserver.gis.umn.edu/docs/howto/wms_time_support/#time-patterns
+         * time parameter, a list since many pattern setup can be possible, see for
+         * example http://mapserver.gis.umn.edu/docs/howto/wms_time_support/#time-patterns.
+         * Can contain {@link Date} or {@link DateRange} objects.
          */
-        List<Date> time;
+        List<Object> time = Collections.emptyList();
 
-        /** time elevation parameter */
-        double elevation = Double.NaN;
+        /** elevation parameter, can also be a list, can contain {@link Double} or {@link NumberRange} */
+        List<Object> elevation = Collections.emptyList();
 
         /**
          * SLD parameter

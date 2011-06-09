@@ -12,6 +12,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.geoserver.platform.ServiceException;
+import org.geoserver.wms.MapProducerCapabilities;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSMapContext;
 import org.geotools.image.ImageWorker;
@@ -32,6 +33,19 @@ public class PNGMapResponse extends RenderedImageMapResponse {
     private static final String MIME_TYPE = "image/png";
 
     private static final String[] OUTPUT_FORMATS = { MIME_TYPE, "image/png8" };
+    
+    /** 
+     * Default capabilities for PNG format.
+     * 
+     * <p>
+     * <ol>
+     *         <li>tiled = supported</li>
+     *         <li>multipleValues = unsupported</li>
+     *         <li>paletteSupported = supported</li>
+     *         <li>transparency = supported</li>
+     * </ol>
+     */
+    private static MapProducerCapabilities CAPABILITIES= new MapProducerCapabilities(true, false, true, true);
 
     /**
      * @param format
@@ -74,5 +88,10 @@ public class PNGMapResponse extends RenderedImageMapResponse {
         if (LOGGER.isLoggable(Level.FINE)) {
             LOGGER.fine("Writing png image ... done!");
         }
+    }
+
+    @Override
+    public MapProducerCapabilities getCapabilities(String outputFormat) {
+        return CAPABILITIES;
     }
 }

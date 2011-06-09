@@ -8,6 +8,7 @@ import java.awt.Color;
 import java.awt.geom.Point2D;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -135,12 +136,12 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
         assertEquals(1, request.getBuffer());
 
         assertEquals(PaletteManager.safePalette, request.getPalette().getIcm());
-        assertEquals(Double.valueOf(4), request.getElevation());
+        assertEquals(Arrays.asList(4.0), request.getElevation());
 
         Calendar cal = Calendar.getInstance();
         cal.setTimeZone(TimeZone.getTimeZone("UTC"));
         cal.set(2006, 1, 27, 22, 8, 12);
-        List<Date> times = request.getTime();
+        List<Object> times = request.getTime();
         assertEquals(1, request.getTime().size());
         assertEquals(cal.getTime().toString(), times.get(0).toString());
     }

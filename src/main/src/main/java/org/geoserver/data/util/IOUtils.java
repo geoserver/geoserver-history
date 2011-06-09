@@ -57,8 +57,12 @@ public class IOUtils {
 
             out.flush();
         } finally {
-            from.close();
-            out.close();
+            if(from != null) {
+                from.close();
+            }
+            if(out != null) {
+                out.close();
+            }
         }
     }
 

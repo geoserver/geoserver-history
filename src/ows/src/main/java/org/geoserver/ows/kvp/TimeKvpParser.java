@@ -9,13 +9,21 @@ import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import java.util.TimeZone;
+import java.util.TreeSet;
+import java.util.logging.Level;
 
 import org.geoserver.ows.KvpParser;
+import org.geoserver.platform.GeoServerExtensions;
+import org.geotools.util.DateRange;
 
 
 /**
@@ -24,6 +32,7 @@ import org.geoserver.ows.KvpParser;
  *
  * @author Cedric Briancon
  * @author Martin Desruisseaux
+ * @author Simone Giannecchini, GeoSolutions SAS
  * @version $Id$
  */
 public class TimeKvpParser extends KvpParser {
@@ -51,6 +60,30 @@ public class TimeKvpParser extends KvpParser {
      */
     static final long MILLIS_IN_DAY = 24*60*60*1000;
 
+
+    /**
+     * Built-in limits to avoid exploding on too large requests
+     */
+    private final static int MAX_ELEMENTS_TIMES_KVP;
+    private final static int DEFAULT_MAX_ELEMENTS_TIMES_KVP = 100;
+
+    static {
+        // initialization of the renderer choice flag
+        String value = GeoServerExtensions.getProperty("MAX_ELEMENTS_TIMES_KVP");
+        // default to true, but allow switching on
+        if (value == null)
+            MAX_ELEMENTS_TIMES_KVP = DEFAULT_MAX_ELEMENTS_TIMES_KVP;
+        else {
+            int iVal = -1;
+            try {
+                iVal = Integer.parseInt(value.trim());
+            } catch (Exception e) {
+                iVal = DEFAULT_MAX_ELEMENTS_TIMES_KVP;
+            }
+            MAX_ELEMENTS_TIMES_KVP = iVal;
+        }
+    }
+    
     /**
      * Creates the parser specifying the name of the key to latch to.
      *
@@ -74,6 +107,7 @@ public class TimeKvpParser extends KvpParser {
      *         is null or empty.
      * @throws ParseException if the string can not be parsed.
      */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public Object parse(String value) throws ParseException {
         if (value == null) {
             return Collections.emptyList();
@@ -82,41 +116,132 @@ public class TimeKvpParser extends KvpParser {
         if (value.length() == 0) {
             return Collections.emptyList();
         }
-        final List<Date> dates = new ArrayList<Date>();
-        if (value.indexOf(',') >= 0) {
-            String[] listDates = value.split(",");
-            for (int i=0; i<listDates.length; i++) {
-                dates.add(getDate(listDates[i].trim()));
+        
+        final Set result = new TreeSet(new Comparator() {
+
+            public int compare(Object o1, Object o2) {
+                final boolean o1Date= o1 instanceof Date;
+                final boolean o2Date= o2 instanceof Date;
+                
+                // o1 date
+                if(o1Date){
+                    final Date dateLeft=(Date) o1;
+                    if(o2Date){
+                        // o2 date
+                        return dateLeft.compareTo((Date) o2);
+                    } 
+                    // o2 daterange
+                    return dateLeft.compareTo(((DateRange)o2).getMinValue());
+                }
+                
+                // o1 date range
+                final DateRange left= (DateRange) o1;
+                if(o2Date){
+                    // o2 date
+                    return left.getMinValue().compareTo(((Date) o2));
+                } 
+                // o2 daterange
+                return left.getMinValue().compareTo(((DateRange)o2).getMinValue());
             }
-            return dates;
-        }
-        String[] period = value.split("/");
-        // Only one date given.
-        if (period.length == 1) {
-        	if(value.equals("current"))
-        		dates.add(null);
-        	else
-        		dates.add(getDate(value));
-            return dates;
-        }
-        // Period like : yyyy-MM-ddTHH:mm:ssZ/yyyy-MM-ddTHH:mm:ssZ/P1D
-        if (period.length == 3) {
-            final Date begin = getDate(period[0]);
-            final Date end   = getDate(period[1]);
-            final long millisIncrement = parsePeriod(period[2]);
-            final long startTime = begin.getTime();
-            final long endTime = end.getTime();
-            long time;
-            int j = 0;
-            while ((time = j * millisIncrement + startTime) <= endTime) {
-            	final Calendar calendar = Calendar.getInstance(UTC_TZ);
-            	calendar.setTimeInMillis(time);
-            	dates.add(calendar.getTime());
-                j++;
+        });
+        String[] listDates = value.split(",");
+        for(String date: listDates){
+            // is it a date or a period?
+            if(date.indexOf("/")<=0){
+                addDate(result,getDate(date));
+            } else {
+                // period
+                String[] period = date.split("/");
+                //
+                // Period like : yyyy-MM-ddTHH:mm:ssZ/yyyy-MM-ddTHH:mm:ssZ/P1D
+                //
+                if (period.length == 3) {
+                    final Date begin = getDate(period[0]);
+                    final Date end   = getDate(period[1]);
+                    final long millisIncrement = parsePeriod(period[2]);
+                    final long startTime = begin.getTime();
+                    final long endTime = end.getTime();
+                    long time;
+                    int j = 0;
+                    while ((time = j * millisIncrement + startTime) <= endTime) {
+                        final Calendar calendar = Calendar.getInstance(UTC_TZ);
+                        calendar.setTimeInMillis(time);
+                        addDate(result,calendar.getTime());
+                        j++;
+                        
+                        // limiting number of elements we can create
+                        if(j>= MAX_ELEMENTS_TIMES_KVP){
+                            if(LOGGER.isLoggable(Level.INFO))
+                                LOGGER.info("Lmiting number of elements in this periodo to "+MAX_ELEMENTS_TIMES_KVP);
+                            break;                  
+                        }
+                    }
+                } else if (period.length == 2) {
+                        // Period like : yyyy-MM-ddTHH:mm:ssZ/yyyy-MM-ddTHH:mm:ssZ, it is an extension 
+                        // of WMS that works with continuos period [Tb, Te].
+                        final Date begin = getDate(period[0]);
+                        final Date end   = getDate(period[1]);
+                        addPeriod(result,new DateRange(begin, end));
+                } else {
+                    throw new ParseException("Invalid time period: " + period, 0);
+                }
             }
-            return dates;
         }
-        throw new ParseException("Invalid time parameter: " + value, 0);
+        
+        return new ArrayList(result);
+
+    }
+
+    /**
+     * Tries to avoid insertion of multiple time values.
+     * 
+     * @param result
+     * @param time
+     */
+    private static void addDate(Collection result, Date time) {
+        for(Iterator it=result.iterator();it.hasNext();){
+            final Object element=it.next();
+            if(element instanceof Date){
+                // convert
+                final Date local= (Date) element;
+                if(local.equals(time))
+                    return;
+            } else {
+                // convert
+                final DateRange local= (DateRange) element;
+                if(local.contains(time))
+                    return;
+            }
+        }
+        result.add(time);
+    }
+
+    /**
+     * Tries to avoid insertion of multiple time values.
+     * 
+     * @param result
+     * @param newRange
+     */
+    private static void addPeriod(Collection result, DateRange newRange) {
+        for(Iterator it=result.iterator();it.hasNext();){
+            final Object element=it.next();
+            if(element instanceof Date){
+                // convert
+                final Date local= (Date) element;
+                if(newRange.contains(local)){
+                    it.remove();
+                }
+            } else {
+                // convert
+                final DateRange local= (DateRange) element;
+                if(local.contains(newRange))
+                    return;
+                if(newRange.contains(local))
+                    it.remove();
+            }
+        }
+        result.add(newRange);
+        
     }
 
     /**
@@ -127,7 +252,7 @@ public class TimeKvpParser extends KvpParser {
      * @return A date found in the request.
      * @throws ParseException if the string can not be parsed.
      */
-    private Date getDate(final String value) throws ParseException {
+    private static Date getDate(final String value) throws ParseException {
     	
     	// special handling for current keyword
     	if(value.equalsIgnoreCase("current"))

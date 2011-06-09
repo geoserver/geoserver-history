@@ -23,8 +23,11 @@ import java.util.logging.Level;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.collections.EnumerationUtils;
+import org.geoserver.catalog.DimensionInfo;
+import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
+import org.geoserver.catalog.MetadataMap;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.catalog.Styles;
 import org.geoserver.catalog.WMSLayerInfo;
@@ -36,6 +39,7 @@ import org.geoserver.wms.GetMapRequest;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSErrorCode;
+import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.data.DataStore;
 import org.geotools.data.FeatureReader;
 import org.geotools.data.Query;
@@ -414,6 +418,74 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
                 + " view params specified. ";
                 throw new ServiceException(msg, getClass().getName());
             }
+        }
+        
+        // check if layers have time/elevation support
+        boolean hasTime = false;
+        boolean hasElevation = false;
+        for (MapLayerInfo layer : getMap.getLayers()) {
+            if (layer.getType() == MapLayerInfo.TYPE_VECTOR) {
+            	MetadataMap metadata = layer.getFeature().getMetadata();
+				DimensionInfo elevationInfo = metadata.get(FeatureTypeInfo.ELEVATION, DimensionInfo.class);
+                hasElevation |= elevationInfo != null && elevationInfo.isEnabled();
+				DimensionInfo timeInfo = metadata.get(FeatureTypeInfo.TIME, DimensionInfo.class);
+                hasTime |= timeInfo != null && timeInfo.isEnabled();
+            } else if (layer.getType() == MapLayerInfo.TYPE_RASTER) {
+                //
+                // Adding a coverage layer
+                //
+                AbstractGridCoverage2DReader reader;
+                try {
+                    reader = (AbstractGridCoverage2DReader) layer.getCoverageReader();
+                } catch (IOException e) {
+                    throw new ServiceException(e);
+                }
+                if (reader != null) {
+                    // get the supported dimensions
+                    final String[] metadataNames = reader.getMetadataNames();
+                    if (metadataNames != null)
+                        for (String metadataDomain : metadataNames) {
+                            // ELEVATION
+                            if (metadataDomain.equalsIgnoreCase("ELEVATION_DOMAIN"))
+                                if (reader.getMetadataValue("HAS_ELEVATION_DOMAIN") != null
+                                        && Boolean.parseBoolean(reader
+                                                .getMetadataValue("HAS_ELEVATION_DOMAIN")))
+                                    hasElevation = true;
+
+                            // TIME
+                            if (metadataDomain.equalsIgnoreCase("TIME_DOMAIN"))
+                                if (reader.getMetadataValue("HAS_TIME_DOMAIN") != null
+                                        && Boolean.parseBoolean(reader
+                                                .getMetadataValue("HAS_TIME_DOMAIN")))
+                                    hasTime = true;
+
+                            // if both are true, leave
+                            if (hasTime && hasElevation)
+                                break;
+                        }
+
+                }
+
+                // if both are true, leave
+                if (hasTime && hasElevation)
+                    break;
+            }
+        }
+        
+        // force in the default if nothing was requested
+        if(hasTime && (getMap.getTime() == null || getMap.getTime().isEmpty())) {
+            // ask for "CURRENT"
+            getMap.setTime(Arrays.asList((Object) null));
+        }
+        if(hasElevation && (getMap.getElevation() == null || getMap.getElevation().isEmpty())) {
+            // ask for "DEFAULT"
+            getMap.setElevation(Arrays.asList((Object) null));
+        }
+        
+        // check that we don't have double dimensions listing
+        if((getMap.getElevation() != null && getMap.getElevation().size() > 1) &&
+           (getMap.getTime() != null && getMap.getTime().size() > 1)) {
+            throw new ServiceException("TIME and ELEVATION values cannot be both multivalued");
         }
 
         return getMap;

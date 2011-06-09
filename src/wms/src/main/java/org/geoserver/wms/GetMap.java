@@ -4,10 +4,12 @@
  */
 package org.geoserver.wms;
 
+import java.awt.image.RenderedImage;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -18,10 +20,15 @@ import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.media.jai.RenderedImageList;
+
+import org.geoserver.catalog.DimensionInfo;
+import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.WMSLayerInfo;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.map.MetatileMapOutputFormat;
+import org.geoserver.wms.map.RenderedImageMap;
 import org.geoserver.wms.map.RenderedImageMapOutputFormat;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.data.FeatureSource;
@@ -33,6 +40,7 @@ import org.geotools.data.wms.WebMapServer;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
 import org.geotools.factory.Hints;
+import org.geotools.filter.Filters;
 import org.geotools.filter.function.EnvFunction;
 import org.geotools.map.DefaultMapLayer;
 import org.geotools.map.FeatureSourceMapLayer;
@@ -47,11 +55,14 @@ import org.geotools.styling.FeatureTypeConstraint;
 import org.geotools.styling.FeatureTypeStyle;
 import org.geotools.styling.Rule;
 import org.geotools.styling.Style;
+import org.geotools.util.DateRange;
+import org.geotools.util.NumberRange;
 import org.geotools.util.logging.Logging;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
+import org.opengis.filter.expression.PropertyName;
 import org.opengis.parameter.GeneralParameterValue;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
@@ -66,17 +77,17 @@ public class GetMap {
 
     private static final Logger LOGGER = Logging.getLogger(GetMap.class);
 
-    private FilterFactory filterFac;
+    private FilterFactory ff;
 
     private final WMS wms;
 
     public GetMap(final WMS wms) {
         this.wms = wms;
-        this.filterFac = CommonFactoryFinder.getFilterFactory(GeoTools.getDefaultHints());
+        this.ff = CommonFactoryFinder.getFilterFactory(GeoTools.getDefaultHints());
     }
 
     public void setFilterFactory(final FilterFactory filterFactory) {
-        this.filterFac = filterFactory;
+        this.ff = filterFactory;
     }
 
     /**
@@ -130,8 +141,25 @@ public class GetMap {
 
         GetMapOutputFormat delegate = getDelegate(outputFormat);
 
-        final Envelope env = request.getBbox();
+        // if there's a crs in the request, use that. If not, assume its 4326
+        final CoordinateReferenceSystem mapcrs = request.getCrs();
 
+        final List<MapLayerInfo> layers = request.getLayers();
+        final Style[] styles = request.getStyles().toArray(new Style[] {});
+        final Filter[] filters = buildLayersFilters(request.getFilter(), layers);
+        final boolean isTiled = MetatileMapOutputFormat.isRequestTiled(request, delegate);
+
+        //
+        // check the capabilities for this delegate raster map produces
+        //
+        final MapProducerCapabilities cap = delegate.getCapabilities(request
+                .getFormat());
+
+        // is the request tiled? We support that?
+        if (cap != null && !cap.isTiledRequestsSupported() && isTiled) {
+            throw new ServiceException("Format " + request.getFormat()
+                    + " does not support tiled requests");
+        }
         // enable on the fly meta tiling if request looks like a tiled one
         if (MetatileMapOutputFormat.isRequestTiled(request, delegate)) {
             if (LOGGER.isLoggable(Level.FINER)) {
@@ -141,24 +169,80 @@ public class GetMap {
             delegate = new MetatileMapOutputFormat(request, (RenderedImageMapOutputFormat) delegate);
         }
 
+        //
+        // Test if the parameter "TIME" or ELEVATION are present in the WMS
+        // request
+        // TIME
+        List<Object> times = request.getTime();
+        final int numTimes = times.size();
+
+        // ELEVATION
+        final List<Object> elevations = request.getElevation();
+        final int numElevations = elevations.size();
+
+        // handling time series and elevation series
+        final boolean isMultivaluedSupported = (cap != null ? cap.isMultivalueRequestsSupported() : false);
+        if(numTimes > 1 && isMultivaluedSupported) {
+            WebMap map = null;
+            List<RenderedImage> images = new ArrayList<RenderedImage>();
+            for (Object currentTime : times){
+                map = executeInternal(mapContext, request, delegate, Arrays.asList(currentTime), elevations);
+                
+                // remove layers to start over again
+                mapContext.clearLayerList();
+                
+                // collect the layer
+                images.add(((RenderedImageMap)map).getImage());
+            }
+            RenderedImageList imageList = new RenderedImageList(images);
+            return new  RenderedImageMap(mapContext, imageList , map.getMimeType());
+        } else if(numElevations > 1 && isMultivaluedSupported) {
+            WebMap map = null;
+            List<RenderedImage> images = new ArrayList<RenderedImage>();
+            for (Object currentElevation : elevations){
+                map = executeInternal(mapContext, request, delegate, times, Arrays.asList(currentElevation));
+                
+                // remove layers to start over again
+                mapContext.clearLayerList();
+                
+                // collect the layer
+                images.add(((RenderedImageMap)map).getImage());
+            }
+            RenderedImageList imageList = new RenderedImageList(images);
+            return new  RenderedImageMap(mapContext, imageList , map.getMimeType());
+        } else {
+            return executeInternal(mapContext, request, delegate, times, elevations);    
+        }
+
+    }
+
+    /**
+     * Actually computes the WebMap, either in a single shot, or for a particular
+     * time/elevation value should there be a list of them
+     * @param request
+     * @param mapContext
+     * @param delegate
+     * @param env
+     * @return
+     * @throws IOException
+     */
+    WebMap executeInternal(WMSMapContext mapContext, final GetMapRequest request,
+            GetMapOutputFormat delegate, List<Object> times, List<Object> elevations) throws IOException {
+        final Envelope envelope = request.getBbox();       
         final List<MapLayerInfo> layers = request.getLayers();
         final List<Map<String, String>> viewParams = request.getViewParams();
         
         final Style[] styles = request.getStyles().toArray(new Style[] {});
         final Filter[] filters = buildLayersFilters(request.getFilter(), layers);
 
-        // DJB DONE: replace by setAreaOfInterest(Envelope,
-        // CoordinateReferenceSystem)
-        // with the user supplied SRS parameter
-
         // if there's a crs in the request, use that. If not, assume its 4326
         final CoordinateReferenceSystem mapcrs = request.getCrs();
 
         // DJB: added this to be nicer about the "NONE" srs.
         if (mapcrs != null) {
-            mapContext.setAreaOfInterest(env, mapcrs);
+            mapContext.setAreaOfInterest(envelope, mapcrs);
         } else {
-            mapContext.setAreaOfInterest(env, DefaultGeographicCRS.WGS84);
+            mapContext.setAreaOfInterest(envelope, DefaultGeographicCRS.WGS84);
         }
 
         mapContext.setMapWidth(request.getWidth());
@@ -259,10 +343,14 @@ public class GetMap {
 
                 layer = new FeatureSourceMapLayer(source, layerStyle);
                 layer.setTitle(mapLayerInfo.getFeature().getPrefixedName());
+                
+                // mix the dimension related filter with the layer filter
+                Filter dimensionFilter = wms.getTimeElevationToFilter(times, elevations, mapLayerInfo.getFeature());
+                Filter filter = Filters.and(ff, layerFilter, dimensionFilter); 
 
                 final Query definitionQuery = new Query(source.getSchema().getName().getLocalPart());
                 definitionQuery.setVersion(featureVersion);
-                definitionQuery.setFilter(layerFilter);
+                definitionQuery.setFilter(filter);
             	if (viewParams != null) {
                     definitionQuery.setHints(new Hints(Hints.VIRTUAL_TABLE_PARAMETERS, viewParams.get(i)));
             	}
@@ -397,13 +485,11 @@ public class GetMap {
         }
 
         return map;
-
     }
 
     
-    
 
-    /**
+	/**
      * Computes the rendering buffer in case the user did not specify one in the request, and the
      * admin setup some rendering buffer hints in the layer configurations
      * 
@@ -575,7 +661,7 @@ public class GetMap {
                 if (layerDefinitionFilter == null) {
                     layerDefinitionFilter = Filter.INCLUDE;
                 }
-                combined = filterFac.and(layerDefinitionFilter, userRequestedFilter);
+                combined = ff.and(layerDefinitionFilter, userRequestedFilter);
 
                 FeatureTypeConstraint[] featureTypeConstraints = layer.getLayerFeatureConstraints();
                 if (featureTypeConstraints != null) {
@@ -585,7 +671,7 @@ public class GetMap {
                         filters.add(featureTypeConstraint.getFilter());
                     }
                     ;
-                    combined = filterFac.and(combined, filterFac.and(filters));
+                    combined = ff.and(combined, ff.and(filters));
                 }
                 combinedList[i] = combined;
             }

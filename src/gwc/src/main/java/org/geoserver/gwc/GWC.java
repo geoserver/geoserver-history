@@ -550,7 +550,7 @@ public class GWC implements DisposableBean, InitializingBean {
         if (null != request.getCQLFilter() && !request.getCQLFilter().isEmpty()) {
             return false;
         }
-        if (!Double.isNaN(request.getElevation())) {
+        if (request.getElevation() != null && !request.getElevation().isEmpty()) {
             return false;
         }
         if (null != request.getFeatureId() && !request.getFeatureId().isEmpty()) {

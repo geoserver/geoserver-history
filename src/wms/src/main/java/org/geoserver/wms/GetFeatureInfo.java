@@ -51,6 +51,7 @@ import org.geotools.feature.NameImpl;
 import org.geotools.feature.SchemaException;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
+import org.geotools.filter.Filters;
 import org.geotools.filter.IllegalFilterException;
 import org.geotools.filter.function.EnvFunction;
 import org.geotools.filter.visitor.SimplifyingFilterVisitor;
@@ -206,6 +207,8 @@ public class GetFeatureInfo {
         final ReferencedEnvelope bbox = new ReferencedEnvelope(getMapReq.getBbox(),
                 getMapReq.getCrs());
         final double scaleDenominator = RendererUtilities.calculateOGCScale(bbox, width, null);
+        final List<Object> elevations = request.getGetMapRequest().getElevation();
+		final List<Object> times = request.getGetMapRequest().getTime();
         final FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
 
         List<FeatureCollection> results = new ArrayList<FeatureCollection>(requestedLayers.size());
@@ -233,8 +236,9 @@ public class GetFeatureInfo {
             FeatureCollection collection = null;
             if (layer.getType() == MapLayerInfo.TYPE_VECTOR) {
                 final Map<String, String> viewParam = viewParams != null ? viewParams.get(i) : null;
-                collection = identifyVectorLayer(filters, x, y, buffer, viewParam,
-                        requestedCRS, width, height, bbox, ff, results, i, layer, rules, maxFeatures);
+				collection = identifyVectorLayer(filters, x, y, buffer, viewParam,
+                        requestedCRS, width, height, bbox, ff, results, i, layer, rules, maxFeatures,
+                        times, elevations);
 
             } else if (layer.getType() == MapLayerInfo.TYPE_RASTER) {
                 final CoverageInfo cinfo = requestedLayers.get(i).getCoverage();
@@ -403,7 +407,7 @@ public class GetFeatureInfo {
          * parameters. If it is the case, one can adds it to the request. If an exception is thrown,
          * we have nothing to do.
          */
-        final double elevationValue = getMapReq.getElevation();
+        final double elevationValue = Double.NaN;
         final boolean hasElevation = !Double.isNaN(elevationValue);
         if (hasElevation)
             for (GeneralParameterDescriptor pd : parameterDescriptors) {
@@ -450,7 +454,7 @@ public class GetFeatureInfo {
             final CoordinateReferenceSystem requestedCRS, final int width, final int height,
             final ReferencedEnvelope bbox, final FilterFactory2 ff,
             List<FeatureCollection> results, int i, final MapLayerInfo layer, final List<Rule> rules,
-            final int maxFeatures)
+            final int maxFeatures, List<Object> times, List<Object> elevations)
             throws IOException {
 
         CoordinateReferenceSystem dataCRS = layer.getCoordinateReferenceSystem();
@@ -519,6 +523,8 @@ public class GetFeatureInfo {
         if (filters[i] != null) {
             getFInfoFilter = ff.and(getFInfoFilter, filters[i]);
         }
+        
+        // include the 
 
         // see if we can include the rule filters as well, if too many we'll do them in
         // memory
@@ -530,7 +536,12 @@ public class GetFeatureInfo {
         } else {
             postFilter = rulesFilters;
         }
-
+        
+        // handle time/elevation
+        Filter timeElevationFilter = wms.getTimeElevationToFilter(times, elevations, layer.getFeature());
+        getFInfoFilter = Filters.and(ff, getFInfoFilter, timeElevationFilter);
+        
+        // build the query
         String typeName = schema.getName().getLocalPart();
         Query q = new Query(typeName, null, getFInfoFilter, maxFeatures,
                 Query.ALL_NAMES, null);

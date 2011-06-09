@@ -7,19 +7,26 @@ package org.geoserver.wms.capabilities;
 import static org.geoserver.ows.util.ResponseUtils.*;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -32,6 +39,8 @@ import org.geoserver.catalog.AttributionInfo;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.CoverageStoreInfo;
+import org.geoserver.catalog.DimensionInfo;
+import org.geoserver.catalog.DimensionPresentation;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
@@ -52,16 +61,29 @@ import org.geoserver.wms.GetCapabilitiesRequest;
 import org.geoserver.wms.GetLegendGraphicRequest;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSInfo;
+import org.geoserver.wms.capabilities.DimensionHelper.Mode;
 import org.geoserver.wms.describelayer.DescribeLayerResponse;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
+import org.geotools.data.FeatureSource;
+import org.geotools.data.Query;
+import org.geotools.data.QueryCapabilities;
+import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.factory.GeoTools;
+import org.geotools.feature.visitor.UniqueVisitor;
+import org.geotools.filter.SortByImpl;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
+import org.geotools.resources.coverage.FeatureUtilities;
 import org.geotools.styling.Style;
+import org.geotools.temporal.object.DefaultPeriodDuration;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.Name;
+import org.opengis.filter.sort.SortBy;
+import org.opengis.filter.sort.SortOrder;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.TransformException;
@@ -186,6 +208,8 @@ public class GetCapabilitiesTransformer extends TransformerBase {
         private static AttributesImpl wmsVersion = new AttributesImpl();
 
         private static final String XLINK_NS = "http://www.w3.org/1999/xlink";
+        
+        DimensionHelper dimensionHelper;
 
         static {
             wmsVersion.addAttribute("", "version", "version", "", "1.1.1");
@@ -220,6 +244,20 @@ public class GetCapabilitiesTransformer extends TransformerBase {
             this.getMapFormats = getMapFormats;
             this.getLegendGraphicFormats = getLegendGraphicFormats;
             this.extCapsProviders = extCapsProviders;
+            
+            this.dimensionHelper = new DimensionHelper(Mode.WMS11, wmsConfig) {
+                
+                @Override
+                protected void element(String element, String content, Attributes atts) {
+                    CapabilitiesTranslator.this.element(element, content, atts);
+                    
+                }
+                
+                @Override
+                protected void element(String element, String content) {
+                    CapabilitiesTranslator.this.element(element, content);
+                }
+            };
         }
 
         /**
@@ -805,79 +843,11 @@ public class GetCapabilitiesTransformer extends TransformerBase {
             // handle dimensions
             String timeMetadata = null;
             String elevationMetadata = null;
-            if (layer.getType() == Type.RASTER) {
-                CoverageInfo cvinfo = ((CoverageInfo) layer.getResource());
-
-                if (cvinfo == null)
-                    throw new RuntimeException("Unable to acquire coverage resource for layer: "
-                            + layer.getName());
-
-                Catalog catalog = cvinfo.getCatalog();
-
-                if (catalog == null)
-                    throw new RuntimeException("Unable to acquire catalog resource for layer: "
-                            + layer.getName());
-
-                CoverageStoreInfo csinfo = cvinfo.getStore();
-
-                if (csinfo == null)
-                    throw new RuntimeException(
-                            "Unable to acquire coverage store resource for layer: "
-                                    + layer.getName());
-
-                AbstractGridCoverage2DReader reader = null;
-                try {
-                    reader = (AbstractGridCoverage2DReader) catalog.getResourcePool()
-                            .getGridCoverageReader(csinfo, GeoTools.getDefaultHints());
-                } catch (Throwable t) {
-                    LOGGER.log(Level.SEVERE, "Unable to acquire a reader for this coverage with format: "
-                            + csinfo.getFormat().getName(), t);
-                }
-
-                if (reader == null)
-                    throw new RuntimeException(
-                            "Unable to acquire a reader for this coverage with format: "
-                                    + csinfo.getFormat().getName());
-
-                final String[] metadataNames = reader.getMetadataNames();
-
-                if (metadataNames != null && metadataNames.length > 0) {
-                    // TIME DIMENSION
-                    timeMetadata = reader.getMetadataValue("TIME_DOMAIN");
-
-                    if (timeMetadata != null) {
-                        AttributesImpl timeDim = new AttributesImpl();
-                        timeDim.addAttribute("", "name", "name", "", "time");
-                        timeDim.addAttribute("", "units", "units", "", "ISO8601");
-                        element("Dimension", null, timeDim);
-                    }
-
-                    // ELEVATION DIMENSION
-                    elevationMetadata = reader.getMetadataValue("ELEVATION_DOMAIN");
-
-                    if (elevationMetadata != null) {
-                        AttributesImpl elevDim = new AttributesImpl();
-                        elevDim.addAttribute("", "name", "name", "", "elevation");
-                        elevDim.addAttribute("", "units", "units", "", "EPSG:5030");
-                        element("Dimension", null, elevDim);
-                    }
-                }
-            }
-
-            // handle extensions
-            if (timeMetadata != null && timeMetadata.length() > 0) {
-                AttributesImpl timeDim = new AttributesImpl();
-                timeDim.addAttribute("", "name", "name", "", "time");
-                timeDim.addAttribute("", "default", "default", "", "current");
-                element("Extent", timeMetadata, timeDim);
-            }
-
-            if (elevationMetadata != null && elevationMetadata.length() > 0) {
-                final String[] elevationLevels = elevationMetadata.split(",");
-                AttributesImpl elevDim = new AttributesImpl();
-                elevDim.addAttribute("", "name", "name", "", "elevation");
-                elevDim.addAttribute("", "default", "default", "", elevationLevels[0]);
-                element("Extent", elevationMetadata, elevDim);
+            
+            if (layer.getType() == Type.VECTOR) {
+                dimensionHelper.handleVectorLayerDimensions(layer);
+            } else if (layer.getType() == Type.RASTER) {
+                dimensionHelper.handleRasterLayerDimensions(layer);
             }
 
             // handle data attribution
@@ -930,95 +900,7 @@ public class GetCapabilitiesTransformer extends TransformerBase {
             end("Layer");
         }
 
-        // /**
-        // *
-        // * @param originalArray
-        // * @return
-        // */
-        // private static String[] orderDoubleArray(String[] originalArray) {
-        // List finalArray = Arrays.asList(originalArray);
-        //
-        // Collections.sort(finalArray, new Comparator<String>() {
-        //
-        // public int compare(String o1, String o2) {
-        // if (o1.equals(o2))
-        // return 0;
-        //
-        // return (Double.parseDouble(o1) > Double.parseDouble(o2) ? 1 : -1);
-        // }
-        //
-        // });
-        //
-        // return (String[]) finalArray.toArray(new String[1]);
-        // }
-
-        // /**
-        // *
-        // * @param originalArray
-        // * @return
-        // */
-        // private static String[] orderTimeArray(String[] originalArray) {
-        // List finalArray = Arrays.asList(originalArray);
-        //
-        // Collections.sort(finalArray, new Comparator<String>() {
-        // /**
-        // * All patterns that are correct regarding the ISO-8601 norm.
-        // */
-        // final String[] PATTERNS = {
-        // "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
-        // "yyyy-MM-dd'T'HH:mm:sss'Z'",
-        // "yyyy-MM-dd'T'HH:mm:ss'Z'",
-        // "yyyy-MM-dd'T'HH:mm'Z'",
-        // "yyyy-MM-dd'T'HH'Z'",
-        // "yyyy-MM-dd",
-        // "yyyy-MM",
-        // "yyyy"
-        // };
-        //
-        // public int compare(String o1, String o2) {
-        // if (o1.equals(o2))
-        // return 0;
-        //
-        // Date d1 = getDate(o1);
-        // Date d2 = getDate(o2);
-        //
-        // if (d1 == null || d2 == null)
-        // return 0;
-        //
-        // return (d1.getTime() > d2.getTime() ? 1 : -1);
-        // }
-        //
-        // private Date getDate(final String value) {
-        //
-        // // special handling for current keyword
-        // if(value.equalsIgnoreCase("current"))
-        // return null;
-        // for (int i=0; i<PATTERNS.length; i++) {
-        // // rebuild formats at each parse, date formats are not thread safe
-        // SimpleDateFormat format = new SimpleDateFormat(PATTERNS[i], Locale.CANADA);
-        //
-        // /* We do not use the standard method DateFormat.parse(String), because if the parsing
-        // * stops before the end of the string, the remaining characters are just ignored and
-        // * no exception is thrown. So we have to ensure that the whole string is correct for
-        // * the format.
-        // */
-        // ParsePosition pos = new ParsePosition(0);
-        // Date time = format.parse(value, pos);
-        // if (pos.getIndex() == value.length()) {
-        // return time;
-        // }
-        // }
-        //
-        // return null;
-        // }
-        //
-        //
-        // });
-        //
-        // return (String[]) finalArray.toArray(new String[1]);
-        // }
-
-        protected void handleLayerGroups(List<LayerGroupInfo> layerGroups) throws FactoryException,
+         protected void handleLayerGroups(List<LayerGroupInfo> layerGroups) throws FactoryException,
                 TransformException {
             if (layerGroups == null || layerGroups.size() == 0) {
                 return;
@@ -1278,5 +1160,8 @@ public class GetCapabilitiesTransformer extends TransformerBase {
 
             element("BoundingBox", null, bboxAtts);
         }
+
+        
     }
+
 }
