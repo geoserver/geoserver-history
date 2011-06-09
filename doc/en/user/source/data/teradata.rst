@@ -11,6 +11,7 @@ GeoServer connects to a Teradata database via JDBC.
 
 For more information on Teradata and the Teradata Database system, please go to `<http://www.teradata.com>`_.
 
+
 Compatibility
 -------------
 
@@ -38,6 +39,8 @@ GeoServer will read from a spatial index if its exists.  The convention for a sp
    [TABLENAME]_[GEOMETRYCOLUMN]_idx
 
 So for a layer called "STATES" with a geometry column called "GEOM", the index table should be called :guilabel:`STATES_GEOM_idx`.
+
+.. warning:: Make sure to match the case of all tables and columns.  If the geometry column is called "GEOM" (upper case) and the index created is called :guilabel:`STATES_geom_idx` (lower case), the index will not be properly linked to the table.
 
 This index table should contain two columns:
 
@@ -100,7 +103,7 @@ Tessellation is the name of Teradata's spatial index.  In order to activate tess
      - float
      - Shift value for the grid 
 
-For more information about Tessellation, please see the Teradata documentation.
+.. warning:: The tessellation table values are case sensitive and so must match the case of the tables and columns.
 
 .. _data_teradata_install:
 
@@ -181,7 +184,7 @@ On the next screen, enter in the details on how to connect to the Teradata datab
    * - :guilabel:`namespace`
      - Namespace to be associated with the database.  This field is altered automatically by the above Workspace field.
    * - :guilabel:`Expose primary keys`
-     - .. warning:: TBD
+     - Exposes primary key as a standard attribute.
    * - :guilabel:`max connections`
      - Maximum amount of open/pooled connections to the database. 
    * - :guilabel:`min connections`
@@ -193,13 +196,13 @@ On the next screen, enter in the details on how to connect to the Teradata datab
    * - :guilabel:`validate connections`
      - Checks the connection is alive before using it.
    * - :guilabel:`Primary key metadata table`
-     - .. warning:: TBD
+     - Name of primary key metadata table to use if unable to determine the primary key of a table.
    * - :guilabel:`Loose bbox`
      - If checked, performs only the primary filter on the bounding box.
    * - :guilabel:`tessellationTable`
      - The name of the database table that contains the tessellations
    * - :guilabel:`estimatedBounds`
-     - .. warning:: TBD
+     - Enables using the geometry_columns/tessellation table bounds as an estimation instead of manual calculation. 
    * - :guilabel:`Max open prepared statements`
      - The maximum number of prepared statements.
 
@@ -249,9 +252,9 @@ On the next screen, enter in the details on how to connect to the Teradata datab
    * - :guilabel:`namespace`
      - Namespace to be associated with the database.  This field is altered by changing the workspace name.
    * - :guilabel:`Expose primary keys`
-     - .. warning:: TBD
+     - Exposes primary key as a standard attribute.
    * - :guilabel:`Primary key metadata table`
-     - .. warning:: TBD
+     - Name of primary key metadata table to use if unable to determine the primary key of a table.
    * - :guilabel:`Loose bbox`
      - If checked, performs only the primary filter on the bounding box.
 
