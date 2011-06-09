@@ -830,8 +830,8 @@ public class GetCapabilitiesTransformer extends TransformerBase {
                     reader = (AbstractGridCoverage2DReader) catalog.getResourcePool()
                             .getGridCoverageReader(csinfo, GeoTools.getDefaultHints());
                 } catch (Throwable t) {
-                    LOGGER.severe("Unable to acquire a reader for this coverage with format: "
-                            + csinfo.getFormat().getName());
+                    LOGGER.log(Level.SEVERE, "Unable to acquire a reader for this coverage with format: "
+                            + csinfo.getFormat().getName(), t);
                 }
 
                 if (reader == null)
