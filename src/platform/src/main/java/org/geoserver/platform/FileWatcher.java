@@ -82,7 +82,7 @@ public class FileWatcher<T> {
         long now = System.currentTimeMillis();
         if((now - lastCheck) > 1000) {
             lastCheck = now;
-            stale = file.exists() && (file.lastModified() > lastModified);
+            stale = file.exists() && (file.lastModified() != lastModified);
         }
         return stale;
     }
