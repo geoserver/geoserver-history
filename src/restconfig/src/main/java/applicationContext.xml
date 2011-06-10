@@ -274,7 +274,10 @@
           <key><value>/reload</value></key>
           <value>catalogReloader</value>
         </entry>
-        
+        <entry>
+          <key><value>/fonts.{format}</value></key>
+          <value>fontFinder</value>
+        </entry>
   </map>
 </property>
 </bean>
@@ -298,4 +301,6 @@
   <bean id="catalogReloader" class="org.geoserver.catalog.rest.CatalogReloader">
      <constructor-arg ref="geoServer"/>
   </bean>
+
+  <bean id="fontFinder" class="org.geoserver.rest.FontListResource"/>
 </beans>
