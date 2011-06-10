@@ -27,6 +27,7 @@ import org.geoserver.data.util.CoverageUtils;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.GetMapRequest;
 import org.geoserver.wms.MapLayerInfo;
+import org.geoserver.wms.MapProducerCapabilities;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSMapContext;
 import org.geoserver.wms.map.RenderedImageMapResponse;
@@ -385,5 +386,14 @@ public final class BilMapResponse extends RenderedImageMapResponse {
 	    subCoverage = BilWCSUtils.reproject(subCoverage, sourceCRS, targetCRS, interpolation);
 	    
 	    return subCoverage;
+	}
+
+	/**
+	 * This is not really an image map
+	 */
+	@Override
+	public MapProducerCapabilities getCapabilities(String outputFormat) {
+		// FIXME become more capable
+		return new MapProducerCapabilities(false, false, false, false);
 	}
 }

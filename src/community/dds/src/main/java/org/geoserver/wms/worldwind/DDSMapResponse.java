@@ -15,6 +15,7 @@ import java.util.Hashtable;
 import java.util.Set;
 
 import org.geoserver.platform.ServiceException;
+import org.geoserver.wms.MapProducerCapabilities;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSMapContext;
 import org.geoserver.wms.map.RenderedImageMapResponse;
@@ -91,6 +92,15 @@ public class DDSMapResponse extends RenderedImageMapResponse {
 		BufferedImage bimg = new BufferedImage(cm, raster, isAlphaPremultiplied, properties);
 		img.copyData(raster);
 		return bimg;
+	}
+
+	/**
+	 * DXT3 does support transparency, unless alpha is pre-multiplied
+	 */
+	@Override
+	public MapProducerCapabilities getCapabilities(String outputFormat) {
+		// FIXME Become more capable
+		return new MapProducerCapabilities(false, false, false, true);
 	}
 
 }
