@@ -187,15 +187,11 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
                         "Invalid number of Envelope for spatial subsetting was set:"
                                 + envelopes.size());
             final GeneralEnvelope requestedEnvelope = (GeneralEnvelope) envelopes.get(0);
-
+            
             final OutputType output = request.getOutput();
             if (output == null)
                 throw new IllegalArgumentException("Output type was null");
             final CodeType outputCRS = output.getCrs();
-            if (outputCRS == null) {
-                // JD: crs is optional
-                // throw new IllegalArgumentException("Invalid output CRS");
-            }
 
             final int dimension = grid.getDimension().intValue();
             // WE SUPPORT 3D DIMENSION ONLY VIA A BAND
@@ -231,10 +227,11 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
             if (requestedCRS == null) {
                 targetCRS = reader.getOriginalEnvelope().getCoordinateReferenceSystem();
                 requestedCRS = CRS.lookupIdentifier(targetCRS, true);
-            } else
+            } else {
                 // FORCE LON,LAT!!!!
                 targetCRS = CRS.decode(requestedCRS, true);
-
+            }
+            
             //
             // PREPARE DESTINATION DIMENSIONS
             //
@@ -519,8 +516,14 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
             // final step for the requested coverage
             //
             // compute intersection envelope to be used
-            final GeneralEnvelope destinationEnvelope = (GeneralEnvelope) getHorizontalEnvelope(computeIntersectionEnvelope(
+            GeneralEnvelope destinationEnvelope = (GeneralEnvelope) getHorizontalEnvelope(computeIntersectionEnvelope(
                     requestedEnvelope, nativeEnvelope));
+            if(targetCRS != null) {
+                MathTransform mt = CRS.findMathTransform(nativeCRS, targetCRS);
+                destinationEnvelope = CRS.transform(mt, destinationEnvelope);
+                destinationEnvelope.setCoordinateReferenceSystem(targetCRS);
+            }
+
             final GridGeometry2D destinationGridGeometry;
             if (destinationSize != null) {
                 destinationGridGeometry = new GridGeometry2D(new GridEnvelope2D(destinationSize),
@@ -549,6 +552,10 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
     }
 
     private static Envelope getHorizontalEnvelope(GeneralEnvelope requestedEnvelope) {
+        if(requestedEnvelope == null) {
+            return null;
+        }
+        
         final CoordinateReferenceSystem nativeCRS = CRS.getHorizontalCRS(requestedEnvelope
                 .getCoordinateReferenceSystem());
 
