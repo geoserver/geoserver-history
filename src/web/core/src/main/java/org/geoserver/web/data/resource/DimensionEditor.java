@@ -24,12 +24,15 @@ import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
+import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.DimensionInfo;
 import org.geoserver.catalog.DimensionPresentation;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.impl.DimensionInfoImpl;
 import org.geoserver.web.wicket.ParamResourceModel;
+import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
+import org.opengis.coverage.grid.GridCoverageReader;
 import org.opengis.feature.type.PropertyDescriptor;
 
 /**
@@ -82,29 +85,49 @@ public class DimensionEditor extends FormComponentPanel<DimensionInfo> {
 
         });
 
+        // error message label
         Label noAttributeMessage = new Label("noAttributeMsg", "");
         add(noAttributeMessage);
+        
+        // the attribute label and dropdown container
+        WebMarkupContainer attContainer = new WebMarkupContainer("attributeContainer");
+        configs.add(attContainer);
 
         // check the attributes and show a dropdown
         List<String> attributes = getAttributesOfType(resource, type);
-        if (attributes.isEmpty()) {
-            // no attributes of the required type, no party
-            enabled.setEnabled(false);
-            enabled.setModelObject(false);
-            configs.setVisible(false);
-            ParamResourceModel typeName = new ParamResourceModel("AttributeType."
-                    + type.getSimpleName(), null);
-            ParamResourceModel error = new ParamResourceModel("missingAttribute", this, typeName
-                    .getString());
-            noAttributeMessage.setDefaultModelObject(error.getString());
-        } else {
-            noAttributeMessage.setVisible(false);
-        }
         attribute = new DropDownChoice<String>("attribute", new PropertyModel<String>(model,
-                "attribute"), attributes);
-        attribute.setOutputMarkupId(true);
-        attribute.setRequired(true);
-        configs.add(attribute);
+		        "attribute"), attributes);
+		attribute.setOutputMarkupId(true);
+		attribute.setRequired(true);
+		attContainer.add(attribute);
+
+		// do we show it?
+        if(resource instanceof FeatureTypeInfo) { 
+	        if (attributes.isEmpty()) {
+	            disableDimension(type, configs, noAttributeMessage);
+	        } else {
+	            noAttributeMessage.setVisible(false);
+	        }
+        } else if(resource instanceof CoverageInfo) {
+        	attContainer.setVisible(false);
+        	attribute.setRequired(false);
+        	try {
+        		GridCoverageReader reader = ((CoverageInfo) resource).getGridCoverageReader(null, null);
+        		if(Number.class.isAssignableFrom(type)) {
+        			String elev = reader.getMetadataValue(AbstractGridCoverage2DReader.HAS_ELEVATION_DOMAIN);
+        			if(!Boolean.parseBoolean(elev)) {
+        				disableDimension(type, configs, noAttributeMessage);
+        			}
+        		} else if(Date.class.isAssignableFrom(type)) {
+        			String time = reader.getMetadataValue(AbstractGridCoverage2DReader.HAS_TIME_DOMAIN);
+        			if(!Boolean.parseBoolean(time)) {
+        				disableDimension(type, configs, noAttributeMessage);
+        			}
+        		}
+        	} catch(IOException e) {
+        		throw new WicketRuntimeException(e);
+        	}
+        }
 
         // presentation/resolution block
         final WebMarkupContainer resContainer = new WebMarkupContainer("resolutionContainer");
@@ -147,6 +170,19 @@ public class DimensionEditor extends FormComponentPanel<DimensionInfo> {
         }
     }
 
+	private void disableDimension(Class type, final WebMarkupContainer configs,
+			Label noAttributeMessage) {
+		// no attributes of the required type, no party
+		enabled.setEnabled(false);
+		enabled.setModelObject(false);
+		configs.setVisible(false);
+		ParamResourceModel typeName = new ParamResourceModel("AttributeType."
+		        + type.getSimpleName(), null);
+		ParamResourceModel error = new ParamResourceModel("missingAttribute", this, typeName
+		        .getString());
+		noAttributeMessage.setDefaultModelObject(error.getString());
+	}
+
     @Override
     public boolean processChildren() {
         return true;
@@ -184,16 +220,19 @@ public class DimensionEditor extends FormComponentPanel<DimensionInfo> {
     List<String> getAttributesOfType(ResourceInfo resource, Class<?> type) {
         List<String> result = new ArrayList<String>();
 
-        try {
-            FeatureTypeInfo ft = (FeatureTypeInfo) resource;
-            for (PropertyDescriptor pd : ft.getFeatureType().getDescriptors()) {
-                if (type.isAssignableFrom(pd.getType().getBinding())) {
-                    result.add(pd.getName().getLocalPart());
-                }
-            }
-        } catch (IOException e) {
-            throw new WicketRuntimeException(e);
-        }
+		if (resource instanceof FeatureTypeInfo) {
+			try {
+				FeatureTypeInfo ft = (FeatureTypeInfo) resource;
+				for (PropertyDescriptor pd : ft.getFeatureType()
+						.getDescriptors()) {
+					if (type.isAssignableFrom(pd.getType().getBinding())) {
+						result.add(pd.getName().getLocalPart());
+					}
+				}
+			} catch (IOException e) {
+				throw new WicketRuntimeException(e);
+			}
+		}
 
         return result;
     }

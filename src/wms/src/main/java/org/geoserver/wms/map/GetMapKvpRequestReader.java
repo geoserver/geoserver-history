@@ -24,10 +24,10 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.collections.EnumerationUtils;
 import org.geoserver.catalog.DimensionInfo;
-import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.MetadataMap;
+import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.catalog.Styles;
 import org.geoserver.catalog.WMSLayerInfo;
@@ -426,9 +426,9 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
         for (MapLayerInfo layer : getMap.getLayers()) {
             if (layer.getType() == MapLayerInfo.TYPE_VECTOR) {
             	MetadataMap metadata = layer.getFeature().getMetadata();
-				DimensionInfo elevationInfo = metadata.get(FeatureTypeInfo.ELEVATION, DimensionInfo.class);
+				DimensionInfo elevationInfo = metadata.get(ResourceInfo.ELEVATION, DimensionInfo.class);
                 hasElevation |= elevationInfo != null && elevationInfo.isEnabled();
-				DimensionInfo timeInfo = metadata.get(FeatureTypeInfo.TIME, DimensionInfo.class);
+				DimensionInfo timeInfo = metadata.get(ResourceInfo.TIME, DimensionInfo.class);
                 hasTime |= timeInfo != null && timeInfo.isEnabled();
             } else if (layer.getType() == MapLayerInfo.TYPE_RASTER) {
                 //

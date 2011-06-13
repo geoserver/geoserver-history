@@ -7,12 +7,12 @@ package org.geoserver.wms.wms_1_1_1;
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 
 import org.geoserver.catalog.DimensionPresentation;
-import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.wms.WMSDimensionsTestSupport;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class DimensionsCapabilitiesTest extends WMSDimensionsTestSupport {
+public class DimensionsVectorCapabilitiesTest extends WMSDimensionsTestSupport {
     
     public void testNoDimension() throws Exception {
         Document dom = dom(get("wms?request=getCapabilities&version=1.1.1"), false);
@@ -25,7 +25,7 @@ public class DimensionsCapabilitiesTest extends WMSDimensionsTestSupport {
     }
 
     public void testElevationList() throws Exception {
-        setupVectorDimension(FeatureTypeInfo.ELEVATION, "elevation", DimensionPresentation.LIST, null);
+        setupVectorDimension(ResourceInfo.ELEVATION, "elevation", DimensionPresentation.LIST, null);
         
         Document dom = dom(get("wms?request=getCapabilities&version=1.1.1"), false);
         // print(dom);
@@ -42,7 +42,7 @@ public class DimensionsCapabilitiesTest extends WMSDimensionsTestSupport {
     }
     
     public void testElevationContinuous() throws Exception {
-        setupVectorDimension(FeatureTypeInfo.ELEVATION, "elevation", DimensionPresentation.CONTINUOUS_INTERVAL, null);
+        setupVectorDimension(ResourceInfo.ELEVATION, "elevation", DimensionPresentation.CONTINUOUS_INTERVAL, null);
         
         Document dom = dom(get("wms?request=getCapabilities&version=1.1.1"), false);
         // print(dom);
@@ -59,7 +59,7 @@ public class DimensionsCapabilitiesTest extends WMSDimensionsTestSupport {
     }
     
     public void testElevationDiscreteNoResolution() throws Exception {
-        setupVectorDimension(FeatureTypeInfo.ELEVATION, "elevation", DimensionPresentation.DISCRETE_INTERVAL, null);
+        setupVectorDimension(ResourceInfo.ELEVATION, "elevation", DimensionPresentation.DISCRETE_INTERVAL, null);
         
         Document dom = dom(get("wms?request=getCapabilities&version=1.1.1"), false);
         // print(dom);
@@ -76,7 +76,7 @@ public class DimensionsCapabilitiesTest extends WMSDimensionsTestSupport {
     }
     
     public void testElevationDiscrerteManualResolution() throws Exception {
-        setupVectorDimension(FeatureTypeInfo.ELEVATION, "elevation", DimensionPresentation.DISCRETE_INTERVAL, 2.0);
+        setupVectorDimension(ResourceInfo.ELEVATION, "elevation", DimensionPresentation.DISCRETE_INTERVAL, 2.0);
         
         Document dom = dom(get("wms?request=getCapabilities&version=1.1.1"), false);
         // print(dom);
@@ -93,7 +93,7 @@ public class DimensionsCapabilitiesTest extends WMSDimensionsTestSupport {
     }
     
     public void testTimeList() throws Exception {
-        setupVectorDimension(FeatureTypeInfo.TIME, "time", DimensionPresentation.LIST, null);
+        setupVectorDimension(ResourceInfo.TIME, "time", DimensionPresentation.LIST, null);
         
         Document dom = dom(get("wms?request=getCapabilities&version=1.1.1"), false);
         //print(dom);
@@ -110,7 +110,7 @@ public class DimensionsCapabilitiesTest extends WMSDimensionsTestSupport {
     }
     
     public void testTimeContinuous() throws Exception {
-        setupVectorDimension(FeatureTypeInfo.TIME, "time", DimensionPresentation.CONTINUOUS_INTERVAL, null);
+        setupVectorDimension(ResourceInfo.TIME, "time", DimensionPresentation.CONTINUOUS_INTERVAL, null);
         
         Document dom = dom(get("wms?request=getCapabilities&version=1.1.1"), false);
         //print(dom);
@@ -127,7 +127,7 @@ public class DimensionsCapabilitiesTest extends WMSDimensionsTestSupport {
     }
     
     public void testTimeResolution() throws Exception {
-        setupVectorDimension(FeatureTypeInfo.TIME, "time", DimensionPresentation.DISCRETE_INTERVAL, new Double(1000 * 60 * 60 * 24));
+        setupVectorDimension(ResourceInfo.TIME, "time", DimensionPresentation.DISCRETE_INTERVAL, new Double(1000 * 60 * 60 * 24));
         
         Document dom = dom(get("wms?request=getCapabilities&version=1.1.1"), false);
         // print(dom);

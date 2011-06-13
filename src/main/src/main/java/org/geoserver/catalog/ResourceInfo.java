@@ -20,6 +20,15 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 public interface ResourceInfo extends CatalogInfo {
 
     /**
+     * The time dimension
+     */
+    static final String TIME = "time";
+    /**
+     * The elevation dimension
+     */
+    static final String ELEVATION = "elevation";
+
+    /**
      * The catalog the resource is part of.
      */
     Catalog getCatalog();

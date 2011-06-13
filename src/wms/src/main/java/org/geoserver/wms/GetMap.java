@@ -22,8 +22,6 @@ import java.util.logging.Logger;
 
 import javax.media.jai.RenderedImageList;
 
-import org.geoserver.catalog.DimensionInfo;
-import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.WMSLayerInfo;
 import org.geoserver.platform.ServiceException;
@@ -55,14 +53,11 @@ import org.geotools.styling.FeatureTypeConstraint;
 import org.geotools.styling.FeatureTypeStyle;
 import org.geotools.styling.Rule;
 import org.geotools.styling.Style;
-import org.geotools.util.DateRange;
-import org.geotools.util.NumberRange;
 import org.geotools.util.logging.Logging;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
-import org.opengis.filter.expression.PropertyName;
 import org.opengis.parameter.GeneralParameterValue;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
@@ -390,7 +385,7 @@ public class GetMap {
 
                     // get the group of parameters tha this reader supports
                     GeneralParameterValue[] readParameters = wms.getWMSReadParameters(request,
-                            mapLayerInfo, layerFilter, reader, false);
+                            mapLayerInfo, layerFilter, times, elevations, reader, false);
                     try {
 
                         try {
