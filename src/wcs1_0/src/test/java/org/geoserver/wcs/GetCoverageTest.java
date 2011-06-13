@@ -19,6 +19,8 @@ import org.geoserver.wcs.test.WCSTestSupport;
 import org.geoserver.wcs.xml.v1_0_0.WcsXmlReader;
 import org.geotools.coverage.grid.GeneralGridEnvelope;
 import org.geotools.coverage.grid.GridCoverage2D;
+import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
+import org.geotools.gce.geotiff.GeoTiffFormat;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.metadata.iso.spatial.PixelTranslation;
 import org.geotools.referencing.CRS;
@@ -29,6 +31,8 @@ import org.opengis.coverage.grid.GridEnvelope;
 import org.opengis.referencing.datum.PixelInCell;
 import org.opengis.referencing.operation.MathTransform;
 import org.w3c.dom.Document;
+
+import com.mockrunner.mock.web.MockHttpServletResponse;
 
 /**
  * Tests for GetCoverage operation on WCS.
@@ -218,6 +222,49 @@ public class GetCoverageTest extends WCSTestSupport {
         } finally {
             setOutputLimit(0);
         }
+    }
+    
+    public void testReproject() throws Exception {
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + 
+        		"<GetCoverage version=\"1.0.0\" service=\"WCS\" " +
+        		"xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " +
+        		"xmlns=\"http://www.opengis.net/wcs\" " +
+        		"xmlns:ows=\"http://www.opengis.net/ows/1.1\" " +
+        		"xmlns:gml=\"http://www.opengis.net/gml\" " +
+        		"xmlns:ogc=\"http://www.opengis.net/ogc\" " +
+        		"xsi:schemaLocation=\"http://www.opengis.net/wcs http://schemas.opengis.net/wcs/1.0.0/getCoverage.xsd\">\n" + 
+        		"  <sourceCoverage>" +  getLayerId(TASMANIA_BM) + "</sourceCoverage>\n" + 
+        		"  <domainSubset>\n" + 
+        		"    <spatialSubset>\n" + 
+        		"      <gml:Envelope srsName=\"EPSG:4326\">\n" + 
+        		"        <gml:pos>146 -45</gml:pos>\n" + 
+        		"        <gml:pos>147 42</gml:pos>\n" + 
+        		"      </gml:Envelope>\n" + 
+        		"      <gml:Grid dimension=\"2\">\n" + 
+        		"        <gml:limits>\n" + 
+        		"          <gml:GridEnvelope>\n" + 
+        		"            <gml:low>0 0</gml:low>\n" + 
+        		"            <gml:high>150 150</gml:high>\n" + 
+        		"          </gml:GridEnvelope>\n" + 
+        		"        </gml:limits>\n" + 
+        		"        <gml:axisName>x</gml:axisName>\n" + 
+        		"        <gml:axisName>y</gml:axisName>\n" + 
+        		"      </gml:Grid>\n" + 
+        		"    </spatialSubset>\n" + 
+        		"  </domainSubset>\n" + 
+        		"  <output>\n" + 
+        		"    <crs>EPSG:3857</crs>\n" + 
+        		"    <format>image/geotiff</format>\n" + 
+        		"  </output>\n" + 
+        		"</GetCoverage>";
+        
+        MockHttpServletResponse response = postAsServletResponse("wcs", xml);
+        assertEquals("image/tiff;subtype=\"geotiff\"", response.getContentType());
+        
+        GeoTiffFormat format = new GeoTiffFormat();
+        AbstractGridCoverage2DReader reader = format.getReader(getBinaryInputStream(response));
+        
+        assertEquals(CRS.decode("EPSG:3857"), reader.getOriginalEnvelope().getCoordinateReferenceSystem());
     }
 
     private void setInputLimit(int kbytes) {
