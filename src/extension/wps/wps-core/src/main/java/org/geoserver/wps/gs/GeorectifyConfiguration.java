@@ -15,17 +15,25 @@ public class GeorectifyConfiguration {
 	
 	final String DEFAULT_GDAL_WARP_PATH = "gdalwarp";
 	
+	private final static String DEFAULT_GDAL_WARPING_PARAMETERS = "-co TILED=yes -wm 64 -multi -dstalpha";
+	
+	private final static String DEFAULT_GDAL_TRANSLATE_PARAMETERS = "";//-expand rgb";
+	
+//	private final static String DEFAULT_GDAL_DATA = "d:\\work\\programs\\FWTools2.4.7\\data";
+	
 	private final static String GDAL_CACHE_MAX_KEY = "GDAL_CACHE_MAX";
+	
+	private final static String GDAL_DATA_KEY = "GDAL_DATA";
 	
 	final int DEFAULT_GDAL_CACHE_MAX = 512;
 	
-	final int DEFAULT_WARPING_MEMORY = 40;
+	final int DEFAULT_WARPING_MEMORY = 64;
 	
 	final String TEMP_DIR = System.getProperty("java.io.tmpdir");
 	
 	final String LOGGING_DIR = System.getProperty("java.io.tmpdir");
 	
-	final Long DEFAULT_EXECUTION_TIMEOUT = 60000l;
+	final Long DEFAULT_EXECUTION_TIMEOUT = 180000l;
 	
 	private File tempFolder;
 	
@@ -38,10 +46,18 @@ public class GeorectifyConfiguration {
 	private int warpingMemory = DEFAULT_WARPING_MEMORY;
 	
 	private int gdalCacheMaxMemory = DEFAULT_GDAL_CACHE_MAX;
+
+	//Add here any parameter used by gdalwarp
+	private String gdalWarpingParameters = DEFAULT_GDAL_WARPING_PARAMETERS;
+
+	//Add here any parameter used by gdal_translate when setting gcps 
+	private String gdalTranslateParameters = DEFAULT_GDAL_TRANSLATE_PARAMETERS; 
 	
 	private String warpingPath = DEFAULT_GDAL_WARP_PATH;
 	
 	private String translatePath = DEFAULT_GDAL_TRANSLATE_PATH;
+	
+//	private String gdalDataPath = DEFAULT_GDAL_DATA;
 	
 	public GeorectifyConfiguration(){
 		try {
@@ -63,11 +79,18 @@ public class GeorectifyConfiguration {
 		// as an instance: PATH, LD_LIBRARY_PATH and similar
 		Variable var = new Variable();
 		var.setKey(GDAL_CACHE_MAX_KEY);
-		final String value = Integer.toString(gdalCacheMaxMemory);
+		String value = Integer.toString(gdalCacheMaxMemory);
 		if (value != null) {
 			var.setValue(value);
 			envVariables.add(var);
 		}
+//		var = new Variable();
+//		var.setKey(GDAL_DATA_KEY);
+//		value = gdalDataPath;
+//		if (value != null) {
+//			var.setValue(value);
+//			envVariables.add(var);
+//		}
 	}
 	
 	private File initFolder(final String folderPath) throws IOException {
@@ -139,6 +162,14 @@ public class GeorectifyConfiguration {
 
 	public String getWarpingPath() {
 		return warpingPath;
+	}
+
+	public String getGdalWarpingParameters() {
+		return gdalWarpingParameters;
+	}
+
+	public String getGdalTranslateParameters() {
+		return gdalTranslateParameters;
 	}
 
 	public void setWarpingPath(String warpingPath) {

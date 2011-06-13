@@ -61,8 +61,6 @@ public class GeorectifyCoverage implements GeoServerProcess {
 	private final static Pattern GCP_PATTERN = Pattern
 			.compile("\\[((\\+|-)?[0-9]+(.[0-9]+)?), ((\\+|-)?[0-9]+(.[0-9]+)?)(, ((\\+|-)?[0-9]+(.[0-9]+)?))?\\]");
 
-	private final static ImageWriterSpi WRITER_SPI = new TIFFImageWriterSpi();
-
 	GeorectifyConfiguration config;
 	
 	WPSResourceManager resourceManager;
@@ -118,7 +116,6 @@ public class GeorectifyCoverage implements GeoServerProcess {
 			//
 			// //
 			final Object fileSource = coverage.getProperty("OriginalFileSource");
-			
 			if (fileSource != null && fileSource instanceof String) {
 				location = (String) fileSource;
 			}
@@ -150,7 +147,7 @@ public class GeorectifyCoverage implements GeoServerProcess {
 			// //
 			final int gcpNum[] = new int[1];
 			final String gcp = parseGcps(gcps, gcpNum);
-			File vrtFile = addGroundControlPoints(location, gcp);
+			File vrtFile = addGroundControlPoints(location, gcp, config.getGdalTranslateParameters());
 			if (vrtFile == null || !vrtFile.exists() || !vrtFile.canRead()) {
 				throw new IOException("Unable to get a valid file with attached Ground Control Points");
 			}
@@ -161,7 +158,7 @@ public class GeorectifyCoverage implements GeoServerProcess {
 			// STEP 3: Warping
 			//
 			// //
-			File warpedFile = warpFile(vrtFile, bbox, width, height, warpOrder, tempFolder, loggingFolder, config.getExecutionTimeout());
+			File warpedFile = warpFile(vrtFile, bbox, width, height, warpOrder, tempFolder, loggingFolder, config.getExecutionTimeout(), config.getGdalWarpingParameters());
 			if (warpedFile == null || !warpedFile.exists() || !warpedFile.canRead()) {
 				throw new IOException("Unable to get a valid georectified file");
 			}
@@ -245,11 +242,10 @@ public class GeorectifyCoverage implements GeoServerProcess {
 	private File storeImage(final RenderedImage image, final File tempFolder)
 			throws IOException {
 		File file = File.createTempFile("readCoverage", ".tif", tempFolder);
-		FileImageOutputStream fos = null;
-		ImageWriter writer = null;
-		try {
-			// fos = new FileImageOutputStream(file);
-			writer = WRITER_SPI.createWriterInstance();
+//		FileImageOutputStream fos = null;
+//		ImageWriter writer = null;
+//		try {
+//			writer = WRITER_SPI.createWriterInstance();
 			// tile image output should help warping
 //			final int tileH = 256;
 //			final int tileW = 256;
@@ -259,23 +255,23 @@ public class GeorectifyCoverage implements GeoServerProcess {
 //					null, null, null, null, null, null, writer, null);
 //			writeOp.getRendering();
 			new ImageWorker(image).writeTIFF(file, null, 0, 256, 256);
-		} finally {
-			// Clean resources
-			if (fos != null) {
-				try {
-					fos.close();
-				} catch (Throwable t) {
-
-				}
-			}
-			if (writer != null) {
-				try {
-					writer.dispose();
-				} catch (Throwable t) {
-
-				}
-			}
-		}
+//		} finally {
+//			// Clean resources
+//			if (fos != null) {
+//				try {
+//					fos.close();
+//				} catch (Throwable t) {
+//
+//				}
+//			}
+//			if (writer != null) {
+//				try {
+//					writer.dispose();
+//				} catch (Throwable t) {
+//
+//				}
+//			}
+//		}
 		return file;
 	}
 
@@ -295,14 +291,14 @@ public class GeorectifyCoverage implements GeoServerProcess {
 	 */
 	private File warpFile(final File originalFile, final ReferencedEnvelope targetEnvelope,
 			final int width, final int height, final Integer order, 
-			final File tempFolder, File loggingFolder, Long timeOut)
+			final File tempFolder, final File loggingFolder, final Long timeOut, final String warpingParameters)
 			throws IOException {
 		final File file = File.createTempFile("warped", ".tif", tempFolder);
 		final String vrtFilePath = originalFile.getAbsolutePath();
 		final String outputFilePath = file.getAbsolutePath();
 		final String tEnvelope = parseBBox(targetEnvelope);
 		final String tCrs = parseCrs(targetEnvelope.getCoordinateReferenceSystem());
-		final String argument = buildWarpArgument(tEnvelope, width, height, tCrs, order, config.getWarpingMemory(), vrtFilePath, outputFilePath);
+		final String argument = buildWarpArgument(tEnvelope, width, height, tCrs, order, config.getWarpingMemory(), vrtFilePath, outputFilePath, warpingParameters);
 		final String gdalCommand = config.getWarpingPath();
 
 		executeCommand(gdalCommand, argument, loggingFolder, timeOut, config.getEnvVariables());
@@ -323,10 +319,11 @@ public class GeorectifyCoverage implements GeoServerProcess {
 	 */
 	private final static String buildWarpArgument(final String targetEnvelope, final int width,
 			final int height, final String targetCrs, final Integer order, final int wm, final String inputFilePath,
-			final String outputFilePath) {
+			final String outputFilePath, final String warpingParameters) {
 		return "-te " + targetEnvelope + " -ts " + width + " " + height + " -t_srs "
-				+ targetCrs + " " + (order != null ? " -order " + order : "") + " -wm " + wm + " -multi -r bilinear -co TILED=true -dstalpha " + inputFilePath + " "
-				+ outputFilePath;
+				+ targetCrs + " " + (order != null ? " -order " + order : "") + " " + warpingParameters 
+				+ " \"" + inputFilePath + "\" \""
+				+ outputFilePath + "\"";
 	}
 
 	private static void checkError(File logFile) {
@@ -382,10 +379,10 @@ public class GeorectifyCoverage implements GeoServerProcess {
 	 * @return a File containing the translated dataset.
 	 * @throws IOException
 	 */
-	private File addGroundControlPoints(final String originalFilePath, final String gcp)
+	private File addGroundControlPoints(final String originalFilePath, final String gcp, final String parameters)
 			throws IOException {
 		final File vrtFile = File.createTempFile("vrt_", ".vrt", config.getTempFolder());
-		final String argument = "-of VRT " + gcp + originalFilePath + " " + vrtFile.getAbsolutePath();
+		final String argument = "-of VRT " + parameters + " " + gcp + "\"" + originalFilePath + "\" \"" + vrtFile.getAbsolutePath() + "\"";
 		final String gdalCommand = config.getTranslatePath();
 		executeCommand(gdalCommand, argument, config.getLoggingFolder(), config.getExecutionTimeout(), config.getEnvVariables());
 		if (vrtFile != null && vrtFile.exists() && vrtFile.canRead()) {
