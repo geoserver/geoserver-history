@@ -10,7 +10,6 @@ import java.awt.image.BufferedImage;
 import org.geoserver.catalog.DimensionPresentation;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.wms.WMSDimensionsTestSupport;
-import org.geotools.renderedImage.viewer.RenderedImageBrowser;
 
 public class DimensionsRasterGetMapTest extends WMSDimensionsTestSupport {
     
@@ -34,7 +33,6 @@ public class DimensionsRasterGetMapTest extends WMSDimensionsTestSupport {
         setupRasterDimension(ResourceInfo.TIME, DimensionPresentation.LIST, null);
         
         BufferedImage image = getAsImage(BASE_URL, "image/png");
-        RenderedImageBrowser.showChain(image);
 
         // should be light red pixel and the first pixel is there only at the default elevation
         assertPixel(image, 36, 31, new Color(246, 246, 255));
