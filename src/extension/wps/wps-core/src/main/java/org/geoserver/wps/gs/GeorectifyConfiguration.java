@@ -29,7 +29,7 @@ public class GeorectifyConfiguration implements ApplicationListener {
     // TODO: we should allow change the configuration through the GUI
     // this will also allow to check for updates on config parameters on file changes
     static class GRKeys {
-        final static String GDAL_CACHE_MAX = "GDAL_CACHE_MAX";
+        final static String GDAL_CACHEMAX = "GDAL_CACHEMAX";
         final static String GDAL_DATA = "GDAL_DATA";
         final static String GDAL_WARP_PARAMS = "GDAL_WARP_PARAMS";
         final static String GDAL_TRANSLATE_PARAMS = "GDAL_TRANSLATE_PARAMS";
@@ -50,14 +50,14 @@ public class GeorectifyConfiguration implements ApplicationListener {
 
     private static final Logger LOGGER = Logging.getLogger(GeorectifyConfiguration.class);
 
-    private static final String gdalConfigFileName = "gdalops.properties";
+    private static final String GDAL_CONFIG_FILE = "gdalops.properties";
 
     File configFile;
 
     Timer timer;
 
     public GeorectifyConfiguration() {
-        configFile = new File(GeoserverDataDirectory.getGeoserverDataDirectory(), gdalConfigFileName);
+        configFile = new File(GeoserverDataDirectory.getGeoserverDataDirectory(), GDAL_CONFIG_FILE);
         timer = new Timer(true);
         timer.schedule(new ConfigurationPoller(), 1000);
     }
@@ -143,15 +143,15 @@ public class GeorectifyConfiguration implements ApplicationListener {
                 envVariables = new ArrayList<Variable>();
                 while (keys.hasNext()) {
                     String key = (String) keys.next();
-                    if (key.equalsIgnoreCase(GRKeys.GDAL_CACHE_MAX)) {
+                    if (key.equalsIgnoreCase(GRKeys.GDAL_CACHEMAX)) {
                         // Setting GDAL_CACHE_MAX Environment variable if available
                         String cacheMax = null;
                         try {
-                            cacheMax = (String) props.get(GRKeys.GDAL_CACHE_MAX);
+                            cacheMax = (String) props.get(GRKeys.GDAL_CACHEMAX);
                             if (cacheMax != null) {
                                 int gdalCacheMaxMemory = Integer.parseInt(cacheMax); // Only for validation
                                 Variable var = new Variable();
-                                var.setKey(GRKeys.GDAL_CACHE_MAX);
+                                var.setKey(GRKeys.GDAL_CACHEMAX);
                                 var.setValue(cacheMax);
                                 envVariables.add(var);
                             }
@@ -187,7 +187,7 @@ public class GeorectifyConfiguration implements ApplicationListener {
                         // Parsing execution timeout
                         String timeout = null;
                         try {
-                            timeout = (String) props.get(GRKeys.GDAL_CACHE_MAX);
+                            timeout = (String) props.get(GRKeys.EXECUTION_TIMEOUT);
                             if (timeout != null) {
                                 executionTimeout = Long.parseLong(timeout); // Only for validation
                             }
