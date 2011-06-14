@@ -4,8 +4,6 @@
  */
 package org.geoserver.wps.gs;
 
-import it.geosolutions.imageioimpl.plugins.tiff.TIFFImageWriterSpi;
-
 import java.awt.RenderingHints;
 import java.awt.Transparency;
 import java.awt.image.ColorModel;
@@ -23,9 +21,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.imageio.ImageWriter;
-import javax.imageio.spi.ImageWriterSpi;
-import javax.imageio.stream.FileImageOutputStream;
 import javax.media.jai.ImageLayout;
 import javax.media.jai.JAI;
 import javax.media.jai.operator.ConstantDescriptor;
@@ -54,6 +49,9 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 /**
  * TODO: could we probably also extend a TaskExecutionProcess superclass
+ * 
+ * @author Daniele Romagnoli, GeoSolutions SAS
+ * @author Andrea Aime, GeoSolutions SAS
  */
 @DescribeProcess(title = "GeorectifyCoverage", description = "Process which allows to georectify a coverage through GCPs using gdal_warp")
 public class GeorectifyCoverage implements GeoServerProcess {
@@ -105,8 +103,7 @@ public class GeorectifyCoverage implements GeoServerProcess {
 			    transparent = true;
 			}
 			ColorModel cm = coverage.getRenderedImage().getColorModel();
-            if(cm.getTransparency() == Transparency.OPAQUE 
-			        && transparent) {
+            if(cm.getTransparency() == Transparency.OPAQUE && transparent) {
 			    forceTransparent = true;
 			}
 			
@@ -242,36 +239,7 @@ public class GeorectifyCoverage implements GeoServerProcess {
 	private File storeImage(final RenderedImage image, final File tempFolder)
 			throws IOException {
 		File file = File.createTempFile("readCoverage", ".tif", tempFolder);
-//		FileImageOutputStream fos = null;
-//		ImageWriter writer = null;
-//		try {
-//			writer = WRITER_SPI.createWriterInstance();
-			// tile image output should help warping
-//			final int tileH = 256;
-//			final int tileW = 256;
-			
-//			RenderedOp writeOp = ImageWriteDescriptor.create(image, fos, null,
-//					false, false, false, false, new Dimension(tileW, tileH),
-//					null, null, null, null, null, null, writer, null);
-//			writeOp.getRendering();
-			new ImageWorker(image).writeTIFF(file, null, 0, 256, 256);
-//		} finally {
-//			// Clean resources
-//			if (fos != null) {
-//				try {
-//					fos.close();
-//				} catch (Throwable t) {
-//
-//				}
-//			}
-//			if (writer != null) {
-//				try {
-//					writer.dispose();
-//				} catch (Throwable t) {
-//
-//				}
-//			}
-//		}
+		new ImageWorker(image).writeTIFF(file, null, 0, 256, 256);
 		return file;
 	}
 
@@ -298,8 +266,8 @@ public class GeorectifyCoverage implements GeoServerProcess {
 		final String outputFilePath = file.getAbsolutePath();
 		final String tEnvelope = parseBBox(targetEnvelope);
 		final String tCrs = parseCrs(targetEnvelope.getCoordinateReferenceSystem());
-		final String argument = buildWarpArgument(tEnvelope, width, height, tCrs, order, config.getWarpingMemory(), vrtFilePath, outputFilePath, warpingParameters);
-		final String gdalCommand = config.getWarpingPath();
+		final String argument = buildWarpArgument(tEnvelope, width, height, tCrs, order, vrtFilePath, outputFilePath, warpingParameters);
+		final String gdalCommand = config.getWarpingCommand();
 
 		executeCommand(gdalCommand, argument, loggingFolder, timeOut, config.getEnvVariables());
 		return file;
@@ -312,13 +280,12 @@ public class GeorectifyCoverage implements GeoServerProcess {
 	 * @param height the target image height
 	 * @param targetCrs the target crs
 	 * @param order the warping polynomial order
-	 * @param wm the warping memory limit
 	 * @param inputFilePath the path of the file referring to the dataset to be warped
 	 * @param outputFilePath the path of the file referring to the produced dataset
 	 * @return
 	 */
 	private final static String buildWarpArgument(final String targetEnvelope, final int width,
-			final int height, final String targetCrs, final Integer order, final int wm, final String inputFilePath,
+			final int height, final String targetCrs, final Integer order, final String inputFilePath,
 			final String outputFilePath, final String warpingParameters) {
 		return "-te " + targetEnvelope + " -ts " + width + " " + height + " -t_srs "
 				+ targetCrs + " " + (order != null ? " -order " + order : "") + " " + warpingParameters 
@@ -383,7 +350,7 @@ public class GeorectifyCoverage implements GeoServerProcess {
 			throws IOException {
 		final File vrtFile = File.createTempFile("vrt_", ".vrt", config.getTempFolder());
 		final String argument = "-of VRT " + parameters + " " + gcp + "\"" + originalFilePath + "\" \"" + vrtFile.getAbsolutePath() + "\"";
-		final String gdalCommand = config.getTranslatePath();
+		final String gdalCommand = config.getTranslateCommand();
 		executeCommand(gdalCommand, argument, config.getLoggingFolder(), config.getExecutionTimeout(), config.getEnvVariables());
 		if (vrtFile != null && vrtFile.exists() && vrtFile.canRead()) {
 			return vrtFile;
@@ -395,7 +362,7 @@ public class GeorectifyCoverage implements GeoServerProcess {
         final File expandedFile = File.createTempFile("rgba", ".tif", config.getTempFolder());
         final String argument = "-expand RGBA -co TILED=yes " + originalFilePath + " "
                 + expandedFile.getAbsolutePath();
-        final String gdalCommand = config.getTranslatePath();
+        final String gdalCommand = config.getTranslateCommand();
         executeCommand(gdalCommand, argument, config.getLoggingFolder(),
                 config.getExecutionTimeout(), config.getEnvVariables());
         return expandedFile;
@@ -416,8 +383,10 @@ public class GeorectifyCoverage implements GeoServerProcess {
 
 		// Setting executable
 		execTask.setExecutable(gdalCommand);
-		for (Variable var: envVars){
-			execTask.addEnv(var);
+		if (envVars != null) {
+			for (Variable var: envVars){
+				execTask.addEnv(var);
+			}
 		}
 
 		// Setting command line argument
@@ -474,29 +443,7 @@ public class GeorectifyCoverage implements GeoServerProcess {
 		return gcpCommand.toString();
 	}
 
-	/*
-	 * public Map<String, Object> execute(Map<String, Object> input,
-	 * ProgressListener monitor) throws ProcessException { // TODO
-	 * Auto-generated method stub return null; }
-	 * 
-	 * public Query invertQuery(Map<String, Object> input, Query targetQuery,
-	 * GridGeometry gridGeometry) { // TODO Auto-generated method stub return
-	 * null; }
-	 * 
-	 * public GridGeometry invertGridGeometry(Map<String, Object> input, Query
-	 * targetQuery, GridGeometry targetGridGeometry) { // TODO Auto-generated
-	 * method stub GeneralEnvelope env = new GeneralEnvelope(new
-	 * Rectangle2D.Double(0, -Integer.MAX_VALUE, Integer.MAX_VALUE,
-	 * Integer.MAX_VALUE));
-	 * env.setCoordinateReferenceSystem(CartesianAuthorityFactory.GENERIC_2D);
-	 * return new GridGeometry2D(new GridEnvelope2D(0,0,Integer.MAX_VALUE,
-	 * Integer.MAX_VALUE), env); }
-	 */
-
 	private static void deleteFile(final File file) {
-
-		// TODO: change with a better file deleter (look for FileCleaningTracker
-		// from commons-io)
 		if (file != null && file.exists() && file.canRead()) {
 			file.delete();
 		}
