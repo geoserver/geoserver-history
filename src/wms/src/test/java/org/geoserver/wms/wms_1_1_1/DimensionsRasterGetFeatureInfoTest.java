@@ -59,10 +59,6 @@ public class DimensionsRasterGetFeatureInfoTest extends WMSDimensionsTestSupport
         }
     }
     
-    public void testNoDimension() throws Exception {
-        assertEquals(14.51, getFeatureAt(BASE_URL, 36, 31), EPS);
-    }
-
     public void testDefaultValues() throws Exception {
         setupRasterDimension(ResourceInfo.ELEVATION, DimensionPresentation.LIST, null);
         setupRasterDimension(ResourceInfo.TIME, DimensionPresentation.LIST, null);
