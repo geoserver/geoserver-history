@@ -28,6 +28,7 @@ import org.apache.wicket.validation.validator.RangeValidator;
 import org.apache.wicket.validation.validator.UrlValidator;
 import org.geoserver.web.services.BaseServiceAdminPage;
 import org.geoserver.web.util.MapModel;
+import org.geoserver.web.wicket.FileExistsValidator;
 import org.geoserver.web.wicket.LiveCollectionModel;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSInfo;
@@ -80,7 +81,7 @@ public class WMSAdminPage extends BaseServiceAdminPage<WMSInfo> {
         form.add(maxErrors);
     	// watermark
     	form.add(new CheckBox("watermark.enabled"));
-    	form.add(new TextField("watermark.uRL").add(new UrlValidator()));
+    	form.add(new TextField("watermark.uRL").add(new FileExistsValidator(true)));
     	TextField<Integer> transparency = new TextField<Integer>("watermark.transparency");
     	transparency.add(new RangeValidator<Integer>(0,100));
         form.add(transparency);

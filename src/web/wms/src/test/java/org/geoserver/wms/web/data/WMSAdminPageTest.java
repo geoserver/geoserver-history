@@ -1,5 +1,6 @@
 package org.geoserver.wms.web.data;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +31,16 @@ public class WMSAdminPageTest extends GeoServerWicketTestSupport {
     public void testFormSubmit() throws Exception {
         tester.startPage(WMSAdminPage.class);
         FormTester ft = tester.newFormTester("form");
+        ft.submit("submit");
+        tester.assertNoErrorMessage();
+        tester.assertRenderedPage(GeoServerHomePage.class);
+    }
+    
+    public void testWatermarkLocalFile() throws Exception {
+        File f = new File(getClass().getResource("GeoServer_75.png").toURI());
+        tester.startPage(WMSAdminPage.class);
+        FormTester ft = tester.newFormTester("form");
+        ft.setValue("watermark.uRL", f.getAbsolutePath());
         ft.submit("submit");
         tester.assertNoErrorMessage();
         tester.assertRenderedPage(GeoServerHomePage.class);
