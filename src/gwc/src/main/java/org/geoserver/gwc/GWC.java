@@ -222,11 +222,19 @@ public class GWC implements DisposableBean, ApplicationContextAware {
 
     public void createLayer(LayerInfo layerInfo) {
         TileLayer tileLayer = config.createLayer(layerInfo);
+        if (tileLayer == null) {
+            log.warning("TileLayer was not created for " + layerInfo.getName());
+            return;
+        }
         addOrReplaceLayer(tileLayer);
     }
 
     public void createLayer(LayerGroupInfo lgi) {
         TileLayer tileLayer = config.createLayer(lgi);
+        if (tileLayer == null) {
+            log.warning("TileLayer was not created for " + lgi.getName());
+            return;
+        }
         addOrReplaceLayer(tileLayer);
     }
 

@@ -135,7 +135,13 @@ public class CatalogConfiguration implements Configuration {
         final String[] wmsURL = getWMSUrl();
         final String wmsStyles = null;
         final String wmsLayers = resourceInfno.getPrefixedName();
-        final Hashtable<String, GridSubset> subSets = getGrids(resourceInfno.getLatLonBoundingBox());
+        ReferencedEnvelope latLonBounds = resourceInfno.getLatLonBoundingBox();
+        if (latLonBounds == null) {
+            log.severe("LatLonBoundingBox of " + li.getName()
+                    + " is null, can't create a tile layer for it");
+            return null;
+        }
+        final Hashtable<String, GridSubset> subSets = getGrids(latLonBounds);
         final List<ParameterFilter> parameterFilters = null;
         final String vendorParams = null;
         final boolean queryable = true;
