@@ -21,6 +21,9 @@ import org.geotools.xml.Node;
  *        <pre>
  *         <code>
  *  &lt;xsd:complexType name="NativeType"&gt;
+ *      &lt;xsd:seq uence>
+ *          &lt;xsd:any processContents="lax" namespace="##other" minOccurs="0"/>
+ *      &lt;/xsd:sequence>
  *      &lt;xsd:attribute name="vendorId" type="xsd:string" use="required"&gt;
  *          &lt;xsd:annotation&gt;
  *              &lt;xsd:documentation&gt;
@@ -91,7 +94,11 @@ public class NativeTypeBinding extends AbstractComplexBinding {
 
         //&lt;xsd:attribute name="safeToIgnore" type="xsd:boolean" use="required"&gt;
         nativ.setSafeToIgnore(((Boolean) node.getAttributeValue("safeToIgnore")).booleanValue());
-
+        
+        //&lt;xsd:any processContents="lax" namespace="##other" minOccurs="0"/>
+        if (instance.getText() != null && !instance.getText().isEmpty()) {
+            nativ.setValue(instance.getText());
+        }
         return nativ;
     }
 }
