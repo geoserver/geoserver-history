@@ -86,5 +86,17 @@ public class FileWatcher<T> {
         }
         return stale;
     }
+    
+    /**
+     * Method to set the last modified time stamp.
+     * Clients synchronized with the actual file
+     * content and knowing the last modified time stamp
+     * can avoid unnecessary reload operations 
+     * 
+     * @param lastModified
+     */
+    public void setKnownLastModified(long lastModified) {
+        this.lastModified = lastModified;
+    }
 
 }
