@@ -388,35 +388,27 @@ public class KMLUtils {
      *
      */
     public static FeatureTypeStyle[] filterFeatureTypeStyles(Style style,
-            SimpleFeatureType featureType) {
-        FeatureTypeStyle[] featureTypeStyles = style.getFeatureTypeStyles();
+            SimpleFeatureType ftype) {
+        List<FeatureTypeStyle> featureTypeStyles = style.featureTypeStyles();
 
-        if ((featureTypeStyles == null) || (featureTypeStyles.length == 0)) {
+        if (featureTypeStyles == null || featureTypeStyles.isEmpty()) {
             return new FeatureTypeStyle[0];
         }
 
-        ArrayList filtered = new ArrayList(featureTypeStyles.length);
-
-        for (int i = 0; i < featureTypeStyles.length; i++) {
-            FeatureTypeStyle featureTypeStyle = featureTypeStyles[i];
-            String featureTypeName = featureTypeStyle.getFeatureTypeName();
-
-            //does this style have any rules
-            if (featureTypeStyle.getRules() == null
-                    || featureTypeStyle.getRules().length == 0) {
-                continue;
-            }
-
-            //does this style apply to the feature collection
-            if (featureType.getTypeName().equalsIgnoreCase(featureTypeName)
-                    || FeatureTypes.isDecendedFrom(featureType, null,
-                            featureTypeName)) {
-                filtered.add(featureTypeStyle);
+        ArrayList<FeatureTypeStyle> filtered = new ArrayList<FeatureTypeStyle>(featureTypeStyles.size());
+        for(FeatureTypeStyle fts : featureTypeStyles) {
+            String ftName = fts.getFeatureTypeName();
+            
+            // yeah, ugly, but exactly the same code as the streaming renderer... we should
+            // really factor out this style massaging in a delegate object (StyleOverlord)
+            if(fts.featureTypeNames().isEmpty() || ((ftype.getName().getLocalPart() != null)
+                    && (ftype.getName().getLocalPart().equalsIgnoreCase(ftName) || 
+                            FeatureTypes.isDecendedFrom(ftype, null, ftName)))) {
+                filtered.add(fts);
             }
         }
 
-        return (FeatureTypeStyle[]) filtered
-                .toArray(new FeatureTypeStyle[filtered.size()]);
+        return (FeatureTypeStyle[]) filtered.toArray(new FeatureTypeStyle[filtered.size()]);
     }
 
     /**
@@ -580,28 +572,23 @@ public class KMLUtils {
         List[] result = new List[] { new ArrayList(), new ArrayList() };
 
         final String typeName = ftype.getTypeName();
-        FeatureTypeStyle[] featureStyles = style.getFeatureTypeStyles();
+        
+        FeatureTypeStyle[] featureStyles = filterFeatureTypeStyles(style, ftype);
         final int length = featureStyles.length;
         for (int i = 0; i < length; i++) {
             // getting feature styles
             FeatureTypeStyle fts = featureStyles[i];
 
-            // check if this FTS is compatible with this FT.
-            if ((typeName != null)
-                    && FeatureTypes.isDecendedFrom(ftype, null, fts
-                            .getFeatureTypeName())) {
+            // get applicable rules at the current scale
+            Rule[] ftsRules = fts.getRules();
+            for (int j = 0; j < ftsRules.length; j++) {
+                // getting rule
+                Rule r = ftsRules[j];
 
-                // get applicable rules at the current scale
-                Rule[] ftsRules = fts.getRules();
-                for (int j = 0; j < ftsRules.length; j++) {
-                    // getting rule
-                    Rule r = ftsRules[j];
-
-                    if (r.hasElseFilter()) {
-                        result[ELSE_RULES].add(r);
-                    } else {
-                        result[RULES].add(r);
-                    }
+                if (r.hasElseFilter()) {
+                    result[ELSE_RULES].add(r);
+                } else {
+                    result[RULES].add(r);
                 }
             }
         }
