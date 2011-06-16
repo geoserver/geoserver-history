@@ -446,6 +446,8 @@ public class GetMap {
         // setup the SLD variable substitution environment
         Map envMap = new HashMap(request.getEnv());
         envMap.put("wms_bbox", mapContext.getAreaOfInterest());
+        envMap.put("wms_crs", mapContext.getAreaOfInterest().getCoordinateReferenceSystem());
+        envMap.put("wms_srs", mapContext.getRequest().getSRS());
         envMap.put("wms_width", mapContext.getMapWidth());
         envMap.put("wms_height", mapContext.getMapHeight());
         EnvFunction.setLocalValues(envMap);

@@ -132,7 +132,7 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
         if (LOGGER.isLoggable(Level.FINEST)) {
             LOGGER.finest(new StringBuffer("execute CoverageRequest response. Called request is: ").append(request).toString());
         }
-
+        
         WCSInfo wcs = getServiceInfo();
         
         CoverageInfo meta = null;
@@ -483,12 +483,16 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
             WCSUtils.checkOutputLimits(wcs, destinationGridGeometry.getGridRange2D(), 
                     bandSelectedCoverage.getRenderedImage().getSampleModel());
             
-            // reproject and 
-            final GridCoverage2D reprojectedCoverage = WCSUtils.resample(
-            		bandSelectedCoverage,
-                    nativeCRS, targetCRS, destinationGridGeometry,interpolation);
-
-            return new GridCoverage[] { reprojectedCoverage };
+            // reproject if necessary
+            if(!CRS.equalsIgnoreMetadata(nativeCRS, targetCRS)) {
+                final GridCoverage2D reprojectedCoverage = WCSUtils.resample(
+                		bandSelectedCoverage,
+                        nativeCRS, targetCRS, destinationGridGeometry,interpolation);
+    
+                return new GridCoverage[] { reprojectedCoverage };
+            } else {
+                return new GridCoverage[] { bandSelectedCoverage };
+            }
         } catch (Throwable e) {
             if (e instanceof WcsException)
                 throw (WcsException) e;

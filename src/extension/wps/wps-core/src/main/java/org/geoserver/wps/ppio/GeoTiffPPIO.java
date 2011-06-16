@@ -6,6 +6,7 @@ package org.geoserver.wps.ppio;
 
 import java.awt.Dimension;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -15,12 +16,14 @@ import javax.media.jai.JAI;
 import org.apache.commons.io.IOUtils;
 import org.geoserver.wps.WPSException;
 import org.geotools.coverage.grid.GridCoverage2D;
+import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.coverage.grid.io.AbstractGridCoverageWriter;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.coverage.grid.io.GridFormatFinder;
 import org.geotools.coverage.grid.io.UnknownFormat;
 import org.geotools.coverage.grid.io.imageio.GeoToolsWriteParams;
 import org.geotools.gce.geotiff.GeoTiffFormat;
+import org.geotools.gce.geotiff.GeoTiffReader;
 import org.geotools.gce.geotiff.GeoTiffWriteParams;
 import org.opengis.parameter.GeneralParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
@@ -72,12 +75,47 @@ public class GeoTiffPPIO extends BinaryPPIO {
     @Override
     public void encode(Object value, OutputStream os) throws Exception {
         GridCoverage2D coverage = (GridCoverage2D) value;
+        
+        // did we get lucky and all we need to do is to copy a file over?
+        final Object fileSource = coverage.getProperty(AbstractGridCoverage2DReader.FILE_SOURCE_PROPERTY);
+        if (fileSource != null && fileSource instanceof String) {
+            File file = new File((String) fileSource);
+            if(file.exists()) {
+                GeoTiffReader reader = null;
+                FileInputStream fis = null;
+                try {
+                    reader = new GeoTiffReader(file);
+                    reader.read(null);
+                    // ooh, a geotiff already!
+                    fis = new FileInputStream(file);
+                    IOUtils.copyLarge(fis, os);
+                    return;
+                } catch(Exception e) {
+                    // ok, not a geotiff!
+                } finally {
+                    if(reader != null) {
+                        reader.dispose();
+                    } 
+                    if(fis != null) {
+                        fis.close();
+                    }
+                }
+            }
+        }
 
+        // ok, encode in geotiff
         GeoTiffFormat format = new GeoTiffFormat();
-        final ParameterValueGroup params = new GeoTiffFormat().getWriteParameters();
-        params.parameter(AbstractGridFormat.GEOTOOLS_WRITE_PARAMS.getName().toString()).setValue(
-                DEFAULT_WRITE_PARAMS);
-        final GeneralParameterValue[] wps = (GeneralParameterValue[]) params.values().toArray(
+        final GeoTiffFormat wformat = new GeoTiffFormat();
+        final GeoTiffWriteParams wp = new GeoTiffWriteParams();
+        wp.setCompressionMode(GeoTiffWriteParams.MODE_EXPLICIT);
+        wp.setCompressionType("LZW");
+        wp.setTilingMode(GeoToolsWriteParams.MODE_EXPLICIT);
+        wp.setTiling(256, 256);
+        final ParameterValueGroup wparams = wformat.getWriteParameters();
+        wparams.parameter(AbstractGridFormat.GEOTOOLS_WRITE_PARAMS.getName().toString())
+                .setValue(wp);
+        
+        final GeneralParameterValue[] wps = (GeneralParameterValue[]) wparams.values().toArray(
                 new GeneralParameterValue[1]);
         // write out the coverage
         AbstractGridCoverageWriter writer = (AbstractGridCoverageWriter) format.getWriter(os);

@@ -17,7 +17,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -36,9 +38,10 @@ import org.geoserver.wps.jts.DescribeResult;
 import org.geoserver.wps.resource.WPSFileResource;
 import org.geoserver.wps.resource.WPSResourceManager;
 import org.geotools.coverage.grid.GridCoverage2D;
+import org.geotools.coverage.grid.GridCoverageFactory;
+import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.data.Query;
 import org.geotools.gce.geotiff.GeoTiffReader;
-import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.image.ImageWorker;
 import org.geotools.process.ProcessException;
 import org.geotools.referencing.CRS;
@@ -46,6 +49,8 @@ import org.geotools.util.Utilities;
 import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 /**
  * TODO: could we probably also extend a TaskExecutionProcess superclass
@@ -83,7 +88,8 @@ public class GeorectifyCoverage implements GeoServerProcess {
     public GridCoverage2D execute(
             @DescribeParameter(name = "data", description = "The input raster to transform") GridCoverage2D coverage,
             @DescribeParameter(name = "gcp", description = "The Ground Control Points list in the form ") String gcps,
-            @DescribeParameter(name = "bbox", description = "The destination bounding box and coordinate system") ReferencedEnvelope bbox,
+            @DescribeParameter(name = "bbox", description = "The destination bounding box", min = 0) Envelope bbox,
+            @DescribeParameter(name = "targetCRS", description = "The destination coordinate refence system") CoordinateReferenceSystem crs,
             @DescribeParameter(name = "width", description = "The final image width", min = 0) Integer width,
             @DescribeParameter(name = "height", description = "The final image height", min = 0) Integer height,
             @DescribeParameter(name = "warpOrder", min = 0, description = "The order of the warping polynomial (optional)") Integer warpOrder,
@@ -112,7 +118,7 @@ public class GeorectifyCoverage implements GeoServerProcess {
             // STEP 1: Getting the dataset to be georectified
             //
             // //
-            final Object fileSource = coverage.getProperty("OriginalFileSource");
+            final Object fileSource = coverage.getProperty(AbstractGridCoverage2DReader.FILE_SOURCE_PROPERTY);
             if (fileSource != null && fileSource instanceof String) {
                 location = (String) fileSource;
             }
@@ -157,7 +163,7 @@ public class GeorectifyCoverage implements GeoServerProcess {
             // STEP 3: Warping
             //
             // //
-            File warpedFile = warpFile(vrtFile, bbox, width, height, warpOrder, tempFolder,
+            File warpedFile = warpFile(vrtFile, bbox, crs, width, height, warpOrder, tempFolder,
                     loggingFolder, config.getExecutionTimeout(), config.getGdalWarpingParameters());
             if (warpedFile == null || !warpedFile.exists() || !warpedFile.canRead()) {
                 throw new IOException("Unable to get a valid georectified file");
@@ -186,7 +192,7 @@ public class GeorectifyCoverage implements GeoServerProcess {
             //
             // //
             reader = new GeoTiffReader(warpedFile);
-            GridCoverage2D cov = reader.read(null);
+            GridCoverage2D cov = addLocationProperty(reader.read(null), warpedFile);
             return cov;
         } finally {
             if (reader != null) {
@@ -201,6 +207,14 @@ public class GeorectifyCoverage implements GeoServerProcess {
                 deleteFile(file);
             }
         }
+    }
+
+    GridCoverage2D addLocationProperty(GridCoverage2D coverage, File warpedFile) {
+        Map <String, String> properties = new HashMap<String,String>();
+        properties.put(AbstractGridCoverage2DReader.FILE_SOURCE_PROPERTY, warpedFile.getAbsolutePath());
+
+        return new GridCoverageFactory().create(coverage.getName(), coverage.getRenderedImage(), 
+                coverage.getGridGeometry(), coverage.getSampleDimensions(), null, properties);
     }
 
     /**
@@ -258,15 +272,15 @@ public class GeorectifyCoverage implements GeoServerProcess {
      * @return
      * @throws IOException
      */
-    private File warpFile(final File originalFile, final ReferencedEnvelope targetEnvelope,
-            final int width, final int height, final Integer order, final File tempFolder,
+    private File warpFile(final File originalFile, final Envelope targetEnvelope, final CoordinateReferenceSystem targetCRS,
+            final Integer width, final Integer height, final Integer order, final File tempFolder,
             final File loggingFolder, final Long timeOut, final String warpingParameters)
             throws IOException {
         final File file = File.createTempFile("warped", ".tif", tempFolder);
         final String vrtFilePath = originalFile.getAbsolutePath();
         final String outputFilePath = file.getAbsolutePath();
         final String tEnvelope = parseBBox(targetEnvelope);
-        final String tCrs = parseCrs(targetEnvelope.getCoordinateReferenceSystem());
+        final String tCrs = parseCrs(targetCRS);
         final String argument = buildWarpArgument(tEnvelope, width, height, tCrs, order,
                 vrtFilePath, outputFilePath, warpingParameters);
         final String gdalCommand = config.getWarpingCommand();
@@ -287,10 +301,12 @@ public class GeorectifyCoverage implements GeoServerProcess {
      * @param outputFilePath the path of the file referring to the produced dataset
      * @return
      */
-    private final static String buildWarpArgument(final String targetEnvelope, final int width,
-            final int height, final String targetCrs, final Integer order,
+    private final static String buildWarpArgument(final String targetEnvelope, final Integer width,
+            final Integer height, final String targetCrs, final Integer order,
             final String inputFilePath, final String outputFilePath, final String warpingParameters) {
-        return "-te " + targetEnvelope + " -ts " + width + " " + height + " -t_srs " + targetCrs
+        String imageSize = width != null && height != null ? " -ts " + width + " " + height : "";
+        String te = targetEnvelope != null && targetEnvelope.length() > 0 ? "-te " + targetEnvelope : ""; 
+        return  te + imageSize + " -t_srs " + targetCrs
                 + " " + (order != null ? " -order " + order : "") + " " + warpingParameters + " \""
                 + inputFilePath + "\" \"" + outputFilePath + "\"";
     }
@@ -327,9 +343,12 @@ public class GeorectifyCoverage implements GeoServerProcess {
      * @param boundingBox
      * @return
      */
-    private static String parseBBox(ReferencedEnvelope re) {
-        Utilities.ensureNonNull("boundingBox", re);
-        return re.getMinX() + " " + re.getMinY() + " " + re.getMaxX() + " " + re.getMaxY();
+    private static String parseBBox(Envelope re) {
+        if(re == null) {
+            return "";
+        } else {
+            return re.getMinX() + " " + re.getMinY() + " " + re.getMaxX() + " " + re.getMaxY();
+        }
     }
 
     private static String parseCrs(CoordinateReferenceSystem crs) {
@@ -366,7 +385,7 @@ public class GeorectifyCoverage implements GeoServerProcess {
 
     private File expandRgba(final String originalFilePath) throws IOException {
         final File expandedFile = File.createTempFile("rgba", ".tif", config.getTempFolder());
-        final String argument = "-expand RGBA -co TILED=yes " + originalFilePath + " "
+        final String argument = "-expand RGBA -co TILED=yes -co COMPRESS=LZW " + originalFilePath + " "
                 + expandedFile.getAbsolutePath();
         final String gdalCommand = config.getTranslateCommand();
         executeCommand(gdalCommand, argument, config.getLoggingFolder(),
