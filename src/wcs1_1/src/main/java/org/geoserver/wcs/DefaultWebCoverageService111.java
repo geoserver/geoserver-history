@@ -484,7 +484,7 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
                     bandSelectedCoverage.getRenderedImage().getSampleModel());
             
             // reproject if necessary
-            if(!CRS.equalsIgnoreMetadata(nativeCRS, targetCRS)) {
+            if(!CRS.equalsIgnoreMetadata(nativeCRS, targetCRS) || !bandSelectedCoverage.getGridGeometry().equals(destinationGridGeometry)) {
                 final GridCoverage2D reprojectedCoverage = WCSUtils.resample(
                 		bandSelectedCoverage,
                         nativeCRS, targetCRS, destinationGridGeometry,interpolation);
