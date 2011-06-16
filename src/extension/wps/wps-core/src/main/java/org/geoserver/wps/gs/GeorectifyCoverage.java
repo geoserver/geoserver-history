@@ -56,150 +56,154 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 @DescribeProcess(title = "GeorectifyCoverage", description = "Process which allows to georectify a coverage through GCPs using gdal_warp")
 public class GeorectifyCoverage implements GeoServerProcess {
 
-	private final static Pattern GCP_PATTERN = Pattern
-			.compile("\\[((\\+|-)?[0-9]+(.[0-9]+)?), ((\\+|-)?[0-9]+(.[0-9]+)?)(, ((\\+|-)?[0-9]+(.[0-9]+)?))?\\]");
+    private final static Pattern GCP_PATTERN = Pattern
+            .compile("\\[((\\+|-)?[0-9]+(.[0-9]+)?), ((\\+|-)?[0-9]+(.[0-9]+)?)(, ((\\+|-)?[0-9]+(.[0-9]+)?))?\\]");
 
-	GeorectifyConfiguration config;
-	
-	WPSResourceManager resourceManager;
+    GeorectifyConfiguration config;
 
-	public GeorectifyConfiguration getConfig() {
-		return config;
-	}
+    WPSResourceManager resourceManager;
 
-	public void setConfig(GeorectifyConfiguration config) {
-		this.config = config;
-	}
-	
-	public GeorectifyCoverage (GeorectifyConfiguration config){
-		this.config = config;
-	}
-	
-	public GeorectifyCoverage() {
-		
-	}
+    public GeorectifyConfiguration getConfig() {
+        return config;
+    }
 
-	@DescribeResult(name = "result", description = "The GridCoverage2D coming from the georectification process")
-	public GridCoverage2D execute(
-			@DescribeParameter(name = "data", description = "The input raster to transform") GridCoverage2D coverage,
-			@DescribeParameter(name = "gcp", description = "The Ground Control Points list in the form ") String gcps,
-			@DescribeParameter(name = "bbox", description = "The destination bounding box and coordinate system") ReferencedEnvelope bbox,
-			@DescribeParameter(name = "width", description = "The final image width") Integer width,
-			@DescribeParameter(name = "height", description = "The final image height") Integer height,
-			@DescribeParameter(name = "warpOrder", min = 0, description = "The order of the warping polynomial (optional)") Integer warpOrder,
-			@DescribeParameter(name = "transparent", min = 0, description = "Force the output image to have transparent background") Boolean transparent)
-			throws IOException {
+    public void setConfig(GeorectifyConfiguration config) {
+        this.config = config;
+    }
 
-		GeoTiffReader reader = null;
-		List<File> removeFiles = new ArrayList<File>();
-		String location = null;
-		try {
-			File tempFolder = config.getTempFolder();
-			File loggingFolder = config.getLoggingFolder();
-			
-			// do we have to add the alpha channel?
-			boolean forceTransparent = false;
-			if(transparent == null) {
-			    transparent = true;
-			}
-			ColorModel cm = coverage.getRenderedImage().getColorModel();
-            if(cm.getTransparency() == Transparency.OPAQUE && transparent) {
-			    forceTransparent = true;
-			}
-			
-			// //
-			//
-			// STEP 1: Getting the dataset to be georectified
-			//
-			// //
-			final Object fileSource = coverage.getProperty("OriginalFileSource");
-			if (fileSource != null && fileSource instanceof String) {
-				location = (String) fileSource;
-			}
-			if (location == null) {
-			    RenderedImage image = coverage.getRenderedImage();
-			    if(forceTransparent) {
-			        ImageWorker iw = new ImageWorker(image);
-			        iw.forceComponentColorModel();
-			        final ImageLayout tempLayout= new ImageLayout(image);
-			        tempLayout.unsetValid(ImageLayout.COLOR_MODEL_MASK).unsetValid(ImageLayout.SAMPLE_MODEL_MASK);                    
-			        RenderedImage alpha = ConstantDescriptor.create(
-			                Float.valueOf( image.getWidth()),
-			                Float.valueOf(image.getHeight()),
-			                new Byte[] { Byte.valueOf((byte) 255) }, 
-			                new RenderingHints(JAI.KEY_IMAGE_LAYOUT,tempLayout));
-			        iw.addBand(alpha, false);
-			        image = iw.getRenderedImage();
-			        cm = image.getColorModel();
-			    }
-				File storedImageFile = storeImage(image, tempFolder);
-				location = storedImageFile.getAbsolutePath();
-				removeFiles.add(storedImageFile);
-			}
-			
-			// //
-			//
-			// STEP 2: Adding Ground Control Points
-			//
-			// //
-			final int gcpNum[] = new int[1];
-			final String gcp = parseGcps(gcps, gcpNum);
-			File vrtFile = addGroundControlPoints(location, gcp, config.getGdalTranslateParameters());
-			if (vrtFile == null || !vrtFile.exists() || !vrtFile.canRead()) {
-				throw new IOException("Unable to get a valid file with attached Ground Control Points");
-			}
-			removeFiles.add(vrtFile);
-			
-			// //
-			//
-			// STEP 3: Warping
-			//
-			// //
-			File warpedFile = warpFile(vrtFile, bbox, width, height, warpOrder, tempFolder, loggingFolder, config.getExecutionTimeout(), config.getGdalWarpingParameters());
-			if (warpedFile == null || !warpedFile.exists() || !warpedFile.canRead()) {
-				throw new IOException("Unable to get a valid georectified file");
-			}
-			
-			boolean expand = false;
-			if(cm instanceof IndexColorModel) {
-			    expand = true;
-			} else if(cm instanceof ComponentColorModel && cm.getNumComponents() == 1 && cm.getComponentSize()[0] == 1) {
-			    expand = true;
-			}
-			if(expand) {
-			    removeFiles.add(warpedFile);
-			    warpedFile = expandRgba(warpedFile.getAbsolutePath());
-			}
+    public GeorectifyCoverage(GeorectifyConfiguration config) {
+        this.config = config;
+    }
 
-			// mark the output file for deletion at the end of request
+    public GeorectifyCoverage() {
+
+    }
+
+    @DescribeResult(name = "result", description = "The GridCoverage2D coming from the georectification process")
+    public GridCoverage2D execute(
+            @DescribeParameter(name = "data", description = "The input raster to transform") GridCoverage2D coverage,
+            @DescribeParameter(name = "gcp", description = "The Ground Control Points list in the form ") String gcps,
+            @DescribeParameter(name = "bbox", description = "The destination bounding box and coordinate system") ReferencedEnvelope bbox,
+            @DescribeParameter(name = "width", description = "The final image width", min = 0) Integer width,
+            @DescribeParameter(name = "height", description = "The final image height", min = 0) Integer height,
+            @DescribeParameter(name = "warpOrder", min = 0, description = "The order of the warping polynomial (optional)") Integer warpOrder,
+            @DescribeParameter(name = "transparent", min = 0, description = "Force the output image to have transparent background") Boolean transparent)
+            throws IOException {
+
+        GeoTiffReader reader = null;
+        List<File> removeFiles = new ArrayList<File>();
+        String location = null;
+        try {
+            File tempFolder = config.getTempFolder();
+            File loggingFolder = config.getLoggingFolder();
+
+            // do we have to add the alpha channel?
+            boolean forceTransparent = false;
+            if (transparent == null) {
+                transparent = true;
+            }
+            ColorModel cm = coverage.getRenderedImage().getColorModel();
+            if (cm.getTransparency() == Transparency.OPAQUE && transparent) {
+                forceTransparent = true;
+            }
+
+            // //
+            //
+            // STEP 1: Getting the dataset to be georectified
+            //
+            // //
+            final Object fileSource = coverage.getProperty("OriginalFileSource");
+            if (fileSource != null && fileSource instanceof String) {
+                location = (String) fileSource;
+            }
+            if (location == null) {
+                RenderedImage image = coverage.getRenderedImage();
+                if (forceTransparent) {
+                    ImageWorker iw = new ImageWorker(image);
+                    iw.forceComponentColorModel();
+                    final ImageLayout tempLayout = new ImageLayout(image);
+                    tempLayout.unsetValid(ImageLayout.COLOR_MODEL_MASK).unsetValid(
+                            ImageLayout.SAMPLE_MODEL_MASK);
+                    RenderedImage alpha = ConstantDescriptor.create(
+                            Float.valueOf(image.getWidth()), Float.valueOf(image.getHeight()),
+                            new Byte[] { Byte.valueOf((byte) 255) }, new RenderingHints(
+                                    JAI.KEY_IMAGE_LAYOUT, tempLayout));
+                    iw.addBand(alpha, false);
+                    image = iw.getRenderedImage();
+                    cm = image.getColorModel();
+                }
+                File storedImageFile = storeImage(image, tempFolder);
+                location = storedImageFile.getAbsolutePath();
+                removeFiles.add(storedImageFile);
+            }
+
+            // //
+            //
+            // STEP 2: Adding Ground Control Points
+            //
+            // //
+            final int gcpNum[] = new int[1];
+            final String gcp = parseGcps(gcps, gcpNum);
+            File vrtFile = addGroundControlPoints(location, gcp,
+                    config.getGdalTranslateParameters());
+            if (vrtFile == null || !vrtFile.exists() || !vrtFile.canRead()) {
+                throw new IOException(
+                        "Unable to get a valid file with attached Ground Control Points");
+            }
+            removeFiles.add(vrtFile);
+
+            // //
+            //
+            // STEP 3: Warping
+            //
+            // //
+            File warpedFile = warpFile(vrtFile, bbox, width, height, warpOrder, tempFolder,
+                    loggingFolder, config.getExecutionTimeout(), config.getGdalWarpingParameters());
+            if (warpedFile == null || !warpedFile.exists() || !warpedFile.canRead()) {
+                throw new IOException("Unable to get a valid georectified file");
+            }
+
+            boolean expand = false;
+            if (cm instanceof IndexColorModel) {
+                expand = true;
+            } else if (cm instanceof ComponentColorModel && cm.getNumComponents() == 1
+                    && cm.getComponentSize()[0] == 1) {
+                expand = true;
+            }
+            if (expand) {
+                removeFiles.add(warpedFile);
+                warpedFile = expandRgba(warpedFile.getAbsolutePath());
+            }
+
+            // mark the output file for deletion at the end of request
             if (resourceManager != null) {
                 resourceManager.addResource(new WPSFileResource(warpedFile));
             }
-			
-			// //
-			//
-			// FINAL STEP: Returning the warped gridcoverage
-			//
-			// //
-			reader = new GeoTiffReader(warpedFile);
-			GridCoverage2D cov = reader.read(null);
-			return cov;
-		} finally {
-			if (reader != null) {
-				try {
-					reader.dispose();
-				} catch (Throwable t) {
-					// Does nothing
-				}
-			}
-			
-			for (File file : removeFiles) {
+
+            // //
+            //
+            // FINAL STEP: Returning the warped gridcoverage
+            //
+            // //
+            reader = new GeoTiffReader(warpedFile);
+            GridCoverage2D cov = reader.read(null);
+            return cov;
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.dispose();
+                } catch (Throwable t) {
+                    // Does nothing
+                }
+            }
+
+            for (File file : removeFiles) {
                 deleteFile(file);
             }
-		}
-	}
-	
-	/**
+        }
+    }
+
+    /**
      * Given a target query and a target grid geometry returns the query to be used to read the
      * input data of the process involved in rendering. This method will be called only if the input
      * data is a feature collection.
@@ -226,138 +230,140 @@ public class GeorectifyCoverage implements GeoServerProcess {
         return null;
     }
 
-	/**
-	 * Store a GridCoverage2D and returns the file where the underlying image
-	 * have been stored.
-	 * 
-	 * @param coverage
-	 *            a {@link GridCoverage2D} wrapping the image to be stored.
-	 * @param tempFolder
-	 * @return the {@link File} storing the image.
-	 * @throws IOException
-	 */
-	private File storeImage(final RenderedImage image, final File tempFolder)
-			throws IOException {
-		File file = File.createTempFile("readCoverage", ".tif", tempFolder);
-		new ImageWorker(image).writeTIFF(file, null, 0, 256, 256);
-		return file;
-	}
+    /**
+     * Store a GridCoverage2D and returns the file where the underlying image have been stored.
+     * 
+     * @param coverage a {@link GridCoverage2D} wrapping the image to be stored.
+     * @param tempFolder
+     * @return the {@link File} storing the image.
+     * @throws IOException
+     */
+    private File storeImage(final RenderedImage image, final File tempFolder) throws IOException {
+        File file = File.createTempFile("readCoverage", ".tif", tempFolder);
+        new ImageWorker(image).writeTIFF(file, null, 0, 256, 256);
+        return file;
+    }
 
-	/**
-	 * 
-	 * @param originalFile {@link File} referring the dataset to be warped
-	 * @param targetEnvelope the target envelope
-	 * @param width the final image's width
-	 * @param height the final image's height
-	 * @param targetCrs the target coordinate reference system
-	 * @param order
-	 * @param tempFolder
-	 * @param loggingFolder
-	 * @param timeOut
-	 * @return
-	 * @throws IOException
-	 */
-	private File warpFile(final File originalFile, final ReferencedEnvelope targetEnvelope,
-			final int width, final int height, final Integer order, 
-			final File tempFolder, final File loggingFolder, final Long timeOut, final String warpingParameters)
-			throws IOException {
-		final File file = File.createTempFile("warped", ".tif", tempFolder);
-		final String vrtFilePath = originalFile.getAbsolutePath();
-		final String outputFilePath = file.getAbsolutePath();
-		final String tEnvelope = parseBBox(targetEnvelope);
-		final String tCrs = parseCrs(targetEnvelope.getCoordinateReferenceSystem());
-		final String argument = buildWarpArgument(tEnvelope, width, height, tCrs, order, vrtFilePath, outputFilePath, warpingParameters);
-		final String gdalCommand = config.getWarpingCommand();
+    /**
+     * 
+     * @param originalFile {@link File} referring the dataset to be warped
+     * @param targetEnvelope the target envelope
+     * @param width the final image's width
+     * @param height the final image's height
+     * @param targetCrs the target coordinate reference system
+     * @param order
+     * @param tempFolder
+     * @param loggingFolder
+     * @param timeOut
+     * @return
+     * @throws IOException
+     */
+    private File warpFile(final File originalFile, final ReferencedEnvelope targetEnvelope,
+            final int width, final int height, final Integer order, final File tempFolder,
+            final File loggingFolder, final Long timeOut, final String warpingParameters)
+            throws IOException {
+        final File file = File.createTempFile("warped", ".tif", tempFolder);
+        final String vrtFilePath = originalFile.getAbsolutePath();
+        final String outputFilePath = file.getAbsolutePath();
+        final String tEnvelope = parseBBox(targetEnvelope);
+        final String tCrs = parseCrs(targetEnvelope.getCoordinateReferenceSystem());
+        final String argument = buildWarpArgument(tEnvelope, width, height, tCrs, order,
+                vrtFilePath, outputFilePath, warpingParameters);
+        final String gdalCommand = config.getWarpingCommand();
 
-		executeCommand(gdalCommand, argument, loggingFolder, timeOut, config.getEnvVariables());
-		return file;
-	}
+        executeCommand(gdalCommand, argument, loggingFolder, timeOut, config.getEnvVariables());
+        return file;
+    }
 
-	/** 
-	 * A simple utility method setting up the command arguments for gdalWarp
-	 * @param targetEnvelope the target envelope in the form: xmin ymin xmax ymax
-	 * @param width the target image width
-	 * @param height the target image height
-	 * @param targetCrs the target crs
-	 * @param order the warping polynomial order
-	 * @param inputFilePath the path of the file referring to the dataset to be warped
-	 * @param outputFilePath the path of the file referring to the produced dataset
-	 * @return
-	 */
-	private final static String buildWarpArgument(final String targetEnvelope, final int width,
-			final int height, final String targetCrs, final Integer order, final String inputFilePath,
-			final String outputFilePath, final String warpingParameters) {
-		return "-te " + targetEnvelope + " -ts " + width + " " + height + " -t_srs "
-				+ targetCrs + " " + (order != null ? " -order " + order : "") + " " + warpingParameters 
-				+ " \"" + inputFilePath + "\" \""
-				+ outputFilePath + "\"";
-	}
+    /**
+     * A simple utility method setting up the command arguments for gdalWarp
+     * 
+     * @param targetEnvelope the target envelope in the form: xmin ymin xmax ymax
+     * @param width the target image width
+     * @param height the target image height
+     * @param targetCrs the target crs
+     * @param order the warping polynomial order
+     * @param inputFilePath the path of the file referring to the dataset to be warped
+     * @param outputFilePath the path of the file referring to the produced dataset
+     * @return
+     */
+    private final static String buildWarpArgument(final String targetEnvelope, final int width,
+            final int height, final String targetCrs, final Integer order,
+            final String inputFilePath, final String outputFilePath, final String warpingParameters) {
+        return "-te " + targetEnvelope + " -ts " + width + " " + height + " -t_srs " + targetCrs
+                + " " + (order != null ? " -order " + order : "") + " " + warpingParameters + " \""
+                + inputFilePath + "\" \"" + outputFilePath + "\"";
+    }
 
-	private static void checkError(File logFile) {
-		InputStream stream = null;
-		InputStreamReader streamReader = null;
-		BufferedReader reader = null;
-		StringBuilder message = new StringBuilder();
-		try {
-			stream = new FileInputStream(logFile);
-			streamReader = new InputStreamReader(stream);
-			reader = new BufferedReader(streamReader);
-			String strLine;
-			while ((strLine = reader.readLine()) != null) {
-				message.append(strLine);
-			}
-			throw new ProcessException(message.toString());
-		} catch (Throwable t) {
+    private static void checkError(File logFile) {
+        InputStream stream = null;
+        InputStreamReader streamReader = null;
+        BufferedReader reader = null;
+        StringBuilder message = new StringBuilder();
+        try {
+            stream = new FileInputStream(logFile);
+            streamReader = new InputStreamReader(stream);
+            reader = new BufferedReader(streamReader);
+            String strLine;
+            while ((strLine = reader.readLine()) != null) {
+                message.append(strLine);
+            }
+            throw new ProcessException(message.toString());
+        } catch (Throwable t) {
 
-		} finally {
-			IOUtils.closeQuietly(reader);
-			IOUtils.closeQuietly(streamReader);
-			IOUtils.closeQuietly(stream);
-			// TODO: look for a better delete
-			deleteFile(logFile);
-		}
+        } finally {
+            IOUtils.closeQuietly(reader);
+            IOUtils.closeQuietly(streamReader);
+            IOUtils.closeQuietly(stream);
+            // TODO: look for a better delete
+            deleteFile(logFile);
+        }
 
-	}
+    }
 
-	/**
-	 * Parse the bounding box to be used by gdalwarp command
-	 * @param boundingBox
-	 * @return
-	 */
-	private static String parseBBox(ReferencedEnvelope re) {
-		Utilities.ensureNonNull("boundingBox", re);
-		return re.getMinX() + " " + re.getMinY() + " " + re.getMaxX() + " " + re.getMaxY();
-	}
+    /**
+     * Parse the bounding box to be used by gdalwarp command
+     * 
+     * @param boundingBox
+     * @return
+     */
+    private static String parseBBox(ReferencedEnvelope re) {
+        Utilities.ensureNonNull("boundingBox", re);
+        return re.getMinX() + " " + re.getMinY() + " " + re.getMaxX() + " " + re.getMaxY();
+    }
 
-	private static String parseCrs(CoordinateReferenceSystem crs) {
-		Utilities.ensureNonNull("coordinateReferenceSystem",
-				crs);
-		try {
+    private static String parseCrs(CoordinateReferenceSystem crs) {
+        Utilities.ensureNonNull("coordinateReferenceSystem", crs);
+        try {
             return "\"epsg:" + CRS.lookupEpsgCode(crs, true) + "\"";
         } catch (FactoryException e) {
             throw new WPSException("Error occurred looking up target SRS");
         }
-	}
+    }
 
-	/**
-	 * First processing step which setup a VRT by adding ground control points to the specified input file.
-	 * @param originalFilePath the path of the file referring to the original image.
-	 * @param gcp the Ground Control Points option to be attached to the translating command.
-	 * @return a File containing the translated dataset.
-	 * @throws IOException
-	 */
-	private File addGroundControlPoints(final String originalFilePath, final String gcp, final String parameters)
-			throws IOException {
-		final File vrtFile = File.createTempFile("vrt_", ".vrt", config.getTempFolder());
-		final String argument = "-of VRT " + parameters + " " + gcp + "\"" + originalFilePath + "\" \"" + vrtFile.getAbsolutePath() + "\"";
-		final String gdalCommand = config.getTranslateCommand();
-		executeCommand(gdalCommand, argument, config.getLoggingFolder(), config.getExecutionTimeout(), config.getEnvVariables());
-		if (vrtFile != null && vrtFile.exists() && vrtFile.canRead()) {
-			return vrtFile;
-		} 
-		return vrtFile;
-	}
-	
+    /**
+     * First processing step which setup a VRT by adding ground control points to the specified
+     * input file.
+     * 
+     * @param originalFilePath the path of the file referring to the original image.
+     * @param gcp the Ground Control Points option to be attached to the translating command.
+     * @return a File containing the translated dataset.
+     * @throws IOException
+     */
+    private File addGroundControlPoints(final String originalFilePath, final String gcp,
+            final String parameters) throws IOException {
+        final File vrtFile = File.createTempFile("vrt_", ".vrt", config.getTempFolder());
+        final String argument = "-of VRT " + parameters + " " + gcp + "\"" + originalFilePath
+                + "\" \"" + vrtFile.getAbsolutePath() + "\"";
+        final String gdalCommand = config.getTranslateCommand();
+        executeCommand(gdalCommand, argument, config.getLoggingFolder(),
+                config.getExecutionTimeout(), config.getEnvVariables());
+        if (vrtFile != null && vrtFile.exists() && vrtFile.canRead()) {
+            return vrtFile;
+        }
+        return vrtFile;
+    }
+
     private File expandRgba(final String originalFilePath) throws IOException {
         final File expandedFile = File.createTempFile("rgba", ".tif", config.getTempFolder());
         final String argument = "-expand RGBA -co TILED=yes " + originalFilePath + " "
@@ -368,86 +374,88 @@ public class GeorectifyCoverage implements GeoServerProcess {
         return expandedFile;
     }
 
-	/** 
-	 * Execute the following command, given the specified argument and return the File storing logged error messages (if any). 
-	 */
-	private static void executeCommand(final String gdalCommand, final String argument, final File loggingFolder, final long timeOut, final List<Variable> envVars)
-			throws IOException {
-		final File logFile = File.createTempFile("LOG", ".log", loggingFolder);
+    /**
+     * Execute the following command, given the specified argument and return the File storing
+     * logged error messages (if any).
+     */
+    private static void executeCommand(final String gdalCommand, final String argument,
+            final File loggingFolder, final long timeOut, final List<Variable> envVars)
+            throws IOException {
+        final File logFile = File.createTempFile("LOG", ".log", loggingFolder);
 
-		Project project = new Project();
-		project.init();
+        Project project = new Project();
+        project.init();
 
-		ExecTask execTask = new ExecTask();
-		execTask.setProject(project);
+        ExecTask execTask = new ExecTask();
+        execTask.setProject(project);
 
-		// Setting executable
-		execTask.setExecutable(gdalCommand);
-		if (envVars != null) {
-			for (Variable var: envVars){
-				execTask.addEnv(var);
-			}
-		}
+        // Setting executable
+        execTask.setExecutable(gdalCommand);
+        if (envVars != null) {
+            for (Variable var : envVars) {
+                execTask.addEnv(var);
+            }
+        }
 
-		// Setting command line argument
-		execTask.createArg().setLine(argument);
-		execTask.setLogError(true);
+        // Setting command line argument
+        execTask.createArg().setLine(argument);
+        execTask.setLogError(true);
 
-		execTask.setError(logFile);
-		execTask.setOutput(logFile);
-		execTask.setFailonerror(true);
-		execTask.setTimeout(timeOut);
+        execTask.setError(logFile);
+        execTask.setOutput(logFile);
+        execTask.setFailonerror(true);
+        execTask.setTimeout(timeOut);
 
-		
-		System.out.println("Executing " + gdalCommand + " " + argument);
-		
-		// Executing
-		try {
-		    execTask.execute();
-		} catch(Exception e) {
-		    if(logFile.exists() && logFile.canRead()) {
-		        checkError(logFile);
-		    } 
-		    throw new WPSException("Error launching OS command", e);
-		} finally {
-		    if(logFile != null) {
-		        logFile.delete();
-		    }
-		}
+        System.out.println("Executing " + gdalCommand + " " + argument);
 
-	}
+        // Executing
+        try {
+            execTask.execute();
+        } catch (Exception e) {
+            if (logFile.exists() && logFile.canRead()) {
+                checkError(logFile);
+            }
+            throw new WPSException("Error launching OS command", e);
+        } finally {
+            if (logFile != null) {
+                logFile.delete();
+            }
+        }
 
-	/** 
-	 * @param gcps
-	 * @param gcpNum
-	 * @return
-	 */
-	private String parseGcps(String gcps, int[] gcpNum) {
-		Matcher gcpMatcher = GCP_PATTERN.matcher(gcps);
-//		if(!gcpMatcher.matches()) {
-//		    throw new WPSException("Invalid GCP syntax:" + gcps);
-//		}
-		StringBuilder gcpCommand = new StringBuilder();
-		int gcpPoints = 0;
-		//Setting up gcp command arguments
-		while (gcpMatcher.find()) {
-			String gcp = "-gcp ";
-			String pixels = gcpMatcher.group(0);
-			gcpMatcher.find();
-			String lines = gcpMatcher.group(0);
-			gcp += pixels.replace("[", "").replace("]", "").replace(",", "") + " " + lines.replace("[", "").replace("]", "").replace(",", "") + " ";
-			gcpCommand.append(gcp);
-			gcpPoints++;
-		}
-		gcpNum[0] = gcpPoints;
-		return gcpCommand.toString();
-	}
+    }
 
-	private static void deleteFile(final File file) {
-		if (file != null && file.exists() && file.canRead()) {
-			file.delete();
-		}
-	}
+    /**
+     * @param gcps
+     * @param gcpNum
+     * @return
+     */
+    private String parseGcps(String gcps, int[] gcpNum) {
+        Matcher gcpMatcher = GCP_PATTERN.matcher(gcps);
+        // if(!gcpMatcher.matches()) {
+        // throw new WPSException("Invalid GCP syntax:" + gcps);
+        // }
+        StringBuilder gcpCommand = new StringBuilder();
+        int gcpPoints = 0;
+        // Setting up gcp command arguments
+        while (gcpMatcher.find()) {
+            String gcp = "-gcp ";
+            String pixels = gcpMatcher.group(0);
+            gcpMatcher.find();
+            String lines = gcpMatcher.group(0);
+            gcp += pixels.replace("[", "").replace("]", "").replace(",", "") + " "
+                    + lines.replace("[", "").replace("]", "").replace(",", "") + " ";
+            gcpCommand.append(gcp);
+            gcpPoints++;
+        }
+        gcpNum[0] = gcpPoints;
+        return gcpCommand.toString();
+    }
+
+    private static void deleteFile(final File file) {
+        if (file != null && file.exists() && file.canRead()) {
+            file.delete();
+        }
+    }
 
     public WPSResourceManager getResourceManager() {
         return resourceManager;
