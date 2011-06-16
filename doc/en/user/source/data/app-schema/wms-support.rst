@@ -1,24 +1,21 @@
 .. _app-schema.wms-support:
 
 WMS Support
-========
+===========
 
 App-schema supports WMS requests as well as WFS requests. 
 This page provides some useful examples for configuring the WMS service to work with complex features.
 
-Remark that the rendering performance of WMS can be significantly slower when using app-schema data stores (depending on the kind of mapping).
-If the desired performance level cannot be attained we suggest to use flattened database views rather than app-schema.
+Note that the rendering performance of WMS can be significantly slower when using app-schema data stores. We strongly recommend employing :ref:`app-schema.joining` when using WMS with feature chaining, which can make response time for large data requests several orders of magnitude faster.
 
 GetMap
 -------
 
 Read :ref:`wms_getmap` for general information on the GetMap request.
 Read :ref:`styling` for general information on how to style WMS maps with SLD files.
-When styling complex features, you can use X-paths to specify nested properties in your filters, as explained in :ref:`app-schema.filtering-nested`.
-However,  in WMS styling filters it is not possible to follow nested properties by reference (*xlink:href*), unlike in WFS filters
-(because the filters are applied after building the features rather than before.)
-The prefix/namespace context that is used in the X-path expression is defined locally in the XML tags of the style file.
-This is an example of an Style file for complex features:
+When styling complex features, you can use XPaths to specify nested properties in your filters, as explained in :ref:`app-schema.filtering-nested`. However,  in WMS styling filters X-paths do not support handling referenced features (see  :ref:`app-schema.feature-chaining-by-reference`) as if they were actual nested features (because the filters are applied after building the features rather than before.)
+The prefix/namespace context that is used in the XPath expression is defined locally in the XML tags of the style file.
+This is an example of a Style file for complex features:
 
 .. code-block:: xml 
    :linenos: 

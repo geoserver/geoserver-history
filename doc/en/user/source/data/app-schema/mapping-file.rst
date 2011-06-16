@@ -289,5 +289,5 @@ Denormalised sources
 
 Multivalued properties from denormalised sources (the same source feature ID appears more than once) are automatically encoded. For example, a view might have a repeated ``id`` column with varying ``name`` so that an arbitrarily large number of ``gml:name`` properties can be encoded for the output feature.
 
-.. warning:: Denormalised sources must grouped so that features with duplicate IDs are provided without any intervening features. This can be achieved by ensuring that denormalised source features are sorted by ID. Failure to observe this restriction will result in data corruption.
+.. warning:: Denormalised sources must grouped so that features with duplicate IDs are provided without any intervening features. This can be achieved by ensuring that denormalised source features are sorted by ID. Failure to observe this restriction will result in data corruption. This restriction is however not necessary when using :ref:`app-schema.joining` because then ordering will happen automatically.
 

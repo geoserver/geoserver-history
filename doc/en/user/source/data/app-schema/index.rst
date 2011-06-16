@@ -36,5 +36,6 @@ Contents
    polymorphism
    data-access-integration
    wms-support
+   joining
    tutorial
 

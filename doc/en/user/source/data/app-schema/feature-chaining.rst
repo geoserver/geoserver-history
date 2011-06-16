@@ -404,6 +404,8 @@ E.g. You can run the following filter on gsml:MappedFeatureUseCase2A::
         </ogc:PropertyIsEqualTo>
   </ogc:Filter>
 
+..  _app-schema.feature-chaining-by-reference:
+
 Multi-valued properties by reference (*xlink:href*)
 ---------------------------------------------------
 You may want to use feature chaining to set multi-valued properties by reference.
