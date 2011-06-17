@@ -73,3 +73,42 @@ on the nature of the patches, how in depth the they are, etc... Basically it
 boils down the developer being able to show that they understand the code base
 well enough to not seriously break anything.
 
+Commit Guidelines
+-----------------
+
+There is not much in the way of strict commit policies when it comes to committing
+in GeoServer. But over time some rules and conventions have emerged:
+
+#. **Add copyright headers for new files**
+
+   When adding new source files to the repository remember to add the standard 
+   copyright header::
+
+     /* Copyright (c) 2001 - 2011 TOPP - www.openplans.org. All rights reserved.
+      * This code is licensed under the GPL 2.0 license, available at the root
+      * application directory.
+      */
+
+#. **Do not commit large amounts of binary data**
+
+   In general do not commit any binary data to the repository. There are cases where
+   it is appropriate like some data for a test case, but in these cases the files 
+   should be kept as small as possible.
+
+#. **Do not commit jars or libs, use Maven instead**
+
+   In general never commit a depending library directly into the repository, this is
+   what we use Maven for. If you have a jar that is not present in any maven 
+   repositories ask on the developer list to get it uploaded to one of the project
+   maven repositories.
+
+#. **Ensure code is properly formatted**
+
+   Ensure that the IDE or editor used to edit source files is setup with proper 
+   formatting rules. This means spaces instead of tabs, 100 character line break,
+   etc...
+
+   If using Eclipse ensure you have configured it with the `template and formatter <http://docs.geotools.org/latest/developer/guide/conventions/code/style.html#use-of-formatting-tools>`_
+   used for GeoTools. 
+
+
