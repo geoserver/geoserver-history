@@ -36,12 +36,14 @@ import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.ows.CRSEnvelope;
 import org.geotools.data.ows.Layer;
+import org.geotools.data.wms.WebMapServer;
 import org.geotools.factory.GeoTools;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
+import org.geotools.util.Version;
 import org.geotools.util.logging.Logging;
 import org.opengis.coverage.grid.Format;
 import org.opengis.coverage.grid.GridEnvelope;
@@ -605,7 +607,6 @@ public class CatalogBuilder {
             ReferencedEnvelope boundsLatLon = wmsLayer.getLatLonBoundingBox();
             wmsLayer.setNativeBoundingBox(boundsLatLon.transform(wmsLayer.getNativeCRS(), true));
         }
-        
     }
 
     /**
@@ -893,6 +894,19 @@ public class CatalogBuilder {
             ReferencedEnvelope re = new ReferencedEnvelope(envelope.getMinimum(0), envelope
                     .getMaximum(0), envelope.getMinimum(1), envelope.getMaximum(1), wli
                     .getNativeCRS());
+            // are we in crazy wms 1.3 land?
+            if(wli.getNativeCRS() instanceof GeographicCRS) {
+                WebMapServer mapServer = wms.getWebMapServer(null);
+                Version version = new Version(mapServer.getCapabilities().getVersion());
+                if(version.compareTo(new Version("1.3.0")) >= 0) {
+                    // flip axis, the wms code won't actually use the crs
+                    double minx = re.getMinX();
+                    double miny = re.getMinY();
+                    double maxx = re.getMaxX();
+                    double maxy = re.getMaxY();
+                    re = new ReferencedEnvelope(miny, maxy, minx, maxx, wli.getNativeCRS());
+                }
+            }
             wli.setNativeBoundingBox(re);
         }
         CRSEnvelope llbbox = layer.getLatLonBoundingBox();
