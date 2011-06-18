@@ -47,10 +47,10 @@ A third way is to add a geometry type column allowing standard filtering constru
 
    <Rule>
       <ogc:Filter>
-         <ogc:PropertyIsEqualsTo>
+         <ogc:PropertyIsEqualTo>
             <ogc:PropertyName>gtype</ogc:PropertyName>
             <ogc:Literal>Point</ogc:PropertyName>
-         </ogc:PropertyIsEqualsTo>
+         </ogc:PropertyIsEqualTo>
       </ogc:Filter>
       <PointSymbolizer>
          ...
@@ -58,10 +58,10 @@ A third way is to add a geometry type column allowing standard filtering constru
    </Rule>
    <Rule>
       <ogc:Filter>
-         <ogc:PropertyIsEqualsTo>
+         <ogc:PropertyIsEqualTo>
             <ogc:PropertyName>gtype</ogc:PropertyName>
             <ogc:Literal>Line</ogc:PropertyName>
-         </ogc:PropertyIsEqualsTo>
+         </ogc:PropertyIsEqualTo>
       </ogc:Filter>
       <LineSymbolizer>
          ...
@@ -69,10 +69,10 @@ A third way is to add a geometry type column allowing standard filtering constru
    </Rule>
    <Rule>
       <ogc:Filter>
-         <ogc:PropertyIsEqualsTo>
+         <ogc:PropertyIsEqualTo>
             <ogc:PropertyName>gtype</ogc:PropertyName>
             <ogc:Literal>Polygon</ogc:PropertyName>
-         </ogc:PropertyIsEqualsTo>
+         </ogc:PropertyIsEqualTo>
       </ogc:Filter>
       <PolygonSymbolizer>
          ...
@@ -100,12 +100,12 @@ Using the function, a ``Rule`` matching only single points can be written as:
 .. code-block:: xml
 
    <Rule>
-      <ogc:PropertyIsEqualsTo>
+      <ogc:PropertyIsEqualTo>
          <ogc:Function name="geometryType">
             <ogc:PropertyName>geom</ogc:PropertyName>
          </ogc:Function>
          <ogc:Literal>Point</ogc:Literal>
-      </ogc:PropertyIsEqualsTo>
+      </ogc:PropertyIsEqualTo>
       <PointSymbolizer>
         ...
       </PointSymbolizer>
@@ -117,7 +117,7 @@ The filter becomes more complex if one has to match any kind of linear geometry.
 
    <Rule>
       <ogc:Filter>
-        <ogc:PropertyIsEqualsTo>
+        <ogc:PropertyIsEqualTo>
           <ogc:Function name="in3">
              <ogc:Function name="geometryType">
                  <ogc:PropertyName>geom</ogc:PropertyName>
@@ -127,7 +127,7 @@ The filter becomes more complex if one has to match any kind of linear geometry.
              <ogc:Literal>MultiLineString</ogc:Literal>
           </ogc:Function>
           <ogc:Literal>true</ogc:Literal>
-        </ogc:PropertyIsEqualsTo>
+        </ogc:PropertyIsEqualTo>
       </ogc:Filter>
       <LineSymbolizer>
         ...
